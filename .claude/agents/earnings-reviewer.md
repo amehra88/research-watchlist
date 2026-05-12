@@ -1,0 +1,1 @@
+../../plugins/agent-plugins/earnings-reviewer/agents/earnings-reviewer.md
