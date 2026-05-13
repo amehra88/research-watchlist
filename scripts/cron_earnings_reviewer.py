@@ -141,21 +141,77 @@ def extract_status(stdout: str) -> str:
     status_lines = [line for line in stdout.splitlines() if line.startswith("STATUS:")]
     return status_lines[-1].strip() if status_lines else ""
 
-def run_earnings_reviewer(ticker: str) -> str:
-    """Invoke earnings-reviewer for one ticker. Returns the STATUS marker line, or an error marker."""
+def infer_outcome_from_artifacts(ticker: str, run_started_at: datetime) -> str | None:
+    """
+    When the agent didn't emit a STATUS marker, inspect artifacts to determine
+    what actually happened. Returns a synthesized STATUS marker, or None if
+    artifacts are inconclusive (true error case).
+
+    Detection logic:
+    - State file mtime newer than run_started_at AND note file present → new-note-written
+    - State file present but mtime older than run_started_at → no-new-transcript (idempotency held silently)
+    - State file missing entirely → cannot infer; return None
+    """
+    state_path = REPO_ROOT / "state" / "transcripts" / f"{ticker}.json"
+    if not state_path.exists():
+        return None
+
+    state_mtime = datetime.fromtimestamp(state_path.stat().st_mtime, tz=timezone.utc)
+    if state_mtime < run_started_at:
+        # State exists but wasn't touched this run — idempotency exit
+        try:
+            with state_path.open("r", encoding="utf-8") as f:
+                state = json.load(f)
+            iacc = state.get("last_iacc", "unknown")
+            ts = state.get("last_processed_at", "unknown")
+            return f"STATUS: no-new-transcript ticker={ticker} last_iacc={iacc} last_processed_at={ts}"
+        except (json.JSONDecodeError, OSError):
+            return f"STATUS: no-new-transcript ticker={ticker} last_iacc=unreadable last_processed_at=unreadable"
+
+    # State was touched this run — look for a fresh note
+    try:
+        with state_path.open("r", encoding="utf-8") as f:
+            state = json.load(f)
+        iacc = state.get("last_iacc", "unknown")
+        period = state.get("last_period", "unknown")
+        note_path = state.get("last_note_path", "unknown")
+    except (json.JSONDecodeError, OSError):
+        return None
+    return f"STATUS: new-note-written ticker={ticker} period={period} iacc={iacc} path={note_path}"
+
+def run_earnings_reviewer(ticker: str, run_started_at: datetime) -> str:
+    """
+    Invoke earnings-reviewer for one ticker. Returns the STATUS marker line.
+
+    Primary detection: parse STATUS marker from agent stdout (the contract).
+    Fallback detection: if no marker, inspect artifacts (note file, state file)
+    for changes since this run started. This catches the case where the agent
+    completed real work but skipped emitting the marker.
+    """
     prompt = f"Use the earnings-reviewer agent to review {ticker}'s latest earnings call."
     rc, stdout, stderr = run_claude(prompt, timeout_seconds=900)  # 15 minutes per ticker
+
     if rc != 0:
         return f"STATUS: error reason=invocation-failed detail=rc={rc} stderr={stderr[:150]!r}"
+
+    # Primary path: STATUS marker in stdout (the contract)
     marker = extract_status(stdout)
-    if not marker:
-        return f"STATUS: error reason=no-marker-emitted detail=stdout_tail={stdout[-200:]!r}"
-    return marker
+    if marker:
+        return marker
+
+    # Fallback: inspect artifacts to infer outcome
+    fallback = infer_outcome_from_artifacts(ticker, run_started_at)
+    if fallback:
+        return fallback + " | fallback=artifact-inspection (agent did not emit marker)"
+
+    # Neither marker nor artifact change — true error
+    return f"STATUS: error reason=no-marker-emitted detail=stdout_tail={stdout[-200:]!r}"
 
 # === Main ===
 
 def main() -> int:
-    log_section(f"CRON RUN {now_iso()}")
+    run_started_at = datetime.now(timezone.utc)
+    log_section(f"CRON RUN {run_started_at.isoformat(timespec='seconds')}")
 
     # Load watchlist
     try:
@@ -190,7 +246,7 @@ def main() -> int:
     error_count = 0
     for ticker in to_process:
         log_write(f"  --- {ticker} ---")
-        marker = run_earnings_reviewer(ticker)
+        marker = run_earnings_reviewer(ticker, run_started_at)
         log_write(f"  {marker}")
         if marker.startswith("STATUS: error"):
             error_count += 1
