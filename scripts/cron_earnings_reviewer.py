@@ -52,15 +52,33 @@ def log_section(header: str) -> None:
     log_write(bar)
 
 def load_watchlist_tickers() -> list[str]:
-    """Read watchlist.yaml, return all tickers across all three tiers."""
+    """
+    Read watchlist.yaml, return all tickers across all three tiers as strings.
+
+    Defensive: YAML can parse bare tokens like `ON`, `OFF`, `NO`, `Y`, etc. as
+    booleans. We require all ticker values to be strings. If a non-string ticker
+    is encountered, we raise loudly rather than silently coercing — the watchlist
+    author should quote the ticker in YAML.
+    """
     with WATCHLIST_PATH.open("r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
     tickers: list[str] = []
+    bad: list[tuple[str, object]] = []
     for tier in TIERS:
         for entry in data.get(tier, []) or []:
             ticker = entry.get("ticker")
-            if ticker:
-                tickers.append(ticker)
+            if ticker is None:
+                continue
+            if not isinstance(ticker, str):
+                bad.append((tier, ticker))
+                continue
+            tickers.append(ticker)
+    if bad:
+        details = "; ".join(f"{tier}: {t!r} ({type(t).__name__})" for tier, t in bad)
+        raise ValueError(
+            f"Watchlist contains non-string ticker(s) — YAML parsed them as something else. "
+            f"Quote the value in watchlist.yaml. Offenders: {details}"
+        )
     return sorted(set(tickers))
 
 def run_claude(prompt: str, timeout_seconds: int = 300) -> tuple[int, str, str]:
