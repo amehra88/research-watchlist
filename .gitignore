@@ -45,3 +45,6 @@ coverage/
 TASKS.md
 MEMORY.md
 .claude/worktrees/
+
+# Cron and operational logs (content gitignored; directory tracked via .gitkeep)
+logs/*.log
