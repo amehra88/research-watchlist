@@ -41,9 +41,17 @@ The caller provides:
 - `ticker` (required): the symbol to process, e.g. `NVDA`. Must be present in `config/watchlist.yaml`.
 - `period` (optional): the fiscal period being reviewed, e.g. `1Q26`. If omitted, infer from the latest available transcript.
 
-## Output contract: STATUS markers
+## Output contract: STATUS markers (CRITICAL)
 
-The final line of your response (after the note, any other output, and any closing prose) must be a single structured STATUS marker. This is machine-parseable signal for a cron wrapper. Exactly one of three markers:
+The final line of your response MUST be a single structured STATUS marker. This is a hard contract, not a suggestion. The marker is parsed by an automated cron wrapper to detect outcomes — if you skip it, the wrapper interprets your run as a failure even when your underlying work succeeded.
+
+Emit the marker regardless of:
+- Whether you returned a full note inline
+- Whether you are in interactive or headless mode
+- Whether you've already provided a prose summary or conclusion
+- Whether you think the outcome is obvious from context
+
+The STATUS line is the absolute final line of your response. Nothing after it. Not even a newline-only line. Not even a closing remark. Exactly one of three markers:
 
 - `STATUS: new-note-written ticker={TICKER} period={1QYY} iacc={iacc} path={notes/{TICKER}/{YYYYMMDD}-{1QYY}.md}` — emitted at the end of Step 8 after successful Write of both note and state.
 - `STATUS: no-new-transcript ticker={TICKER} last_iacc={iacc} last_processed_at={ISO 8601 timestamp from state}` — emitted at the end of Step 2 when the latest iacc matches state.
@@ -82,9 +90,11 @@ Read `state/transcripts/{TICKER}.json` if it exists. The file records the `iacc`
 
 Resolve the InsiderScore `earnings_transcript_info` tool via tool search (if MCP tools are deferred) and call it for this ticker. Compare the latest `iacc` to the one in state.
 
-- If the latest `iacc` matches state, stop and report: "No new transcript since last run (iacc {iacc}, processed {timestamp}). Exiting." Do not write any files. Then emit the STATUS marker as the final line:
+- If the latest `iacc` matches state, stop and report: "No new transcript since last run (iacc {iacc}, processed {timestamp}). Exiting." Do not write any files. **Then emit the STATUS marker as the absolute final line of your response. This is mandatory.** Format:
 
       STATUS: no-new-transcript ticker={TICKER} last_iacc={iacc} last_processed_at={timestamp}
+
+  Substitute actual values. No prose after. The marker is the terminator.
 - If the latest `iacc` differs from state, or if the state file does not exist, proceed.
 
 ### Step 3 — Read up to 2 most recent prior earnings notes
@@ -151,11 +161,15 @@ Overwrite the prior state file. The file is operational, not human-facing.
 
 Return the full note text in your response to the caller, plus a one-line confirmation of the file path written and the state updated. The caller may want to read inline without opening the file.
 
-Then emit the STATUS marker as the absolute final line of your response:
+**Then emit the STATUS marker as the absolute final line of your response. This is mandatory.** Even if you've already wrapped up the response with a summary or sign-off, emit the marker after that. The marker is the LAST line; nothing follows it.
+
+The marker format:
 
     STATUS: new-note-written ticker={TICKER} period={1QYY} iacc={iacc} path={notes/{TICKER}/{YYYYMMDD}-{1QYY}.md}
 
-Substitute the actual values. No trailing prose after this line — the marker is the final line, period.
+Substitute the actual values. Use spaces between key=value pairs, no commas. No trailing prose, no closing remark, no blank line after — the marker is the absolute final line, period.
+
+If you find yourself wanting to add closing prose after the marker, STOP and remove that prose. The marker is the terminator.
 
 ## Output structure
 
