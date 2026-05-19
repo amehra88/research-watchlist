@@ -1,0 +1,1 @@
+/root/research-watchlist/plugins/agent-plugins/earnings-reviewer/agents/earnings-reviewer-from-pdf.md
