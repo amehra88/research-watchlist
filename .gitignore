@@ -48,3 +48,5 @@ MEMORY.md
 
 # Cron and operational logs (content gitignored; directory tracked via .gitkeep)
 logs/*.log
+tmp/
+.claude/settings.local.json
