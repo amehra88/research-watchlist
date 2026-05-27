@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
-Auto-sync cron — detects uncommitted changes in /root/research-watchlist,
-commits them with a timestamped message, pushes to GitHub origin/main.
+Auto-sync cron — detects uncommitted changes, commits them, rebases on origin,
+and pushes to GitHub. Runs every 15 minutes via cron.
 
-Designed to run every 15 minutes via cron. Logs activity to
-/root/research-watchlist/logs/auto-sync.log. Quiet exit when nothing to do
-(no log spam during idle).
+Logs to /root/research-watchlist/logs/auto-sync.log. Quiet exit when nothing
+to do (no log spam during idle).
 """
 import subprocess
 import sys
@@ -47,29 +46,35 @@ def main() -> int:
     changes = stdout.strip()
     n_files = len(changes.split("\n")) if changes else 0
 
+    # Commit local changes first (if any)
     if changes:
         log(f"detected {n_files} change(s); staging and committing")
-
         rc, _, stderr = run(["git", "add", "-A"])
         if rc != 0:
             log(f"ERROR: git add failed: {stderr[:200]}")
             return 1
-
         commit_msg = f"Auto-sync: {now_iso()} ({n_files} file{'s' if n_files != 1 else ''})"
         rc, _, stderr = run(["git", "commit", "-m", commit_msg])
         if rc != 0:
             log(f"ERROR: git commit failed: {stderr[:200]}")
             return 1
 
-    # Always attempt push (handles any pre-existing unpushed commits too)
-    rc, stdout, stderr = run(["git", "push", "origin", "main"])
+    # Rebase on remote to incorporate any commits from Mac/iPad
+    rc, _, stderr = run(["git", "pull", "--rebase", "origin", "main"])
+    if rc != 0:
+        log(f"ERROR: git pull --rebase failed: {stderr[:200]}")
+        run(["git", "rebase", "--abort"])
+        log(f"  aborted rebase; manual intervention required")
+        return 1
+
+    # Push
+    rc, _, stderr = run(["git", "push", "origin", "main"])
     if rc != 0:
         log(f"ERROR: git push failed: {stderr[:200]}")
         return 1
 
     if changes:
         log(f"SUCCESS: pushed {n_files} file(s)")
-    # Quiet exit when nothing changed — no log spam during idle periods
     return 0
 
 
