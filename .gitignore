@@ -50,3 +50,18 @@ MEMORY.md
 logs/*.log
 tmp/
 .claude/settings.local.json
+
+# Obsidian per-device workspace state (don't sync between devices)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspace-tablet.json
+.obsidian/cache
+.obsidian/.cache
+
+# Prevent future iPad/Obsidian noise from being committed
+.obsidian/plugins/
+.obsidian/community-plugins.json
+.obsidian/graph.json
+Untitled*.md
+Untitled*.canvas
+Untitled*.base
