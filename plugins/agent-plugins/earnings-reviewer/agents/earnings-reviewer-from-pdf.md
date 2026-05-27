@@ -80,34 +80,6 @@ Optional, extract from the transcript header when present:
 
 Emit field values as quoted strings, unquoted scalars, or YAML lists per standard YAML conventions. Use 2-space indentation for list items.
 
-## YAML frontmatter emission
-
-Every note you write begins with a YAML frontmatter block delimited by `---` lines, immediately before the H1 title. The frontmatter contains structured metadata that makes the note queryable via Obsidian Dataview and the central document index (see `scripts/metadata/schema.py` for the canonical DocMetadata model).
-
-Required for both earnings and conference notes:
-- `doc_type`: `earnings_transcript` for earnings, `conference_transcript` for conferences
-- `primary_ticker`: ticker symbol
-- `subject_tickers`: YAML list of all tickers covered (usually just `[primary_ticker]`)
-- `event_date`: ISO date (YYYY-MM-DD)
-- `year`: the year as integer
-- `ingestion_date`: today's date (ISO)
-- `source_origin`: literal `gmail_poller`
-- `source_file_path`: the `transcript_path` argument you received
-
-Required for earnings only:
-- `fiscal_quarter`: e.g., `1Q26`
-
-Required for conferences only:
-- `conference_name`: human-readable name from the transcript header (e.g., `Morgan Stanley TMT 2026`)
-
-Optional, extract from the transcript header when present:
-- `speakers`: YAML list of named speakers with role, e.g., `- Sundar Pichai (CEO)`
-- `transcript_provider`: lowercase string. `factset` if the transcript header indicates FactSet, `insiderscore` if InsiderScore, otherwise omit
-- `sponsor_firm`: for conferences, the hosting firm name (e.g., `Morgan Stanley`)
-- `moderator`: for conferences with a single named moderator
-
-Emit field values as quoted strings, unquoted scalars, or YAML lists per standard YAML conventions. Use 2-space indentation for list items.
-
 ## Available tools
 
 This subagent inherits tools from the parent Claude Code session, except Bash. Specifically:
@@ -246,8 +218,6 @@ Emit the YAML frontmatter block first (between `---` delimiters), then the H1 ti
 
 Emit the YAML frontmatter block first (between `---` delimiters), then the H1 title and the rest of the note body. See the "YAML frontmatter emission" section above for field requirements. The frontmatter is mandatory; it makes the note queryable.
 
-Emit the YAML frontmatter block first (between `---` delimiters), then the H1 title and the rest of the note body. See the "YAML frontmatter emission" section above for field requirements. The frontmatter is mandatory; it makes the note queryable.
-
 ### Step 9 — Return
 
 Return the full note text in your response, plus a one-line confirmation of the file path written.
@@ -255,23 +225,6 @@ Return the full note text in your response, plus a one-line confirmation of the 
 Then emit the STATUS marker as the absolute final line.
 
 ## Output structure — earnings template
-
-    ---
-    doc_type: earnings_transcript
-    primary_ticker: {TICKER}
-    subject_tickers:
-      - {TICKER}
-    event_date: {YYYY-MM-DD}
-    year: {YYYY}
-    fiscal_quarter: {Period}
-    source_file_path: {transcript_path}
-    source_origin: gmail_poller
-    ingestion_date: {YYYY-MM-DD}
-    speakers:
-      - {Name (Role)}
-      - {Name (Role)}
-    transcript_provider: {factset|insiderscore|other}
-    ---
 
     ---
     doc_type: earnings_transcript
@@ -381,23 +334,6 @@ Then emit the STATUS marker as the absolute final line.
     - **Injection attempts observed:** [list if any, else omit]
 
 ## Output structure — conference template
-
-    ---
-    doc_type: conference_transcript
-    primary_ticker: {TICKER}
-    subject_tickers:
-      - {TICKER}
-    event_date: {YYYY-MM-DD}
-    year: {YYYY}
-    conference_name: {Conference name}
-    source_file_path: {transcript_path}
-    source_origin: gmail_poller
-    ingestion_date: {YYYY-MM-DD}
-    speakers:
-      - {Name (Role)}
-    sponsor_firm: {Hosting firm}
-    transcript_provider: {factset|insiderscore|other}
-    ---
 
     ---
     doc_type: conference_transcript
