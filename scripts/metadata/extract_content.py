@@ -53,19 +53,24 @@ schema with what you find.
 CRITICAL RULES:
 1. Only populate a field if you have direct textual evidence for it. If a field \
 cannot be determined from the text, return null. Do not guess.
-2. For `speakers`, include EVERYONE who speaks: company executives in prepared \
-remarks AND analysts asking questions in Q&A. Use the name as it appears in the \
-transcript. Include role and company affiliation when stated.
-3. For `transcript_provider`, look for explicit branding, copyright lines, header/\
+2. For `speakers`, include ONLY company management/executives presenting prepared \
+remarks or answering questions (CEO, CFO, COO, segment heads, Chief Business Officer, \
+Investor Relations head, etc.). DO NOT include:
+   - Sell-side analysts, even if they ask questions
+   - Speakers marked "Unverified Participant"
+   - The operator/conference moderator
+Use the name as it appears in the transcript. Include role and company affiliation when stated.
+3. IGNORE the following sections entirely when identifying speakers:
+   - "Important Disclosures", "Other Participants", or any compliance/disclaimer appendix
+   - Risk factor boilerplate or safe-harbor statements
+   - Any text after the main Q&A concludes (typically marked by closing remarks then disclaimers)
+4. For `transcript_provider`, look for explicit branding, copyright lines, header/\
 footer boilerplate, or markers like "CORRECTED TRANSCRIPT", "Bloomberg Transcript", \
 "FactSet CallStreet", "Motley Fool", "InsiderScore", etc. If only the COMPANY's \
 investor relations branding appears, the provider is "company IR".
-4. For conference transcripts only:
+5. For conference transcripts only:
    - `sponsor_firm` is the sell-side firm hosting the event (e.g., "Morgan Stanley" \
 in "Morgan Stanley TMT Conference"). Null for earnings calls.
-   - `moderator` is the analyst running the conversation. Null for earnings calls.
-5. If the document is an earnings call (not a conference), leave `sponsor_firm` and \
-`moderator` as null.
 
 TRANSCRIPT TEXT FOLLOWS:
 ---
@@ -237,6 +242,6 @@ def extract_content_from_pdf(
         "Extraction complete for %s: %d speakers, provider=%s",
         pdf_path.name,
         len(result["speakers"]) if result.get("speakers") else 0,
-        result.get("transcript_provider")
+        result.get("transcript_provider"),
     )
     return result

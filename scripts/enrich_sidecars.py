@@ -139,7 +139,7 @@ def process_one(pdf_path: Path, force: bool, dry_run: bool) -> str:
         return "enriched"
 
     try:
-        enrichment = extract_content_from_pdf(pdf_path)
+        enrichment = extract_content_from_pdf(pdf_path, doc_type=sidecar.get("doc_type"))
     except Exception as e:
         logging.exception("Extraction failed for %s: %s", pdf_path.name, e)
         # Persist a stub failure marker so we can see this in the sidecar
@@ -152,7 +152,7 @@ def process_one(pdf_path: Path, force: bool, dry_run: bool) -> str:
             _write_sidecar_atomic(sidecar_path, sidecar)
         except Exception as e2:
             logging.error("Also failed to persist error stub for %s: %s",
-                         pdf_path.name, e2)
+                          pdf_path.name, e2)
         return "error"
 
     sidecar["enrichment"] = enrichment
