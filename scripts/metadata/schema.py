@@ -13,7 +13,7 @@ all consumers (agents, sync scripts, indexes) read DocMetadata instances.
 from __future__ import annotations
 from datetime import date
 from enum import Enum
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field, ConfigDict
 
 
@@ -118,3 +118,7 @@ class DocMetadata(BaseModel):
     filer_cik: Optional[str] = None
     filing_date: Optional[date] = None
     period_end_date: Optional[date] = None
+
+    # LLM-enrichment block written by enrich_sidecars.py. Free-form because the
+    # extractor evolves independently; see metadata/schemas/extraction_output.py.
+    enrichment: Optional[Dict[str, Any]] = None
