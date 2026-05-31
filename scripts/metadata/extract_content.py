@@ -30,9 +30,13 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 # Cap text sent to the model. Gemini Pro accepts 1M tokens but transcripts
-# rarely exceed 50K chars. This caps the rare outlier (multi-day conferences,
-# rambling Q&A) from blowing input cost. ~30K chars ~= ~7.5K tokens.
-MAX_TEXT_CHARS = 30_000
+# rarely exceed 100K chars. This caps the rare outlier from blowing input cost.
+#
+# Two caps: earnings calls have a fixed small speaker list (4-5 execs) named in
+# the first few pages, so 30K is plenty. Conferences and analyst-day events may
+# have many segment heads scattered throughout, so they need a larger window.
+MAX_TEXT_CHARS_EARNINGS = 30_000
+MAX_TEXT_CHARS_OTHER = 100_000
 
 # Tail char count to also include from end of doc (Q&A section often has
 # analyst names that don't appear in the prepared remarks).
@@ -102,7 +106,7 @@ def _extract_pdf_text(pdf_path: Path) -> str:
     return "\n".join(pages)
 
 
-def _truncate_with_tail(text: str, max_chars: int = MAX_TEXT_CHARS,
+def _truncate_with_tail(text: str, max_chars: int,
                        tail_chars: int = TAIL_CHARS) -> str:
     """Truncate text but keep both head and tail.
 
@@ -132,6 +136,7 @@ def extract_content_from_pdf(
     pdf_path: str | Path,
     model: str = DEFAULT_MODEL,
     api_key: Optional[str] = None,
+    doc_type: Optional[str] = None,
 ) -> dict:
     """Run LLM extraction on a PDF and return enriched metadata fields.
 
@@ -139,6 +144,9 @@ def extract_content_from_pdf(
         pdf_path: path to the PDF file
         model: Gemini model identifier (default: gemini-2.5-pro)
         api_key: explicit API key; if None, reads from GEMINI_API_KEY env var
+        doc_type: 'earnings_transcript' for tight 30K cap; anything else (or None)
+            uses the 100K cap. Conferences and analyst days need the larger window
+            to capture all segment-head speakers.
 
     Returns:
         dict with keys:
@@ -185,11 +193,12 @@ def extract_content_from_pdf(
             "extraction_status": "empty_pdf",
         }
 
-    # Truncate (keeps head + tail)
-    text_for_llm = _truncate_with_tail(full_text)
+    # Truncate (keeps head + tail). Cap depends on doc_type.
+    max_chars = MAX_TEXT_CHARS_EARNINGS if doc_type == "earnings_transcript" else MAX_TEXT_CHARS_OTHER
+    text_for_llm = _truncate_with_tail(full_text, max_chars=max_chars)
     if text_for_llm != full_text:
-        logger.info("Truncated text from %d to %d chars before LLM call",
-                    len(full_text), len(text_for_llm))
+        logger.info("Truncated text from %d to %d chars before LLM call (cap=%d, doc_type=%s)",
+                    len(full_text), len(text_for_llm), max_chars, doc_type)
 
     # Build the API call
     try:
