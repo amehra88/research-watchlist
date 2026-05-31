@@ -1,3 +1,23 @@
+---
+doc_type: "conference_transcript"
+primary_ticker: "GOOGL"
+subject_tickers:
+  - "GOOGL"
+event_date: "2026-03-03"
+year: 2026
+conference_name: "Morgan Stanley Tmt"
+ingestion_date: "2026-05-27"
+source_origin: "gmail_poller"
+source_file_path: "/root/research/raw-transcripts/processed/GOOGL-2026-03-03-conf-morgan-stanley-tmt.pdf"
+transcript_provider: "FactSet CallStreet, LLC"
+sponsor_firm: "Morgan Stanley"
+word_count: 7778
+speakers:
+  - name: "Anat Ashkenazi"
+    role: "Chief Financial Officer & Senior Vice President"
+    company: "Alphabet, Inc."
+---
+
 # GOOGL — Morgan Stanley Technology, Media & Telecom Conference read
 
 _Prepared by earnings-reviewer-from-pdf (offline PDF processing), 2026-05-21. Tier: T1 (BCTK). Source: uploaded conference transcript (FactSet CallStreet PDF, 03-Mar-2026, 17 pages). Speaker: Anat Ashkenazi, CFO & SVP, Alphabet. Format: ~30-minute fireside chat at Morgan Stanley TMT Conference. Position in our record: sits between the 4Q25 print (2026-02-04) and the 1Q26 print (2026-04-29) — i.e., this is the first major external CFO appearance after the $175–185B FY26 capex guide was introduced._

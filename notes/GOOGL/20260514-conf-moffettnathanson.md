@@ -1,3 +1,22 @@
+---
+doc_type: "conference_transcript"
+primary_ticker: "GOOGL"
+subject_tickers:
+  - "GOOGL"
+event_date: "2026-05-14"
+year: 2026
+conference_name: "Moffettnathanson"
+ingestion_date: "2026-05-27"
+source_origin: "gmail_poller"
+source_file_path: "/root/research/raw-transcripts/processed/GOOGL-2026-05-14-conf-moffettnathanson.pdf"
+transcript_provider: "FactSet CallStreet, LLC"
+sponsor_firm: "MoffettNathanson"
+word_count: 8395
+speakers:
+  - name: "Neal Mohan"
+    role: "Chief Executive Officer-YouTube, Alphabet, Inc."
+---
+
 # GOOGL — MoffettNathanson Media Internet and Communications Conference read
 
 _Prepared by earnings-reviewer-from-pdf (offline PDF processing), 2026-05-21. Tier: T1 (BCTK). Source: uploaded conference transcript (FactSet CallStreet PDF, 14-May-2026, 15 pages). Speaker: Neal Mohan, CEO of YouTube (Alphabet). Format: ~40-minute fireside chat with Michael Nathanson (third Mohan appearance in four years). Position in our record: occurs 15 days after the 1Q26 print (2026-04-29) and one day after YouTube's annual Brandcast Upfront (2026-05-13). This is the first YouTube-specific event in our notes record — all prior GOOGL notes covered consolidated earnings or CFO-level conferences._
