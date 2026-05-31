@@ -5,7 +5,7 @@ against the PDF text. They layer on top of the structural fields already
 populated by `extract_from_filename` (ticker, date, doc_type, etc.).
 
 All fields are Optional so the model can return null when something can't
-be determined from the document — preferred over hallucination.
+be determined from the document -- preferred over hallucination.
 """
 from typing import Optional, List
 from pydantic import BaseModel, Field
@@ -23,7 +23,10 @@ class ExtractionOutput(BaseModel):
 
     speakers: Optional[List[Speaker]] = Field(
         None,
-        description="All identified participants. Include company executives AND analyst questioners."
+        description=(
+            "Company management/executives only (CEO, CFO, segment heads, IR head). "
+            "Do NOT include sell-side analysts or 'Unverified Participant' entries."
+        )
     )
     transcript_provider: Optional[str] = Field(
         None,
@@ -38,13 +41,6 @@ class ExtractionOutput(BaseModel):
         description=(
             "For conference transcripts only: the sell-side firm hosting the conference "
             "(e.g., 'Morgan Stanley', 'Goldman Sachs'). Null for earnings calls."
-        )
-    )
-    moderator: Optional[str] = Field(
-        None,
-        description=(
-            "For conference transcripts only: the analyst/moderator running the session. "
-            "Null for earnings calls."
         )
     )
 
