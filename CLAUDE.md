@@ -66,6 +66,17 @@ Three analytical dimensions tracked per ticker: competitive position, product ca
 - `state/` — cron state files (last-poll timestamps, dedup ledgers)
 - `logs/` — cron output and operational logs (contents gitignored, directory tracked via .gitkeep)
 
+### Private-name identifiers (`.pvt`)
+
+Private companies that drive public theses (OpenAI, Anthropic, xAI, …) are not tickers but are addressable like them via a `.pvt` pseudo-identifier.
+
+- **Form:** `<lowercased-name>.pvt` — e.g. `openai.pvt`, `anthropic.pvt`. Lowercase, dot-suffixed (deliberately distinct from `[A-Z]+` tickers).
+- **Registry = sole authority:** the `private_drivers:` block in `config/watchlist.yaml`. Each entry carries `pvt_id` (canonical key), `name` (display label), and `aliases` (every other spelling seen in config). Build a `name → pvt_id` resolver from this block alone. A `.pvt` id MUST resolve to a registry entry; unregistered private mentions (e.g. Cerebras, Grafana) stay as bare names until promoted.
+- **Notes:** `notes/<pvt_id>/` parallels `notes/{TICKER}/`. A standing identity doc lives at `notes/<pvt_id>/_profile.md` (underscore sorts ahead of dated notes); other content is `{YYYYMMDD}-conf-{shortname}.md`, blog/news synthesis, etc. — never earnings (no public filings). Dirs are created lazily on first note, same as tickers.
+- **Document index:** `config/document-index.jsonl` `primary_ticker`/`subject_tickers` are format-agnostic and accept `.pvt` ids. Valid private `doc_type` values: `blog_post`, `news`, `conference_transcript`, `profile`. Auto-extraction is ticker-only today (`scripts/metadata/extract_filename.py` matches `[A-Z]+`), so `.pvt` docs are indexed manually.
+- **Supply chain:** registered-private targets in `config/supply-chain-manual.yaml` use `.pvt` ids. The auto-generated `config/supply-chain.yaml` is **not** hand-edited — its FactSet entity-name variants (e.g. "OpenAI Foundation", "Anthropic PBC") resolve to a `pvt_id` via the registry `aliases`.
+- **Boundary (by design):** `.pvt` ids never enter the earnings-transcript pipeline. The `[A-Z]+` regexes in `scripts/cron_earnings_reviewer.py` and `scripts/metadata/extract_filename.py` are the deliberate ticker-only gate and stay as-is.
+
 ### Sync architecture
 
 **The droplet at `/root/research-watchlist` is canonical.** GitHub (`amehra88/research-watchlist`, private) is the sync hub. Mac and iPad are read-only clones.
