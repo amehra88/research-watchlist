@@ -1,0 +1,1 @@
+../../plugins/agent-plugins/ticker-synthesis/agents/ticker-synthesis.md
