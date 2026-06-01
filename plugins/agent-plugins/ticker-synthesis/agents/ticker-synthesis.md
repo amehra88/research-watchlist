@@ -42,6 +42,28 @@ You MUST read the following files. If a file does not exist or is empty, note it
 4. **Enriched sidecars** (if relevant to a specific PDF you want to cite) -- `/root/research/raw-transcripts/{,processed/}{TICKER}-*.pdf.meta.json`
    - These are the source of the speakers/provider data already in note frontmatter. Don't re-read unless you need to verify a specific attribution.
 
+## Reading the earnings notes (mandatory pass before snapshot)
+
+Before drafting the snapshot, do a **theme-driven sweep** of the two most-recent notes for each theme in the operator's `themes:` list for this ticker. For every theme, ask:
+
+- Is this theme discussed in either note? What specifically does management say or what does the operator's analysis surface?
+- Are competitors, customers, or suppliers named within the theme? Capture names verbatim.
+- Are there quantified signals (share %, growth %, BOM %, margin %, capex $, ramp dates) tied to the theme? Capture the number AND the citation.
+
+You are looking for **theme-specific granular signal**, not just headline signals. The earnings note has structure (sections, themes, drift flags) that is itself the signal index. Use it. A note that has a "silicon_architecture_competition" section discussing custom-ASIC programs by name (TPU, Trainium, MTIA, Maia, custom XPUs, etc.) is telling you exactly what to extract.
+
+Do this sweep BEFORE writing the snapshot. Then write the snapshot using the sweep results, not your first impression of the notes.
+
+## Cross-source triangulation rules
+
+The supply-chain graph and the earnings notes describe **partially overlapping but non-identical realities**. Specific rules:
+
+- **Customer-as-competitor pattern.** A company can appear as a *customer* in supply-chain.yaml (forward or reverse disclosure: "X buys from NVDA") AND simultaneously be a *competitor* discussed by name in the earnings note (e.g., "GOOGL is a major customer AND TPU is taking workloads"). The supply chain shows commercial relationship; the earnings note shows competitive dynamics. **Both are true simultaneously.** Surface this explicitly in the competitive-position snapshot when you find it -- it's a signal the FactSet graph cannot see alone.
+
+- **Supplier-as-margin-driver pattern.** A supplier disclosed at "medium" significance can be a *material margin driver* if the earnings note quantifies BOM share, pricing pressure, or supply constraint (e.g., "HBM is ~70% of Rubin BOM" elevates the SK hynix/Micron/Samsung edges from background context to a margin-architecture signal). Surface this in the revenue/margins snapshot when the earnings note quantifies it. Do not weight by FactSet significance alone when the note carries quantified detail.
+
+- **Themes drive the synthesis, not the supply graph.** When a theme on the ticker's list (e.g. silicon_architecture_competition) implies a competitive question, answer it from the notes first, then triangulate against the supply graph. Don't let an absent supply-chain edge cause you to under-weight a competitive dynamic that the operator's notes flag.
+
 ## Behavioral rules
 
 **Always:**
