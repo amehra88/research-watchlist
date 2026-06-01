@@ -170,12 +170,13 @@ def call_gemini(url: str, ticker: str, conference_name: str, event_date: str, in
     from google import genai
     from google.genai import types
 
-    prompt = EXTRACTION_PROMPT.format(
-        ticker=ticker,
-        conference_name=conference_name,
-        event_date=event_date,
-        ingestion_date=ingestion_date,
-        source_url=source_url,
+    prompt = (
+        EXTRACTION_PROMPT
+        .replace("{ticker}", ticker)
+        .replace("{conference_name}", conference_name)
+        .replace("{event_date}", event_date)
+        .replace("{ingestion_date}", ingestion_date)
+        .replace("{source_url}", source_url)
     )
 
     logging.info("Calling Gemini 2.5 Pro on %s ...", url)
@@ -189,6 +190,9 @@ def call_gemini(url: str, ticker: str, conference_name: str, event_date: str, in
                 types.Part(text=prompt),
                 types.Part(file_data=types.FileData(file_uri=url, mime_type="video/*")),
             ]
+        ),
+        config=types.GenerateContentConfig(
+            media_resolution=types.MediaResolution.MEDIA_RESOLUTION_LOW,
         ),
     )
     text = (response.text or "").strip()
@@ -241,7 +245,7 @@ def main(argv: list[str] | None = None) -> int:
             source_url=args.url,
         )
     except Exception as e:
-        logging.error("Gemini call failed: %s: %s", type(e).__name__, e)
+        logging.error("ingest failed: %s: %s", type(e).__name__, e)
         return 4
 
     # Build frontmatter + body
