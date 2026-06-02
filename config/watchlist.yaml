@@ -424,9 +424,6 @@ tier_1_bctk:
   - ticker: HNGE
     themes: [ai_native_vertical, vertical_ai_applications]
     added_date: 2026-05-09
-  - ticker: HTFL
-    themes: [ai_native_vertical, vertical_ai_applications]
-    added_date: 2026-05-09
   - ticker: INDI
     themes: [autonomous_vehicle_competition, humanoid_robotics_competition, semiconductor_cycle, automotive_semiconductor_demand, china_us_tensions]
     added_date: 2026-05-09
@@ -435,9 +432,6 @@ tier_1_bctk:
     added_date: 2026-05-09
   - ticker: LITE
     themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, hyperscaler_revenue_concentration]
-    added_date: 2026-05-09
-  - ticker: LOAR
-    themes: [aerospace_defense_aftermarket]
     added_date: 2026-05-09
   - ticker: LRCX
     themes: [foundry_capacity, semiconductor_cycle, hbm_competitive_landscape, china_export_controls, lithography_roadmap, nand_demand_cycle]
@@ -474,9 +468,6 @@ tier_1_bctk:
     added_date: 2026-05-09
   - ticker: RBRK
     themes: [cybersecurity_competitive_landscape, enterprise_ai_adoption, ai_infrastructure_software, ai_agent_monetization]
-    added_date: 2026-05-09
-  - ticker: SEI
-    themes: [data_center_deployment_constraints, ai_infrastructure_capex]
     added_date: 2026-05-09
   - ticker: SHOP
     themes: [ai_re_architected_incumbent, ai_agent_monetization, search_disruption, enterprise_ai_adoption, agentic_commerce]
@@ -644,11 +635,17 @@ tier_3_watchlist:
   - ticker: HPQ
     themes: [pc_demand]
     added_date: 2026-05-11
+  - ticker: HTFL
+    themes: [ai_native_vertical, vertical_ai_applications]
+    added_date: 2026-05-09
   - ticker: IBM
     themes: [enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization, ai_infrastructure_software]
     added_date: 2026-05-11
   - ticker: KLAC
     themes: [foundry_capacity, semiconductor_cycle, china_export_controls, lithography_roadmap, nand_demand_cycle]
+    added_date: 2026-05-09
+  - ticker: LOAR
+    themes: [aerospace_defense_aftermarket]
     added_date: 2026-05-09
   - ticker: LSCC
     themes: [semiconductor_cycle, automotive_semiconductor_demand, chip_design_competition]
@@ -713,6 +710,9 @@ tier_3_watchlist:
   - ticker: SE
     themes: [agentic_commerce, ai_generated_content, platform_take_rate, local_commerce_delivery]
     added_date: 2026-05-11
+  - ticker: SEI
+    themes: [data_center_deployment_constraints, ai_infrastructure_capex]
+    added_date: 2026-05-09
   - ticker: SITM
     themes: [ai_infrastructure_capex, networking_competitive_landscape, automotive_semiconductor_demand, semiconductor_cycle]
     added_date: 2026-05-11
