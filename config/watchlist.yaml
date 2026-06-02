@@ -329,6 +329,19 @@ tier_1_bctk:
   - ticker: 000660.KS
     themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, model_efficiency_evolution, china_export_controls, nand_demand_cycle]
     added_date: 2026-05-11
+    ai_positioning:
+      score: "5"
+      notes: "SK Hynix — HBM market leader and NVDA's primary HBM3E supplier; the clearest AI-memory winner. HBM is the critical AI-compute memory bottleneck, and SK Hynix leads the race (ahead of Micron/Samsung)."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "5"
+      notes: "Innovation 4: HBM3E/HBM4 leadership (first-to-market on HBM generations), though base DRAM is partly commodity; 4+. Distribution 4: leading HBM share locked in with NVDA plus a broad memory customer base; 4+. Overall 5: HBM leadership sits at the center of AI compute — a leader premium over MU (4)."
+    potential_investor_interest:
+      score: "4"
+      notes: "4+ trajectory (operator-locked): HBM hot, sharp positive earnings revisions, pricing power, memory up-cycle. Held at 4+ rather than 5 by Korea-listing access friction for some US investors and DRAM cyclicality. Factors: hot sector, earnings revisions, pricing power; cyclicality/access cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02. Sources: public data, operator input (bought into BCTK 2026-06-01; investor_interest locked at 4+). No notes/000660.KS/ corpus yet. Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: AMD
     themes: [silicon_architecture_competition, ai_infrastructure_capex, hyperscaler_revenue_concentration, model_efficiency_evolution, inference_compute_economics]
     added_date: 2026-05-09
@@ -408,6 +421,19 @@ tier_1_bctk:
   - ticker: AXON
     themes: [surveillance_security_tech, ai_native_vertical, vertical_ai_applications, enterprise_ai_adoption]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "Axon — AI for public safety (Draft One report-writing AI, body-cam AI analytics, real-time operations); strong AI-vertical monetization in law enforcement."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: fast AI product cadence (Draft One, AI Era plan); 4+. Distribution 4: entrenched in US law-enforcement via the TASER + Evidence.com ecosystem lock-in, expanding to enterprise/federal/international; 4+. Overall 4: dominant public-safety platform with an AI monetization layer (4+ trajectory)."
+    potential_investor_interest:
+      score: "5"
+      notes: "Premium compounder with exceptional execution, hot AI-vertical narrative, strong growth + Rule-of-40. Valuation is rich but momentum and quality are strong. Factors: hot sector, growth rate, management/execution quality, index inclusion."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/AXON/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: BE
     themes: [data_center_deployment_constraints, ai_infrastructure_capex]
     added_date: 2026-05-09
@@ -504,15 +530,67 @@ tier_1_bctk:
   - ticker: FPS
     themes: [data_center_deployment_constraints, ai_infrastructure_capex]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "3"
+      notes: "FPS — large power-transformer and electrical-equipment supplier into datacenters (per operator); a datacenter-power-buildout beneficiary, not AI. Transformer supply is a known datacenter bottleneck. Recent IPO."
+    competitive_advantage:
+      innovation_rate: "3"
+      distribution: "3"
+      overall: "3"
+      notes: "Innovation 3: heavy electrical equipment (transformers/switchgear), capacity/execution-driven not fast-innovation. Distribution 3: supplier into datacenters and ramping, but a new public company so distribution/track-record is still proving; 3+ on transformer-shortage demand pull. Overall 3: well-positioned in a supply-constrained niche, with small/new-public scale risk; 3+ trajectory."
+    potential_investor_interest:
+      score: "4"
+      notes: "4+ trajectory: recent IPO into the hot datacenter-power / transformer-shortage theme. Lock-up overhang and a limited public track record are watch-items. Factors: hot sector, recent IPO, growth; lock-up/track-record watch."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02. Sources: public data, operator input (FPS = large power-transformer/equipment supplier into datacenters per operator; recent IPO). No notes/FPS/ corpus yet. Refine after first earnings cycle as public co. (source: ticker-synthesis session 2026-06-02)"
   - ticker: FRVO
-    themes: []      # TODO: assign themes via WATCHLIST email
+    themes: [data_center_deployment_constraints, ai_infrastructure_capex]
     added_date: 2026-05-14
+    ai_positioning:
+      score: "4"
+      notes: "4 (operator-set, above analyst-draft 3): FRVO — energy/power company in the AI space and a Google partner (per operator), recent IPO. Operator weights it as a squarely AI-positioned datacenter-power/AI-energy name; the Google partnership is a validation signal."
+    competitive_advantage:
+      innovation_rate: "3"
+      distribution: "3"
+      overall: "3"
+      notes: "Innovation 3: energy/power technology. Distribution 3: new public company, early-stage — the Google partnership is a strong anchor customer but the base is narrow. Overall 3: Google-validated AI-energy play with early-stage scale."
+    potential_investor_interest:
+      score: "3"
+      notes: "3+ trajectory: recent IPO into the AI-power theme with a Google-partner halo, but early and unproven as a public company. Lock-up overhang and limited track record temper it. Factors: recent IPO, hot sector adjacency; lock-up/track-record cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02. Sources: operator input (FRVO = Google partner in AI energy/power, recent IPO per operator; ai_positioning 4 operator-set), public data. Specific company identity pending operator confirmation. No notes/FRVO/ corpus yet. Refine after first earnings cycle as public co. (source: ticker-synthesis session 2026-06-02)"
   - ticker: GDS
     themes: [ai_infrastructure_capex, sovereign_ai_deployments, china_ai_infrastructure_demand, china_us_tensions]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "GDS Holdings — China data-center operator (plus international/SE-Asia expansion via DayOne); direct AI-datacenter capacity buildout. AI-infra capacity beneficiary."
+    competitive_advantage:
+      innovation_rate: "3"
+      distribution: "4"
+      overall: "3"
+      notes: "Innovation 3: datacenter operator, execution not tech innovation. Distribution 4: leading China DC footprint plus international expansion with hyperscaler/sovereign customers, but China-customer concentration. Overall 3: real AI-DC capacity play, but China-market and leverage risks weigh; 3+ on international expansion."
+    potential_investor_interest:
+      score: "3"
+      notes: "3+ trajectory: China-DC recovery plus international (DayOne) optionality, but high leverage and China/geopolitical risk cap appeal. Factors: growth recovery, leverage; geopolitical/China cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/GDS/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: GEV
     themes: [data_center_deployment_constraints, ai_infrastructure_capex, enterprise_ai_adoption, nuclear_energy_buildout]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "3"
+      notes: "GE Vernova — power/grid/electrification (gas turbines, grid equipment, nuclear/SMR ambitions); a datacenter-power demand-driver beneficiary, not an AI company. 3+ on the AI-driven power-demand surge."
+    competitive_advantage:
+      innovation_rate: "3"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 3: established power-equipment plus emerging SMR/grid modernization; 3+ on electrification. Distribution 4: large installed base and grid/utility relationships, global reach. Overall 4: indispensable power-infrastructure supplier into the AI/datacenter electrification theme; distribution-driven."
+    potential_investor_interest:
+      score: "5"
+      notes: "One of the hottest power/electrification narratives, sharp positive earnings revisions, datacenter-power demand tailwind, FCF inflection. Factors: hot sector, earnings revisions, FCF, momentum."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/GEV/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: GOOGL
     themes: [hyperscaler_capex_buildout, ad_market_strength, search_disruption, ai_agent_monetization, silicon_architecture_competition, autonomous_vehicle_competition, agentic_commerce]
     added_date: 2026-05-09
@@ -528,6 +606,19 @@ tier_1_bctk:
   - ticker: GWRE
     themes: [ai_re_architected_incumbent, enterprise_ai_adoption, vertical_ai_applications]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "3"
+      notes: "Guidewire — P&C insurance core-systems SaaS (cloud migration) with emerging GenAI features. Vertical SaaS; AI-as-feature, not AI-core."
+    competitive_advantage:
+      innovation_rate: "3"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 3: steady cloud-platform innovation with GenAI add-ons; 3+ on cloud-transition momentum. Distribution 4: entrenched in the P&C insurance vertical with high switching costs and a deep installed base. Overall 4: dominant insurance-vertical SaaS with a strong moat; AI is incremental, not the thesis."
+    potential_investor_interest:
+      score: "3"
+      notes: "3+ trajectory: cloud-transition margin-inflection story, steady rather than AI-hot; premium valuation. Factors: growth (cloud transition), ROIC/margin inflection; not-AI-hot."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/GWRE/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: HNGE
     themes: [ai_native_vertical, vertical_ai_applications]
     added_date: 2026-05-09
@@ -550,6 +641,19 @@ tier_1_bctk:
   - ticker: IOT
     themes: [ai_native_vertical, vertical_ai_applications, enterprise_ai_adoption, data_center_deployment_constraints]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "3"
+      notes: "Samsara — connected operations / IoT (fleet, equipment) applying AI to industrial telematics (AI dash cams, safety analytics). AI-on-physical-operations, not core AI; 3+ on AI-feature monetization."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: strong product velocity in connected-ops AI, expanding from telematics into broader operations. Distribution 4: large mid-market + enterprise physical-operations base with strong net retention. Overall 4: category leader in connected operations with an AI-analytics layer."
+    potential_investor_interest:
+      score: "4"
+      notes: "High growth, hot connected-ops/AI narrative, strong retention; premium valuation caps. Factors: hot sector, growth rate; valuation cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/IOT/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: LITE
     themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, hyperscaler_revenue_concentration]
     added_date: 2026-05-09
@@ -585,6 +689,19 @@ tier_1_bctk:
   - ticker: META
     themes: [hyperscaler_capex_buildout, ad_market_strength, silicon_architecture_competition, ai_agent_monetization, search_disruption, vertical_ai_applications, model_efficiency_evolution]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "5"
+      notes: "Meta — Llama open-weight models, AI-driven ad engine (Advantage+, recommendations), massive AI-infra capex, AI assistant across 3B+ user apps. Frontier-scale AI investment plus ad-AI monetization make it a clear AI winner."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "5"
+      overall: "5"
+      notes: "Innovation 4: Llama strong but not frontier-leading (trails OpenAI/Google/Anthropic at the frontier); world-class recommendation/ad ML; 4+. Distribution 5: 3B+ daily users, unmatched consumer distribution and ad reach. Overall 5: ad-AI monetization + distribution dominance — a rare 5 on the platform side."
+    potential_investor_interest:
+      score: "4"
+      notes: "4+ trajectory: mega-cap, huge FCF, ad-revenue acceleration from AI. Capex scale ($100B+ AI buildout) and Reality Labs burn are the cautions. Factors: hot sector, FCF, earnings revisions; capex-scrutiny cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/META/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: MPWR
     themes: [ai_infrastructure_capex, automotive_semiconductor_demand, data_center_deployment_constraints, humanoid_robotics_competition, semiconductor_cycle]
     added_date: 2026-05-09
@@ -664,12 +781,51 @@ tier_1_bctk:
   - ticker: PWR
     themes: [data_center_deployment_constraints, ai_infrastructure_capex]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "3"
+      notes: "Quanta Services — electrical/grid infrastructure construction and services; a datacenter-power and grid-buildout beneficiary, not AI. Picks-and-shovels of the electrification theme."
+    competitive_advantage:
+      innovation_rate: "3"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 3: execution/scale-driven specialty contractor, limited tech innovation. Distribution 4: largest US electrical-infrastructure contractor with a scale + skilled-labor moat and deep utility/datacenter backlog. Overall 4: scale and backlog moat in grid/datacenter buildout; distribution-driven."
+    potential_investor_interest:
+      score: "4"
+      notes: "4+ trajectory: grid/datacenter-capex theme, record backlog, steady compounding, hot infrastructure narrative. Factors: hot sector, backlog/growth, earnings revisions."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/PWR/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: RBRK
     themes: [cybersecurity_competitive_landscape, enterprise_ai_adoption, ai_infrastructure_software, ai_agent_monetization]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "3"
+      notes: "Rubrik — cyber resilience / data security (backup, ransomware recovery) plus an AI data-governance/security angle (securing data for AI). 3+ on AI-data-security positioning."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "3"
+      overall: "3"
+      notes: "Innovation 4: strong data-security platform with cyber-resilience differentiation and AI-governance features. Distribution 3: scaling post-2024-IPO, land-and-expand, smaller installed base than incumbents; 3+. Overall 3: credible cyber-resilience challenger with distribution still building (3+ trajectory)."
+    potential_investor_interest:
+      score: "4"
+      notes: "Recent IPO (2024), hot cyber-resilience category, strong growth; lock-up overhang largely behind, profitability path the watch-item. Factors: hot sector, growth rate, recent IPO; profitability watch."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/RBRK/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: SHOP
     themes: [ai_re_architected_incumbent, ai_agent_monetization, search_disruption, enterprise_ai_adoption, agentic_commerce]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "Shopify — commerce AI (Sidekick assistant, Magic, agentic-commerce positioning) and merchant AI tooling; benefits as AI reshapes commerce and search."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "5"
+      overall: "4"
+      notes: "Innovation 4: fast product velocity in agentic commerce and AI merchant tools. Distribution 5: vast merchant base + ecosystem (payments, fulfillment), strong platform reach. Overall 4: commerce-platform leader with an AI tooling layer; 4+ as agentic commerce develops, held at 4 since AI is enhancement not core."
+    potential_investor_interest:
+      score: "4"
+      notes: "Growth reacceleration plus FCF/margin inflection and an agentic-commerce narrative; premium multiple. Factors: hot sector, growth rate, FCF; valuation cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/SHOP/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: SNPS
     themes: [foundry_capacity, silicon_architecture_competition, china_export_controls, ai_infrastructure_capex, lithography_roadmap, chip_design_competition]
     added_date: 2026-05-09
@@ -689,9 +845,35 @@ tier_1_bctk:
   - ticker: SPOT
     themes: [ai_re_architected_incumbent, ad_market_strength, vertical_ai_applications, ai_generated_content]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "4+ trajectory (operator-set, above analyst-draft 3): AI personalization/discovery (AI DJ, recommendations) is central to Spotify's engagement engine, not a peripheral feature — operator weights it as a core AI-driven product moat. AI-curated/generated audio extends the surface."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "5"
+      overall: "4"
+      notes: "4+ overall (operator-set). Innovation 4: strong product velocity (AI DJ, audiobooks, personalization). Distribution 5: 600M+ users, dominant audio-streaming reach. Overall 4+: audio leader where AI personalization is core to retention, not just a feature layer."
+    potential_investor_interest:
+      score: "4"
+      notes: "4+ trajectory: margin inflection, pricing power (price hikes sticking), strong FCF; valuation caps. Factors: pricing power, FCF, margin inflection; valuation cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02. Sources: public data (no notes/SPOT/ corpus yet), OPERATOR-PRIVATE SIGNAL: operator scores SPOT 4+/4+/4+ across ai_positioning, competitive_advantage, and potential_investor_interest, above the public-data analyst draft of 3/4/4 — AI personalization/discovery weighted as core to the engagement engine. Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: TSLA
     themes: [autonomous_vehicle_competition, silicon_architecture_competition, humanoid_robotics_competition, energy_storage_buildout, hyperscaler_capex_buildout, china_us_tensions]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "5"
+      notes: "5 (operator-set, above analyst-draft 4): operator views Tesla as a clear AI winner — FSD/autonomy at scale, Dojo training, Optimus humanoid, and custom inference silicon constitute winner-tier real-world AI, notwithstanding execution/timeline debate. Auto base softening but the AI/robotics optionality drives the positioning."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: FSD progress + robotics + custom silicon; 4+ on autonomy/Optimus optionality, though timelines slip. Distribution 4: strong brand and charging network, but EV demand decelerating with rising competition. Overall 4: autonomy/robotics optionality on an auto base under pressure; execution-dependent."
+    potential_investor_interest:
+      score: "5"
+      notes: "5 (operator-set, above analyst-draft 4): mega-cap, retail magnet, robotaxi/Optimus narrative drives outsized investor appeal. Extreme valuation, volatility, and key-man/political risk remain the cautions but do not cap operator's read. Factors: hot sector, retail/momentum, narrative, market-cap tier."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02. Sources: public data (no notes/TSLA/ corpus yet), OPERATOR-PRIVATE SIGNAL: operator scores TSLA 5/4/5 (ai_positioning 5, competitive_advantage 4, potential_investor_interest 5), above the public-data analyst draft of 4/4/4 — Tesla weighted as a clear real-world-AI/autonomy winner with outsized investor appeal. Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: TSM
     themes: [foundry_capacity, semiconductor_cycle, china_us_tensions, ai_infrastructure_capex, lithography_roadmap]
     added_date: 2026-05-09
@@ -711,9 +893,35 @@ tier_1_bctk:
   - ticker: WELL
     themes: [vertical_ai_applications, demographic_demand_tailwinds]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "3"
+      notes: "Welltower — senior-housing/healthcare REIT, but an AI-beneficiary per operator: uses AI for operations AND for market selection (which markets to buy/sell — capital allocation). Not an AI-product company, but AI-driven operating platform + data-science capital allocation is a real edge. (operator-private signal: AI for ops + market selection -> AI-beneficiary, not REIT-noise)."
+    competitive_advantage:
+      innovation_rate: "3"
+      distribution: "4"
+      overall: "3"
+      notes: "Innovation 3: data-science-driven operating platform and capital-allocation analytics — differentiated for a REIT, modest in absolute tech terms. Distribution 4: large-scale senior-housing/medical-office portfolio and operator relationships. Overall 3: the AI/data edge in market selection is a genuine differentiator in the operating model (3+), held at 3 as the business is REIT-core not AI-core."
+    potential_investor_interest:
+      score: "4"
+      notes: "REIT with a strong demographic tailwind, defensive, strong senior-housing-operating performance, index inclusion; data-driven capital allocation a differentiator. Factors: demographic growth, defensive, index inclusion, ROIC."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02. Sources: public data, OPERATOR-PRIVATE SIGNAL: WELL uses AI for operations and market-selection (buy/sell) decisions, making it an AI-beneficiary not REIT-noise (ai_positioning 3 reflects this; public-data analyst view alone might score 1). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: ZS
     themes: [cybersecurity_competitive_landscape, enterprise_ai_adoption, ai_infrastructure_software]
     added_date: 2026-05-11
+    ai_positioning:
+      score: "3"
+      notes: "Zscaler — SSE/zero-trust security (ZIA/ZPA) with AI applied to threat detection and data protection. Security-first, not AI-first; 3+ on AI-security feature expansion."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: SSE platform leadership expanding into AI/data security. Distribution 4: large enterprise zero-trust base with strong channel, but facing platform encroachment from CRWD/PANW/Microsoft. Overall 4: SSE leader; competitive intensity and billings scrutiny are the watch-items."
+    potential_investor_interest:
+      score: "3"
+      notes: "3+ trajectory: solid security-spend exposure, but platform competition and billings/growth-deceleration scrutiny make it less of a momentum name than CRWD. Factors: sector, growth (decelerating); competition cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/ZS/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
 tier_2_active_candidates:
   - ticker: 005930.KS
     themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, model_efficiency_evolution, china_export_controls, nand_demand_cycle]
