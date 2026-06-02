@@ -332,6 +332,19 @@ tier_1_bctk:
   - ticker: AMD
     themes: [silicon_architecture_competition, ai_infrastructure_capex, hyperscaler_revenue_concentration, model_efficiency_evolution, inference_compute_economics]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "Clear AI beneficiary as the #2 data-center GPU vendor (MI300X/MI325 shipping, MI350/MI400 roadmap on annual cadence). Gaining share but a distant second to NVDA — the merchant-accelerator challenger NVDA's own notes name as the canonical drift-down trigger. Trending 4+ as MI400-class ramps into 2027."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: strong annual cadence, ROCm improving, but software ecosystem still materially trails CUDA. Distribution 4: broad x86 server/client base plus hyperscaler GPU design wins, but the CUDA gap caps inference distribution vs NVDA. Overall 4: credible #2 with real share gains; software/distribution gap to NVDA holds it below 5."
+    potential_investor_interest:
+      score: "4"
+      notes: "NVDA-alternative narrative, positive earnings revisions, hot AI-silicon sector; trending 4+ if MI400 traction confirms. Capped by execution-vs-NVDA uncertainty and the software-ecosystem gap. Factors: hot sector, earnings revisions, growth rate."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/AMD/ corpus yet — flagged as the largest competitive-position coverage gap in NVDA runs 8-9). Refine once notes/AMD/ accumulates and after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: AMZN
     themes: [hyperscaler_capex_buildout, silicon_architecture_competition, ai_agent_monetization, ad_market_strength, space_economy, vertical_ai_applications, agentic_commerce, local_commerce_delivery]
     added_date: 2026-05-09
@@ -347,12 +360,51 @@ tier_1_bctk:
   - ticker: ANET
     themes: [networking_competitive_landscape, ai_infrastructure_capex, hyperscaler_revenue_concentration, ai_compute_topology]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "AI-datacenter Ethernet leader — Ultra Ethernet Consortium, 800G switching, hyperscaler AI back-end network wins. Competes directly with NVDA Spectrum-X / InfiniBand on AI fabric. Trending 4+ on the AI back-end network ramp."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: EOS software + merchant-silicon (Broadcom Tomahawk/Jericho) leadership in high-radix switching; 4+ on Ultra Ethernet momentum. Distribution 4: strong but heavily hyperscaler-concentrated (large Microsoft/Meta revenue exposure) — single-customer-cluster concentration risk. Overall 4: AI-networking leader with a software moat; concentration + NVDA Spectrum-X competition cap it at 4 (4+ trajectory)."
+    potential_investor_interest:
+      score: "4"
+      notes: "AI back-end-networking winner, premium multiple, strong margins/FCF; hyperscaler concentration and NVDA-fabric competition temper. Factors: hot sector, growth rate, FCF; concentration cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/ANET/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: ASML
     themes: [foundry_capacity, china_export_controls, semiconductor_cycle, lithography_roadmap]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "EUV lithography monopoly underpins all advanced-node AI silicon — indispensable, but one step removed from AI compute with lumpy order-timing and China-export drag. Trending 4+ as High-NA EUV ramps for sub-2nm AI nodes."
+    competitive_advantage:
+      innovation_rate: "5"
+      distribution: "5"
+      overall: "5"
+      notes: "Innovation 5: EUV/High-NA monopoly — no leading-edge competitor. Distribution 5: every leading-edge fab must buy EUV. Overall 5: monopoly economics; the only thing holding ai_positioning below 5 is the one-step-removed demand linkage, not the moat."
+    potential_investor_interest:
+      score: "4"
+      notes: "Monopoly moat and AI-capex tailwind, but China export-control revenue drag and a lumpy order book temper it; held at 4. Factors: hot sector, monopoly pricing power, ROIC; geo/cyclicality cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/ASML/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: AVGO
     themes: [ai_infrastructure_capex, silicon_architecture_competition, networking_competitive_landscape, hyperscaler_revenue_concentration, inference_compute_economics, ai_compute_topology]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "5"
+      notes: "Top-tier AI beneficiary on two legs: custom XPU/ASIC franchise (Google TPU co-design, Meta MTIA, plus the 2025 OpenAI custom-inference-silicon + networking commitment) anchoring hyperscaler captive silicon, and AI networking (Tomahawk/Jericho switching, optical DSPs). AI revenue scaling toward a dominant share of semiconductor segment."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "5"
+      overall: "5"
+      notes: "Innovation 4: elite custom-silicon + networking integrator/co-design house rather than a frontier-architecture inventor (vs NVDA 5). Distribution 5: deeply entrenched hyperscaler design wins plus VMware software lock-in and broad enterprise reach. Overall 5: indispensable custom-silicon partner + networking + software moat; distribution strength dominates the read."
+    potential_investor_interest:
+      score: "5"
+      notes: "Mega-cap, large and growing FCF, rising dividend, custom-silicon TAM narrative, positive earnings revisions. Minimal valuation caution given execution consistency. Factors: hot sector, FCF, buybacks/dividend, earnings revisions."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data. Refine as notes/AVGO/ corpus accumulates and after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: AXON
     themes: [surveillance_security_tech, ai_native_vertical, vertical_ai_applications, enterprise_ai_adoption]
     added_date: 2026-05-09
@@ -388,15 +440,67 @@ tier_1_bctk:
   - ticker: COHR
     themes: [networking_competitive_landscape, ai_infrastructure_capex, silicon_architecture_competition, ai_compute_topology, thermal_management_cooling]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "Coherent — AI-datacenter optical transceivers (800G/1.6T), datacom lasers/EML, and photonics for AI interconnect, with a thermal/cooling adjacency. Direct AI-optics beneficiary on the datacenter buildout."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: vertically integrated optics (indium-phosphide lasers -> transceivers), datacom transceiver ramp. Distribution 4: broad datacom customer base across hyperscalers amid transceiver supply tightness; some customer concentration in datacom. Overall 4: AI-optics franchise with vertical integration; turnaround/deleveraging execution is the variable."
+    potential_investor_interest:
+      score: "4"
+      notes: "4+ trajectory: AI-optics ramp plus a turnaround/deleveraging story with positive earnings revisions. Post-II-VI/Finisar balance-sheet leverage is a watch-item. Factors: hot sector, earnings revisions, deleveraging."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/COHR/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: CRWD
     themes: [enterprise_ai_adoption, ai_native_vertical, cybersecurity_competitive_landscape]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "CrowdStrike — AI-native security (Charlotte AI agentic SOC, single-agent Falcon platform); AI-driven detection plus platform consolidation. Strong AI-security positioning."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: Falcon single-agent platform + Charlotte agentic AI; 4+ on module expansion. Distribution 4: platform-consolidation land-and-expand with large-enterprise reach; 4+. Overall 4: leading AI-native security platform; the 2024 outage recovery is largely behind with modest residual."
+    potential_investor_interest:
+      score: "4"
+      notes: "Security leader, post-outage recovery, premium multiple, strong NRR/FCF; valuation caps. Factors: hot sector, FCF, growth rate; valuation cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/CRWD/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: DDOG
     themes: [enterprise_ai_adoption, ai_native_vertical, observability_competitive_landscape, ai_infrastructure_software]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "Datadog — observability for AI workloads (LLM Observability, Bits AI agentic features) plus an AI-native customer base whose consumption drives usage. Direct beneficiary of AI-app proliferation."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: fast platform expansion (LLM observability, AI agents) across a broad module suite. Distribution 4: land-and-expand over a broad cloud-native base, but with AI-native-startup customer concentration that adds consumption volatility. Overall 4: observability leader with an AI-consumption tailwind."
+    potential_investor_interest:
+      score: "4"
+      notes: "AI-consumption tailwind, strong growth + FCF, premium multiple; usage-model volatility and valuation temper. Factors: hot sector, growth rate, FCF; valuation/usage-volatility cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/DDOG/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: ENTG
     themes: [foundry_capacity, semiconductor_cycle, advanced_materials_ai_infra, china_export_controls, lithography_roadmap, nand_demand_cycle]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "3"
+      notes: "Entegris — advanced materials, filtration and contamination-control consumables for semis; indirect AI-capex beneficiary as advanced-node and packaging intensity rises (theme: advanced_materials_ai_infra). Trending 3+ on materials-intensity per AI node."
+    competitive_advantage:
+      innovation_rate: "3"
+      distribution: "4"
+      overall: "3"
+      notes: "Innovation 3: specialty-materials innovation tied to node transitions, steady not rapid; 3+ on advanced-packaging materials pull. Distribution 4: entrenched, sticky consumables franchise across fabs. Overall 3: solid materials franchise but indirect AI linkage and a levered balance sheet hold it at 3 (3+ trajectory)."
+    potential_investor_interest:
+      score: "3"
+      notes: "Cyclical recovery plus materials-intensity story, but post-acquisition leverage (deleveraging underway) and indirect AI exposure keep investor appeal moderate. Factors: growth recovery, leverage/deleveraging, sector cyclicality."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/ENTG/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: FPS
     themes: [data_center_deployment_constraints, ai_infrastructure_capex]
     added_date: 2026-05-09
@@ -430,27 +534,105 @@ tier_1_bctk:
   - ticker: INDI
     themes: [autonomous_vehicle_competition, humanoid_robotics_competition, semiconductor_cycle, automotive_semiconductor_demand, china_us_tensions]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "3"
+      notes: "indie Semiconductor — automotive ADAS/edge compute (radar, vision, connectivity). Edge-AI in vehicles, not core AI-compute; rides secular ADAS content growth rather than the datacenter AI build."
+    competitive_advantage:
+      innovation_rate: "3"
+      distribution: "3"
+      overall: "3"
+      notes: "Innovation 3: design-win momentum in ADAS but small and pre-scale vs auto-semi incumbents; trending 3+ on backlog conversion. Distribution 3: ramping design wins, narrow customer base, automotive-cycle dependent. Overall 3: credible ADAS content story gated by execution and scale risk."
+    potential_investor_interest:
+      score: "3"
+      notes: "Small-cap, pre-scale/approaching profitability, speculative auto-ADAS recovery; higher risk and lower current investor appeal than the AI-compute names. Factors: growth rate, market-cap tier (small), sector cyclicality."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data. Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: IOT
     themes: [ai_native_vertical, vertical_ai_applications, enterprise_ai_adoption, data_center_deployment_constraints]
     added_date: 2026-05-09
   - ticker: LITE
     themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, hyperscaler_revenue_concentration]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "Lumentum — optical transceivers and EML/laser chips for AI datacenters (key indium-phosphide laser supplier into the transceiver chain); AI datacom cycle beneficiary plus cloud/datacom recovery."
+    competitive_advantage:
+      innovation_rate: "3"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 3: strong laser/EML technology but more component than systems; 3+ on the AI datacom ramp and Cloud Light integration. Distribution 4: designed into the AI transceiver supply chain with hyperscaler datacom exposure, but carries customer-concentration risk (a few large transceiver/hyperscaler buyers). Overall 4: AI-optical-component beneficiary; concentration plus legacy-telecom-segment drag cap it."
+    potential_investor_interest:
+      score: "4"
+      notes: "AI datacom-cycle recovery and transceiver/EML demand; legacy-telecom-segment weakness and customer concentration temper. Factors: hot sector, earnings revisions/recovery; concentration + telecom-drag cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/LITE/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: LRCX
     themes: [foundry_capacity, semiconductor_cycle, hbm_competitive_landscape, china_export_controls, lithography_roadmap, nand_demand_cycle]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "Wafer-fab-equipment leader (etch/deposition) levered to AI-memory (HBM) and advanced-packaging plus leading-logic capex — a clear AI-capex beneficiary, with semicap cyclicality."
+    competitive_advantage:
+      innovation_rate: "5"
+      distribution: "5"
+      overall: "5"
+      notes: "Innovation 5: etch/dep leadership with consistent execution across nodes; gate-all-around and advanced-packaging tool wins. Distribution 5: entrenched WFE installed base with strong service annuity. Overall 5: best-in-class management quality in semicap (operator framing) — execution consistency vs AMAT/KLAC over multiple cycles compounds the technical advantage. The cap on potential_investor_interest at 4 reflects WFE cyclicality, NOT competitive-position erosion."
+    potential_investor_interest:
+      score: "4"
+      notes: "AI/HBM capex beneficiary with strong buybacks, but WFE cyclicality and China-revenue/export drag temper it. Factors: hot sector adjacency, buybacks, earnings revisions; cyclicality/China cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02. Sources: public data, OPERATOR-PRIVATE SIGNAL: best management in semicap based on multi-cycle execution quality (competitive_advantage 5/5/5 reflects this; public-data analyst view alone might score 4/4/4). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: META
     themes: [hyperscaler_capex_buildout, ad_market_strength, silicon_architecture_competition, ai_agent_monetization, search_disruption, vertical_ai_applications, model_efficiency_evolution]
     added_date: 2026-05-09
   - ticker: MPWR
     themes: [ai_infrastructure_capex, automotive_semiconductor_demand, data_center_deployment_constraints, humanoid_robotics_competition, semiconductor_cycle]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "Power-management silicon for AI servers and GPU boards — an NVDA power-delivery supplier; AI-server content growth is a real driver. Not AI-core but well-levered to AI-server unit growth and rising power density."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: strong analog/power innovation, high-performance power modules. Distribution 4: designed into major AI-server platforms plus broad analog base, but carries single-customer concentration risk (NVDA). Overall 4: high-quality power franchise riding AI-server content; concentration caps upside."
+    potential_investor_interest:
+      score: "4"
+      notes: "AI-server content-growth story, premium-quality analog franchise, strong margins. Valuation and single-customer (NVDA) concentration temper the score. Factors: hot sector adjacency, growth rate, ROIC/margins."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data. Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: MU
     themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, model_efficiency_evolution, china_export_controls, nand_demand_cycle]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "HBM is a critical AI-compute input and Micron is a competitive HBM3E supplier — US-based #3, gaining qualification share at NVDA, with surging pricing power. Commodity-DRAM cyclicality keeps it below the pure-AI names; trending 4+ on HBM mix shift."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: HBM3E/HBM4 competitive and leading-edge DRAM/NAND process, but follows SK Hynix (000660.KS) on HBM leadership. Distribution 4: broad memory customer base, HBM allocation locking in with major AI customers. Overall 4: strong cyclical-up AI-memory play; commodity exposure caps it."
+    potential_investor_interest:
+      score: "4"
+      notes: "Operator-set at 4+ trajectory: HBM hot, sharp positive earnings revisions, pricing power, memory up-cycle. Held below 5 on DRAM cyclicality and cycle-timing risk. China export-control exposure a watch-item. Factors: hot sector, earnings revisions, pricing power."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data, operator input (investor_interest set to 4+). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: NET
     themes: [enterprise_ai_adoption, ai_re_architected_incumbent, cybersecurity_competitive_landscape, ai_agent_monetization, inference_compute_economics, ai_infrastructure_software]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "Cloudflare — edge AI inference (Workers AI), developer platform, plus AI-security/bot-management; positioned as a neutral edge-inference layer for AI apps."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: rapid product velocity (Workers AI, AI Gateway, Vectorize); 4+ on developer mindshare. Distribution 4: broad self-serve + enterprise with strong developer adoption. Overall 4: strong edge/dev platform riding AI-inference-at-edge; monetization of AI features still early."
+    potential_investor_interest:
+      score: "4"
+      notes: "Hot AI-edge narrative, high growth, developer mindshare; a very high multiple is the caution. Factors: hot sector, growth rate; valuation cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/NET/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: NVDA
     themes: [ai_infrastructure_capex, silicon_architecture_competition, networking_competitive_landscape, sovereign_ai_deployments, china_export_controls, inference_compute_economics, ai_compute_topology]
     added_date: 2026-05-09
@@ -466,6 +648,19 @@ tier_1_bctk:
   - ticker: PLTR
     themes: [enterprise_ai_adoption, ai_native_vertical, vertical_ai_applications, ai_agent_monetization]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "5"
+      notes: "Palantir AIP is a leading enterprise AI-deployment/operations platform — strong government base plus rapidly accelerating US commercial. One of the clearest pure AI-software winners; ontology is the differentiator."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: AIP + ontology differentiation, bootcamp-led product motion; 4+. Distribution 4: land-and-expand scaling fast but still gov-weighted with a building commercial base; sales-motion-dependent. Overall 4: strong AI-deployment moat, 4+ trajectory as commercial scales, held below 5 on still-building distribution breadth."
+    potential_investor_interest:
+      score: "5"
+      notes: "Hottest AI-software narrative, retail magnet, S&P 500 inclusion, strong growth + Rule-of-40. Extreme valuation is the sole caution. Factors: hot sector, growth rate, index inclusion, retail/momentum; valuation watch."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/PLTR/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: PWR
     themes: [data_center_deployment_constraints, ai_infrastructure_capex]
     added_date: 2026-05-09
@@ -478,6 +673,19 @@ tier_1_bctk:
   - ticker: SNPS
     themes: [foundry_capacity, silicon_architecture_competition, china_export_controls, ai_infrastructure_capex, lithography_roadmap, chip_design_competition]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "4"
+      notes: "EDA is indispensable for AI chip design and Synopsys is half the EDA duopoly; AI-driven tools (Synopsys.ai; agentic AI / multi-physics fusion called out as the next monetization leg in 2Q26). One step removed from AI compute -> 4, trending 4+ (source: notes/SNPS/20260528-2Q26.md)."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: strong EDA + Synopsys.ai tooling and Ansys integration broadening the platform, but recent quarters show share loss to Cadence. Distribution 4: entrenched but trajectorily eroding against Cadence; the duopoly framing alone overstates current strength. Overall 4: still a top-2 EDA franchise with AI-tooling tailwind, but the competitive-position trajectory is downward not stable. (operator-private signal: Cadence outperforming on share)"
+    potential_investor_interest:
+      score: "4"
+      notes: "Steady compounder; 2Q26 beat-and-raise with FY26 guidance up across revenue/margin/EPS/FCF and early Ansys synergies. Design-IP segment bottoming and China demand are watch-items; premium valuation caps upside. Factors: earnings revisions, ROIC, growth (source: notes/SNPS/20260528-2Q26.md)."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02. Sources: notes/SNPS/20260528-2Q26.md, public data, OPERATOR-PRIVATE SIGNAL: Cadence outperforming SNPS on share (competitive_advantage 4/4/4 reflects this; public-data analyst view alone might suggest higher). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: SPOT
     themes: [ai_re_architected_incumbent, ad_market_strength, vertical_ai_applications, ai_generated_content]
     added_date: 2026-05-09
@@ -487,6 +695,19 @@ tier_1_bctk:
   - ticker: TSM
     themes: [foundry_capacity, semiconductor_cycle, china_us_tensions, ai_infrastructure_capex, lithography_roadmap]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "5"
+      notes: "Sole leading-edge foundry (N3/N2/A16) manufacturing essentially every advanced AI chip — NVDA, AMD, AVGO, Apple, and hyperscaler ASICs — plus the CoWoS advanced-packaging chokehold gating HBM integration. The most indispensable single AI enabler outside NVDA."
+    competitive_advantage:
+      innovation_rate: "5"
+      distribution: "5"
+      overall: "5"
+      notes: "Innovation 5: clear process leadership (N2/A16 roadmap) plus CoWoS/SoIC packaging. Distribution 5: every fabless AI design routes through TSMC. Overall 5: process leadership + packaging chokehold + indispensability — a rare 5/5/5 competitive read among non-NVDA names."
+    potential_investor_interest:
+      score: "4"
+      notes: "4+ trajectory: mega-cap, wafer-price pricing power, AI-demand-driven revenue acceleration. Held at 4 by Taiwan/China geopolitical risk and ADR/foreign-listing considerations — the single cap on an otherwise-5 profile. Factors: hot sector, pricing power, FCF; geopolitical cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/TSM/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: WELL
     themes: [vertical_ai_applications, demographic_demand_tailwinds]
     added_date: 2026-05-09
