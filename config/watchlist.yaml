@@ -75,6 +75,7 @@ themes:
     - networking_margin_trajectory
     - software_seat_pricing_pressure
   strategic:
+    - agent_framework_landscape
     - agentic_commerce
     - ai_agent_monetization
     - ai_generated_content
@@ -85,6 +86,7 @@ themes:
     - defense_drones
     - energy_storage_buildout
     - foundation_model_economics
+    - frontier_model_competition
     - humanoid_robotics_competition
     - inference_compute_economics
     - local_commerce_delivery
@@ -156,12 +158,6 @@ private_drivers:
     affects: [AVGO, AMZN, GOOGL]
     notes: "Hyperscaler-equivalent capex behavior. Strategic AVGO custom-XPU customer; AMZN Trainium primary deployer; GOOGL TPU competitive proxy."
     added_date: 2026-05-10
-  - name: xAI
-    pvt_id: xai.pvt
-    aliases: ["xAI"]
-    affects: [NVDA, TSLA]
-    notes: "Massive GPU cluster buildout (Colossus); TSLA cross-pollination on Grok models. NVDA-heavy customer."
-    added_date: 2026-05-10
   - name: Bytedance
     pvt_id: bytedance.pvt
     aliases: ["Bytedance", "ByteDance", "ByteDance Ltd."]
@@ -169,11 +165,11 @@ private_drivers:
     notes: "TikTok competitive dynamics affect META ad market share and engagement metrics. US regulatory trajectory is the swing variable."
     added_date: 2026-05-10
   - name: SpaceX
-    pvt_id: spacex.pvt   # transitional — retire to ticker SPCX when the IPO prices (see SPCX note below)
-    aliases: ["SpaceX", "Space Exploration Technologies Corp."]
-    affects: [GEV]
-    notes: "Starlink revenue and launch cadence reshape space economics. Indirect read-through to space-economy publics in Tier 3 if added later (RKLB, IRDM, ASTS)."
-    added_date: 2026-05-10
+    pvt_id: spacex.pvt   # transitional — retire to ticker SPCX when the IPO prices (~2026-06-11/12), promote to T1
+    aliases: ["SpaceX", "Space Exploration Technologies Corp.", "Starlink", "xAI", "Grok", "SpaceXAI"]
+    affects: [NVDA, GEV, TSLA]
+    notes: "Starlink revenue + launch cadence reshape space economics (read-through to space-economy publics RKLB/IRDM/ASTS if added). NOW ALSO encompasses xAI: SpaceX acquired xAI 2026-02-02 (share exchange, 1 xAI -> 0.1433 SpaceX); May 2026 xAI was dissolved as a separate company — Grok and X moved under SpaceX's 'SpaceXAI' division. So SpaceX is also a frontier-model player (Grok — frontier_model_competition) and a major NVDA compute consumer (Colossus cluster; planned orbital data centers); TSLA cross-pollination on Grok. IPO imminent: confidential filing 2026-04-01, public S-1 out, expected price ~2026-06-11 / list ~06-12 at ~$1.8T (raise up to $75B). ON IPO -> rename this entry in place to the real ticker and promote to T1 (pre-IPO watchlist handoff). Absorbed former xai.pvt 2026-06-03."
+    added_date: 2026-05-10   # restructured 2026-06-03 to absorb xAI (formerly xai.pvt)
   - name: Stripe
     pvt_id: stripe.pvt
     aliases: ["Stripe", "STRIPE, INC."]
@@ -186,6 +182,30 @@ private_drivers:
     affects: [SNOW, PLTR]
     notes: "Data platform competitive dynamics. Direct SNOW competitor on lakehouse positioning; PLTR Foundry overlap on enterprise data workflows."
     added_date: 2026-05-10
+  - name: Moonshot AI
+    pvt_id: moonshot.pvt
+    aliases: ["Moonshot AI", "Moonshot", "Kimi"]
+    affects: [NVDA, MSFT, GOOGL, AMZN, META]
+    notes: "Beijing frontier-model lab (Kimi open-weight LLMs), founded 2023. ~$2B raise at $20B valuation 2026-05 (Meituan-led); ARR >$200M; Kimi K2.6 a top-used model on OpenRouter. Chinese open-source displacement risk in frontier_model_competition — pressures US model-layer economics and shapes compute-demand allocation. 'Kimi' is the product brand."
+    added_date: 2026-06-03
+  - name: DeepSeek
+    pvt_id: deepseek.pvt
+    aliases: ["DeepSeek", "DeepSeek AI"]
+    affects: [NVDA, MSFT, GOOGL, AMZN, META]
+    notes: "Chinese frontier-model lab (High-Flyer-backed). V4-Pro/V4-Flash released 2026-04 under MIT license, benchmarking near GPT-5.5 / Claude Opus 4.7 at ~1/8th the price. Trained on Huawei Ascend (SMIC) — a deliberate shift away from NVDA, so both a model-layer displacement risk AND an NVDA compute-substitution signal. Key name in frontier_model_competition."
+    added_date: 2026-06-03
+  - name: Mistral AI
+    pvt_id: mistral.pvt
+    aliases: ["Mistral AI", "Mistral"]
+    affects: [ASML, NVDA, MSFT, GOOGL, AMZN, META]
+    notes: "French frontier-model lab (Paris, founded 2023); the principal European alternative to US labs. ~$14B valuation; ASML invested $1.5B for ~11% ownership (direct ASML tie). Building a Paris data center on 13,800 NVDA GB300 GPUs (200MW target by 2027). frontier_model_competition (European axis)."
+    added_date: 2026-06-03
+  - name: LangChain
+    pvt_id: langchain.pvt
+    aliases: ["LangChain", "LangChain Inc.", "LangGraph"]
+    affects: [NET, GOOGL, NBIS]
+    notes: "US agent-framework company (founded 2022, Harrison Chase). LangChain + LangGraph orchestration; ~90M monthly downloads, 35% of Fortune 500. $125M Series B at $1.25B valuation 2025-10 ($260M total). Central open-source player in agent_framework_landscape — competes with edge platforms (NET), Google (Antigravity), and neo-clouds (NBIS) for the orchestration layer above the model."
+    added_date: 2026-06-03
 
 # ---------------------------------------------------------------------------
 # External web sources to track over time. Includes company technical blogs,
