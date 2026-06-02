@@ -7,8 +7,36 @@ to clusters by headline token-overlap (FACTSET_MATCH_JACCARD).
 """
 from __future__ import annotations
 
+import re
+
 from . import HIGH_VOLUME, MEDIUM_VOLUME, FACTSET_MATCH_JACCARD, SIGNAL_SENTIMENTS
 from .cluster import normalize_tokens
+
+# generic / corporate-suffix / geographic name tokens that don't establish relevance on their own
+_NAME_STOP = {
+    "inc", "corp", "co", "ltd", "plc", "the", "com", "holdings", "holding", "technology",
+    "technologies", "platforms", "systems", "group", "software", "enterprise", "international",
+    "global", "semiconductor", "semiconductors", "motors", "energy", "networks", "advanced",
+    "micro", "devices", "taiwan", "korea", "korean", "infrastructure", "solutions", "power",
+}
+
+
+def _headline_mentions(headline: str, name: str, ticker: str) -> bool:
+    """Relevance gate (fix 3): is this headline actually about the ticker?
+
+    True if the full company name, a distinctive name token (len>=4, non-generic),
+    or the bare ticker symbol appears in the headline. Filters tangential mentions
+    (e.g. a 'Wall St ends higher' market-wrap that merely lists MSFT)."""
+    h = (headline or "").lower()
+    if name and name.lower() in h:
+        return True
+    for tok in re.split(r"[^a-z0-9]+", (name or "").lower()):
+        if len(tok) >= 4 and tok not in _NAME_STOP and re.search(rf"\b{re.escape(tok)}\b", h):
+            return True
+    t = (ticker or "").lower()
+    if t and "." not in t and re.search(rf"\b{re.escape(t)}\b", h):
+        return True
+    return False
 
 
 def _jaccard(a: set, b: set) -> float:
@@ -41,10 +69,10 @@ class Verdict:
         self.factset_article = factset_article
 
 
-def classify(cluster, factset_articles, classifier) -> Verdict:
+def classify(cluster, factset_articles, classifier, name="", ticker="") -> Verdict:
     sources = cluster.sources
     volume = cluster.volume
-    top_tier_present = any(classifier.classify(s) == "top_tier" for s in sources)
+    tt_items = [it for it in cluster.items if classifier.classify(it["source"]) == "top_tier"]
 
     fa = _match_factset(cluster, factset_articles) if factset_articles else None
     fa_sent = (fa or {}).get("sentiment")
@@ -55,8 +83,10 @@ def classify(cluster, factset_articles, classifier) -> Verdict:
     # ── HIGH (§5: any of a–d) ────────────────────────────────────────────────
     if fa is not None:
         return Verdict("HIGH", "in both FactSet + Google", fa_status, fa)            # §5a
-    if top_tier_present:
-        tt = sorted(s for s in sources if classifier.classify(s) == "top_tier")
+    # §5d top-tier-single override, gated on the top-tier item actually being about
+    # this ticker (fix 3) — a tangential market-wrap mention no longer qualifies.
+    if tt_items and any(_headline_mentions(it["title"], name, ticker) for it in tt_items):
+        tt = sorted({classifier.canonical(it["source"]) for it in tt_items})
         return Verdict("HIGH", f"top-tier source ({', '.join(tt)})", fa_status, None)  # §5d
     if volume >= HIGH_VOLUME:
         return Verdict("HIGH", f"story_volume {volume}", fa_status, None)             # §5b

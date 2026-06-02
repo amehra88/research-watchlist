@@ -69,7 +69,8 @@ class Cluster:
 
     @property
     def sources(self) -> set[str]:
-        return {it["source"] for it in self.items if it["source"]}
+        # canonicalize so regional editions (Investing.com UK/Canada/...) count once (fix 1)
+        return {self._classifier.canonical(it["source"]) for it in self.items if it["source"]}
 
     @property
     def volume(self) -> int:

@@ -60,7 +60,7 @@ def process_ticker(ident, window, now, classifier, use_factset):
         matched = set()
         verdicts = []
         for c in clusters:
-            v = nfilter.classify(c, fa_articles, classifier)
+            v = nfilter.classify(c, fa_articles, classifier, ident.name, ident.ticker)
             if v.factset_article:
                 matched.add((v.factset_article.get("headline") or "").lower())
             if v.level in ("HIGH", "MEDIUM"):

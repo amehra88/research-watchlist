@@ -122,3 +122,10 @@ aliases:
   "Yahoo! Finance": "Yahoo Finance"
   "PRNewswire": "PR Newswire"
   "Businesswire": "Business Wire"
+
+# Multi-edition publishers (fix 1): any "<base> <region>" source string collapses to "<base>"
+# so regional syndication counts as ONE outlet for story_volume. Generic prefix-match — robust
+# to unseen regions (Investing.com UK/Canada/India/Nigeria/..., Yahoo Finance UK/Canada/...).
+edition_bases:
+  - "Investing.com"
+  - "Yahoo Finance"
