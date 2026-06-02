@@ -635,17 +635,11 @@ tier_3_watchlist:
   - ticker: HPQ
     themes: [pc_demand]
     added_date: 2026-05-11
-  - ticker: HTFL
-    themes: [ai_native_vertical, vertical_ai_applications]
-    added_date: 2026-05-09
   - ticker: IBM
     themes: [enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization, ai_infrastructure_software]
     added_date: 2026-05-11
   - ticker: KLAC
     themes: [foundry_capacity, semiconductor_cycle, china_export_controls, lithography_roadmap, nand_demand_cycle]
-    added_date: 2026-05-09
-  - ticker: LOAR
-    themes: [aerospace_defense_aftermarket]
     added_date: 2026-05-09
   - ticker: LSCC
     themes: [semiconductor_cycle, automotive_semiconductor_demand, chip_design_competition]
@@ -710,9 +704,6 @@ tier_3_watchlist:
   - ticker: SE
     themes: [agentic_commerce, ai_generated_content, platform_take_rate, local_commerce_delivery]
     added_date: 2026-05-11
-  - ticker: SEI
-    themes: [data_center_deployment_constraints, ai_infrastructure_capex]
-    added_date: 2026-05-09
   - ticker: SITM
     themes: [ai_infrastructure_capex, networking_competitive_landscape, automotive_semiconductor_demand, semiconductor_cycle]
     added_date: 2026-05-11
