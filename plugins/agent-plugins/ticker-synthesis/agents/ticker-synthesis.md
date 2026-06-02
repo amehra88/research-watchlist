@@ -32,7 +32,7 @@ You MUST read the following files. If a file does not exist or is empty, note it
 2. **Supply chain edges** -- `/root/research/config/supply-chain.yaml` (FactSet-extracted) and `/root/research/config/supply-chain-manual.yaml` (operator-authored)
    - Find all edges where `source: {TICKER}` (forward disclosures: who TICKER sees as customers/suppliers/partners/competitors) AND `target: {TICKER}` (reverse disclosures: who sees TICKER, often more revealing).
    - For each edge, capture: target/source name, significance (Mutual > Direct > Reverse), and any disclosure_type or relationship_type fields present.
-   - Reverse disclosures from private companies (Cerebras, OpenAI) are particularly high-signal for competitive position.
+   - Reverse disclosures from private companies (OpenAI, xAI, Anthropic) are particularly high-signal for competitive position.
 
 3. **Earnings and conference notes** -- `/root/research-watchlist/notes/{TICKER}/*.md`
    - List all notes. For each note, compute its **freshness rank** = MAX(event_date, ingestion_date) where ingestion_date comes from the YAML frontmatter (post-commit-28b6d5d notes have this) and event_date is parsed from the filename (YYYYMMDD prefix). Read the **two notes with highest freshness rank** in full. This ensures that recently-ingested analyst-day transcripts (e.g., a Cloud Next keynote dated 2026-04-22 but ingested 2026-06-01) are read even if their event_date is older than other notes. List all other notes by filename only.
@@ -44,7 +44,7 @@ You MUST read the following files. If a file does not exist or is empty, note it
    - These are the source of the speakers/provider data already in note frontmatter. Don't re-read unless you need to verify a specific attribution.
 
 5. **Private-company standing profiles** -- `/root/research-watchlist/notes/{PVT_ID}/_profile.md`
-   - When supply-chain-manual.yaml lists a `.pvt` target (e.g., `openai.pvt`, `anthropic.pvt`, `xai.pvt`, `cerebras.pvt`), check whether a corresponding standing profile exists at `notes/{PVT_ID}/_profile.md` and read it if so.
+   - When supply-chain-manual.yaml lists a `.pvt` target (e.g., `openai.pvt`, `anthropic.pvt`, `xai.pvt`), check whether a corresponding standing profile exists at `notes/{PVT_ID}/_profile.md` and read it if so.
    - These are operator-authored standing analyses of private competitors/customers/suppliers that carry context the supply-chain edge alone cannot convey (strategic significance, multi-year relationship history, named-person dynamics).
    - Cite as `(source: notes/{PVT_ID}/_profile.md)`.
 

@@ -366,8 +366,22 @@ tier_1_bctk:
       score: "5"
       notes: "Hot sector adjacency to data center power. Strong narrative momentum. Trajectory improving on investor interest factors."
   - ticker: CBRS
-    themes: []      # TODO: assign themes via WATCHLIST email
+    themes: [silicon_architecture_competition, ai_infrastructure_capex, inference_compute_economics, ai_compute_topology]
     added_date: 2026-05-15
+    added_reason: "Cerebras IPO 2026-05-14; pure-play merchant AI silicon, named alternative to NVDA at scale via OpenAI 750MW commitment. Silicon-displacement thesis cross-source convergence with GOOGL TPU + AMZN Trainium + MRVL custom XPU."
+    ai_positioning:
+      score: "5"
+      notes: "Pure-play AI silicon. Wafer-scale engine (WSE) architecture is differentiated from monolithic-die GPU approach. FY25 $510M revenue +76% YoY, $238M net income (47% margin). OpenAI 750MW compute commitment is largest public AI-silicon contract outside hyperscaler captive. (source: S-1 April 2026, IPO press 2026-05-13)"
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "3"
+      overall: "4"
+      notes: "Wafer-scale architecture is genuine technical differentiation (largest chip ever built, eliminates inter-chip latency for AI workloads). Distribution still nascent: ~3 named at-scale customers public (OpenAI 750MW, AWS, ME sovereign deployments via G42). Innovation 4: WSE generation cadence solid but newer than NVDA/AMD; distribution 3: limited customer count, no established multi-cloud presence yet, customer concentration risk via OpenAI."
+    potential_investor_interest:
+      score: "4"
+      notes: "Recent IPO (2026-05-14, $185/share, $5.55B raised, $56B valuation). Profitable on 47% net-margin basis at $510M revenue — unusual for AI-hardware IPO at this scale. Lock-up periods active through approx Nov 2026. Watch: OpenAI customer concentration; G42 / Middle East / CFIUS history; pace of cloud-provider partnerships beyond AWS; first earnings print as public co."
+    scoring_date: 2026-06-01
+    scoring_notes: "Initial post-IPO scoring. Sourced from public S-1, IPO press, post-IPO trading data. Update after first earnings print as public co. (source: ticker-synthesis session 2026-06-01 with operator input)"
   - ticker: COHR
     themes: [networking_competitive_landscape, ai_infrastructure_capex, silicon_architecture_competition, ai_compute_topology, thermal_management_cooling]
     added_date: 2026-05-09
