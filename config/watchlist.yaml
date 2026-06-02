@@ -852,7 +852,7 @@ tier_1_bctk:
       innovation_rate: "4"
       distribution: "4"
       overall: "4"
-      notes: "Innovation 4: strong EDA + Synopsys.ai tooling and Ansys integration broadening the platform, but recent quarters show share loss to Cadence. Distribution 4: entrenched but trajectorily eroding against Cadence; the duopoly framing alone overstates current strength. Overall 4: still a top-2 EDA franchise with AI-tooling tailwind, but the competitive-position trajectory is downward not stable. (operator-private signal: Cadence outperforming on share)"
+      notes: "Innovation 4: strong EDA + Synopsys.ai tooling and Ansys integration broadening the platform, but recent quarters show share loss to Cadence. Distribution 4: entrenched but trajectorily eroding against Cadence; the duopoly framing alone overstates current strength. Overall 4: still a top-2 EDA franchise with AI-tooling tailwind, but the competitive-position trajectory is downward not stable. (OPERATOR-PRIVATE SIGNAL: Cadence outperforming on share)"
     potential_investor_interest:
       score: "4"
       notes: "Steady compounder; 2Q26 beat-and-raise with FY26 guidance up across revenue/margin/EPS/FCF and early Ansys synergies. Design-IP segment bottoming and China demand are watch-items; premium valuation caps upside. Factors: earnings revisions, ROIC, growth (source: notes/SNPS/20260528-2Q26.md)."
@@ -911,7 +911,7 @@ tier_1_bctk:
     added_date: 2026-05-09
     ai_positioning:
       score: "3"
-      notes: "Welltower — senior-housing/healthcare REIT, but an AI-beneficiary per operator: uses AI for operations AND for market selection (which markets to buy/sell — capital allocation). Not an AI-product company, but AI-driven operating platform + data-science capital allocation is a real edge. (operator-private signal: AI for ops + market selection -> AI-beneficiary, not REIT-noise)."
+      notes: "Welltower — senior-housing/healthcare REIT, but an AI-beneficiary per operator: uses AI for operations AND for market selection (which markets to buy/sell — capital allocation). Not an AI-product company, but AI-driven operating platform + data-science capital allocation is a real edge. (OPERATOR-PRIVATE SIGNAL: AI for ops + market selection -> AI-beneficiary, not REIT-noise)."
     competitive_advantage:
       innovation_rate: "3"
       distribution: "4"
