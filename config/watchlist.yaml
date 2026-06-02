@@ -996,6 +996,19 @@ tier_2_active_candidates:
     themes: [silicon_architecture_competition, ai_infrastructure_capex, networking_competitive_landscape, hyperscaler_revenue_concentration, ai_compute_topology, inference_compute_economics]
     added_date: 2026-05-09
     notes: "Promoted Tier 3 → Tier 2 on 2026-06-02 (operator). Custom-XPU / AI-networking play; thesis convergence with the silicon-displacement names (CBRS, GOOGL TPU, AMZN Trainium)."
+    ai_positioning:
+      score: "4"
+      notes: "Clean AI-connectivity play; 76% of revenue from data center AI silicon (Q1 FY27 data center $1.83B, +27% y/y). Custom XPU + optical interconnect + scale-up topology across multiple product lines simultaneously; FY29 line of sight to $10B+ custom XPU revenue on a $55B TAM. Industry-first 102.4 Tbps AI/cloud switch announced 2026-06-01. Below a 5 only because MRVL is neither the model layer nor the merchant-GPU layer — growth is leverage on others' capex — but it is a top-tier AI-infrastructure beneficiary across multiple product lines simultaneously. (source: 1Q27 note 2026-05-28; switch PR 2026-06-01)"
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "AI-connectivity leader consolidating a credible #2 custom-silicon position behind AVGO. Innovation 4: technically first across 1.6T optics, PAM4, silicon photonics (Polariton), scale-up optics (Celestial AI), SRAM-based custom IP. Distribution 4: all major US hyperscalers engaged, >50 active custom opportunities, NVIDIA partnership (NVLink Fusion) plus a direct NVIDIA equity investment in MRVL. Overall 4 (not 4+/5): the moat compounds in design wins but is renewed every cycle — innovation pace must persist or the distribution edge erodes; AVGO competition caps below 5. The two components interact multiplicatively — innovation creates distribution, but distribution does not yet protect innovation. (source: 1Q27 note 2026-05-28)"
+    potential_investor_interest:
+      score: "5"
+      notes: "Hot AI-connectivity narrative with explicit CEO-level corroboration (Jensen 'next trillion dollar company' at Computex 2026-06-02). Stock +7% (6/1) then +14% (6/2) to $219.43, YTD +158.5%. Operator-anchor at 5 reflects momentum + sector heat + NVDA strategic-partnership halo. Caveat (NOT cap): $29.9M insider selling over 3mo against 258% one-year rally; COO sold $2M via pre-arranged 10b5-1 (adopted Jan 2026 — pre-planned, not signal). Factors: hot sector, earnings revisions, momentum, strategic-partnership halo. OPERATOR-PRIVATE SIGNAL: locked at 5 not 4+ to weight the Jensen public anchoring and connectivity-as-bottleneck thesis convergence over valuation caution."
+    scoring_date: 2026-06-02
+    scoring_notes: "Fully scored from T2 stub following Computex Taipei 2026-06-02 (Jensen Huang joint appearance with CEO Matt Murphy, publicly called MRVL 'next trillion dollar company'; stock +14% to $219.43, YTD +158.5%) and the industry-first 102.4 Tbps AI/cloud switch announced 2026-06-01 (+7%). Grounded in 1Q27 earnings note 2026-05-28 plus overnight news. (source: operator session 2026-06-02)"
   - ticker: MSFT
     themes: [hyperscaler_capex_buildout, enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization, silicon_architecture_competition, ai_infrastructure_software]
     added_date: 2026-05-09
