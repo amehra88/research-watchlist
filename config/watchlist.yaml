@@ -823,6 +823,9 @@ tier_1_bctk:
       notes: "Recent IPO (2024), hot cyber-resilience category, strong growth; lock-up overhang largely behind, profitability path the watch-item. Factors: hot sector, growth rate, recent IPO; profitability watch."
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/RBRK/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
+  - ticker: SEI
+    themes: []      # TODO: assign themes via WATCHLIST email
+    added_date: 2026-06-01
   - ticker: SHOP
     themes: [ai_re_architected_incumbent, ai_agent_monetization, search_disruption, enterprise_ai_adoption, agentic_commerce]
     added_date: 2026-05-09
