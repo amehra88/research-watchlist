@@ -54,6 +54,7 @@ tmp/
 # News-digest runtime state (ledger + FactSet result cache — regenerated each run)
 state/news_digest_seen.jsonl
 state/factset_cache/
+logs/news_digest_*.txt
 
 # Obsidian per-device workspace state (don't sync between devices)
 .obsidian/workspace.json

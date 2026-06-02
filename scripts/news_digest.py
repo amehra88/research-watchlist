@@ -296,6 +296,17 @@ def main():
 
     subject, body = build_digest(results, mode, now_local, banners, suppressed)
 
+    # persist the rendered body (gitignored audit trail; also lets a non-dry-run / cron
+    # run be inspected after the fact, since send-mode otherwise only emails it)
+    artifact = os.path.join(REPO_ROOT, "logs",
+                            f"news_digest_{mode}_{now_local.strftime('%Y%m%d_%H%M%S')}.txt")
+    try:
+        with open(artifact, "w") as fh:
+            fh.write(body + "\n")
+        logger.info("digest body saved: %s", artifact)
+    except OSError as e:
+        logger.warning("could not write digest artifact %s: %s", artifact, e)
+
     if not args.dry_run:
         for r in results:
             hashes = [c.hash for c, _ in r["verdicts"]] + [a["_hash"] for a in r["factset_only"]]
