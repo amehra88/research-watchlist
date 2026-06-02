@@ -939,9 +939,35 @@ tier_2_active_candidates:
   - ticker: 005930.KS
     themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, model_efficiency_evolution, china_export_controls, nand_demand_cycle]
     added_date: 2026-05-11
+    ai_positioning:
+      score: "3"
+      notes: "Samsung Electronics — largest memory maker by volume and one of three HBM suppliers, but the HBM laggard: behind SK Hynix and Micron on HBM3E qualification at NVDA, and its foundry trails TSMC at the leading edge. Memory + foundry + consumer-electronics scale is immense, but AI-critical execution lags. 3+ trajectory on an HBM4 catch-up shot."
+    competitive_advantage:
+      innovation_rate: "3"
+      distribution: "5"
+      overall: "4"
+      notes: "Innovation 3: HBM and leading-edge foundry execution lag SK Hynix/TSMC respectively, despite massive R&D and vertical integration (memory + foundry + logic). Distribution 5: largest DRAM/NAND maker plus a global consumer-electronics footprint. Overall 4: distribution scale buffers the innovation lag; HBM4 could reset the memory race, but the AI-critical-innovation gap caps it below the memory leaders (SK Hynix, MU)."
+    potential_investor_interest:
+      score: "3"
+      notes: "3+ trajectory: memory up-cycle beneficiary with HBM4 catch-up optionality and a cheap valuation, but HBM-laggard perception, conglomerate/governance discount, and Korea-listing access friction temper appeal. Factors: memory-cycle growth, valuation; laggard-perception/access cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/005930.KS/ corpus yet — analyst-draft pending earnings cycle). Tier 2 candidate. Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: AAPL
     themes: [ai_re_architected_incumbent, silicon_architecture_competition, china_us_tensions, handset_competition, platform_take_rate, pc_demand]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "3"
+      notes: "Apple — relative AI laggard among mega-caps: Apple Intelligence underwhelmed and the Siri overhaul slipped, no frontier model, leaning on partners (OpenAI/Google) for advanced AI. But unmatched distribution (2B+ active devices) plus custom Apple Silicon / Neural Engine give on-device-inference optionality. 3+ if the Siri/Apple Intelligence overhaul ships and converts."
+    competitive_advantage:
+      innovation_rate: "3"
+      distribution: "5"
+      overall: "4"
+      notes: "Innovation 3: elite hardware/silicon innovation, but AI/services execution is the questioned leg. Distribution 5: 2B+ active devices and unmatched ecosystem lock-in — AI reaches the installed base instantly once it ships. Overall 4: the distribution moat buffers the AI-innovation lag; caps below 5 until AI execution delivers."
+    potential_investor_interest:
+      score: "4"
+      notes: "Mega-cap quality, enormous FCF, massive buybacks, and index-anchor weight support the score; AI-laggard narrative, China exposure, and decelerating iPhone growth cap upside. Factors: FCF, buybacks, index weight, market-cap tier; AI-skepticism/China cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/AAPL/ corpus yet — analyst-draft pending earnings cycle). Tier 2 candidate. Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: ARM
     themes: [chip_design_competition, silicon_architecture_competition, ai_infrastructure_capex, hyperscaler_revenue_concentration, inference_compute_economics, automotive_semiconductor_demand]
     added_date: 2026-05-11
