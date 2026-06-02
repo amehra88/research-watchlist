@@ -1,0 +1,235 @@
+# config/ticker_identity.yaml
+# Name <-> ticker <-> FactSet map for the news digest (Phase C, spec §2).
+# Schema per ticker:
+#   name        display name
+#   factset_id  FactSet regional identifier (default TICKER-US; foreign per-case)
+#   google      Google News RSS query (spec §1a convention: '"{name}" OR {TICKER} stock';
+#               foreign / common-word-ambiguous tickers use NAME-ONLY to avoid false positives)
+#
+# 44 tickers = 40 T1 (BCTK) + 4 scored T2 (AAPL, MRVL, MSFT, 005930.KS).
+# Generated 2026-06-02 (Claude Code session, Phase C checkpoint 1).
+# CHECKPOINT: operator sanity-check before commit. Items needing review tagged `# REVIEW:` inline.
+
+# ───────────────────────────── Tier 1 (BCTK holdings) ─────────────────────────────
+
+"000660.KS":
+  name: "SK Hynix"
+  factset_id: "000660-KR"          # REVIEW: Korean listing; name-only Google query
+  google: '"SK Hynix"'             # name-only (foreign; ticker token meaningless in US news)
+
+AMD:
+  name: "Advanced Micro Devices"
+  factset_id: "AMD-US"
+  google: '"Advanced Micro Devices" OR AMD stock'
+
+AMZN:
+  name: "Amazon.com"
+  factset_id: "AMZN-US"
+  google: '"Amazon" OR AMZN stock'
+
+ANET:
+  name: "Arista Networks"
+  factset_id: "ANET-US"
+  google: '"Arista Networks" OR ANET stock'
+
+ASML:
+  name: "ASML Holding"
+  factset_id: "ASML-US"            # REVIEW: Dutch co, Nasdaq listing; FactSet may key as ASML-NL
+  google: '"ASML" OR ASML stock'
+
+AVGO:
+  name: "Broadcom"
+  factset_id: "AVGO-US"
+  google: '"Broadcom" OR AVGO stock'
+
+AXON:
+  name: "Axon Enterprise"
+  factset_id: "AXON-US"
+  google: '"Axon Enterprise" OR AXON stock'
+
+BE:
+  name: "Bloom Energy"
+  factset_id: "BE-US"
+  google: '"Bloom Energy" OR BE stock'   # common-word ticker ("be") — name quote-anchored
+
+CBRS:
+  name: "Cerebras Systems"
+  factset_id: "CBRS-US"            # REVIEW: web-searched 2026-06-02 — Nasdaq IPO 2026-05-14; FactSet coverage likely thin (Google handles breadth)
+  google: '"Cerebras" OR CBRS stock'
+
+COHR:
+  name: "Coherent Corp"
+  factset_id: "COHR-US"
+  google: '"Coherent" OR COHR stock'  # operator 2026-06-02: bare "Coherent" (accept some adjective noise for fuller recall)
+
+CRWD:
+  name: "CrowdStrike"
+  factset_id: "CRWD-US"
+  google: '"CrowdStrike" OR CRWD stock'
+
+DDOG:
+  name: "Datadog"
+  factset_id: "DDOG-US"
+  google: '"Datadog" OR DDOG stock'
+
+ENTG:
+  name: "Entegris"
+  factset_id: "ENTG-US"
+  google: '"Entegris" OR ENTG stock'
+
+FPS:
+  name: "Forgent Power Solutions"
+  factset_id: "FPS-US"             # REVIEW: spec-resolved (NYSE, IPO 2026-02-05); thin FactSet coverage likely
+  google: '"Forgent Power Solutions" OR FPS stock'
+
+FRVO:
+  name: "Fervo Energy"
+  factset_id: "FRVO-US"            # REVIEW: spec-resolved (Nasdaq, IPO 2026-05-13); thin FactSet coverage likely
+  google: '"Fervo Energy" OR FRVO stock'
+
+GDS:
+  name: "GDS Holdings"
+  factset_id: "GDS-US"             # REVIEW: Chinese DC operator, US ADR; FactSet may key as GDS-HK/CN
+  google: '"GDS Holdings" OR GDS stock'
+
+GEV:
+  name: "GE Vernova"
+  factset_id: "GEV-US"
+  google: '"GE Vernova" OR GEV stock'
+
+GOOGL:
+  name: "Alphabet"
+  factset_id: "GOOGL-US"           # operator 2026-06-02: query anchors "Google" (more news coverage than legal name "Alphabet")
+  google: '"Google" OR GOOGL stock'
+
+GWRE:
+  name: "Guidewire Software"
+  factset_id: "GWRE-US"
+  google: '"Guidewire" OR GWRE stock'
+
+HNGE:
+  name: "Hinge Health"
+  factset_id: "HNGE-US"            # REVIEW: spec-resolved (NYSE, recent IPO); thin FactSet coverage likely
+  google: '"Hinge Health" OR HNGE stock'
+
+INDI:
+  name: "indie Semiconductor"
+  factset_id: "INDI-US"
+  google: '"indie Semiconductor" OR INDI stock'  # lowercase brand; name quote-anchored
+
+IOT:
+  name: "Samsara"
+  factset_id: "IOT-US"
+  google: '"Samsara" OR IOT stock'  # common-acronym ticker (IOT) — name quote-anchored
+
+LITE:
+  name: "Lumentum Holdings"
+  factset_id: "LITE-US"
+  google: '"Lumentum" OR LITE stock'  # common-word ticker ("lite") — name quote-anchored
+
+LRCX:
+  name: "Lam Research"
+  factset_id: "LRCX-US"
+  google: '"Lam Research" OR LRCX stock'
+
+META:
+  name: "Meta Platforms"
+  factset_id: "META-US"
+  google: '"Meta Platforms" OR META stock'  # "Meta" common word — name quote-anchored
+
+MPWR:
+  name: "Monolithic Power Systems"
+  factset_id: "MPWR-US"
+  google: '"Monolithic Power" OR MPWR stock'
+
+MU:
+  name: "Micron Technology"
+  factset_id: "MU-US"
+  google: '"Micron" OR MU stock'
+
+NET:
+  name: "Cloudflare"
+  factset_id: "NET-US"
+  google: '"Cloudflare" OR NET stock'  # common-word ticker ("net") — name quote-anchored
+
+NVDA:
+  name: "NVIDIA"
+  factset_id: "NVDA-US"
+  google: '"NVIDIA" OR NVDA stock'
+
+PLTR:
+  name: "Palantir Technologies"
+  factset_id: "PLTR-US"
+  google: '"Palantir" OR PLTR stock'
+
+PWR:
+  name: "Quanta Services"
+  factset_id: "PWR-US"
+  google: '"Quanta Services" OR PWR stock'  # ticker reads as "power" — name quote-anchored
+
+RBRK:
+  name: "Rubrik"
+  factset_id: "RBRK-US"
+  google: '"Rubrik" OR RBRK stock'
+
+SEI:
+  name: "Solaris Energy Infrastructure"
+  factset_id: "SEI-US"             # REVIEW: spec-resolved — NOT SEI Investments (SEIC); common-acronym, recent IPO, thin FactSet
+  google: '"Solaris Energy Infrastructure" OR SEI stock'
+
+SHOP:
+  name: "Shopify"
+  factset_id: "SHOP-US"            # REVIEW: Canadian co, NYSE listing; FactSet may key as SHOP-CA
+  google: '"Shopify" OR SHOP stock'  # "shop" common word — name quote-anchored
+
+SNPS:
+  name: "Synopsys"
+  factset_id: "SNPS-US"
+  google: '"Synopsys" OR SNPS stock'
+
+SPOT:
+  name: "Spotify Technology"
+  factset_id: "SPOT-US"            # REVIEW: Swedish/Luxembourg co, NYSE listing
+  google: '"Spotify" OR SPOT stock'  # "spot" common word — name quote-anchored
+
+TSLA:
+  name: "Tesla"
+  factset_id: "TSLA-US"
+  google: '"Tesla" OR TSLA stock'
+
+TSM:
+  name: "Taiwan Semiconductor"
+  factset_id: "TSM-US"             # REVIEW: US ADR (Taiwan listing 2330-TW); FactSet may key as TSM-US ADR vs 2330-TW
+  google: '"Taiwan Semiconductor" OR TSM stock'
+
+WELL:
+  name: "Welltower"
+  factset_id: "WELL-US"
+  google: '"Welltower" OR WELL stock'  # common-word ticker ("well") — name quote-anchored
+
+ZS:
+  name: "Zscaler"
+  factset_id: "ZS-US"
+  google: '"Zscaler" OR ZS stock'
+
+# ───────────────────────── Tier 2 (scored active candidates) ─────────────────────────
+
+"005930.KS":
+  name: "Samsung Electronics"
+  factset_id: "005930-KR"          # REVIEW: Korean listing; name-only Google query
+  google: '"Samsung Electronics"'  # name-only (foreign; ticker token meaningless in US news)
+
+AAPL:
+  name: "Apple"
+  factset_id: "AAPL-US"
+  google: '"Apple" OR AAPL stock'  # "Apple" common word — name quote-anchored
+
+MRVL:
+  name: "Marvell Technology"
+  factset_id: "MRVL-US"
+  google: '"Marvell" OR MRVL stock'
+
+MSFT:
+  name: "Microsoft"
+  factset_id: "MSFT-US"
+  google: '"Microsoft" OR MSFT stock'
