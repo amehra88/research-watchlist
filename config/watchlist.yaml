@@ -1,1 +1,827 @@
-/root/research/config/watchlist.yaml
+# /root/research/config/watchlist.yaml
+#
+# Master watchlist + theme vocabulary for the research intelligence system.
+# See DESIGN.md §4 for full rationale.
+#
+# Editing:
+#   - Primary: SSH to droplet → `claude` → natural-language commands (§4.4).
+#   - Mobile fallback: email with subject WATCHLIST + body commands.
+#
+# Manual vs. auto:
+#   tier_1_bctk membership: AUTO (BCTK scraper, Phase 1 step 5).
+#   tier_2_active_candidates / tier_3_watchlist membership: MANUAL.
+#   themes (master vocabulary): MANUAL.
+#   themes / notes per ticker (any tier): MANUAL.
+#
+# This file holds AUTHORED data only — ticker, themes, added_date, tier
+# membership, vocabulary, aliases, private_drivers, web_sources. Derived
+# BCTK state (weight, last_synced, in_bctk, alias provenance) lives in
+# /root/research/state/bctk_derived.yaml so daily cron Updates do not
+# dirty this file.
+#
+# Scraper merge protocol for tier_1_bctk:
+#   - Adds: new ticker on first appearance in BCTK; emits drift alert and
+#     writes a new tier_1 entry here with empty themes. Operator fills in
+#     themes/notes via WATCHLIST email.
+#   - Updates: refresh weight + last_synced in state/bctk_derived.yaml only;
+#     this file is not touched.
+#   - Promotes: ticker found in BCTK that's also in tier_2/tier_3 is moved
+#     here (themes/notes/added_date carried over verbatim); emits drift alert.
+#   - Never removes: ticker leaving BCTK stays in tier_1_bctk; only its state
+#     row flips to in_bctk:false. Emits drift alert; operator decides next step.
+
+# ---------------------------------------------------------------------------
+# Master theme vocabulary (§4.5). Categories are organizational only — per-ticker
+# tags below reference theme names directly (e.g., `ai_infrastructure_capex`).
+# ---------------------------------------------------------------------------
+themes:
+  demand:
+    - ad_market_strength
+    - aerospace_defense_aftermarket
+    - ai_infrastructure_capex
+    - automotive_semiconductor_demand
+    - china_ai_infrastructure_demand
+    - china_consumer_demand
+    - data_center_deployment_constraints
+    - demographic_demand_tailwinds
+    - enterprise_ai_adoption
+    - hyperscaler_capex_buildout
+    - hyperscaler_revenue_concentration
+    - nand_demand_cycle
+    - nuclear_energy_buildout
+    - pc_demand
+    - sovereign_ai_deployments
+  supply:
+    - advanced_materials_ai_infra
+    - ai_compute_topology
+    - ai_infrastructure_software
+    - china_export_controls
+    - chip_design_competition
+    - cybersecurity_competitive_landscape
+    - foundry_capacity
+    - handset_competition
+    - hbm_competitive_landscape
+    - lithography_roadmap
+    - networking_competitive_landscape
+    - observability_competitive_landscape
+    - platform_take_rate
+    - semiconductor_cycle
+    - silicon_architecture_competition
+    - solar_supply_chain
+    - thermal_management_cooling
+  margins_pricing:
+    - ai_inference_margin_compression
+    - capex_vs_opex_shift
+    - networking_margin_trajectory
+    - software_seat_pricing_pressure
+  strategic:
+    - agentic_commerce
+    - ai_agent_monetization
+    - ai_generated_content
+    - ai_native_vertical
+    - ai_re_architected_incumbent
+    - autonomous_vehicle_competition
+    - datacenter_buildout_pacing
+    - defense_drones
+    - energy_storage_buildout
+    - foundation_model_economics
+    - humanoid_robotics_competition
+    - inference_compute_economics
+    - local_commerce_delivery
+    - model_commoditization
+    - model_efficiency_evolution
+    - search_disruption
+    - space_economy
+    - surveillance_security_tech
+    - vertical_ai_applications
+  macro_policy:
+    - ai_regulation
+    - antitrust_action
+    - china_us_tensions
+    - fed_policy_tech
+
+# ---------------------------------------------------------------------------
+# Share-class / cross-listing aliases.
+# Map of "BCTK ticker → canonical watchlist ticker." Auto-derive uses this for
+# membership lookups: when BCTK reports symbol K and aliases[K] is set, the
+# watchlist treats it as the canonical form. YAML entries always use the
+# canonical form; drift alerts record the actual BCTK ticker for traceability.
+#
+# Initial entry: GOOG → GOOGL (Alphabet Class C → Class A unification).
+# ---------------------------------------------------------------------------
+aliases:
+  GOOG: GOOGL
+
+# ---------------------------------------------------------------------------
+# Private companies whose trajectory materially affects the public portfolio.
+# Not investable directly, but their capex, growth, and competitive moves
+# flow through to the theses of named public Tier 1/2/3 entries.
+#
+# Used in two ways:
+#   (1) Operator reference: keeps named private drivers visible alongside
+#       public watchlist. When reading content about OpenAI capex, the
+#       implications for AVGO, NVDA, MSFT etc. are visible at a glance.
+#   (2) Phase 2 named-entity tagging: when podcast/Substack/article content
+#       mentions one of these entities, the extraction layer cross-references
+#       the `affects:` list to surface relevance to public tickers' briefings.
+#
+# `.pvt` identifier convention (this registry is the sole authority):
+#   pvt_id  — canonical key, `<lowercased-name>.pvt` (e.g. openai.pvt). Use this
+#             wherever a private needs to be addressed like a ticker: notes dirs
+#             (`notes/<pvt_id>/`), document-index primary_ticker/subject_tickers,
+#             and registered-private targets in supply-chain-manual.yaml.
+#   name    — human display label (unchanged).
+#   aliases — every spelling seen elsewhere in config, so a `name -> pvt_id`
+#             resolver can be built from this file alone. In particular the
+#             FactSet-extracted supply-chain.yaml uses entity-name variants
+#             (e.g. "OpenAI Foundation", "Anthropic PBC"); those are NOT
+#             hand-edited there — they resolve here via aliases.
+#   A `.pvt` id MUST resolve to an entry below. Unregistered private mentions
+#   (e.g. Cerebras, Grafana in supply-chain-manual.yaml) stay as bare names
+#   until promoted into this registry. `.pvt` ids never enter the earnings-
+#   transcript pipeline (privates have no public filings).
+#
+# Editing: manual, via Claude Code on droplet. No auto-derive.
+# ---------------------------------------------------------------------------
+private_drivers:
+  - name: OpenAI
+    pvt_id: openai.pvt
+    aliases: ["OpenAI", "OpenAI Foundation", "OpenAI OpCo, LLC"]
+    affects: [AVGO, NVDA, MSFT, GOOGL, META]
+    notes: "Hyperscaler-equivalent capex behavior. Largest AI inference and training compute consumer. Custom XPU partnership with AVGO; primary NVDA GPU customer; MSFT Azure deployment partner; competitive pressure on GOOGL and META."
+    added_date: 2026-05-10
+  - name: Anthropic
+    pvt_id: anthropic.pvt
+    aliases: ["Anthropic", "Anthropic PBC"]
+    affects: [AVGO, AMZN, GOOGL]
+    notes: "Hyperscaler-equivalent capex behavior. Strategic AVGO custom-XPU customer; AMZN Trainium primary deployer; GOOGL TPU competitive proxy."
+    added_date: 2026-05-10
+  - name: xAI
+    pvt_id: xai.pvt
+    aliases: ["xAI"]
+    affects: [NVDA, TSLA]
+    notes: "Massive GPU cluster buildout (Colossus); TSLA cross-pollination on Grok models. NVDA-heavy customer."
+    added_date: 2026-05-10
+  - name: Bytedance
+    pvt_id: bytedance.pvt
+    aliases: ["Bytedance", "ByteDance", "ByteDance Ltd."]
+    affects: [META]
+    notes: "TikTok competitive dynamics affect META ad market share and engagement metrics. US regulatory trajectory is the swing variable."
+    added_date: 2026-05-10
+  - name: SpaceX
+    pvt_id: spacex.pvt   # transitional — retire to ticker SPCX when the IPO prices (see SPCX note below)
+    aliases: ["SpaceX", "Space Exploration Technologies Corp."]
+    affects: [GEV]
+    notes: "Starlink revenue and launch cadence reshape space economics. Indirect read-through to space-economy publics in Tier 3 if added later (RKLB, IRDM, ASTS)."
+    added_date: 2026-05-10
+  - name: Stripe
+    pvt_id: stripe.pvt
+    aliases: ["Stripe", "STRIPE, INC."]
+    affects: [SHOP]
+    notes: "B2B payments incumbent. SHOP merchant economics tied to payment-rail competition."
+    added_date: 2026-05-10
+  - name: Databricks
+    pvt_id: databricks.pvt
+    aliases: ["Databricks", "Databricks Inc."]
+    affects: [SNOW, PLTR]
+    notes: "Data platform competitive dynamics. Direct SNOW competitor on lakehouse positioning; PLTR Foundry overlap on enterprise data workflows."
+    added_date: 2026-05-10
+
+# ---------------------------------------------------------------------------
+# External web sources to track over time. Includes company technical blogs,
+# industry publications, and data/news trackers. Curated, not exhaustive.
+#
+# Fields:
+#   url: canonical URL of the source
+#   name: human-readable label for briefings
+#   type: classification (company_blog | industry_publication | data_tracker
+#         | research_blog | niche_news) — informs Phase 2 extractor design
+#   affects: tickers (Tier 1/2/3) or private_drivers names this source informs
+#   cadence: operator's intended check frequency (daily|weekly|monthly|on_event)
+#            — non-binding documentation for Phase 2 schedule design
+#   notes: why this source is on the list
+#   added_date: when added
+#
+# Editing: manual, via Claude Code on droplet or WATCHLIST email. No auto-derive.
+# Operator may add more over time; target list stays focused (~20-40 entries).
+# ---------------------------------------------------------------------------
+web_sources:
+  # ── Industry publications ──────────────────────────────────────────────
+  - url: https://www.eetimes.com/
+    name: EE Times
+    type: industry_publication
+    affects: [TSM, ASML, AVGO, NVDA, AMD, MU, LRCX, SNPS, ENTG, MPWR, INDI, COHR, LITE]
+    cadence: weekly
+    notes: "Semiconductor industry news and analysis since 1972. Strong on global semis supply chain and design ecosystem."
+    added_date: 2026-05-10
+  - url: https://www.datacenterknowledge.com/
+    name: Data Center Knowledge
+    type: industry_publication
+    affects: [AMZN, GOOGL, META, GDS, PWR, VRT, GEV, BE, OpenAI, Anthropic]
+    cadence: weekly
+    notes: "Daily news and analysis on data center industry. Hyperscaler buildouts, power/cooling, capacity announcements."
+    added_date: 2026-05-10
+  - url: https://www.datacenterdynamics.com/en/
+    name: Data Center Dynamics
+    type: industry_publication
+    affects: [AMZN, GOOGL, META, GDS, PWR, VRT, GEV, BE]
+    cadence: weekly
+    notes: "International DC infrastructure coverage. Complements US-centric Data Center Knowledge."
+    added_date: 2026-05-10
+  - url: https://www.datacenterfrontier.com/
+    name: Data Center Frontier
+    type: industry_publication
+    affects: [AMZN, GOOGL, META, GDS, PWR, VRT, GEV, BE]
+    cadence: weekly
+    notes: "Deep US DC infrastructure coverage. Strong on power, cooling, capital flows, hyperscaler campuses."
+    added_date: 2026-05-10
+  - url: https://www.digitimes.com/
+    name: DigiTimes
+    type: industry_publication
+    affects: [TSM, ASML, AVGO, NVDA, AMD, MU, COHR, LITE, INDI, MPWR]
+    cadence: weekly
+    notes: "Taiwan-based, covers Asia supply chain in depth. Often first source for TSM and Taiwan ecosystem news."
+    added_date: 2026-05-10
+  - url: https://semiengineering.com/
+    name: Semiconductor Engineering
+    type: industry_publication
+    affects: [SNPS, AVGO, NVDA, AMD, INTC, MU, ENTG, LRCX]
+    cadence: weekly
+    notes: "Deep technical coverage of semiconductor design, verification, EDA. Stronger technical depth than EE Times."
+    added_date: 2026-05-10
+  - url: https://eepower.com/
+    name: EEPower
+    type: industry_publication
+    affects: [MPWR, VRT, VST, CEG, BE, GEV, PWR]
+    cadence: weekly
+    notes: "Power electronics engineering. Relevant for the AI-data-center power-buildout thesis names."
+    added_date: 2026-05-10
+  - url: https://spectrum.ieee.org/
+    name: IEEE Spectrum
+    type: industry_publication
+    affects: [NVDA, GOOGL, META, AVGO, AMD, TSLA]
+    cadence: weekly
+    notes: "Broad engineering coverage. Useful for autonomous vehicles, robotics, AI systems beyond pure semis."
+    added_date: 2026-05-10
+  # ── Company technical blogs ───────────────────────────────────────────
+  - url: https://developer.nvidia.com/blog
+    name: NVIDIA Technical Blog
+    type: company_blog
+    affects: [NVDA]
+    cadence: weekly
+    notes: "Architecture deep-dives, CUDA updates, partner case studies. Often pre-announces product direction."
+    added_date: 2026-05-10
+  - url: https://aws.amazon.com/blogs/architecture/
+    name: AWS Architecture Blog
+    type: company_blog
+    affects: [AMZN]
+    cadence: weekly
+    notes: "AWS infrastructure patterns. Signals for Trainium, Graviton, and AWS service evolution."
+    added_date: 2026-05-10
+  - url: https://research.google/blog/
+    name: Google Research Blog
+    type: company_blog
+    affects: [GOOGL]
+    cadence: weekly
+    notes: "Research outputs from Google. Gemini, TPU, AI methodology releases."
+    added_date: 2026-05-10
+  - url: https://engineering.fb.com/
+    name: Meta Engineering Blog
+    type: company_blog
+    affects: [META]
+    cadence: weekly
+    notes: "Meta infrastructure and engineering work. MTIA silicon, AI infrastructure, Llama-adjacent posts."
+    added_date: 2026-05-10
+  - url: https://blog.cloudflare.com/
+    name: Cloudflare Blog
+    type: company_blog
+    affects: [NET]
+    cadence: weekly
+    notes: "Exceptional technical blog. AI infrastructure, edge compute, security, networking deep dives."
+    added_date: 2026-05-10
+  - url: https://www.anthropic.com/news
+    name: Anthropic News
+    type: company_blog
+    affects: [AVGO, AMZN, GOOGL]
+    cadence: weekly
+    notes: "Product launches, capability updates. Cross-references to private_drivers entry for Anthropic."
+    added_date: 2026-05-10
+  - url: https://openai.com/blog/
+    name: OpenAI Blog
+    type: company_blog
+    affects: [AVGO, NVDA, MSFT, GOOGL, META]
+    cadence: weekly
+    notes: "Product launches, model updates. Cross-references to private_drivers entry for OpenAI."
+    added_date: 2026-05-10
+
+# ---------------------------------------------------------------------------
+# Tier 1 — BCTK holdings (auto-populated by BCTK scraper, Phase 1 step 5).
+# Empty until first scraper run. Operator fills in themes via drift-alert workflow.
+#
+# Entry shape once populated (authored fields only; derived state lives in
+# /root/research/state/bctk_derived.yaml):
+#   - ticker: AVGO
+#     themes: [ai_infrastructure_capex, networking_competitive_landscape]
+#     notes: "..."
+#     added_date: 2026-05-09
+# ---------------------------------------------------------------------------
+tier_1_bctk:
+  - ticker: AMD
+    themes: [silicon_architecture_competition, ai_infrastructure_capex, hyperscaler_revenue_concentration, model_efficiency_evolution, inference_compute_economics]
+    added_date: 2026-05-09
+  - ticker: AMZN
+    themes: [hyperscaler_capex_buildout, silicon_architecture_competition, ai_agent_monetization, ad_market_strength, space_economy, vertical_ai_applications, agentic_commerce, local_commerce_delivery]
+    added_date: 2026-05-09
+    ai_positioning: "4+"
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "5"
+      overall: "5"
+      notes: "AWS gives massive AI distribution to enterprise. Bedrock + Anthropic partnership covers model-layer gap. Logistics + Prime distribution moat unique. Innovation rate lower than NVDA/GOOG on pure AI, but distribution dominates the equation for the businesses they're in."
+    potential_investor_interest:
+      score: "4+"
+      notes: "Mega-cap index weight. AWS reacceleration story. Retail margin expansion narrative. Advertising business material and growing. Buybacks initiated. Trajectory improving on most operating metrics."
+  - ticker: ANET
+    themes: [networking_competitive_landscape, ai_infrastructure_capex, hyperscaler_revenue_concentration, ai_compute_topology]
+    added_date: 2026-05-09
+  - ticker: ASML
+    themes: [foundry_capacity, china_export_controls, semiconductor_cycle, lithography_roadmap]
+    added_date: 2026-05-09
+  - ticker: AVGO
+    themes: [ai_infrastructure_capex, silicon_architecture_competition, networking_competitive_landscape, hyperscaler_revenue_concentration, inference_compute_economics, ai_compute_topology]
+    added_date: 2026-05-09
+  - ticker: AXON
+    themes: [surveillance_security_tech, ai_native_vertical, vertical_ai_applications, enterprise_ai_adoption]
+    added_date: 2026-05-09
+  - ticker: BE
+    themes: [data_center_deployment_constraints, ai_infrastructure_capex]
+    added_date: 2026-05-09
+    ai_positioning: "4"
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "3+"
+      overall: "4"
+      notes: "Fuel cell technology relevant for data center power. Distribution improving via hyperscaler partnerships. Solid competitive position."
+    potential_investor_interest:
+      score: "5"
+      notes: "Hot sector adjacency to data center power. Strong narrative momentum. Trajectory improving on investor interest factors."
+  - ticker: CBRS
+    themes: []      # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-15
+  - ticker: COHR
+    themes: [networking_competitive_landscape, ai_infrastructure_capex, silicon_architecture_competition, ai_compute_topology, thermal_management_cooling]
+    added_date: 2026-05-09
+  - ticker: CRWD
+    themes: [enterprise_ai_adoption, ai_native_vertical, cybersecurity_competitive_landscape]
+    added_date: 2026-05-09
+  - ticker: DDOG
+    themes: [enterprise_ai_adoption, ai_native_vertical, observability_competitive_landscape, ai_infrastructure_software]
+    added_date: 2026-05-09
+  - ticker: ENTG
+    themes: [foundry_capacity, semiconductor_cycle, advanced_materials_ai_infra, china_export_controls, lithography_roadmap, nand_demand_cycle]
+    added_date: 2026-05-09
+  - ticker: FPS
+    themes: [data_center_deployment_constraints, ai_infrastructure_capex]
+    added_date: 2026-05-09
+  - ticker: FRVO
+    themes: []      # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-14
+  - ticker: GDS
+    themes: [ai_infrastructure_capex, sovereign_ai_deployments, china_ai_infrastructure_demand, china_us_tensions]
+    added_date: 2026-05-09
+  - ticker: GEV
+    themes: [data_center_deployment_constraints, ai_infrastructure_capex, enterprise_ai_adoption, nuclear_energy_buildout]
+    added_date: 2026-05-09
+  - ticker: GOOGL
+    themes: [hyperscaler_capex_buildout, ad_market_strength, search_disruption, ai_agent_monetization, silicon_architecture_competition, autonomous_vehicle_competition, agentic_commerce]
+    added_date: 2026-05-09
+    ai_positioning: "5"
+    competitive_advantage:
+      innovation_rate: "5"
+      distribution: "5"
+      overall: "4+"
+      notes: "Native AI capability (Gemini, DeepMind, TPUs) is best-in-class. Distribution via Search, Android, Workspace, Cloud is enormous. Overall is 4+ not 5 because Search ad model is genuinely at risk from agentic search — the company is the most AI-capable AND the most AI-exposed simultaneously."
+    potential_investor_interest:
+      score: "5"
+      notes: "Strong investor enthusiasm. Mega-cap index weight. AI capability story compelling. Gemini quality climbing, search defense holding better than feared."
+  - ticker: GWRE
+    themes: [ai_re_architected_incumbent, enterprise_ai_adoption, vertical_ai_applications]
+    added_date: 2026-05-09
+  - ticker: HNGE
+    themes: [ai_native_vertical, vertical_ai_applications]
+    added_date: 2026-05-09
+  - ticker: HTFL
+    themes: [ai_native_vertical, vertical_ai_applications]
+    added_date: 2026-05-09
+  - ticker: INDI
+    themes: [autonomous_vehicle_competition, humanoid_robotics_competition, semiconductor_cycle, automotive_semiconductor_demand, china_us_tensions]
+    added_date: 2026-05-09
+  - ticker: IOT
+    themes: [ai_native_vertical, vertical_ai_applications, enterprise_ai_adoption, data_center_deployment_constraints]
+    added_date: 2026-05-09
+  - ticker: LITE
+    themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, hyperscaler_revenue_concentration]
+    added_date: 2026-05-09
+  - ticker: LOAR
+    themes: [aerospace_defense_aftermarket]
+    added_date: 2026-05-09
+  - ticker: LRCX
+    themes: [foundry_capacity, semiconductor_cycle, hbm_competitive_landscape, china_export_controls, lithography_roadmap, nand_demand_cycle]
+    added_date: 2026-05-09
+  - ticker: META
+    themes: [hyperscaler_capex_buildout, ad_market_strength, silicon_architecture_competition, ai_agent_monetization, search_disruption, vertical_ai_applications, model_efficiency_evolution]
+    added_date: 2026-05-09
+  - ticker: MPWR
+    themes: [ai_infrastructure_capex, automotive_semiconductor_demand, data_center_deployment_constraints, humanoid_robotics_competition, semiconductor_cycle]
+    added_date: 2026-05-09
+  - ticker: MU
+    themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, model_efficiency_evolution, china_export_controls, nand_demand_cycle]
+    added_date: 2026-05-09
+  - ticker: NET
+    themes: [enterprise_ai_adoption, ai_re_architected_incumbent, cybersecurity_competitive_landscape, ai_agent_monetization, inference_compute_economics, ai_infrastructure_software]
+    added_date: 2026-05-09
+  - ticker: NVDA
+    themes: [ai_infrastructure_capex, silicon_architecture_competition, networking_competitive_landscape, sovereign_ai_deployments, china_export_controls, inference_compute_economics, ai_compute_topology]
+    added_date: 2026-05-09
+    ai_positioning: "5"
+    competitive_advantage:
+      innovation_rate: "5"
+      distribution: "5"
+      overall: "5"
+      notes: "CUDA ecosystem moat compounds with each generation. Roadmap visibility 2+ years. Customer lock-in via developer base. Vera CPU adds a second architectural axis ($200B TAM, ~$20B FY27 standalone revenue visibility — Huang/Arya 1Q27 exchange), broadening platform from GPU-only to GPU+CPU. Moat composition reinforced; score holds at 5/5 with innovation_rate sub-component cited as ceiling-reinforced (source: notes/NVDA/20260521-1Q27.md section 3, ticker-synthesis run 7 2026-06-01)."
+    potential_investor_interest:
+      score: "4"
+      notes: "Hot sector epicenter. Largest mcap in tech. Index weight enormous. Positive earnings revisions. Pricing power. Buybacks active. Some valuation caution at current levels. 1Q27 print (2026-05-21) converted capital-return posture to structural ~50%-of-FCF commitment: $119B total buyback authorization (+$80B incremental), 25x dividend hike to $0.25, alongside third consecutive quarter of YoY revenue acceleration ($82B/+85%) and Q2'27 guide ~$10B above consensus. Directional pressure 4→4+ now, with 4+→5 live for Q2'27 print on 2026-08-26 if trajectory holds. Cap: valuation caution at ~$5.4T mcap. (source: ticker-synthesis run 7, 2026-06-01)"
+  - ticker: PLTR
+    themes: [enterprise_ai_adoption, ai_native_vertical, vertical_ai_applications, ai_agent_monetization]
+    added_date: 2026-05-09
+  - ticker: PWR
+    themes: [data_center_deployment_constraints, ai_infrastructure_capex]
+    added_date: 2026-05-09
+  - ticker: RBRK
+    themes: [cybersecurity_competitive_landscape, enterprise_ai_adoption, ai_infrastructure_software, ai_agent_monetization]
+    added_date: 2026-05-09
+  - ticker: SEI
+    themes: [data_center_deployment_constraints, ai_infrastructure_capex]
+    added_date: 2026-05-09
+  - ticker: SHOP
+    themes: [ai_re_architected_incumbent, ai_agent_monetization, search_disruption, enterprise_ai_adoption, agentic_commerce]
+    added_date: 2026-05-09
+  - ticker: SNPS
+    themes: [foundry_capacity, silicon_architecture_competition, china_export_controls, ai_infrastructure_capex, lithography_roadmap, chip_design_competition]
+    added_date: 2026-05-09
+  - ticker: SPOT
+    themes: [ai_re_architected_incumbent, ad_market_strength, vertical_ai_applications, ai_generated_content]
+    added_date: 2026-05-09
+  - ticker: TSLA
+    themes: [autonomous_vehicle_competition, silicon_architecture_competition, humanoid_robotics_competition, energy_storage_buildout, hyperscaler_capex_buildout, china_us_tensions]
+    added_date: 2026-05-09
+  - ticker: TSM
+    themes: [foundry_capacity, semiconductor_cycle, china_us_tensions, ai_infrastructure_capex, lithography_roadmap]
+    added_date: 2026-05-09
+  - ticker: WELL
+    themes: [vertical_ai_applications, demographic_demand_tailwinds]
+    added_date: 2026-05-09
+  - ticker: ZS
+    themes: [cybersecurity_competitive_landscape, enterprise_ai_adoption, ai_infrastructure_software]
+    added_date: 2026-05-11
+tier_2_active_candidates:
+  - ticker: 000660.KS
+    themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, model_efficiency_evolution, china_export_controls, nand_demand_cycle]
+    added_date: 2026-05-11
+  - ticker: 005930.KS
+    themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, model_efficiency_evolution, china_export_controls, nand_demand_cycle]
+    added_date: 2026-05-11
+  - ticker: AAPL
+    themes: [ai_re_architected_incumbent, silicon_architecture_competition, china_us_tensions, handset_competition, platform_take_rate, pc_demand]
+    added_date: 2026-05-09
+  - ticker: ARM
+    themes: [chip_design_competition, silicon_architecture_competition, ai_infrastructure_capex, hyperscaler_revenue_concentration, inference_compute_economics, automotive_semiconductor_demand]
+    added_date: 2026-05-11
+  - ticker: CIEN
+    themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, hyperscaler_revenue_concentration]
+    added_date: 2026-05-11
+  - ticker: CRWV
+    themes: [ai_infrastructure_capex, ai_compute_topology, inference_compute_economics, data_center_deployment_constraints, hyperscaler_revenue_concentration, ai_infrastructure_software]
+    added_date: 2026-05-10
+  - ticker: DASH
+    themes: [agentic_commerce, ai_re_architected_incumbent, ad_market_strength, autonomous_vehicle_competition, platform_take_rate, local_commerce_delivery]
+    added_date: 2026-05-11
+  - ticker: DOCN
+    themes: [ai_infrastructure_capex, ai_infrastructure_software, inference_compute_economics, data_center_deployment_constraints, enterprise_ai_adoption]
+    added_date: 2026-05-11
+  - ticker: GLW
+    themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, hyperscaler_revenue_concentration, solar_supply_chain]
+    added_date: 2026-05-11
+  - ticker: INTC
+    themes: [silicon_architecture_competition, foundry_capacity, ai_infrastructure_capex, lithography_roadmap, inference_compute_economics, pc_demand, hyperscaler_revenue_concentration]
+    added_date: 2026-05-09
+  - ticker: MSFT
+    themes: [hyperscaler_capex_buildout, enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization, silicon_architecture_competition, ai_infrastructure_software]
+    added_date: 2026-05-09
+    ai_positioning: "4-"
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "5"
+      overall: "4"
+      notes: "Late to innovate on a native AI model. OpenAI partnership has materially weakened — strategic alignment loosening, OpenAI moving toward independence. Anthropic taking surface area on application optimization. AI tooling still subpar relative to peers. Distribution moat through enterprise remains overwhelming, but innovation lag is a real and growing concern."
+    potential_investor_interest:
+      score: "3"
+      notes: "Investor enthusiasm cooled. Once-dominant AI narrative has shifted to question marks about model differentiation, partnership dependence, and tooling quality. Mega-cap index weight still anchors, but momentum factors weakening."
+  - ticker: NOW
+    themes: [enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization, ai_infrastructure_software, cybersecurity_competitive_landscape]
+    added_date: 2026-05-09
+  - ticker: NXPI
+    themes: [automotive_semiconductor_demand, semiconductor_cycle, data_center_deployment_constraints, ai_infrastructure_capex]
+    added_date: 2026-05-09
+  - ticker: RDDT
+    themes: [ad_market_strength, search_disruption, ai_re_architected_incumbent]
+    added_date: 2026-05-09
+  - ticker: ROKU
+    themes: [ad_market_strength, ai_re_architected_incumbent]
+    added_date: 2026-05-09
+  - ticker: SNOW
+    themes: [enterprise_ai_adoption, ai_infrastructure_software, observability_competitive_landscape, ai_agent_monetization, ai_re_architected_incumbent]
+    added_date: 2026-05-09
+  - ticker: SPCX
+    themes: [space_economy]
+    added_date: 2026-05-31
+    notes: "SpaceX. Pending IPO (expected ~early-mid June 2026); ticker SPCX not yet trading. MCP enrichment (FactSet/InsiderScore) will return empty until the listing prices. Currently also carried in private_drivers (affects: GEV) — retire that entry once the IPO closes and SPCX trades as a public name."
+  - ticker: TXN
+    themes: [automotive_semiconductor_demand, semiconductor_cycle, data_center_deployment_constraints, ai_infrastructure_capex, china_us_tensions]
+    added_date: 2026-05-09
+
+# ---------------------------------------------------------------------------
+# Tier 3 — Watchlist (§4.1). Broader tracked universe (~150 names target).
+# Lighter treatment: surfaced in daily briefing only on material events; weekly
+# synthesis when patterns emerge across multiple Tier 3 names; queryable on
+# demand. Distinction from Tier 2 is plausibility of action.
+# ---------------------------------------------------------------------------
+tier_3_watchlist:
+  - ticker: AAON
+    themes: [data_center_deployment_constraints, thermal_management_cooling]
+    added_date: 2026-05-09
+  - ticker: ADI
+    themes: [automotive_semiconductor_demand, semiconductor_cycle, data_center_deployment_constraints, ai_infrastructure_capex, china_us_tensions]
+    added_date: 2026-05-11
+  - ticker: AEIS
+    themes: [foundry_capacity, semiconductor_cycle, data_center_deployment_constraints]
+    added_date: 2026-05-11
+  - ticker: AKAM
+    themes: [cybersecurity_competitive_landscape, ai_infrastructure_software, inference_compute_economics]
+    added_date: 2026-05-11
+  - ticker: AMAT
+    themes: [foundry_capacity, semiconductor_cycle, hbm_competitive_landscape, china_export_controls, lithography_roadmap, nand_demand_cycle]
+    added_date: 2026-05-09
+  - ticker: AMKR
+    themes: [foundry_capacity, semiconductor_cycle, ai_infrastructure_capex, china_us_tensions]
+    added_date: 2026-05-11
+  - ticker: APP
+    themes: [ad_market_strength, ai_re_architected_incumbent, vertical_ai_applications]
+    added_date: 2026-05-09
+  - ticker: BABA
+    themes: [china_ai_infrastructure_demand, ad_market_strength, agentic_commerce, ai_re_architected_incumbent, china_us_tensions]
+    added_date: 2026-05-09
+  - ticker: BIDU
+    themes: [search_disruption, china_ai_infrastructure_demand, autonomous_vehicle_competition, ai_re_architected_incumbent]
+    added_date: 2026-05-11
+  - ticker: CEG
+    themes: [nuclear_energy_buildout, data_center_deployment_constraints, ai_infrastructure_capex]
+    added_date: 2026-05-09
+  - ticker: CLS
+    themes: [ai_infrastructure_capex, hyperscaler_revenue_concentration, ai_compute_topology, data_center_deployment_constraints]
+    added_date: 2026-05-10
+  - ticker: CRDO
+    themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, hyperscaler_revenue_concentration]
+    added_date: 2026-05-09
+  - ticker: CRUS
+    themes: [handset_competition, semiconductor_cycle]
+    added_date: 2026-05-11
+  - ticker: CSCO
+    themes: [networking_competitive_landscape, ai_infrastructure_capex, cybersecurity_competitive_landscape, observability_competitive_landscape, enterprise_ai_adoption]
+    added_date: 2026-05-11
+  - ticker: CVNA
+    themes: [search_disruption, agentic_commerce, ai_re_architected_incumbent]
+    added_date: 2026-05-09
+  - ticker: DELL
+    themes: [ai_infrastructure_capex, hyperscaler_revenue_concentration, data_center_deployment_constraints, ai_compute_topology, pc_demand]
+    added_date: 2026-05-11
+  - ticker: DUOL
+    themes: [vertical_ai_applications, ai_re_architected_incumbent, ai_agent_monetization]
+    added_date: 2026-05-09
+  - ticker: EBAY
+    themes: [agentic_commerce, search_disruption, platform_take_rate]
+    added_date: 2026-05-11
+  - ticker: EQIX
+    themes: [data_center_deployment_constraints, ai_infrastructure_capex, hyperscaler_revenue_concentration]
+    added_date: 2026-05-11
+  - ticker: FFIV
+    themes: [networking_competitive_landscape, cybersecurity_competitive_landscape, enterprise_ai_adoption]
+    added_date: 2026-05-11
+  - ticker: FICO
+    themes: [enterprise_ai_adoption, vertical_ai_applications]
+    added_date: 2026-05-11
+  - ticker: FROG
+    themes: [enterprise_ai_adoption, ai_infrastructure_software, cybersecurity_competitive_landscape]
+    added_date: 2026-05-09
+  - ticker: HPE
+    themes: [ai_infrastructure_capex, networking_competitive_landscape, enterprise_ai_adoption, data_center_deployment_constraints, hyperscaler_revenue_concentration]
+    added_date: 2026-05-11
+  - ticker: HPQ
+    themes: [pc_demand]
+    added_date: 2026-05-11
+  - ticker: IBM
+    themes: [enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization, ai_infrastructure_software]
+    added_date: 2026-05-11
+  - ticker: KLAC
+    themes: [foundry_capacity, semiconductor_cycle, china_export_controls, lithography_roadmap, nand_demand_cycle]
+    added_date: 2026-05-09
+  - ticker: LSCC
+    themes: [semiconductor_cycle, automotive_semiconductor_demand, chip_design_competition]
+    added_date: 2026-05-11
+  - ticker: MCHP
+    themes: [automotive_semiconductor_demand, semiconductor_cycle, china_us_tensions]
+    added_date: 2026-05-11
+  - ticker: MDB
+    themes: [enterprise_ai_adoption, ai_infrastructure_software, ai_re_architected_incumbent, inference_compute_economics]
+    added_date: 2026-05-09
+  - ticker: MELI
+    themes: [agentic_commerce, ad_market_strength, local_commerce_delivery, ai_re_architected_incumbent, platform_take_rate]
+    added_date: 2026-05-09
+  - ticker: MKSI
+    themes: [foundry_capacity, semiconductor_cycle, lithography_roadmap]
+    added_date: 2026-05-11
+  - ticker: MRVL
+    themes: [silicon_architecture_competition, ai_infrastructure_capex, networking_competitive_landscape, hyperscaler_revenue_concentration, ai_compute_topology, inference_compute_economics]
+    added_date: 2026-05-09
+  - ticker: MSI
+    themes: [surveillance_security_tech, ai_native_vertical, vertical_ai_applications]
+    added_date: 2026-05-11
+  - ticker: MXL
+    themes: [networking_competitive_landscape, ai_infrastructure_capex, semiconductor_cycle]
+    added_date: 2026-05-11
+  - ticker: NBIS
+    themes: [ai_infrastructure_capex, ai_compute_topology, inference_compute_economics, data_center_deployment_constraints, hyperscaler_revenue_concentration]
+    added_date: 2026-05-09
+  - ticker: NFLX
+    themes: [ad_market_strength, ai_generated_content, vertical_ai_applications]
+    added_date: 2026-05-09
+  - ticker: NTES
+    themes: [ai_generated_content, china_us_tensions, vertical_ai_applications]
+    added_date: 2026-05-11
+  - ticker: NVMI
+    themes: [foundry_capacity, semiconductor_cycle, lithography_roadmap]
+    added_date: 2026-05-09
+  - ticker: "ON"
+    themes: [automotive_semiconductor_demand, semiconductor_cycle, energy_storage_buildout, china_us_tensions]
+    added_date: 2026-05-11
+  - ticker: ONTO
+    themes: [foundry_capacity, semiconductor_cycle, lithography_roadmap]
+    added_date: 2026-05-11
+  - ticker: PANW
+    themes: [cybersecurity_competitive_landscape, enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization]
+    added_date: 2026-05-09
+  - ticker: PI
+    themes: [semiconductor_cycle]
+    added_date: 2026-05-09
+  - ticker: PINS
+    themes: [ad_market_strength, search_disruption, agentic_commerce, ai_re_architected_incumbent]
+    added_date: 2026-05-09
+  - ticker: QCOM
+    themes: [handset_competition, silicon_architecture_competition, china_us_tensions, automotive_semiconductor_demand, ai_infrastructure_capex]
+    added_date: 2026-05-11
+  - ticker: RKT
+    themes: [search_disruption, agentic_commerce, ai_re_architected_incumbent]
+    added_date: 2026-05-09
+  - ticker: RMBS
+    themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, chip_design_competition]
+    added_date: 2026-05-11
+  - ticker: SE
+    themes: [agentic_commerce, ai_generated_content, platform_take_rate, local_commerce_delivery]
+    added_date: 2026-05-11
+  - ticker: SITM
+    themes: [ai_infrastructure_capex, networking_competitive_landscape, automotive_semiconductor_demand, semiconductor_cycle]
+    added_date: 2026-05-11
+  - ticker: SLAB
+    themes: [semiconductor_cycle, automotive_semiconductor_demand, china_us_tensions]
+    added_date: 2026-05-11
+  - ticker: SMCI
+    themes: [ai_infrastructure_capex, hyperscaler_revenue_concentration, data_center_deployment_constraints, ai_compute_topology, thermal_management_cooling]
+    added_date: 2026-05-11
+  - ticker: SMTC
+    themes: [networking_competitive_landscape, ai_infrastructure_capex, semiconductor_cycle, data_center_deployment_constraints]
+    added_date: 2026-05-09
+  - ticker: SOLS
+    themes: [advanced_materials_ai_infra, semiconductor_cycle, ai_infrastructure_capex, thermal_management_cooling, nuclear_energy_buildout]
+    added_date: 2026-05-11
+  - ticker: SWKS
+    themes: [handset_competition, semiconductor_cycle, china_us_tensions]
+    added_date: 2026-05-11
+  - ticker: TCEHY
+    themes: [china_ai_infrastructure_demand, ad_market_strength, agentic_commerce, ai_generated_content, china_us_tensions]
+    added_date: 2026-05-09
+  - ticker: TEAM
+    themes: [enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization]
+    added_date: 2026-05-11
+  - ticker: TER
+    themes: [foundry_capacity, semiconductor_cycle, ai_infrastructure_capex, humanoid_robotics_competition]
+    added_date: 2026-05-09
+  - ticker: TSEM
+    themes: [foundry_capacity, semiconductor_cycle, china_us_tensions]
+    added_date: 2026-05-11
+  - ticker: TTD
+    themes: [ad_market_strength, ai_re_architected_incumbent, ai_agent_monetization]
+    added_date: 2026-05-09
+  - ticker: TTMI
+    themes: [ai_infrastructure_capex, hyperscaler_revenue_concentration, automotive_semiconductor_demand]
+    added_date: 2026-05-09
+  - ticker: TTWO
+    themes: [ai_generated_content, vertical_ai_applications]
+    added_date: 2026-05-09
+  - ticker: TWLO
+    themes: [enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization]
+    added_date: 2026-05-11
+  - ticker: U
+    themes: [ai_generated_content, vertical_ai_applications, ai_infrastructure_software]
+    added_date: 2026-05-11
+  - ticker: UMG.AS
+    themes: [ai_generated_content, ad_market_strength, vertical_ai_applications]
+    added_date: 2026-05-09
+  - ticker: VIAV
+    themes: [networking_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex]
+    added_date: 2026-05-11
+  - ticker: VICR
+    themes: [ai_infrastructure_capex, data_center_deployment_constraints, semiconductor_cycle]
+    added_date: 2026-05-09
+  - ticker: VRT
+    themes: [data_center_deployment_constraints, ai_infrastructure_capex, thermal_management_cooling, hyperscaler_revenue_concentration]
+    added_date: 2026-05-09
+  - ticker: VST
+    themes: [nuclear_energy_buildout, data_center_deployment_constraints, ai_infrastructure_capex]
+    added_date: 2026-05-09
+  - ticker: WMT
+    themes: [agentic_commerce, local_commerce_delivery, ai_re_architected_incumbent, ad_market_strength]
+    added_date: 2026-05-09
+  - ticker: Z
+    themes: [search_disruption, agentic_commerce, ai_re_architected_incumbent]
+    added_date: 2026-05-11
+  - ticker: ALAB
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: MTSI
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: ASMIY
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: BESIY
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: WOLF
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: MBLY
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: AMBA
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: STM
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: SONY
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: GFS
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: UMC
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: ASX
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: TOELY
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: PLAB
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: LAZR
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: HSAI
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: NOK
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: "2308.TW"
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: "300502.SZ"
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
+  - ticker: "300308.SZ"
+    themes: [] # TODO: assign themes via WATCHLIST email
+    added_date: 2026-05-17
