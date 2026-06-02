@@ -1,0 +1,124 @@
+# config/news_sources.yaml
+# Source-quality tiers + denylist for the news digest filter (spec news-digest-phase-b-spec §3, §5).
+#
+# The filter (scripts/newsdigest/filter.py) maps each clustered article's source to one tier, then
+# computes story_volume = count of UNIQUE allowlist/borderline/unknown sources in a cluster.
+# Denylisted sources are dropped and NEVER counted.
+#
+# Tier semantics (spec §5):
+#   top_tier   : a SINGLE story -> HIGH (override §5d). Also counts toward volume.
+#   allowlist  : HIGH-eligible via story_volume thresholds (§5b). Counts toward volume.
+#   borderline : MEDIUM-max; counts toward volume but CANNOT trigger HIGH alone (§5).
+#   denylist   : dropped entirely; never counted.
+#   unknown    : sources in none of the lists are treated as 'uncertain' -> count toward volume,
+#                MEDIUM-max (same effect as borderline). No config entry needed for these.
+#
+# MATCHING: sources.py normalizes before lookup — lowercase, strip leading "the ", drop punctuation,
+# then exact/substring match against canonical names + `aliases`. Google News RSS source strings vary
+# ("The Wall Street Journal" / "WSJ" / "Wall Street Journal"); add variants under `aliases`.
+#
+# Generated 2026-06-02 (Phase C checkpoint 2). CHECKPOINT: operator review before commit.
+# Operator decisions 2026-06-02: Trefis -> borderline (confirmed); Korean press -> dropped (English-language coverage only).
+
+# ───────── TOP-TIER: single story -> HIGH (§5d) ─────────
+top_tier:
+  - Reuters
+  - Bloomberg
+  - Wall Street Journal
+  - Financial Times
+
+# ───────── ALLOWLIST: HIGH-eligible via story_volume (§5b) ─────────
+# NB: CNBC + Barron's are allowlist but NOT top-tier — a single story from them is MEDIUM, not HIGH (§3, §5c).
+allowlist:
+  # mainstream financial / business
+  - CNBC
+  - Barron's
+  - Yahoo Finance
+  - Investor's Business Daily
+  - Seeking Alpha
+  - The Motley Fool
+  - MarketBeat
+  - The Information
+  - Forbes
+  - Fortune
+  - Business Insider
+  # general tech press
+  - TechCrunch
+  - The Verge
+  # semiconductor / AI-infrastructure trade press
+  - Tom's Hardware
+  - ServeTheHome
+  - EE Times
+  - SemiAnalysis          # operator addition
+  - AnandTech             # operator addition
+  - The Next Platform     # operator addition
+  - HPCwire               # operator addition
+  - Stratechery           # operator addition (operator-trusted)
+  # IR / official press wires
+  - PR Newswire
+  - Business Wire
+  - GlobeNewswire
+
+# Korean press (Maeil Business / Yonhap / KED Global): operator decision 2026-06-02 — DROPPED.
+# Not specially allowlisted; Samsung (005930.KS) / SK Hynix (000660.KS) rely on English-language
+# coverage (Google RSS is gl=US / hl=en-US, so English results dominate the name-only query anyway).
+
+# ───────── BORDERLINE: MEDIUM-max, cannot trigger HIGH alone (§3) ─────────
+borderline:
+  - GuruFocus
+  - Trefis                # operator 2026-06-02: confirmed borderline
+  - The Globe and Mail
+  - Benzinga
+  - Investing.com
+  - AOL.com
+
+# Convenience group for filter §5c: "single item from one of these -> MEDIUM" (not HIGH).
+# These are all allowlist members; listed here so filter.py can implement §5c data-driven.
+medium_single_item:
+  - CNBC
+  - Barron's
+  - Investor's Business Daily
+  - The Information
+  - Seeking Alpha
+
+# ───────── DENYLIST: dropped entirely, never counted (§3) ─────────
+denylist:
+  sources:
+    - Mshale
+    - TIKR                 # TIKR.com auto-summaries
+    - TradingKey           # auto-summaries
+    - Barchart             # auto-summaries
+    - StockTwits           # reposts
+    - Wallet Investor
+    - CoinCodex            # crypto-forecast farm — deny for our (non-crypto) universe
+    - CoinSpeaker          # crypto outlet — deny for our (non-crypto) universe
+  # GuruFocus is borderline, but its AUTO-SURGE alerts are denied via title_patterns below
+  # (do NOT blanket-deny GuruFocus). Price-prediction / SEO-mill farms caught by patterns:
+  url_patterns:
+    - "/forecast-"
+    - "/price-prediction/"
+    - "/predicts-"
+  title_patterns:
+    - "price prediction"
+    - "price forecast"
+    - "to soar"
+    - "to surge by"
+    - " is a buy"
+    - " is a sell"
+    - "stocks to buy"
+    - "best stocks to"
+
+# ───────── Source-name normalization (sources.py resolves variant -> canonical) ─────────
+aliases:
+  "WSJ": "Wall Street Journal"
+  "The Wall Street Journal": "Wall Street Journal"
+  "FT": "Financial Times"
+  "IBD": "Investor's Business Daily"
+  "Motley Fool": "The Motley Fool"
+  "NextPlatform": "The Next Platform"
+  "Next Platform": "The Next Platform"
+  "Globe and Mail": "The Globe and Mail"
+  "Yahoo": "Yahoo Finance"
+  "Yahoo! Finance": "Yahoo Finance"
+  "PRNewswire": "PR Newswire"
+  "Businesswire": "Business Wire"
