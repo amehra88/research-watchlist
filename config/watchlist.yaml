@@ -992,6 +992,10 @@ tier_2_active_candidates:
   - ticker: INTC
     themes: [silicon_architecture_competition, foundry_capacity, ai_infrastructure_capex, lithography_roadmap, inference_compute_economics, pc_demand, hyperscaler_revenue_concentration]
     added_date: 2026-05-09
+  - ticker: MRVL
+    themes: [silicon_architecture_competition, ai_infrastructure_capex, networking_competitive_landscape, hyperscaler_revenue_concentration, ai_compute_topology, inference_compute_economics]
+    added_date: 2026-05-09
+    notes: "Promoted Tier 3 → Tier 2 on 2026-06-02 (operator). Custom-XPU / AI-networking play; thesis convergence with the silicon-displacement names (CBRS, GOOGL TPU, AMZN Trainium)."
   - ticker: MSFT
     themes: [hyperscaler_capex_buildout, enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization, silicon_architecture_competition, ai_infrastructure_software]
     added_date: 2026-05-09
@@ -1127,9 +1131,6 @@ tier_3_watchlist:
   - ticker: MKSI
     themes: [foundry_capacity, semiconductor_cycle, lithography_roadmap]
     added_date: 2026-05-11
-  - ticker: MRVL
-    themes: [silicon_architecture_competition, ai_infrastructure_capex, networking_competitive_landscape, hyperscaler_revenue_concentration, ai_compute_topology, inference_compute_economics]
-    added_date: 2026-05-09
   - ticker: MSI
     themes: [surveillance_security_tech, ai_native_vertical, vertical_ai_applications]
     added_date: 2026-05-11
