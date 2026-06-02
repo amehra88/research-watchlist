@@ -1093,7 +1093,7 @@ tier_3_watchlist:
     themes: [ad_market_strength, ai_re_architected_incumbent, vertical_ai_applications]
     added_date: 2026-05-09
   - ticker: BABA
-    themes: [china_ai_infrastructure_demand, ad_market_strength, agentic_commerce, ai_re_architected_incumbent, china_us_tensions]
+    themes: [china_ai_infrastructure_demand, ad_market_strength, agentic_commerce, ai_re_architected_incumbent, china_us_tensions, frontier_model_competition]
     added_date: 2026-05-09
   - ticker: BIDU
     themes: [search_disruption, china_ai_infrastructure_demand, autonomous_vehicle_competition, ai_re_architected_incumbent]
