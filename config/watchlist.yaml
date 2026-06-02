@@ -326,6 +326,9 @@ web_sources:
 #     added_date: 2026-05-09
 # ---------------------------------------------------------------------------
 tier_1_bctk:
+  - ticker: 000660.KS
+    themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, model_efficiency_evolution, china_export_controls, nand_demand_cycle]
+    added_date: 2026-05-11
   - ticker: AMD
     themes: [silicon_architecture_competition, ai_infrastructure_capex, hyperscaler_revenue_concentration, model_efficiency_evolution, inference_compute_economics]
     added_date: 2026-05-09
@@ -491,9 +494,6 @@ tier_1_bctk:
     themes: [cybersecurity_competitive_landscape, enterprise_ai_adoption, ai_infrastructure_software]
     added_date: 2026-05-11
 tier_2_active_candidates:
-  - ticker: 000660.KS
-    themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, model_efficiency_evolution, china_export_controls, nand_demand_cycle]
-    added_date: 2026-05-11
   - ticker: 005930.KS
     themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, model_efficiency_evolution, china_export_controls, nand_demand_cycle]
     added_date: 2026-05-11
