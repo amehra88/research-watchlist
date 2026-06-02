@@ -233,3 +233,31 @@ MSFT:
   name: "Microsoft"
   factset_id: "MSFT-US"
   google: '"Microsoft" OR MSFT stock'
+
+# ───────── Tier 3 — competitors-to-watch (optical/photonics, added 2026-06-03) ─────────
+# Chinese Shenzhen-listed: foreign FactSet ids (-CN per CNBC symbology) + name-only Google (Phase A).
+# US-listed AAOI/POET: standard TICKER-US + ticker-anchored query (POET name-anchored — common word).
+"300308.SZ":
+  name: "Zhongji Innolight"
+  factset_id: "300308-CN"          # REVIEW: Shenzhen A-share; CNBC uses 300308-CN — confirm FactSet regional id
+  google: '"Innolight" OR "Zhongji Innolight"'   # name-only (foreign); English optical press uses "Innolight"
+
+"300502.SZ":
+  name: "Eoptolink Technology"
+  factset_id: "300502-CN"          # REVIEW: Shenzhen A-share — confirm FactSet regional id
+  google: '"Eoptolink"'            # name-only (foreign); distinctive brand
+
+"002384.SZ":
+  name: "Suzhou Dongshan Precision Manufacturing"
+  factset_id: "002384-CN"          # REVIEW: Shenzhen A-share — confirm FactSet regional id
+  google: '"Dongshan Precision"'   # name-only (foreign)
+
+AAOI:
+  name: "Applied Optoelectronics"
+  factset_id: "AAOI-US"
+  google: '"Applied Optoelectronics" OR AAOI stock'
+
+POET:
+  name: "POET Technologies"
+  factset_id: "POET-US"
+  google: '"POET Technologies" OR POET stock'   # "POET"/"poet" common word — name quote-anchored

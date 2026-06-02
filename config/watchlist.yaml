@@ -1310,8 +1310,23 @@ tier_3_watchlist:
     themes: [] # TODO: assign themes via WATCHLIST email
     added_date: 2026-05-17
   - ticker: "300502.SZ"
-    themes: [] # TODO: assign themes via WATCHLIST email
-    added_date: 2026-05-17
+    themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, china_us_tensions]
+    added_date: 2026-05-17  # pre-existing stub (WATCHLIST email); themes + notes enriched 2026-06-03
+    notes: "Eoptolink Technology Inc., Ltd., Shenzhen-listed (Chengdu). High-speed optical modules — 800G/1.6T, 800G LPO, silicon-optical and coherent. Direct competitor-to-watch for LITE and COHR in data-center optical transceivers (the #2 Chinese pure-play behind Innolight). T3 stub (no full scoring)."
   - ticker: "300308.SZ"
-    themes: [] # TODO: assign themes via WATCHLIST email
-    added_date: 2026-05-17
+    themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, china_us_tensions]
+    added_date: 2026-05-17  # pre-existing stub (WATCHLIST email); themes + notes enriched 2026-06-03
+    notes: "Zhongji Innolight Co., Ltd. (中际旭创; InnoLight brand), Shenzhen-listed. World's largest optical-transceiver maker and a major NVDA supplier (400G/800G/1.6T, silicon photonics, CPO). Strongest competitor-to-watch for LITE and COHR on data-center optical interconnect — direct overlap in high-speed transceivers/optics riding AI-infrastructure capex. T3 stub (no full scoring)."
+  # Optical/photonics competitors-to-watch for LITE + COHR (added 2026-06-03)
+  - ticker: "002384.SZ"
+    themes: [networking_competitive_landscape, ai_infrastructure_capex, china_us_tensions]
+    added_date: 2026-06-03
+    notes: "Suzhou Dongshan Precision Manufacturing Co., Ltd., Shenzhen-listed (HK dual-listing filed 2025). PCB/FPC, precision components, touch/LED and comms-equipment components — optical-ADJACENT, not a direct transceiver competitor. Component-level/peripheral competitor-to-watch in the LITE/COHR optical supply chain (weaker overlap than Innolight/Eoptolink). T3 stub (no full scoring)."
+  - ticker: AAOI
+    themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology]
+    added_date: 2026-06-03
+    notes: "Applied Optoelectronics Inc. (Nasdaq), US optical-transceiver/components maker. Direct competitor-to-watch for LITE and COHR in datacenter optics — 800G/1.6T transceivers, lasers, CPO exposure; datacenter segment doubled y/y on AI buildout. Trades in lockstep with the LITE/COHR optics complex. T3 stub (no full scoring)."
+  - ticker: POET
+    themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, silicon_architecture_competition]
+    added_date: 2026-06-03
+    notes: "POET Technologies Inc. (Nasdaq), silicon-photonics platform — POET Optical Interposer, optical engines/light sources for CPO and 1.6T AI interconnect. Emerging competitor-to-watch for LITE/COHR at the optical-engine/CPO integration layer (platform/component, not a finished-transceiver rival). FORMER supplier to MRVL: shipped Starlight light-source modules into Celestial AI's Photonic Fabric (transferred to MRVL on the 2026-02-02 acquisition), but MRVL cancelled the inherited POs on 2026-04-23 over a disclosure dispute; POET has since pivoted to Lumilens/Sivers. T3 stub (no full scoring)."
