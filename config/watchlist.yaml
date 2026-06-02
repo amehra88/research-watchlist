@@ -1,4 +1,4 @@
-# /root/research/config/watchlist.yaml
+# /root/research-watchlist/config/watchlist.yaml  (canonical location after 2026-06-01 symlink flip)
 #
 # Master watchlist + theme vocabulary for the research intelligence system.
 # See DESIGN.md §4 for full rationale.
