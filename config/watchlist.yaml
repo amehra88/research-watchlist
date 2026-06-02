@@ -622,6 +622,19 @@ tier_1_bctk:
   - ticker: HNGE
     themes: [ai_native_vertical, vertical_ai_applications]
     added_date: 2026-05-09
+    ai_positioning:
+      score: "3"
+      notes: "3+ trajectory (operator-set): HNGE = Hinge Health (confirmed by operator) — digital musculoskeletal (MSK) care platform using AI/computer-vision for exercise therapy and care navigation; AI-enabled healthcare vertical."
+    competitive_advantage:
+      innovation_rate: "3"
+      distribution: "3"
+      overall: "3"
+      notes: "3+ overall (operator-set). Innovation 3: AI-driven care delivery (motion tracking, care navigation); 3+. Distribution 3: employer / health-plan channel, scaling post-IPO in a competitive digital-health space; 3+. Overall 3+: AI-health vertical with employer-channel distribution, gated by scale and competition."
+    potential_investor_interest:
+      score: "3"
+      notes: "3+ trajectory: recent IPO, digital-health growth, but profitability path and digital-health sentiment are risks. Factors: recent IPO, growth rate; profitability/sentiment cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02. Sources: public data, operator input (HNGE = Hinge Health, identity confirmed by operator; scores 3+/3+/3+ operator-set). No notes/HNGE/ corpus yet. Refine after first earnings cycle as public co. (source: ticker-synthesis session 2026-06-02)"
   - ticker: INDI
     themes: [autonomous_vehicle_competition, humanoid_robotics_competition, semiconductor_cycle, automotive_semiconductor_demand, china_us_tensions]
     added_date: 2026-05-09
