@@ -62,6 +62,7 @@ Two git repos cooperate:
 | `config/news_sources.yaml` | research-watchlist | News-digest source-quality tiers + denylist |
 | `config/supply-chain-manual.yaml` | research (local) | Operator-curated edges (high-signal, hand-authored) |
 | `config/supply-chain.yaml` | research (local) | FactSet auto-extracted edges (~146-ticker coverage, mostly noise per Phase A audit — fallback, weighted below manual) |
+| `scripts/chunking/` + `state/chunk_store/` | research-watchlist | **Retrieval layer (in progress)** — the sub-document store below `notes/`. Chunker + embed/ingest/retrieve job + `schema.sql` (durable pgvector spec). `state/chunk_store/` holds the file-backed vectors (gitignored, regenerable). Design + status in `docs/chunking-strategy.md`. |
 
 ## 4. Automation layer (cron, wrapped by `alert_on_failure.sh` → Brevo email on non-zero exit)
 
@@ -159,9 +160,24 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
   FactSet fundamentals into synthesis (currently stubbed; see §5).
 - **Gmail-poller → wrapper auto-trigger** — no automatic handoff from poller to the from-PDF note
   wrapper; remediate via a sweep cron.
+- **Sub-document retrieval (chunking) — the answer to the old "vector store at ~200 docs"
+  question, now being built.** `docs/chunking-strategy.md` is the design (decisions locked in §9
+  there). Status: chunker + file-backed Store A pipeline is **code-complete (step 4)**; ranking +
+  plumbing verified (gold eval 25/31/32), but the **embedding path is unverified — full-corpus
+  ingest is blocked on a refreshed Gemini key** in `/root/podcasts/.env` (operator to refresh, then
+  `python3 scripts/chunking/ingest.py --all --rebuild`). Open after that: **Store B** (FactSet
+  guidance-beat metrics) = step 5, which is also the **managed-pgvector cutover** (today the job is
+  file-backed numpy; pgvector is the locked target but earns its keep only when the A↔B JOIN lands).
+  The heuristic facet tagger is NVDA/SaaS-cue-flavored → the planned **LLM tagger (§8 of that doc)**
+  is the real generalizer.
 
 ## 9. Recent milestones (most recent first)
 
+- **2026-06-03** — **Chunking/retrieval steps 3b + 4**: second gold note (GOOGL) clears
+  generalization (combined recall@5 32/32); **Store-A pipeline built** (`scripts/chunking/`:
+  chunker fix + `schema.sql` + `embed`/`store`/`ingest`/`retrieve`/`eval_store`) — file-backed now,
+  pgvector at step 5. Code-complete; full-corpus embed pending a Gemini-key refresh. See
+  `docs/chunking-strategy.md` §12.
 - **2026-06-03** — Added `frontier_model_competition` + `agent_framework_landscape` themes; 4 new
   `.pvt` drivers (moonshot, deepseek, mistral, langchain); **`spacex.pvt` absorbed `xai.pvt`**
   (xAI dissolved into SpaceX's SpaceXAI division; Grok now under SpaceX); BABA tagged

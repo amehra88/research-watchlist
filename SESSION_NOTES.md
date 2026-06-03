@@ -2,6 +2,31 @@
 
 _Append-only chronological log of working sessions — **most recent at top**. New sessions add a `## YYYY-MM-DD — <title>` section above the existing entries (directly below this line)._
 
+## 2026-06-03 — Chunking/retrieval: step 3b committed + step 4 (Store-A pipeline) built
+
+**Session focus:** Pick up the note-chunking/RAG workstream. Closed out the uncommitted step-3b work, then built step 4 — the Store-A embedding + ingestion + retrieval pipeline.
+
+**Step 3b (committed `fdc3ada`):** pinned the GOOGL backlog gold case to require BOTH `operating_kpis` + `revenue` facets (guards the operator-requested multi-label against a future IDF/cue tweak); scope-honest eval wording ("no reachability gap on the constructed gold set", not "no retrieval ceiling").
+
+**Step 4 — Store-A pipeline (committed `b607034`, `c8fa9da`), all in `scripts/chunking/`:**
+- `schema.sql` — durable **pgvector DDL** (Store A `chunks` + Store B `metrics` + A↔B JOIN sketch), `vector(3072)`. Not executed today; the target spec.
+- `embed.py` (Gemini helper + sha256 cache), `store.py` (`Store` iface + `FileStore` numpy cosine + `PgStore` step-5 stub; `get_store()`←`CHUNK_STORE_BACKEND`), `ingest.py`, `retrieve.py` (auto-merge to parent), `eval_store.py` (regression gate).
+- Fixed a real `_parse_roster` crash (bare-string `speakers:` entry) → all 56 notes chunk (487 parents + 2,339 children).
+
+**Key decision (operator-approved after discussion):** pgvector is the locked target but runs **file-backed today** — the A↔B JOIN that justifies a DB is Store B (step 5), so a daemon buys nothing at ~2.3k vectors. `schema.sql` = durable spec; swap to managed pgvector (`PgStore`, `CHUNK_STORE_BACKEND=pg`) is the **step-5 trigger**. (Operator initially leaned "managed now"; agreed to defer once the JOIN-earns-the-daemon framing was clear.)
+
+**Honest verification scope (advisor caught — same self-consistency trap as 3a/3b):** the gold eval (25/31/32, reproduces §11c) ran on **cached 3b vectors**, so it proves `store.py` ranking math + plumbing, NOT the embedding path. Flipped `retrieve()` default to `production_boosts=False` so default == measured config (the §7 operator/recency boosts are untuned → OFF until measured).
+
+**⚠ OPEN — blocks step-4 "done":** `embed.py`→Gemini has **zero live runs**; key in `/root/podcasts/.env` is **expired** (operator will refresh later tonight 2026-06-03). Then the real acceptance gate is one command:
+```
+python3 scripts/chunking/ingest.py --all --rebuild
+```
+Watch: seeded cache (111 vectors, 2 gold notes) mixes cleanly with fresh embeds for the other 54; live `retrieval_document` vector matches the cached one. Then re-run `eval_store.py` to confirm 25/31/32 end-to-end on live vectors → step 4 flips code-complete → verified.
+
+**Next:** step 5 = Store B (FactSet guidance-beat time series + credibility score) = also the managed-pgvector cutover. Still 2 large-cap notes w/ NVDA-flavored cues → LLM tagger (§8) is the real generalizer.
+
+---
+
 ## 2026-06-03 — Agentic framework/harness landscape build-out
 
 **Session focus:** Operator pivoted the `agent_framework_landscape` theme from "privates as thesis drivers" to "best-of-breed leaders in agentic frameworks/harnesses, wherever they sit." LangChain is the anchor name.
