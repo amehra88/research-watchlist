@@ -40,9 +40,13 @@ cases:
     note: merchant-silicon shift; tests competitive_advantage cue on non-NVDA silicon vocab
 
   - q: "How large is Google Cloud's backlog?"
-    expect_facets: [operating_kpis]
+    expect_facets: [operating_kpis, revenue]
     expect_contains: "$462B"
-    note: backlog = operating_kpis leading indicator (legacy cue term)
+    note: >
+      backlog = operating_kpis leading indicator AND (operator decision, 2026-06-03)
+      a revenue signal — this case PINS the ARR/backlog→revenue multi-label so a
+      future IDF/cue tweak that silently drops `revenue` from backlog chunks fails
+      the suite. The $462B chunk must carry BOTH facets.
 
   - q: "How did Search advertising revenue grow this quarter?"
     expect_facets: [revenue]
