@@ -56,6 +56,10 @@ state/news_digest_seen.jsonl
 state/factset_cache/
 logs/news_digest_*.txt
 
+# Chunk store (Store A) — embeddings + caches are regenerable via ingest.py.
+# chunks.jsonl is small metadata but is a derived artifact too; regenerate, don't commit.
+state/chunk_store/
+
 # Obsidian per-device workspace state (don't sync between devices)
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
