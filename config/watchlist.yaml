@@ -206,6 +206,12 @@ private_drivers:
     affects: [NET, GOOGL, NBIS]
     notes: "US agent-framework company (founded 2022, Harrison Chase). LangChain + LangGraph orchestration; ~90M monthly downloads, 35% of Fortune 500. $125M Series B at $1.25B valuation 2025-10 ($260M total). Central open-source player in agent_framework_landscape — competes with edge platforms (NET), Google (Antigravity), and neo-clouds (NBIS) for the orchestration layer above the model."
     added_date: 2026-06-02
+  - name: Avicena
+    pvt_id: avicena.pvt
+    aliases: ["Avicena", "AvicenaTech", "AvicenaTech Corp", "Avicena Tech"]
+    affects: [MRVL, COHR, LITE, TSM, 000660.KS, MU, 005930.KS]
+    notes: "MicroLED chip-to-chip optical interconnect (LightBundle). Series B $65M (May 2025, led by Tiger Global); strategic investors SK Hynix, Samsung, Micron, Lam Research. TSMC co-manufacturing alliance (Jun 2025). Competes w/ Celestial AI Photonic Fabric (now MRVL, acq $3.25B completed 2026-02-02) and Si-photonics interconnect (Ayar Labs, Lightmatter); closest microLED peer is Hyperlume. If microLED interconnect scales = structural threat to laser/transceiver datacom optics (COHR, LITE)."
+    added_date: 2026-06-03
 
 # ---------------------------------------------------------------------------
 # External web sources to track over time. Includes company technical blogs,
