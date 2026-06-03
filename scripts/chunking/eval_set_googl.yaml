@@ -1,0 +1,97 @@
+# Second gold eval set (step 3b) — generalization check for the chunker +
+# retriever on a DIFFERENT company/note: notes/GOOGL/20260429-1Q26.md.
+#
+# Built from the GOOGL 1Q26 note content, mirroring the capability mix of the
+# NVDA set (actuals/backward vs guidance/forward, margins, capital_allocation,
+# operating_kpis, Q&A answerer, section routing, claim_source). Deliberately
+# includes Q&A answered by Pichai (in the global EXEC_ROLES), Schindler (CBO),
+# and Ashkenazi (CFO) — the latter two are NOT in the hardcoded roster, so the
+# run reveals whether answerer extraction generalizes. Same field grammar as
+# eval_set.yaml; see that file's header for field docs.
+
+cases:
+  - q: "What was Alphabet's consolidated revenue and how fast did it grow?"
+    expect_facets: [revenue]
+    expect_section: "Actuals"
+    expect_contains: "$109.9B"
+    note: backward actuals (pairs with the forward capex case for time_orientation)
+
+  - q: "How fast did Google Cloud revenue grow this quarter?"
+    expect_facets: [revenue]
+    expect_contains: "+63%"
+    note: segment growth rate
+
+  - q: "What did Alphabet raise its FY26 capex guidance to?"
+    expect_facets: [guidance, fcf]
+    expect_section: "Forward guidance"
+    expect_contains: "$180–190B"
+    expect_time: forward
+    note: forward capex guide; fcf/capex facet; must not return backward actuals
+
+  - q: "What did management signal about 2027 capex?"
+    expect_facets: [guidance]
+    expect_contains: "2027"
+    expect_time: forward
+    note: first multi-year forward-capex frame
+
+  - q: "What is Alphabet's new strategy for selling TPUs to third parties?"
+    expect_facets: [competitive_advantage]
+    expect_contains: "select group of customers"
+    note: merchant-silicon shift; tests competitive_advantage cue on non-NVDA silicon vocab
+
+  - q: "How large is Google Cloud's backlog?"
+    expect_facets: [operating_kpis]
+    expect_contains: "$462B"
+    note: backlog = operating_kpis leading indicator (legacy cue term)
+
+  - q: "How did Search advertising revenue grow this quarter?"
+    expect_facets: [revenue]
+    expect_contains: "$60.4B"
+    note: Search reacceleration
+
+  - q: "What was Google Cloud's operating margin and how did it change?"
+    expect_facets: [margins]
+    expect_contains: "32.9%"
+    note: margins.operating facet
+
+  - q: "What did Pichai say about Cloud being supply-constrained?"
+    expect_section: "Q&A"
+    expect_contains: "would have been higher"
+    expect_answered_by: "Pichai"
+    note: Q&A answerer IS in the global roster — should resolve
+
+  - q: "What did management say about upside to Search ad coverage?"
+    expect_section: "Q&A"
+    expect_contains: "coverage number"
+    expect_answered_by: "Schindler"
+    note: answerer is CBO Schindler — NOT in global EXEC_ROLES; tests per-doc roster
+
+  - q: "What drove Google Cloud's margin expansion?"
+    expect_section: "Q&A"
+    expect_contains: "scientific process"
+    expect_answered_by: "Ashkenazi"
+    note: answerer is CFO Ashkenazi — NOT in global EXEC_ROLES; tests per-doc roster
+
+  - q: "What inference-cost efficiency gain did the new TPU deliver?"
+    expect_facets: [product]
+    expect_contains: "80% better performance per dollar"
+    note: >
+      inference unit-economics escalation. Facet relaxed competitive_advantage→product
+      in 3b: the sole chunk carrying the "80% better $/perf" phrase tags product (TPU
+      8i is a product) but not competitive_advantage, and no chunk carries both — the
+      original assertion was unwinnable (a gold-spec over-reach, like the NVDA buyback
+      case). product is the defensible facet and is present.
+
+  - q: "Did Alphabet change its dividend?"
+    expect_facets: [capital_allocation]
+    expect_contains: "dividend"
+    note: capital_allocation; dividend cue
+
+  - q: "Why was the EPS beat so much larger than the revenue beat?"
+    expect_contains: "mark-to-market"
+    note: quality-of-earnings — OI&E unrealized gains, not operating outperformance
+
+  - q: "What is the operator's read on the agentic-search bear case for Google?"
+    expect_section: "Competitive advantage"
+    expect_contains: "bear case"
+    note: operator_opinion thesis read; section routing

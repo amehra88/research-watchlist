@@ -31,6 +31,8 @@ import json
 import math
 import re
 import sys
+
+import yaml
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import Optional
@@ -49,7 +51,13 @@ FACETS = [
 # regex cue -> facet. Order does not matter; all matches collected then capped.
 _FACET_CUES = {
     "margins": r"\bmargin|gross margin|operating margin|ebitda|incremental|basis points|bps\b",
-    "revenue": r"\brevenue|top-?line|yoy|qoq|sequential|grew|growth\b",
+    # incl. contracted/forward revenue signals (ARR, backlog, RPO, deferred
+    # revenue, net-new ARR) per operator request — these also carry operating_kpis
+    # (multi-label): they are a revenue signal AND a leading indicator. NOTE: this
+    # deliberately groups GAAP-recognized revenue with contracted-but-unrecognized
+    # balances; a "what was revenue" query can now surface a backlog/RPO chunk.
+    "revenue": r"\brevenue|top-?line|yoy|qoq|sequential|grew|growth|"
+               r"\barrs?\b|backlog|deferred revenue|remaining performance obligation|net new arr\b",
     "guidance": r"\bguid(e|ance)|outlook|expect|we (will|aim)|next quarter|full[- ]year|FY2\d|±|going forward\b",
     "fcf": r"\bfree cash flow|\bfcf\b|capex|capital expenditure\b",
     "capital_allocation": r"\bbuyback|repurchase|dividend|authoriz|capital return|\bm&a\b|acquisition|debt paydown\b",
@@ -126,6 +134,38 @@ class Chunk:
 # ---------------------------------------------------------------------------
 # Doc-level metadata from filename + first line (mirrors metadata/extract_*).
 # ---------------------------------------------------------------------------
+def _norm_role(title: str) -> str:
+    """FactSet speaker title -> short role tag (CEO/CFO/CBO/COO/CTO/IR)."""
+    t = (title or "").lower()
+    for needle, role in (("chief executive", "CEO"), ("chief financial", "CFO"),
+                         ("chief business", "CBO"), ("chief operating", "COO"),
+                         ("chief technology", "CTO")):
+        if needle in t:
+            return role
+    if "investor relations" in t:
+        return "IR"
+    return (title or "").split("&")[0].strip()[:24] or "exec"
+
+
+def _parse_roster(text: str) -> dict:
+    """Per-doc {last_name: role} from the note's YAML `speakers:` frontmatter.
+    Generalizes answerer-role lookup beyond the hardcoded global EXEC_ROLES so a
+    new ticker's CFO/CBO resolve without editing code (step 3b)."""
+    fm = re.match(r"^---\n(.*?)\n---\n", text, re.S)
+    if not fm:
+        return {}
+    try:
+        meta = yaml.safe_load(fm.group(1)) or {}
+    except yaml.YAMLError:
+        return {}
+    roster = {}
+    for sp in (meta.get("speakers") or []):
+        name = (sp.get("name") or "").strip()
+        if name:
+            roster[name.split()[-1]] = _norm_role(sp.get("role", ""))
+    return roster
+
+
 def parse_doc_meta(path: Path) -> dict:
     text = path.read_text(encoding="utf-8")
     doc_id = hashlib.sha256(text.encode("utf-8")).hexdigest()
@@ -143,7 +183,8 @@ def parse_doc_meta(path: Path) -> dict:
     doc_type = "earnings_transcript" if fq else (
         "conference_transcript" if "conf" in tail else "operator_note")
     return dict(doc_id=doc_id, ticker=ticker, event_date=event_date,
-                fiscal_quarter=fq, doc_type=doc_type, text=text)
+                fiscal_quarter=fq, doc_type=doc_type, text=text,
+                roster=_parse_roster(text))
 
 
 # ---------------------------------------------------------------------------
@@ -151,7 +192,7 @@ def parse_doc_meta(path: Path) -> dict:
 # Replace body with a StructuredOutput LLM call; keep the signature.
 # ---------------------------------------------------------------------------
 def tag_chunk(text: str, *, section: str, doc_type: str,
-              idf: Optional[dict] = None) -> dict:
+              idf: Optional[dict] = None, exec_names: tuple = EXEC_NAMES) -> dict:
     low = text.lower()
 
     # Rank facets by tf*idf, then cap at 4 (docs §11). Ranking by raw cue-COUNT
@@ -177,7 +218,7 @@ def tag_chunk(text: str, *, section: str, doc_type: str,
             r"\((melius|cantor|ubs|bofa|bernstein|goldman|cowen|morgan stanley|"
             r"jpmorgan|barclays|citi|wells|evercore|melius)\)", low):
         claim_source = "analyst_question"
-    if any(n.lower() in low for n in EXEC_NAMES) and (
+    if any(n.lower() in low for n in exec_names) and (
             '"' in text or "answered" in low or "guided" in low or "said" in low):
         claim_source = "management"
 
@@ -222,6 +263,11 @@ def chunk_note(path: Path) -> list[Chunk]:
     meta = parse_doc_meta(path)
     lines = meta["text"].splitlines()
     base = f"{meta['ticker'] or 'SECTOR'}-{meta['fiscal_quarter'] or _slug(path.stem)}"
+    # Per-doc roster (from the note's `speakers:` frontmatter) augments the
+    # hardcoded global EXEC_ROLES so a new ticker's CFO/CBO resolve as answerers
+    # without a code edit; the global dict remains the fallback (step 3b).
+    roster = {**EXEC_ROLES, **meta["roster"]}
+    exec_names = tuple(roster)
     chunks: list[Chunk] = []
 
     # split into ## sections
@@ -251,7 +297,7 @@ def chunk_note(path: Path) -> list[Chunk]:
         units.append(dict(kind="parent", chunk_id=parent_id, parent_id=None,
                           text=body_text, section=title, child=None))
         # children: split by the section's grammar
-        for i, child in enumerate(_split_children(title, body), 1):
+        for i, child in enumerate(_split_children(title, body, roster), 1):
             ctext = child["text"].strip()
             if len(ctext) < 25:
                 continue
@@ -264,7 +310,7 @@ def chunk_note(path: Path) -> list[Chunk]:
     # Pass 2: tag (IDF-aware) + construct.
     for u in units:
         tags = tag_chunk(u["text"], section=u["section"],
-                         doc_type=meta["doc_type"], idf=idf)
+                         doc_type=meta["doc_type"], idf=idf, exec_names=exec_names)
         child = u["child"] or {}
         chunks.append(Chunk(
             chunk_id=u["chunk_id"], doc_id=meta["doc_id"], parent_id=u["parent_id"],
@@ -288,12 +334,15 @@ def _directness(text: str) -> Optional[str]:
     return None
 
 
-def _split_children(title: str, body: list[str]) -> list[dict]:
+def _split_children(title: str, body: list[str], roster: dict = None) -> list[dict]:
     """Return one dict per atomic child, by section grammar.
 
     For Q&A items the ANSWERER (exec who responded) + answer_directness are the
     signal; the asker (analyst/firm) is captured only as a non-ranking citation.
+    `roster` is the per-doc {last_name: role} map (frontmatter ∪ global); falls
+    back to the global EXEC_ROLES when not supplied.
     """
+    roster = roster or EXEC_ROLES
     text = "\n".join(body)
 
     # Q&A flags: numbered items -> one chunk each. Center the answerer.
@@ -307,12 +356,12 @@ def _split_children(title: str, body: list[str]) -> list[dict]:
             firm = re.search(r"\*\*([A-Z][a-zA-Z'-]+)\s*\(([^)]+)\)", it)
             asker_citation = f"{firm.group(1)} ({firm.group(2)})" if firm else None
             # answerer = first named exec in the item (the signal)
-            exec_m = re.search(r"\b(" + "|".join(EXEC_NAMES) + r")\b", it)
+            exec_m = re.search(r"\b(" + "|".join(map(re.escape, roster)) + r")\b", it)
             answered_by = exec_m.group(1) if exec_m else None
             out.append(dict(
                 text=it,
                 answered_by=answered_by,
-                answerer_role=EXEC_ROLES.get(answered_by),
+                answerer_role=roster.get(answered_by),
                 answer_directness=_directness(it),
                 asker_citation=asker_citation,
             ))

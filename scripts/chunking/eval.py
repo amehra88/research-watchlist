@@ -81,10 +81,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--note", type=Path,
                     default=_HERE.parents[1] / "notes/NVDA/20260521-1Q27.md")
+    ap.add_argument("--eval-set", type=Path, default=_HERE / "eval_set.yaml",
+                    help="gold cases for --note (default: NVDA eval_set.yaml)")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
 
-    cases = yaml.safe_load((_HERE / "eval_set.yaml").read_text())["cases"]
+    cases = yaml.safe_load(args.eval_set.read_text())["cases"]
     chunks = chunk_note(args.note)
 
     passed = 0

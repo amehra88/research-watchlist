@@ -30,10 +30,15 @@ from chunker import chunk_note
 from eval import check, _query_facets  # reuse gold-check + query-facet inference
 
 HERE = Path(__file__).resolve().parent
-NOTE = HERE.parents[1] / "notes/NVDA/20260521-1Q27.md"
 MODEL = "models/gemini-embedding-001"
-CACHE = Path("/tmp/embed_exp_cache.json")
 KS = (1, 3, 5)
+# (label, note, eval set, keyword-baseline recall@1 from eval.py). Step 3b adds
+# the GOOGL note to test generalization beyond the note the chunker/eval were
+# co-developed on.
+DATASETS = [
+    ("NVDA 1Q27", "notes/NVDA/20260521-1Q27.md", "eval_set.yaml", 11),
+    ("GOOGL 1Q26", "notes/GOOGL/20260429-1Q26.md", "eval_set_googl.yaml", 6),
+]
 
 
 def _load_key() -> None:
@@ -63,38 +68,41 @@ def _embed(texts: list[str], task_type: str, genai) -> list[list[float]]:
     return out
 
 
-def main():
-    _load_key()
-    import google.generativeai as genai
-    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+# facet-boost weight (added to cosine sim per fraction of query facets the
+# chunk carries). The HARD pre-filter wins +2 @1 but COSTS recall@5: IDF drops
+# the common `revenue` facet from a chunk that does discuss revenue growth, so a
+# `revenue`-only query hard-filters out a chunk vector ranks in the top-5. A
+# soft boost keeps that recall while retaining the @1 gain — facets belong as a
+# ranking signal, not a gate (see docs §11b).
+LAMBDA = 0.05
+MODES = (("vector only", "none"),
+         ("vector + facet pre-filter (hard)", "filter"),
+         ("vector + facet boost (soft)", "boost"))
 
-    chunks = [c for c in chunk_note(NOTE) if c.kind == "child"]
-    cases = yaml.safe_load((HERE / "eval_set.yaml").read_text())["cases"]
 
-    # --- embed (cache to avoid repeat API calls on rerun) ---
-    key = f"{MODEL}|{len(chunks)}|{len(cases)}"
-    cache = json.loads(CACHE.read_text()) if CACHE.exists() else {}
+def run_dataset(label, note_rel, eval_rel, kw_base, genai):
+    """Embed one note + its gold set; return {mode: {k: hits}} and n."""
+    chunks = [c for c in chunk_note(HERE.parents[1] / note_rel) if c.kind == "child"]
+    cases = yaml.safe_load((HERE / eval_rel).read_text())["cases"]
+    n = len(cases)
+
+    cache_path = Path(f"/tmp/embed_exp_cache_{Path(note_rel).stem}.json")
+    key = f"{MODEL}|{len(chunks)}|{n}"
+    cache = json.loads(cache_path.read_text()) if cache_path.exists() else {}
     if cache.get("key") != key:
-        print(f"embedding {len(chunks)} chunks + {len(cases)} queries via {MODEL} …",
+        print(f"[{label}] embedding {len(chunks)} chunks + {n} queries via {MODEL} …",
               file=sys.stderr)
         cache = {
             "key": key,
             "doc": _embed([c.text for c in chunks], "retrieval_document", genai),
             "qry": _embed([c["q"] for c in cases], "retrieval_query", genai),
         }
-        CACHE.write_text(json.dumps(cache))
+        cache_path.write_text(json.dumps(cache))
     D = np.array(cache["doc"]); Q = np.array(cache["qry"])
     D /= np.linalg.norm(D, axis=1, keepdims=True)
     Q /= np.linalg.norm(Q, axis=1, keepdims=True)
 
     facet_top = [{f.split(".")[0] for f in c.facets} for c in chunks]
-    # facet-boost weight (added to cosine sim per fraction of query facets the
-    # chunk carries). The HARD pre-filter wins +2 @1 but COSTS recall@5: IDF
-    # drops the common `revenue` facet from a chunk that does discuss revenue
-    # growth, so a `revenue`-only query hard-filters out a chunk vector ranks in
-    # the top-5 (case 9). A soft boost keeps that recall while retaining the @1
-    # gain — facets belong as a ranking signal, not a gate.
-    LAMBDA = 0.05
 
     def topk_indices(qi, mode):
         sims = D @ Q[qi]
@@ -126,23 +134,43 @@ def main():
                     hits[k] += 1
         return hits, per
 
-    n = len(cases)
-    print(f"\n=== recall@k on {n} gold cases (NVDA 1Q27) ===")
-    print(f"  keyword baseline (eval.py)      recall@1 = 8/{n}")
-    for label, mode in (("vector only", "none"),
-                        ("vector + facet pre-filter (hard)", "filter"),
-                        ("vector + facet boost (soft)", "boost")):
+    print(f"\n=== recall@k on {n} gold cases ({label}) ===")
+    print(f"  keyword baseline (eval.py)         recall@1 = {kw_base}/{n}")
+    out = {}
+    for mlabel, mode in MODES:
         hits, per = recall_at(mode)
+        out[mode] = hits
         line = "  ".join(f"recall@{k} = {hits[k]:2d}/{n}" for k in KS)
-        print(f"  {label:34s} {line}")
-        if mode == "boost":  # per-case detail for the recommended variant
-            print("\n  per-case (vector + facet boost):")
+        print(f"  {mlabel:34s} {line}")
+        if mode == "boost":
+            print(f"\n  per-case ({label}, vector + facet boost):")
             for case, pk, idx in per:
                 mark = f"@{pk}" if pk else "MISS"
-                print(f"    [{mark:>4}] {case['q'][:62]}")
+                print(f"    [{mark:>4}] {case['q'][:60]}")
                 if not pk:
                     top = chunks[idx[0]]
                     print(f"            top1={top.chunk_id} facets={top.facets}")
+    return out, n
+
+
+def main():
+    _load_key()
+    import google.generativeai as genai
+    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+
+    combined = {mode: {k: 0 for k in KS} for _, mode in MODES}
+    total_n = 0
+    for label, note_rel, eval_rel, kw_base in DATASETS:
+        out, n = run_dataset(label, note_rel, eval_rel, kw_base, genai)
+        total_n += n
+        for _, mode in MODES:
+            for k in KS:
+                combined[mode][k] += out[mode][k]
+
+    print(f"\n=== COMBINED across {len(DATASETS)} notes ({total_n} cases) ===")
+    for mlabel, mode in MODES:
+        line = "  ".join(f"recall@{k} = {combined[mode][k]:2d}/{total_n}" for k in KS)
+        print(f"  {mlabel:34s} {line}")
 
 
 if __name__ == "__main__":
