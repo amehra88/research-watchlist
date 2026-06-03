@@ -160,6 +160,11 @@ def _parse_roster(text: str) -> dict:
         return {}
     roster = {}
     for sp in (meta.get("speakers") or []):
+        # Tolerate a malformed `speakers:` entry that is a bare string rather
+        # than a {name, role} mapping (real case: NVDA conf-analyst-meeting
+        # note) — skip it instead of crashing the whole-corpus ingest.
+        if not isinstance(sp, dict):
+            continue
         name = (sp.get("name") or "").strip()
         if name:
             roster[name.split()[-1]] = _norm_role(sp.get("role", ""))
