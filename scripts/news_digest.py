@@ -35,12 +35,13 @@ from newsdigest.cluster import cluster_items, cluster_hash, normalize_tokens  # 
 LOG_PATH = os.path.join(REPO_ROOT, "logs", "news_digest.log")
 LEDGER_PATH = os.path.join(REPO_ROOT, "state", "news_digest_seen.jsonl")
 FACTSET_CACHE_DIR = os.path.join(REPO_ROOT, "state", "factset_cache")
+FACTSET_CACHE_DRYRUN_DIR = os.path.join(REPO_ROOT, "state", "factset_cache_dryrun")  # v2: dry-run never touches prod cache
 
 logger = logging.getLogger("news_digest")
 
 
 # ─────────────────────────────── per-ticker work ────────────────────────────
-def process_ticker(ident, window, now, classifier, use_factset):
+def process_ticker(ident, window, now, classifier, use_factset, cache_dir, use_cache):
     out = {
         "ticker": ident.ticker, "g_status": None, "fa_status": "disabled",
         "verdicts": [], "factset_only": [], "error": None,
@@ -52,7 +53,8 @@ def process_ticker(ident, window, now, classifier, use_factset):
         fa_articles, fa_status = [], "disabled"
         if use_factset:
             fa_articles, fa_status = factset_news.fetch(
-                ident.name, ident.factset_id, window, now, FACTSET_CACHE_DIR, REPO_ROOT,
+                ident.name, ident.factset_id, window, now, cache_dir, REPO_ROOT,
+                use_cache=use_cache,
             )
         out["fa_status"] = fa_status
 
@@ -129,8 +131,8 @@ def build_digest(results, mode, now_local, banners, suppressed=0):
     label = "Pre-market" if mode == "premarket" else "Post-market"
     subject = f"{label} news digest — {date_str}"
 
-    high, medium = [], []   # (ticker, cluster, verdict)
-    factset_only = []       # (ticker, article)
+    high, medium = [], []         # (ticker, cluster, verdict)
+    fa_high, fa_medium = [], []   # FactSet-only (ticker, article): v2 → HIGH unless templated boilerplate
     quiet, failures = [], []
 
     for r in results:
@@ -148,21 +150,21 @@ def build_digest(results, mode, now_local, banners, suppressed=0):
             (high if v.level == "HIGH" else medium).append((t, c, v))
         for a in r["factset_only"]:
             had = True
-            factset_only.append((t, a))
+            (fa_medium if nfilter.is_templated_preview(a.get("headline", "")) else fa_high).append((t, a))
         if not had and not r["error"]:
             quiet.append(t)
 
     high.sort(key=lambda x: _vol_key((x[1], x[2])), reverse=True)
     medium.sort(key=lambda x: _vol_key((x[1], x[2])), reverse=True)
 
-    n_high_tickers = len({t for t, _, _ in high})
+    n_high_tickers = len({t for t, _, _ in high} | {t for t, _ in fa_high})
     lines = []
     lines.append(subject)
     lines.append("=" * len(subject))
     lines.append("")
     lines.append(
-        f"{len(high)} high across {n_high_tickers} tickers · "
-        f"{len(medium) + len(factset_only)} medium · {len(quiet)} quiet"
+        f"{len(high) + len(fa_high)} high across {n_high_tickers} tickers · "
+        f"{len(medium) + len(fa_medium)} medium · {len(quiet)} quiet"
     )
     for b in banners:
         lines.append(f"⚠ {b}")
@@ -179,22 +181,28 @@ def build_digest(results, mode, now_local, banners, suppressed=0):
         lines.append(f"{t} — {c.headline}")
         lines.append(f"    {c.volume} outlet{'s' if c.volume != 1 else ''} · {_fmt_sources(c.sources)}{fa} · [{v.reason}]")
         lines.append(f"    → {rep['link']}")
+    for t, a in fa_high:
+        sent = a.get("sentiment") or "Neutral"
+        src = a.get("source") or "StreetAccount"
+        lines.append(f"{t} — {a.get('headline','').strip()}")
+        lines.append(f"    FactSet {src} · {sent} · [FactSet-only]")
+        lines.append(f"    → {a.get('url','')}")
     lines.append("")
 
     # ── MEDIUM ──
     lines.append("MEDIUM SIGNAL")
     lines.append("-" * 13)
-    if not medium and not factset_only:
+    if not medium and not fa_medium:
         lines.append("(none)")
     for t, c, v in medium:
         rep = c.representative
         fa = f" · {v.factset_status}" if v.factset_status else ""
         lines.append(f"{t} — {c.headline}  ({c.volume} outlet{'s' if c.volume != 1 else ''}{fa})  → {rep['link']}")
-    for t, a in factset_only:
+    for t, a in fa_medium:
         sent = a.get("sentiment") or "Neutral"
         url = a.get("url") or ""
         tail = f"  → {url}" if url else ""
-        lines.append(f"{t} — {a.get('headline','').strip()}  (FactSet-only: {sent}){tail}")
+        lines.append(f"{t} — {a.get('headline','').strip()}  (FactSet templated: {sent}){tail}")
     lines.append("")
 
     # ── QUIET ──
@@ -238,6 +246,10 @@ def main():
     mode = "premarket" if args.premarket else "postmarket"
     window = PREMARKET_WINDOW_HOURS if args.premarket else POSTMARKET_WINDOW_HOURS
     use_factset = not args.no_factset
+    # v2 cache policy: production cron ALWAYS fetches fresh (freshness > the old pre/post dedup);
+    # dry-run uses a SEPARATE cache dir so testing never poisons the production cache.
+    use_cache = args.dry_run
+    cache_dir = FACTSET_CACHE_DRYRUN_DIR if args.dry_run else FACTSET_CACHE_DIR
     now = datetime.now(timezone.utc)
     now_local = datetime.now()
 
@@ -248,7 +260,8 @@ def main():
 
     results = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=FACTSET_CONCURRENCY) as ex:
-        futs = {ex.submit(process_ticker, ident, window, now, classifier, use_factset): tk
+        futs = {ex.submit(process_ticker, ident, window, now, classifier,
+                          use_factset, cache_dir, use_cache): tk
                 for tk, ident in identities.items()}
         for fut in concurrent.futures.as_completed(futs):
             results.append(fut.result())

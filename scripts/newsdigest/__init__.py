@@ -6,9 +6,9 @@ Spec: memory news-digest-phase-b-spec (Phase B approved 2026-06-02).
 Tunable thresholds live here as named constants (spec §9).
 """
 
-# ── Filter thresholds (spec §5; v1 guesses — tune after ~1 week) ──────────────
-HIGH_VOLUME = 4          # story_volume >= this -> HIGH (§5b)
-MEDIUM_VOLUME = 2        # story_volume in [this, HIGH_VOLUME) -> MEDIUM (§5b)
+# ── Filter thresholds (v2: channel inversion — see filter.py) ─────────────────
+HIGH_VOLUME = 4          # v2: story_volume >= this -> MEDIUM (Google volume NO LONGER earns HIGH)
+MEDIUM_VOLUME = 2        # DEPRECATED in v2 (volume < HIGH_VOLUME now DROPs); kept to avoid import churn
 
 # ── Fetch windows (spec §1) ───────────────────────────────────────────────────
 PREMARKET_WINDOW_HOURS = 24
@@ -21,7 +21,7 @@ FACTSET_MATCH_JACCARD = 0.5      # looser overlap to call a Google cluster "corr
 
 # ── FactSet channel (spec §1 operator decision, §9) ───────────────────────────
 FACTSET_CONCURRENCY = 8          # max concurrent claude -p subprocesses
-FACTSET_CACHE_HOURS = 6          # reuse cached FactSet result within this window (pre+post same day)
+FACTSET_CACHE_HOURS = 6          # v2: DRY-RUN ONLY (separate cache dir). Production cron bypasses cache (always fresh).
 FACTSET_TIMEOUT_SECONDS = 120    # per-ticker claude -p hard timeout
 
 # ── State ledger (spec §10) ───────────────────────────────────────────────────

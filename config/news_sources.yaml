@@ -107,6 +107,12 @@ denylist:
     - " is a sell"
     - "stocks to buy"
     - "best stocks to"
+    # v2 SEO-listicle patterns (substring, case-insensitive; applied at fetch in google_rss):
+    - "where will"          # "Where Will Poet Technologies Stock Be in 5 Years?"
+    - "should you buy"      # "...Should You Buy Micron or Intel Right Now?"
+    - "better buy"          # "AMD vs. Nvidia ...the Better Buy"
+    - "best day ever"       # "Marvell Stock Just Had Its Best Day Ever..."
+    - "reasons to"          # "N Reasons to Buy/Sell <X>" listicles
 
 # ───────── Source-name normalization (sources.py resolves variant -> canonical) ─────────
 aliases:

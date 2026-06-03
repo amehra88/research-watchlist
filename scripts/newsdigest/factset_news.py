@@ -115,10 +115,11 @@ def _write_cache(cache_dir: str, factset_id: str, now: datetime, articles):
 
 
 def fetch(name, factset_id, window_hours, now, cache_dir, repo_root,
-          timeout=FACTSET_TIMEOUT_SECONDS):
-    cached = _read_cache(cache_dir, factset_id, now)
-    if cached is not None:
-        return cached, "cached"
+          timeout=FACTSET_TIMEOUT_SECONDS, use_cache=True):
+    if use_cache:
+        cached = _read_cache(cache_dir, factset_id, now)
+        if cached is not None:
+            return cached, "cached"
 
     cmd = ["claude", "-p", _prompt(name, factset_id, window_hours), "--allowedTools", _TOOL]
     try:
@@ -138,5 +139,6 @@ def fetch(name, factset_id, window_hours, now, cache_dir, repo_root,
         return [], "error: unparseable"
 
     articles = _dedup(parsed)
-    _write_cache(cache_dir, factset_id, now, articles)
+    if use_cache:
+        _write_cache(cache_dir, factset_id, now, articles)
     return articles, ("ok" if articles else "empty")
