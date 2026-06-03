@@ -1,0 +1,112 @@
+# Starter gold eval set for the note chunker / Store-A retrieval.
+# ~16 question -> expected-chunk pairs against notes/NVDA/20260521-1Q27.md.
+#
+# Purpose (per docs/chunking-strategy.md §10, step 3): the only way to know the
+# chunker + (eventual) retriever actually work. Each item asserts the kind of
+# chunk that SHOULD be the top hit — by section, facet, claim_source,
+# time_orientation, and a text cue. Today eval.py checks these against the
+# chunker's keyword-best chunk; once embeddings land, swap the matcher for the
+# vector retriever and the same gold set measures recall@k.
+#
+# Fields:
+#   q                  natural-language question
+#   expect_facets      facet(s) the winning chunk must carry (subset match)
+#   expect_section     section the winning chunk should come from (substring)
+#   expect_contains    text that must appear in the winning chunk
+#   expect_time        backward | current | forward   (optional)
+#   expect_claim       management | analyst_question | operator_opinion (optional)
+#   note               why this case matters / what it stresses
+
+cases:
+  - q: "By how much did NVDA raise its buyback authorization?"
+    expect_facets: [capital_allocation]
+    expect_section: "Forward guidance"
+    expect_contains: "$80B"
+    note: capital_allocation facet + dollar figure (Store-B candidate too)
+
+  - q: "What did NVDA guide Q2 revenue to?"
+    expect_facets: [revenue, guidance]
+    expect_section: "Forward guidance"
+    expect_contains: "$91B"
+    expect_time: forward
+    note: forward guidance must NOT return backward actuals
+
+  - q: "What was actual Q1 revenue and the YoY growth?"
+    expect_facets: [revenue]
+    expect_section: "Actuals"
+    expect_contains: "$82"
+    note: backward actuals; pairs with the forward case above to test time_orientation
+
+  - q: "What did management say about gross margin going forward?"
+    expect_facets: [margins, guidance]
+    expect_section: "Forward guidance"
+    expect_contains: "mid-70s"
+    expect_time: forward
+    note: margins.gross + forward
+
+  - q: "How much free cash flow did NVDA generate and how much did it return?"
+    expect_facets: [fcf]
+    expect_contains: "$49"
+    note: fcf vs capital_allocation distinction
+
+  - q: "What is NVDA's commitment on returning cash to shareholders?"
+    expect_facets: [capital_allocation, fcf]
+    expect_section: "Forward guidance"
+    expect_contains: "50% of FCF"
+    note: capital_allocation policy
+
+  - q: "What did Huang say about growing faster than hyperscaler capex?"
+    expect_facets: [supply_chain]
+    expect_contains: "faster than hyperscaler capex"
+    note: demand/supply-chain framing; appears in both guidance and Q&A
+
+  - q: "What was asked about custom silicon (CPX/LPX), and who answered?"
+    expect_section: "Q&A"
+    expect_contains: "LPX"
+    expect_answered_by: "Huang"
+    note: Q&A keyed on TOPIC + answerer (the asker/firm is incidental, never ranked)
+
+  - q: "What was said about Neoclouds and ACIE vs Hyperscale growth rates?"
+    expect_section: "Q&A"
+    expect_contains: "ACIE"
+    expect_answered_by: "Huang"
+    note: topic-keyed Q&A; answerer carries the signal, not the asker
+
+  - q: "Which Q&A answer was a standard execution caveat rather than new disclosure?"
+    expect_section: "Q&A"
+    expect_directness: "reiteration"
+    note: answer-quality is the alpha — directness, not who asked
+
+  - q: "How is the China export-control situation affecting guidance?"
+    expect_facets: [regulatory_geopolitical]
+    expect_contains: "China"
+    note: regulatory_geopolitical cross-cutting facet
+
+  - q: "What is the TAM for the new Vera CPU?"
+    expect_facets: [market]
+    expect_contains: "$200B"
+    note: market.tam
+
+  - q: "What competitive moat evidence came from this print?"
+    expect_facets: [competitive_advantage]
+    expect_section: "Competitive advantage"
+    note: competitive_advantage facet
+
+  - q: "What new segment KPIs did NVDA disclose (Hyperscale vs ACIE)?"
+    expect_facets: [operating_kpis]
+    expect_contains: "ACIE"
+    note: operating_kpis leading indicators
+
+  - q: "What are the key risks flagged in this note?"
+    expect_facets: [risks]
+    note: risks facet
+
+  - q: "What is the operator's overall thesis read on the AI infrastructure capex theme?"
+    expect_section: "Thesis read"
+    expect_contains: "ai_infrastructure_capex"
+    note: operator_opinion claim_source; theme-block child
+
+  - q: "What did NVDA say about inference share and frontier model partnerships?"
+    expect_facets: [competitive_advantage]
+    expect_contains: "inference"
+    note: inference_compute_economics theme; Anthropic partnership signal
