@@ -168,8 +168,8 @@ private_drivers:
     pvt_id: spacex.pvt   # transitional — retire to ticker SPCX when the IPO prices (~2026-06-11/12), promote to T1
     aliases: ["SpaceX", "Space Exploration Technologies Corp.", "Starlink", "xAI", "Grok", "SpaceXAI"]
     affects: [NVDA, GEV, TSLA]
-    notes: "Starlink revenue + launch cadence reshape space economics (read-through to space-economy publics RKLB/IRDM/ASTS if added). NOW ALSO encompasses xAI: SpaceX acquired xAI 2026-02-02 (share exchange, 1 xAI -> 0.1433 SpaceX); May 2026 xAI was dissolved as a separate company — Grok and X moved under SpaceX's 'SpaceXAI' division. So SpaceX is also a frontier-model player (Grok — frontier_model_competition) and a major NVDA compute consumer (Colossus cluster; planned orbital data centers); TSLA cross-pollination on Grok. IPO imminent: confidential filing 2026-04-01, public S-1 out, expected price ~2026-06-11 / list ~06-12 at ~$1.8T (raise up to $75B). ON IPO -> rename this entry in place to the real ticker and promote to T1 (pre-IPO watchlist handoff). Absorbed former xai.pvt 2026-06-03."
-    added_date: 2026-05-10   # restructured 2026-06-03 to absorb xAI (formerly xai.pvt)
+    notes: "Starlink revenue + launch cadence reshape space economics (read-through to space-economy publics RKLB/IRDM/ASTS if added). NOW ALSO encompasses xAI: SpaceX acquired xAI 2026-02-02 (share exchange, 1 xAI -> 0.1433 SpaceX); May 2026 xAI was dissolved as a separate company — Grok and X moved under SpaceX's 'SpaceXAI' division. So SpaceX is also a frontier-model player (Grok — frontier_model_competition) and a major NVDA compute consumer (Colossus cluster; planned orbital data centers); TSLA cross-pollination on Grok. IPO imminent: confidential filing 2026-04-01, public S-1 out, expected price ~2026-06-11 / list ~06-12 at ~$1.8T (raise up to $75B). ON IPO -> rename this entry in place to the real ticker and promote to T1 (pre-IPO watchlist handoff). Absorbed former xai.pvt 2026-06-02."
+    added_date: 2026-05-10   # restructured 2026-06-02 to absorb xAI (formerly xai.pvt)
   - name: Stripe
     pvt_id: stripe.pvt
     aliases: ["Stripe", "STRIPE, INC."]
@@ -187,25 +187,25 @@ private_drivers:
     aliases: ["Moonshot AI", "Moonshot", "Kimi"]
     affects: [NVDA, MSFT, GOOGL, AMZN, META]
     notes: "Beijing frontier-model lab (Kimi open-weight LLMs), founded 2023. ~$2B raise at $20B valuation 2026-05 (Meituan-led); ARR >$200M; Kimi K2.6 a top-used model on OpenRouter. Chinese open-source displacement risk in frontier_model_competition — pressures US model-layer economics and shapes compute-demand allocation. 'Kimi' is the product brand."
-    added_date: 2026-06-03
+    added_date: 2026-06-02
   - name: DeepSeek
     pvt_id: deepseek.pvt
     aliases: ["DeepSeek", "DeepSeek AI"]
     affects: [NVDA, MSFT, GOOGL, AMZN, META]
     notes: "Chinese frontier-model lab (High-Flyer-backed). V4-Pro/V4-Flash released 2026-04 under MIT license, benchmarking near GPT-5.5 / Claude Opus 4.7 at ~1/8th the price. Trained on Huawei Ascend (SMIC) — a deliberate shift away from NVDA, so both a model-layer displacement risk AND an NVDA compute-substitution signal. Key name in frontier_model_competition."
-    added_date: 2026-06-03
+    added_date: 2026-06-02
   - name: Mistral AI
     pvt_id: mistral.pvt
     aliases: ["Mistral AI", "Mistral"]
     affects: [ASML, NVDA, MSFT, GOOGL, AMZN, META]
     notes: "French frontier-model lab (Paris, founded 2023); the principal European alternative to US labs. ~$14B valuation; ASML invested $1.5B for ~11% ownership (direct ASML tie). Building a Paris data center on 13,800 NVDA GB300 GPUs (200MW target by 2027). frontier_model_competition (European axis)."
-    added_date: 2026-06-03
+    added_date: 2026-06-02
   - name: LangChain
     pvt_id: langchain.pvt
     aliases: ["LangChain", "LangChain Inc.", "LangGraph"]
     affects: [NET, GOOGL, NBIS]
     notes: "US agent-framework company (founded 2022, Harrison Chase). LangChain + LangGraph orchestration; ~90M monthly downloads, 35% of Fortune 500. $125M Series B at $1.25B valuation 2025-10 ($260M total). Central open-source player in agent_framework_landscape — competes with edge platforms (NET), Google (Antigravity), and neo-clouds (NBIS) for the orchestration layer above the model."
-    added_date: 2026-06-03
+    added_date: 2026-06-02
 
 # ---------------------------------------------------------------------------
 # External web sources to track over time. Includes company technical blogs,
@@ -1331,22 +1331,22 @@ tier_3_watchlist:
     added_date: 2026-05-17
   - ticker: "300502.SZ"
     themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, china_us_tensions]
-    added_date: 2026-05-17  # pre-existing stub (WATCHLIST email); themes + notes enriched 2026-06-03
+    added_date: 2026-05-17  # pre-existing stub (WATCHLIST email); themes + notes enriched 2026-06-02
     notes: "Eoptolink Technology Inc., Ltd., Shenzhen-listed (Chengdu). High-speed optical modules — 800G/1.6T, 800G LPO, silicon-optical and coherent. Direct competitor-to-watch for LITE and COHR in data-center optical transceivers (the #2 Chinese pure-play behind Innolight). T3 stub (no full scoring)."
   - ticker: "300308.SZ"
     themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, china_us_tensions]
-    added_date: 2026-05-17  # pre-existing stub (WATCHLIST email); themes + notes enriched 2026-06-03
+    added_date: 2026-05-17  # pre-existing stub (WATCHLIST email); themes + notes enriched 2026-06-02
     notes: "Zhongji Innolight Co., Ltd. (中际旭创; InnoLight brand), Shenzhen-listed. World's largest optical-transceiver maker and a major NVDA supplier (400G/800G/1.6T, silicon photonics, CPO). Strongest competitor-to-watch for LITE and COHR on data-center optical interconnect — direct overlap in high-speed transceivers/optics riding AI-infrastructure capex. T3 stub (no full scoring)."
-  # Optical/photonics competitors-to-watch for LITE + COHR (added 2026-06-03)
+  # Optical/photonics competitors-to-watch for LITE + COHR (added 2026-06-02)
   - ticker: "002384.SZ"
     themes: [networking_competitive_landscape, ai_infrastructure_capex, china_us_tensions]
-    added_date: 2026-06-03
+    added_date: 2026-06-02
     notes: "Suzhou Dongshan Precision Manufacturing Co., Ltd., Shenzhen-listed (HK dual-listing filed 2025). PCB/FPC, precision components, touch/LED and comms-equipment components — optical-ADJACENT, not a direct transceiver competitor. Component-level/peripheral competitor-to-watch in the LITE/COHR optical supply chain (weaker overlap than Innolight/Eoptolink). T3 stub (no full scoring)."
   - ticker: AAOI
     themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology]
-    added_date: 2026-06-03
+    added_date: 2026-06-02
     notes: "Applied Optoelectronics Inc. (Nasdaq), US optical-transceiver/components maker. Direct competitor-to-watch for LITE and COHR in datacenter optics — 800G/1.6T transceivers, lasers, CPO exposure; datacenter segment doubled y/y on AI buildout. Trades in lockstep with the LITE/COHR optics complex. T3 stub (no full scoring)."
   - ticker: POET
     themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, silicon_architecture_competition]
-    added_date: 2026-06-03
+    added_date: 2026-06-02
     notes: "POET Technologies Inc. (Nasdaq), silicon-photonics platform — POET Optical Interposer, optical engines/light sources for CPO and 1.6T AI interconnect. Emerging competitor-to-watch for LITE/COHR at the optical-engine/CPO integration layer (platform/component, not a finished-transceiver rival). FORMER supplier to MRVL: shipped Starlight light-source modules into Celestial AI's Photonic Fabric (transferred to MRVL on the 2026-02-02 acquisition), but MRVL cancelled the inherited POs on 2026-04-23 over a disclosure dispute; POET has since pivoted to Lumilens/Sivers. T3 stub (no full scoring)."

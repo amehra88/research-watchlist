@@ -54,6 +54,8 @@ _Append-only chronological log of working sessions — **most recent at top**. N
 **Waiting on at session-write time:**
 - 18:30 ET postmarket digest run (first live cron fire, background waiter armed, will report when fired)
 
+**Note on commit-date discrepancy:** commit subject lines for 8e2d291 (SESSION_NOTES.md initial) and 6fcf960 (ARCHITECTURE.md initial) reference 2026-06-03 — those were post-dated at write time; the actual work date is 2026-06-02 per the body of this section. The subjects are immutable (already pushed) so they stand as-is; in-tree dates were normalized to 06-02 (this section header + 12 watchlist.yaml references).
+
 ---
 
 ---
