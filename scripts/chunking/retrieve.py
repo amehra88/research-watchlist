@@ -39,12 +39,15 @@ def query_facets(question: str) -> set:
 
 
 def retrieve(question: str, k: int = 5, *, ticker: str = None, since: str = None,
-             store=None, production_boosts: bool = True) -> list[Hit]:
+             store=None, production_boosts: bool = False) -> list[Hit]:
     """Return top-k child Hits, each auto-merged to its parent section.
 
-    production_boosts=False reproduces the bare proven retriever (facet soft
-    boost only) — used by the gold eval. True adds the §7 operator + recency
-    boosts for real use.
+    Default is the VERIFIED config: facet soft boost only (the §11c retriever
+    measured at 25/31/32). production_boosts=True additionally applies the §7
+    operator-opinion + recency boosts — design-intended but UNTUNED and
+    UNMEASURED on a full corpus (they demonstrably reorder results), so they
+    are OFF by default until tuned + re-evaluated on the embedded corpus. Keep
+    default == measured config; do not flip until §7 weights are measured.
     """
     store = store or get_store()
     qvec = embed_one(question, "retrieval_query")
