@@ -2,7 +2,7 @@
 
 _Append-only chronological log of working sessions — **most recent at top**. New sessions add a `## YYYY-MM-DD — <title>` section above the existing entries (directly below this line)._
 
-## 2026-06-03 — News digest live + MRVL closure + private-driver expansion
+## 2026-06-02 — News digest live + MRVL closure + private-driver expansion
 
 **Session focus:** Close MRVL Murphy keynote workstream, build and deploy Phase C news digest, expand private-driver coverage (frontier models + agent frameworks), restructure spacex.pvt post-xAI merger.
 
