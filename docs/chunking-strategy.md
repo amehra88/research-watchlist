@@ -142,7 +142,7 @@ LLM-tag at ingestion — a natural extension of `enrich_sidecars.py` (which alre
 | Decision | Call |
 |---|---|
 | Granularity | atomic-claim **+ parent-child** |
-| Facet assignment | LLM at ingestion; **enum-validated**, **≤4 facets/chunk** |
+| Facet assignment | LLM at ingestion; **enum-validated**, **≤4 facets/chunk**. When >4 match, rank by **discrimination (rarity/IDF), not raw cue-frequency** — see §11; the heuristic prototype gets this backwards. |
 | Management dossiers | **defer build, reserve schema now** |
 | Store | **pgvector** (hosts A + B + dossiers; enables the JOIN) |
 | First prototype | **earnings Q&A chunker** — highest value, cleanest boundaries, exercises guidance + claim_source + time_orientation + beat-rate join on one source type |
@@ -150,8 +150,33 @@ LLM-tag at ingestion — a natural extension of `enrich_sidecars.py` (which alre
 ## 10. Build order
 
 1. ✅ This design doc.
-2. ◻ Q&A / section chunker prototype + starter eval set (`scripts/chunking/`). _(in progress)_
-3. ◻ Eval set → ~15–20 question→expected-chunk gold pairs (the usually-skipped step; the only way to know the chunker works).
+2. ✅ Q&A / section chunker prototype + starter eval set (`scripts/chunking/`). Markdown-note chunker (`chunker.py`) and raw-FactSet-transcript chunker (`transcript_chunker.py`, deterministic answerer-role + asker-cite-only) both run.
+3. ✅ Eval set → 17 question→expected-chunk gold pairs (`eval_set.yaml`) + recall@k harness (`embed_experiment.py`, Gemini `gemini-embedding-001`).
+   - **3a. ◻ Fix the heuristic facet tagger before the store build — see §11. Gates step 4.**
 4. ◻ pgvector schema for Store A + Store B; embedding + ingestion job.
 5. ◻ Store B: FactSet guidance-beat time series + credibility score.
 6. ◻ `people/` dossiers (deferred).
+
+## 11. Embedding recall experiment (2026-06-03) — result
+
+Real embeddings (Gemini `gemini-embedding-001`) vs. the keyword baseline, on **n = 17 gold cases, single note (NVDA 1Q27)** — directional, not conclusive at this n.
+
+| Retriever | recall@1 | @3 | @5 |
+|---|---|---|---|
+| keyword baseline (`eval.py`) | 8/17 | — | — |
+| vector only | 9 | 12 | 14 |
+| vector + facet pre-filter | **11** | 12 | 14 |
+
+**What holds:** the facet pre-filter lifts precision@1 (8→11); vector clearly beats keyword. Hybrid (vector + facet filter) is the right retriever, as §7 assumed.
+
+**What does NOT hold (corrected — earlier read was confirmation bias):** the 3 residual @5 misses are **not** "Store-B-only cases that validate the two-store split," and **none is a genuine retrieval failure either**. **0 of 3 are Store-B-only; 0 of 3 are vector-recall misses.** All three are chunker tagging/sectioning + gold-spec issues; the answer demonstrably lives in a Store-A chunk in every case:
+
+- **Vera CPU TAM ($200B)** — the answer chunk was retrieved at **rank 1**; the eval rejected it only because the chunk lacks the `market` facet the gold asserts. Product-level TAM is management commentary; FactSet structured metrics (Store B) cannot hold it. → **tagger defect, not retrieval, not Store B.**
+- **Segment KPI (Hyperscale/ACIE)** — the answer is in ~10 narrative chunks; **none** carries `operating_kpis`, and the query inferred no facet at all. → **tagger + query-cue coverage gap.**
+- **Buyback authorization ($80B)** — **unwinnable at any rank, not a ranking miss.** The gold case asserts `expect_section: "Forward guidance"` AND `expect_contains: "$80B"`, but the `$80B` figure lives only in sections 1/2/7 (headline / actuals table / investor-signal); **no Forward-guidance chunk contains it.** `check()` substring-matches section, so every candidate fails on section regardless of rank. → **gold-spec/sectioning mismatch**: the case conflates "how much was authorized" (headline/table) with "capital-return policy" (Forward guidance, which carries only the ~50%-of-FCF / ~$100B policy). Also a Store-B dual (a hard dollar figure FactSet carries independently). Fix is to the gold spec (or section-boundary assignment), **not** the retriever.
+
+**Root cause of the two tagger misses — a real defect in `tag_chunk`:**
+1. **Frequency-ranked ≤4 cap drops the discriminating facet.** `tag_chunk` ranks facets by raw cue-match *count*, then caps at 4. On the TAM chunk the three kept facets (`revenue`/`supply_chain`/`product`) have count 2; `market` and `guidance` tie at count 1, and the 4th slot is decided by **dict insertion order** (`guidance` precedes `market`) — so `market`, the one facet the query keys on, is dropped arbitrarily. The cap is fine; the ranking is backwards in two ways (common facets outrank rare ones; ties break on dict order). Fix: weight by **discrimination (rarity/IDF), not raw count** — which both demotes boilerplate and removes the arbitrary tie-break.
+2. **SaaS-shaped cue vocabulary.** `operating_kpis` only matches ARR/RPO/bookings/backlog — it misses hardware "new segment / submarket disclosure" KPIs entirely, on both the doc and query side.
+
+**Gate decision:** the binding constraint is **chunker facet-tag ranking/coverage + sectioning/gold-spec, not retriever recall and not the store architecture** — every residual miss is a chunker/eval-spec issue, none is a vector ceiling. Both defects vanish under the planned **LLM tagger** (the marked swap-point in §8), which is semantic rather than regex-frequency. So: do the LLM-tagger swap (or, as a cheap interim, IDF-weight the heuristic ranking + broaden the `operating_kpis` cue) — that fixes the two tagger misses. **Buyback is separate:** the IDF fix does not touch it; it needs a gold-spec correction (drop or relax `expect_section: "Forward guidance"`, since authorization-size legitimately lives in the headline/table) or a section-boundary review — and a decision on whether the case should split "authorization size" from "capital-return policy." Then **re-run the gold eval before building pgvector** (step 3a). The experiment de-risks the store build (hybrid beats keyword; the residual gap is known, fixable chunker/eval-spec work, not a fundamental retrieval ceiling) but does not on its own justify "build the store now."
