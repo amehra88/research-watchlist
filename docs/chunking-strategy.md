@@ -131,7 +131,7 @@ Two fields financial RAG lives or dies on:
 - **Per-segment ticker / multi-ticker fan-out.** Podcasts and `sector/` notes name several companies. Assign `ticker` *per chunk segment* (allow a list) so one podcast fans out to each ticker's retrieval instead of being misfiled under `primary_ticker`.
 - **Recency decay.** Carry the existing freshness-rank philosophy into ranking — a Q1'24 margin comment should not tie a Q1'26 one for "current trajectory."
 - **Operator-opinion boost.** Retrieval-time boost for `claim_source = operator_opinion` so the operator's conviction dominates raw transcript.
-- **Hybrid by default.** Facet/theme/provenance filters + vector similarity together (pgvector handles the relational filtering Chroma can't).
+- **Hybrid by default.** Vector similarity + facet/theme/provenance as a **ranking boost, not a hard filter** (a hard facet gate costs recall@5 — see §11b; pgvector still handles the relational filtering Chroma can't, e.g. ticker/date scoping where a hard gate *is* correct).
 
 ## 8. How tags get assigned
 
@@ -152,14 +152,17 @@ LLM-tag at ingestion — a natural extension of `enrich_sidecars.py` (which alre
 1. ✅ This design doc.
 2. ✅ Q&A / section chunker prototype + starter eval set (`scripts/chunking/`). Markdown-note chunker (`chunker.py`) and raw-FactSet-transcript chunker (`transcript_chunker.py`, deterministic answerer-role + asker-cite-only) both run.
 3. ✅ Eval set → 17 question→expected-chunk gold pairs (`eval_set.yaml`) + recall@k harness (`embed_experiment.py`, Gemini `gemini-embedding-001`).
-   - **3a. ◻ Fix the heuristic facet tagger before the store build — see §11. Gates step 4.**
-4. ◻ pgvector schema for Store A + Store B; embedding + ingestion job.
+   - **3a. ✅ Fixed the heuristic facet tagger (tf·idf ranking + broadened `operating_kpis` cue) + buyback gold-spec; re-ran (§11b). vector-only recall@5 14→17/17; soft facet-boost 14/16/17. Closed on NVDA-1Q27 only — see 3b.**
+   - **3b. ◻ Add a second gold note (a GOOGL quarter) before the build — 3a was co-developed with its one eval note, so generalization is unproven. Gates step 4.**
+4. ◻ pgvector schema for Store A + Store B; embedding + ingestion job. **Working retriever spec = vector + facet/theme soft boost (NOT a hard facet filter), per §11b — confirm on 3b first.**
 5. ◻ Store B: FactSet guidance-beat time series + credibility score.
 6. ◻ `people/` dossiers (deferred).
 
 ## 11. Embedding recall experiment (2026-06-03) — result
 
-Real embeddings (Gemini `gemini-embedding-001`) vs. the keyword baseline, on **n = 17 gold cases, single note (NVDA 1Q27)** — directional, not conclusive at this n.
+Real embeddings (Gemini `gemini-embedding-001`) vs. the keyword baseline, on **n = 17 gold cases, single note (NVDA 1Q27)** — directional, not conclusive at this n. The **§11a diagnosis below is pre-fix**; **§11b records the post-step-3a re-run** (the numbers the build now stands on).
+
+### 11a. Pre-fix diagnosis
 
 | Retriever | recall@1 | @3 | @5 |
 |---|---|---|---|
@@ -167,7 +170,7 @@ Real embeddings (Gemini `gemini-embedding-001`) vs. the keyword baseline, on **n
 | vector only | 9 | 12 | 14 |
 | vector + facet pre-filter | **11** | 12 | 14 |
 
-**What holds:** the facet pre-filter lifts precision@1 (8→11); vector clearly beats keyword. Hybrid (vector + facet filter) is the right retriever, as §7 assumed.
+**What holds:** the facet pre-filter lifts precision@1 (8→11); vector clearly beats keyword.
 
 **What does NOT hold (corrected — earlier read was confirmation bias):** the 3 residual @5 misses are **not** "Store-B-only cases that validate the two-store split," and **none is a genuine retrieval failure either**. **0 of 3 are Store-B-only; 0 of 3 are vector-recall misses.** All three are chunker tagging/sectioning + gold-spec issues; the answer demonstrably lives in a Store-A chunk in every case:
 
@@ -180,3 +183,22 @@ Real embeddings (Gemini `gemini-embedding-001`) vs. the keyword baseline, on **n
 2. **SaaS-shaped cue vocabulary.** `operating_kpis` only matches ARR/RPO/bookings/backlog — it misses hardware "new segment / submarket disclosure" KPIs entirely, on both the doc and query side.
 
 **Gate decision:** the binding constraint is **chunker facet-tag ranking/coverage + sectioning/gold-spec, not retriever recall and not the store architecture** — every residual miss is a chunker/eval-spec issue, none is a vector ceiling. Both defects vanish under the planned **LLM tagger** (the marked swap-point in §8), which is semantic rather than regex-frequency. So: do the LLM-tagger swap (or, as a cheap interim, IDF-weight the heuristic ranking + broaden the `operating_kpis` cue) — that fixes the two tagger misses. **Buyback is separate:** the IDF fix does not touch it; it needs a gold-spec correction (drop or relax `expect_section: "Forward guidance"`, since authorization-size legitimately lives in the headline/table) or a section-boundary review — and a decision on whether the case should split "authorization size" from "capital-return policy." Then **re-run the gold eval before building pgvector** (step 3a). The experiment de-risks the store build (hybrid beats keyword; the residual gap is known, fixable chunker/eval-spec work, not a fundamental retrieval ceiling) but does not on its own justify "build the store now."
+
+### 11b. Step 3a applied — re-run (2026-06-03)
+
+Implemented the three fixes: (1) `tag_chunk` now ranks facets by **tf·idf** (IDF computed across the note's own chunks) with an alphabetical tie-break, so rare discriminating facets survive the ≤4 cap; (2) broadened the `operating_kpis` cue to cover hardware "new-segment / submarket / KPI disclosure" (doc + query side); (3) dropped the buyback case's `expect_section` assertion. Same gold set, same cached embeddings (only facet tags changed, not chunk text).
+
+| Retriever | recall@1 | @3 | @5 |
+|---|---|---|---|
+| keyword baseline (`eval.py`) | **11**/17 (was 8) | — | — |
+| vector only | 11 (was 9) | 14 (was 12) | **17** (was 14) |
+| vector + facet pre-filter (hard) | 13 | 14 | 16 |
+| **vector + facet boost (soft)** | **14** | **16** | **17** |
+
+**All three originally-flagged misses now resolve at @1** (Vera TAM, segment KPI, buyback). Vector-only recall@5 is now perfect (17/17) — i.e. every gold answer is recoverable from a Store-A chunk; there is no narrative retrieval ceiling. Confirms §11a: the gap was chunker tagging/eval-spec, not retrieval.
+
+**Finding — facets read better as a ranking *boost* than a *gate* (suggestive, one-case margin).** The re-run exposed a regression in the **hard** pre-filter: it costs recall@5 (16 vs vector-only's 17). Mechanism (verified): IDF correctly drops the common `revenue` facet from a Q&A chunk that *does* discuss revenue growth (case 9, Neoclouds/ACIE, answered by Huang); the query infers only `{revenue}`; so the hard filter excludes a chunk vector ranks inside the top-5. A **soft boost** (cosine + λ·fraction-of-query-facets-matched, λ=0.05) beats every variant at every k (14 / 16 / 17). **Caveat:** soft beats hard on *exactly one case* (case 9) at both @1 and @5 — the whole soft-vs-hard delta is n=1 of 17. The *principle* (facets as a ranking signal, not a hard gate) is sound on general-IR grounds and is what §7 should adopt; the *magnitude* is not measured here. λ=0.05 is untuned-but-works on this single note — tune on the multi-note corpus.
+
+**Robustness spot-check (not a second gold eval).** Ran the modified chunker on two GOOGL notes (no NVDA-style segment disclosure): the broadened `operating_kpis` cue does **not** over-fire (5% / 10% of chunks, all via the *legacy* SaaS terms — the new `submarket`/`new segment`/`segmentation` terms fired on zero chunks), and the IDF facet distribution stays sane (common facets dominate, `market`/`capital_structure` rare). So the two tagging changes behave on a different company/structure.
+
+**Net:** step 3a's three defects are **closed on NVDA-1Q27** and the tagging changes spot-check clean on GOOGL — but this is **one gold note**; the eval and the fixes were co-developed on it (and the buyback case was itself edited), so this is self-consistency + a robustness sniff, not generalization. **Before the pgvector build, add a second gold note (a GOOGL quarter) to step 3** so "soft-boost retriever is the spec" is earned rather than asserted. Carry the soft-boost retriever into step 4 as the *working* spec, not a proven one.

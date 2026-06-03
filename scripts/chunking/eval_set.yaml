@@ -20,9 +20,13 @@
 cases:
   - q: "By how much did NVDA raise its buyback authorization?"
     expect_facets: [capital_allocation]
-    expect_section: "Forward guidance"
     expect_contains: "$80B"
-    note: capital_allocation facet + dollar figure (Store-B candidate too)
+    note: >
+      capital_allocation facet + dollar figure (Store-B candidate too).
+      No expect_section: the authorization SIZE lives in the headline/actuals
+      table, not the "Forward guidance" section (which carries only the
+      ~50%-of-FCF capital-return POLICY) — asserting both made this case
+      unwinnable at any rank (gold-spec bug fixed in step 3a, docs §11).
 
   - q: "What did NVDA guide Q2 revenue to?"
     expect_facets: [revenue, guidance]

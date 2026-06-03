@@ -28,6 +28,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import re
 import sys
 from dataclasses import dataclass, field, asdict
@@ -56,7 +57,8 @@ _FACET_CUES = {
     "supply_chain": r"\bcustomer|vendor|supplier|hyperscaler|foundry|tsmc|partner|ecosystem\b",
     "market": r"\btam\b|addressable market|market (growth|dynamic)|substitution|demand environment\b",
     "product": r"\bproduct|roadmap|launch|\bramp\b|platform|next-?gen|cadence|blackwell|rubin|vera\b",
-    "operating_kpis": r"\barr\b|\brpo\b|bookings|attach|take[- ]rate|\basp\b|\bdau\b|\bmau\b|backlog\b",
+    "operating_kpis": r"\barr\b|\brpo\b|bookings|attach|take[- ]rate|\basp\b|\bdau\b|\bmau\b|backlog|"
+                      r"\bkpis?\b|submarket|new segment|segment disclosure|segmentation|leading indicator\b",
     "risks": r"\brisk|headwind|overhang|concern|caveat|deterioration\b",
     "regulatory_geopolitical": r"\bexport control|china|antitrust|regulat|tariff|sovereign|import permit\b",
     "demand_signals": r"\bdemand|sales cycle|budget|pipeline|order fulfillment\b",
@@ -148,14 +150,22 @@ def parse_doc_meta(path: Path) -> dict:
 # HEURISTIC tagger — PRODUCTION SWAP POINT.
 # Replace body with a StructuredOutput LLM call; keep the signature.
 # ---------------------------------------------------------------------------
-def tag_chunk(text: str, *, section: str, doc_type: str) -> dict:
+def tag_chunk(text: str, *, section: str, doc_type: str,
+              idf: Optional[dict] = None) -> dict:
     low = text.lower()
 
-    # rank facets by cue-match count (salience), then cap at 4 — so the cap
-    # keeps the most-evidenced facets rather than truncating in dict order.
-    scored = [(len(re.findall(pat, low, re.I)), f)
-              for f, pat in _FACET_CUES.items()]
-    facets = [f for n, f in sorted(scored, key=lambda x: -x[0]) if n][:4]
+    # Rank facets by tf*idf, then cap at 4 (docs §11). Ranking by raw cue-COUNT
+    # (the old behaviour) let high-frequency boilerplate (revenue, supply_chain)
+    # crowd out the rare, discriminating facet the query keys on (e.g. `market`
+    # from a single "TAM"), and broke count-ties on dict-insertion order. Weight
+    # each facet's term-frequency by its inverse document frequency across the
+    # note's chunks so rarity wins; break remaining ties alphabetically (stable,
+    # non-arbitrary). idf=None (e.g. ad-hoc single-chunk calls) falls back to
+    # tf-only with the same deterministic tie-break.
+    tf = {f: len(re.findall(pat, low, re.I)) for f, pat in _FACET_CUES.items()}
+    matched = [(f, n) for f, n in tf.items() if n]
+    matched.sort(key=lambda fn: (-(fn[1] * (idf or {}).get(fn[0], 1.0)), fn[0]))
+    facets = [f for f, _ in matched[:4]]
 
     themes = [t for t, pat in _THEME_CUES.items() if re.search(pat, low, re.I)]
 
@@ -192,6 +202,22 @@ def _slug(s: str) -> str:
 # ---------------------------------------------------------------------------
 # Chunking: split note into ## sections (parents) and atomic children.
 # ---------------------------------------------------------------------------
+def _compute_idf(texts: list[str]) -> dict:
+    """Smoothed IDF per facet across the note's own chunks: facets that match
+    nearly every chunk (revenue, supply_chain) get ~1; rare ones (market,
+    operating_kpis) get a high weight so they survive the <=4 cap. Single-doc df
+    is a heuristic stand-in — the production LLM tagger (docs §8) replaces it,
+    and a multi-note corpus df would be the better long-term signal."""
+    n = len(texts) or 1
+    df = {f: 0 for f in _FACET_CUES}
+    for t in texts:
+        low = t.lower()
+        for f, pat in _FACET_CUES.items():
+            if re.search(pat, low, re.I):
+                df[f] += 1
+    return {f: math.log((n + 1) / (df[f] + 1)) + 1 for f in _FACET_CUES}
+
+
 def chunk_note(path: Path) -> list[Chunk]:
     meta = parse_doc_meta(path)
     lines = meta["text"].splitlines()
@@ -212,37 +238,45 @@ def chunk_note(path: Path) -> list[Chunk]:
     if cur_title is not None:
         sections.append((cur_title, cur_body))
 
+    # Pass 1: enumerate every parent + child unit WITHOUT tags. The <=4-facet
+    # cap is IDF-weighted, so a chunk's tags depend on the whole note's facet
+    # distribution — we need all units before tagging any.
+    units: list[dict] = []
     for title, body in sections:
         sec_slug = _slug(title)
         parent_id = f"{base}-{sec_slug}"
         body_text = "\n".join(body).strip()
         if not body_text:
             continue
-        ptags = tag_chunk(body_text, section=title, doc_type=meta["doc_type"])
-        chunks.append(Chunk(
-            chunk_id=parent_id, doc_id=meta["doc_id"], parent_id=None, kind="parent",
-            text=body_text, ticker=meta["ticker"], doc_type=meta["doc_type"],
-            event_date=meta["event_date"], fiscal_quarter=meta["fiscal_quarter"],
-            section=title, **ptags))
-
-        # --- children: split by the section's grammar ---
+        units.append(dict(kind="parent", chunk_id=parent_id, parent_id=None,
+                          text=body_text, section=title, child=None))
+        # children: split by the section's grammar
         for i, child in enumerate(_split_children(title, body), 1):
             ctext = child["text"].strip()
             if len(ctext) < 25:
                 continue
-            ctags = tag_chunk(ctext, section=title, doc_type=meta["doc_type"])
-            chunks.append(Chunk(
-                chunk_id=f"{parent_id}-{i:02d}", doc_id=meta["doc_id"],
-                parent_id=parent_id, kind="child", text=ctext,
-                ticker=meta["ticker"], doc_type=meta["doc_type"],
-                event_date=meta["event_date"], fiscal_quarter=meta["fiscal_quarter"],
-                section=title,
-                speaker=child.get("speaker"), speaker_role=child.get("speaker_role"),
-                answered_by=child.get("answered_by"),
-                answerer_role=child.get("answerer_role"),
-                answer_directness=child.get("answer_directness"),
-                asker_citation=child.get("asker_citation"),
-                **ctags))
+            units.append(dict(kind="child", chunk_id=f"{parent_id}-{i:02d}",
+                              parent_id=parent_id, text=ctext, section=title,
+                              child=child))
+
+    idf = _compute_idf([u["text"] for u in units])
+
+    # Pass 2: tag (IDF-aware) + construct.
+    for u in units:
+        tags = tag_chunk(u["text"], section=u["section"],
+                         doc_type=meta["doc_type"], idf=idf)
+        child = u["child"] or {}
+        chunks.append(Chunk(
+            chunk_id=u["chunk_id"], doc_id=meta["doc_id"], parent_id=u["parent_id"],
+            kind=u["kind"], text=u["text"], ticker=meta["ticker"],
+            doc_type=meta["doc_type"], event_date=meta["event_date"],
+            fiscal_quarter=meta["fiscal_quarter"], section=u["section"],
+            speaker=child.get("speaker"), speaker_role=child.get("speaker_role"),
+            answered_by=child.get("answered_by"),
+            answerer_role=child.get("answerer_role"),
+            answer_directness=child.get("answer_directness"),
+            asker_citation=child.get("asker_citation"),
+            **tags))
     return chunks
 
 

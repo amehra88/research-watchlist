@@ -88,23 +88,33 @@ def main():
     Q /= np.linalg.norm(Q, axis=1, keepdims=True)
 
     facet_top = [{f.split(".")[0] for f in c.facets} for c in chunks]
+    # facet-boost weight (added to cosine sim per fraction of query facets the
+    # chunk carries). The HARD pre-filter wins +2 @1 but COSTS recall@5: IDF
+    # drops the common `revenue` facet from a chunk that does discuss revenue
+    # growth, so a `revenue`-only query hard-filters out a chunk vector ranks in
+    # the top-5 (case 9). A soft boost keeps that recall while retaining the @1
+    # gain — facets belong as a ranking signal, not a gate.
+    LAMBDA = 0.05
 
-    def topk_indices(qi, prefilter):
+    def topk_indices(qi, mode):
         sims = D @ Q[qi]
+        qf = _query_facets(cases[qi]["q"])
+        if mode == "boost" and qf:
+            boost = np.array([len(qf & facet_top[i]) / len(qf)
+                              for i in range(len(chunks))])
+            return list(np.argsort(-(sims + LAMBDA * boost))[:max(KS)])
         order = np.argsort(-sims)
-        if prefilter:
-            qf = _query_facets(cases[qi]["q"])
-            if qf:
-                cand = [i for i in order if facet_top[i] & qf]
-                if cand:
-                    return cand[:max(KS)]
+        if mode == "filter" and qf:
+            cand = [i for i in order if facet_top[i] & qf]
+            if cand:
+                return cand[:max(KS)]
         return list(order[:max(KS)])
 
-    def recall_at(prefilter):
+    def recall_at(mode):
         hits = {k: 0 for k in KS}
         per = []
         for qi, case in enumerate(cases):
-            idx = topk_indices(qi, prefilter)
+            idx = topk_indices(qi, mode)
             passed_k = None
             for rank, i in enumerate(idx, 1):
                 if not check(case, chunks[i]):
@@ -119,12 +129,14 @@ def main():
     n = len(cases)
     print(f"\n=== recall@k on {n} gold cases (NVDA 1Q27) ===")
     print(f"  keyword baseline (eval.py)      recall@1 = 8/{n}")
-    for label, pf in (("vector only", False), ("vector + facet pre-filter", True)):
-        hits, per = recall_at(pf)
+    for label, mode in (("vector only", "none"),
+                        ("vector + facet pre-filter (hard)", "filter"),
+                        ("vector + facet boost (soft)", "boost")):
+        hits, per = recall_at(mode)
         line = "  ".join(f"recall@{k} = {hits[k]:2d}/{n}" for k in KS)
-        print(f"  {label:30s} {line}")
-        if pf:  # show per-case detail for the recommended variant
-            print("\n  per-case (vector + facet pre-filter):")
+        print(f"  {label:34s} {line}")
+        if mode == "boost":  # per-case detail for the recommended variant
+            print("\n  per-case (vector + facet boost):")
             for case, pk, idx in per:
                 mark = f"@{pk}" if pk else "MISS"
                 print(f"    [{mark:>4}] {case['q'][:62]}")
