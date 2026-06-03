@@ -21,6 +21,24 @@ _NAME_STOP = {
 }
 
 
+# Calendar-driven StreetAccount boilerplate — published on a schedule, not on an event.
+# Per operator (signal-not-volume): these do NOT earn HIGH even though SA published them.
+# CALIBRATION NOTE: weekly "StreetAccount Macro Update" items are deliberately NOT matched here —
+# they aggregate curated cross-name weekend headlines (real signal) and stay HIGH-eligible. Revisit
+# after ~1 week of digest output if macro updates start dominating HIGH.
+_TEMPLATED_PREVIEW_RE = re.compile(
+    r"consensus metrics preview"      # "StreetAccount Consensus Metrics Preview - <co> Q# Earnings"
+    r"|earnings preview"              # "<co> F#Q## Earnings Preview"
+    r"|streetaccount\b.*\bsummary",   # "StreetAccount M&A Summary: Week of 25-May"
+    re.IGNORECASE,
+)
+
+
+def is_templated_preview(headline: str) -> bool:
+    """True for scheduled SA boilerplate (previews / weekly summaries) -> cap at MEDIUM."""
+    return bool(_TEMPLATED_PREVIEW_RE.search(headline or ""))
+
+
 def _headline_mentions(headline: str, name: str, ticker: str) -> bool:
     """Relevance gate (fix 3): is this headline actually about the ticker?
 
@@ -70,34 +88,40 @@ class Verdict:
 
 
 def classify(cluster, factset_articles, classifier, name="", ticker="") -> Verdict:
+    """v2 (channel inversion): FactSet StreetAccount is the institutional-signal channel;
+    Google volume no longer earns HIGH on its own. This function governs Google clusters and
+    Google↔FactSet matches; FactSet-ONLY items are routed to HIGH in news_digest.build_digest."""
     sources = cluster.sources
     volume = cluster.volume
     tt_items = [it for it in cluster.items if classifier.classify(it["source"]) == "top_tier"]
+    tt_relevant = bool(tt_items) and any(
+        _headline_mentions(it["title"], name, ticker) for it in tt_items
+    )
 
     fa = _match_factset(cluster, factset_articles) if factset_articles else None
     fa_sent = (fa or {}).get("sentiment")
-    fa_status = None
-    if fa is not None:
-        fa_status = f"FactSet: {fa_sent or 'Neutral'}"
+    fa_status = f"FactSet: {fa_sent or 'Neutral'}" if fa is not None else None
 
-    # ── HIGH (§5: any of a–d) ────────────────────────────────────────────────
-    if fa is not None:
-        return Verdict("HIGH", "in both FactSet + Google", fa_status, fa)            # §5a
-    # §5d top-tier-single override, gated on the top-tier item actually being about
-    # this ticker (fix 3) — a tangential market-wrap mention no longer qualifies.
-    if tt_items and any(_headline_mentions(it["title"], name, ticker) for it in tt_items):
+    # ── HIGH ──────────────────────────────────────────────────────────────────
+    if fa is not None:                                                  # in both FactSet + Google
+        if is_templated_preview(fa.get("headline", "")) or is_templated_preview(cluster.headline):
+            return Verdict("MEDIUM", "FactSet templated preview", fa_status, fa)
+        return Verdict("HIGH", "in both FactSet + Google", fa_status, fa)
+    if tt_relevant:                                                     # top-tier single + relevance gate
         tt = sorted({classifier.canonical(it["source"]) for it in tt_items})
-        return Verdict("HIGH", f"top-tier source ({', '.join(tt)})", fa_status, None)  # §5d
-    if volume >= HIGH_VOLUME:
-        return Verdict("HIGH", f"story_volume {volume}", fa_status, None)             # §5b
-    # §5c sentiment can only apply on a matched FactSet article, handled by §5a above.
+        return Verdict("HIGH", f"top-tier source ({', '.join(tt)})", fa_status, None)
+    # v2: story_volume NO LONGER promotes to HIGH — institutional bar lives in the FactSet channel.
 
-    # ── MEDIUM (§5: any of a–c, and not HIGH) ────────────────────────────────
-    if volume >= MEDIUM_VOLUME:
-        return Verdict("MEDIUM", f"story_volume {volume}", fa_status, None)           # §5b
-    if any(classifier.is_medium_single(s) for s in sources):
+    # ── MEDIUM ────────────────────────────────────────────────────────────────
+    if tt_items:                                                        # top-tier, headline didn't name the ticker
+        tt = sorted({classifier.canonical(it["source"]) for it in tt_items})
+        return Verdict("MEDIUM", f"top-tier ({', '.join(tt)}), no headline match", fa_status, None)
+    if volume >= HIGH_VOLUME:                                           # >=4 allowlisted Google, not in FactSet
+        return Verdict("MEDIUM", f"story_volume {volume}", fa_status, None)
+    if any(classifier.is_medium_single(s) for s in sources) and \
+            _headline_mentions(cluster.headline, name, ticker):         # relevance-gated medium-single
         ms = sorted(s for s in sources if classifier.is_medium_single(s))
-        return Verdict("MEDIUM", f"single {', '.join(ms)} item", fa_status, None)     # §5c
+        return Verdict("MEDIUM", f"single {', '.join(ms)} item", fa_status, None)
 
-    # ── DROP ─────────────────────────────────────────────────────────────────
-    return Verdict("DROP", f"volume {volume}, no corroboration", fa_status, None)
+    # ── DROP ──────────────────────────────────────────────────────────────────
+    return Verdict("DROP", f"single-source / below bar (volume {volume})", fa_status, None)
