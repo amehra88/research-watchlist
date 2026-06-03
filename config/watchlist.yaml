@@ -168,7 +168,7 @@ private_drivers:
     pvt_id: spacex.pvt   # transitional — retire to ticker SPCX when the IPO prices (~2026-06-11/12), promote to T1
     aliases: ["SpaceX", "Space Exploration Technologies Corp.", "Starlink", "xAI", "Grok", "SpaceXAI"]
     affects: [NVDA, GEV, TSLA]
-    notes: "Starlink revenue + launch cadence reshape space economics (read-through to space-economy publics RKLB/IRDM/ASTS if added). NOW ALSO encompasses xAI: SpaceX acquired xAI 2026-02-02 (share exchange, 1 xAI -> 0.1433 SpaceX); May 2026 xAI was dissolved as a separate company — Grok and X moved under SpaceX's 'SpaceXAI' division. So SpaceX is also a frontier-model player (Grok — frontier_model_competition) and a major NVDA compute consumer (Colossus cluster; planned orbital data centers); TSLA cross-pollination on Grok. IPO imminent: confidential filing 2026-04-01, public S-1 out, expected price ~2026-06-11 / list ~06-12 at ~$1.8T (raise up to $75B). ON IPO -> rename this entry in place to the real ticker and promote to T1 (pre-IPO watchlist handoff). Absorbed former xai.pvt 2026-06-02."
+    notes: "Starlink revenue + launch cadence reshape space economics (read-through to space-economy publics RKLB/IRDM/ASTS if added). NOW ALSO encompasses xAI: SpaceX acquired xAI 2026-02-02 (share exchange, 1 xAI -> 0.1433 SpaceX); May 2026 xAI was dissolved as a separate company — Grok and X moved under SpaceX's 'SpaceXAI' division. So SpaceX is also a frontier-model player (Grok — frontier_model_competition) and a major NVDA compute consumer (Colossus cluster; planned orbital data centers); TSLA cross-pollination on Grok. IPO imminent: confidential filing 2026-04-01, public S-1 out, expected price ~2026-06-11 / list ~06-12 at ~$1.8T (raise up to $75B). ON IPO -> rename this entry in place to the real ticker and promote to T1 (pre-IPO watchlist handoff). Absorbed former xai.pvt 2026-06-02. OPERATOR SIGNAL (2026-06-03, non-public, unverified): SpaceX has an agreement to acquire Cursor/Anysphere (best-of-breed AI coding-agent harness, ~$1.2B ARR), expected to close within 12 months — this would add a leading coding-agent harness to the SpaceXAI stack, giving SpaceX a position in agent_framework_landscape (harness axis) on top of frontier_model_competition. Track for confirmation; on close, fold Cursor exposure into the post-IPO SPCX entry rather than a standalone .pvt."
     added_date: 2026-05-10   # restructured 2026-06-02 to absorb xAI (formerly xai.pvt)
   - name: Stripe
     pvt_id: stripe.pvt
@@ -211,6 +211,24 @@ private_drivers:
     aliases: ["Avicena", "AvicenaTech", "AvicenaTech Corp", "Avicena Tech"]
     affects: [MRVL, COHR, LITE, TSM, 000660.KS, MU, 005930.KS]
     notes: "MicroLED chip-to-chip optical interconnect (LightBundle). Series B $65M (May 2025, led by Tiger Global); strategic investors SK Hynix, Samsung, Micron, Lam Research. TSMC co-manufacturing alliance (Jun 2025). Competes w/ Celestial AI Photonic Fabric (now MRVL, acq $3.25B completed 2026-02-02) and Si-photonics interconnect (Ayar Labs, Lightmatter); closest microLED peer is Hyperlume. If microLED interconnect scales = structural threat to laser/transceiver datacom optics (COHR, LITE)."
+    added_date: 2026-06-03
+  - name: Cognition
+    pvt_id: cognition.pvt
+    aliases: ["Cognition", "Cognition AI", "Cognition Labs", "Devin", "Windsurf", "Codeium"]
+    affects: [MSFT, GOOGL]
+    notes: "US autonomous-coding-agent leader (Devin) that acquired Windsurf (formerly Codeium) in 2025. ~$10.2B valuation; ~$150M combined ARR. Windsurf 2.0 (Apr 2026) embedded Devin Cloud into the IDE — a single agent harness unified across editor/terminal/cloud, the cleanest 'same harness everywhere' story in the coding-agent layer. Best-of-breed private in agent_framework_landscape (harness/coding-agent axis). Competitive read-through to MSFT (GitHub Copilot agent mode) and GOOGL (Antigravity). Major frontier-model compute consumer."
+    added_date: 2026-06-03
+  - name: Sierra
+    pvt_id: sierra.pvt
+    aliases: ["Sierra", "Sierra AI", "Sierra Technologies"]
+    affects: [NOW]
+    notes: "US enterprise customer-agent platform, co-founded by Bret Taylor (ex-Salesforce co-CEO) and Clay Bavor (ex-Google Labs); launched Feb 2024. ~$15B valuation after a $950M raise (May 2026, Tiger Global/GV); $150M+ ARR, >40% of the Fortune 50 as customers; agents handle billions of interactions. Best-of-breed private in agent_framework_landscape (enterprise vertical-agent axis). Competes directly with Salesforce Agentforce (CRM, not in watchlist) and ServiceNow (NOW) digital-labor orchestration; closest private peer is Decagon."
+    added_date: 2026-06-03
+  - name: Decagon
+    pvt_id: decagon.pvt
+    aliases: ["Decagon", "Decagon AI"]
+    affects: [NOW]
+    notes: "US enterprise customer-service AI-agent platform; the principal direct competitor to Sierra in autonomous customer support. Key private name in agent_framework_landscape (enterprise vertical-agent axis). Competitive read-through to Salesforce Agentforce (CRM, not in watchlist) and ServiceNow (NOW)."
     added_date: 2026-06-03
 
 # ---------------------------------------------------------------------------
@@ -385,7 +403,7 @@ tier_1_bctk:
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/AMD/ corpus yet — flagged as the largest competitive-position coverage gap in NVDA runs 8-9). Refine once notes/AMD/ accumulates and after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: AMZN
-    themes: [hyperscaler_capex_buildout, silicon_architecture_competition, ai_agent_monetization, ad_market_strength, space_economy, vertical_ai_applications, agentic_commerce, local_commerce_delivery]
+    themes: [hyperscaler_capex_buildout, silicon_architecture_competition, ai_agent_monetization, ad_market_strength, space_economy, vertical_ai_applications, agentic_commerce, local_commerce_delivery, agent_framework_landscape]
     added_date: 2026-05-09
     ai_positioning: "4+"
     competitive_advantage:
@@ -522,7 +540,7 @@ tier_1_bctk:
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/CRWD/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: DDOG
-    themes: [enterprise_ai_adoption, ai_native_vertical, observability_competitive_landscape, ai_infrastructure_software]
+    themes: [enterprise_ai_adoption, ai_native_vertical, observability_competitive_landscape, ai_infrastructure_software, agent_framework_landscape]
     added_date: 2026-05-09
     ai_positioning:
       score: "4"
@@ -618,7 +636,7 @@ tier_1_bctk:
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/GEV/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: GOOGL
-    themes: [hyperscaler_capex_buildout, ad_market_strength, search_disruption, ai_agent_monetization, silicon_architecture_competition, autonomous_vehicle_competition, agentic_commerce]
+    themes: [hyperscaler_capex_buildout, ad_market_strength, search_disruption, ai_agent_monetization, silicon_architecture_competition, autonomous_vehicle_competition, agentic_commerce, agent_framework_landscape]
     added_date: 2026-05-09
     ai_positioning: "5"
     competitive_advantage:
@@ -774,7 +792,7 @@ tier_1_bctk:
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data, operator input (investor_interest set to 4+). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: NET
-    themes: [enterprise_ai_adoption, ai_re_architected_incumbent, cybersecurity_competitive_landscape, ai_agent_monetization, inference_compute_economics, ai_infrastructure_software]
+    themes: [enterprise_ai_adoption, ai_re_architected_incumbent, cybersecurity_competitive_landscape, ai_agent_monetization, inference_compute_economics, ai_infrastructure_software, agent_framework_landscape]
     added_date: 2026-05-09
     ai_positioning:
       score: "4"
@@ -802,7 +820,7 @@ tier_1_bctk:
       score: "4"
       notes: "Hot sector epicenter. Largest mcap in tech. Index weight enormous. Positive earnings revisions. Pricing power. Buybacks active. Some valuation caution at current levels. 1Q27 print (2026-05-21) converted capital-return posture to structural ~50%-of-FCF commitment: $119B total buyback authorization (+$80B incremental), 25x dividend hike to $0.25, alongside third consecutive quarter of YoY revenue acceleration ($82B/+85%) and Q2'27 guide ~$10B above consensus. Directional pressure 4→4+ now, with 4+→5 live for Q2'27 print on 2026-08-26 if trajectory holds. Cap: valuation caution at ~$5.4T mcap. (source: ticker-synthesis run 7, 2026-06-01)"
   - ticker: PLTR
-    themes: [enterprise_ai_adoption, ai_native_vertical, vertical_ai_applications, ai_agent_monetization]
+    themes: [enterprise_ai_adoption, ai_native_vertical, vertical_ai_applications, ai_agent_monetization, agent_framework_landscape]
     added_date: 2026-05-09
     ai_positioning:
       score: "5"
@@ -1036,7 +1054,7 @@ tier_2_active_candidates:
     scoring_date: 2026-06-02
     scoring_notes: "Fully scored from T2 stub following Computex Taipei 2026-06-02 (Jensen Huang ~10-min surprise guest appearance at CEO Matt Murphy's keynote — an endorsement, publicly calling MRVL 'next trillion dollar company'; stock +14% to $219.43, YTD +158.5%) and the industry-first 102.4 Tbps AI/cloud switch announced 2026-06-01 (+7%). NB: Computex was the endorsement event, not the partnership announcement — the NVDA-MRVL NVLink Fusion partnership and $2B investment were announced earlier, 2026-03-31 (see below). Grounded in 1Q27 earnings note 2026-05-28 plus overnight news. Updated 2026-06-02 to raise innovation_rate 4→4+ on the Celestial AI Photonic Fabric capability (acquisition closed 2026-02-02, $3.25B; MRVL-guided $500M run rate Q4 FY28 → $1B Q4 FY29). OPERATOR-PRIVATE SIGNAL: Celestial AI Photonic Fabric is operator-flagged as substantial growth driver capturing a structural-moat dimension via three capabilities — (1) physical decoupling of compute and memory via optical signals (memory pools meters away, no copper-degradation limit), (2) sub-150ns latency (remote memory functionally local from accelerator perspective), (3) elimination of stranded per-server DRAM overprovisioning (pooled architecture changes hyperscaler capex economics). The three capabilities combine to address the AI 'memory wall' bottleneck at structural rather than incremental scale, a dimension AVGO does not obviously match. Overall held at 4 because acquired capability not yet revenue-proven at scale. NVDA strategic partnership anchored 2026-03-31 (NVIDIA newsroom release): NVLink Fusion co-integration (MRVL custom XPUs + NVLink-Fusion-compatible scale-up networking + silicon photonics; NVDA Vera CPU / ConnectX / BlueField / NVLink / Spectrum-X) PLUS a $2B NVDA equity investment in MRVL — the concrete scale behind the 'NVDA strategic-partnership halo' weighted in potential_investor_interest. (source: operator session 2026-06-02; Murphy Computex keynote notes/MRVL/20260602-conf-computex-murphy.md; NVIDIA 2026-03-31 release https://nvidianews.nvidia.com/news/nvidia-ai-ecosystem-expands-as-marvell-joins-forces-through-nvlink-fusion)"
   - ticker: MSFT
-    themes: [hyperscaler_capex_buildout, enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization, silicon_architecture_competition, ai_infrastructure_software]
+    themes: [hyperscaler_capex_buildout, enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization, silicon_architecture_competition, ai_infrastructure_software, agent_framework_landscape]
     added_date: 2026-05-09
     ai_positioning: "4-"
     competitive_advantage:
@@ -1048,7 +1066,7 @@ tier_2_active_candidates:
       score: "3"
       notes: "Investor enthusiasm cooled. Once-dominant AI narrative has shifted to question marks about model differentiation, partnership dependence, and tooling quality. Mega-cap index weight still anchors, but momentum factors weakening."
   - ticker: NOW
-    themes: [enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization, ai_infrastructure_software, cybersecurity_competitive_landscape]
+    themes: [enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization, ai_infrastructure_software, cybersecurity_competitive_landscape, agent_framework_landscape]
     added_date: 2026-05-09
   - ticker: NXPI
     themes: [automotive_semiconductor_demand, semiconductor_cycle, data_center_deployment_constraints, ai_infrastructure_capex]

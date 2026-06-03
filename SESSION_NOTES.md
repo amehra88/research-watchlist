@@ -2,6 +2,27 @@
 
 _Append-only chronological log of working sessions — **most recent at top**. New sessions add a `## YYYY-MM-DD — <title>` section above the existing entries (directly below this line)._
 
+## 2026-06-03 — Agentic framework/harness landscape build-out
+
+**Session focus:** Operator pivoted the `agent_framework_landscape` theme from "privates as thesis drivers" to "best-of-breed leaders in agentic frameworks/harnesses, wherever they sit." LangChain is the anchor name.
+
+**Landed in research-watchlist (config/watchlist.yaml):**
+- 3 new private_drivers: `cognition.pvt` (Devin+Windsurf, ~$10.2B, affects MSFT/GOOGL), `sierra.pvt` (Bret Taylor, $15B/$950M raise May'26, $150M+ ARR, affects NOW), `decagon.pvt` (Sierra competitor, affects NOW)
+- Tagged `agent_framework_landscape` onto 7 public read-throughs: GOOGL, MSFT, AMZN, NET, NOW, PLTR, DDOG (CRM not in 147; NBIS/NVDA/AVGO/META excluded as infra/silicon/model)
+- spacex.pvt notes += **OPERATOR SIGNAL** (non-public, unverified): SpaceX has an agreement to acquire Cursor/Anysphere (~$1.2B ARR coding-agent harness) within ~12mo → folds into post-IPO SPCX, no standalone cursor.pvt
+- New sector note: `notes/sector/20260603-agentic-framework-harness-landscape.md` (five-layer map + investability/read-through table)
+
+**Filed to operator memory:** cursor-spacex-acquisition-signal (project type).
+
+**Open follow-ups:**
+- Verify single-blog ARR/val figures (Cursor $1.2B, Claude Code $2.5B, Cognition $10.2B/$150M) vs PitchBook/primary before they harden into thesis inputs
+- Supply-chain edges for new .pvts (cognition→MSFT/GOOGL, sierra/decagon→NOW, langchain→NET/NBIS) — deferred
+- Seed _profile.md for langchain.pvt + the 3 new .pvt dirs
+- Decide whether to add CRM to the 147 (cleanest listed vertical-agent pure-play via Agentforce)
+- Confirm Cursor→SPCX; on close fold into renamed SPCX T1 entry
+
+---
+
 ## 2026-06-02 — News digest live + MRVL closure + private-driver expansion
 
 **Session focus:** Close MRVL Murphy keynote workstream, build and deploy Phase C news digest, expand private-driver coverage (frontier models + agent frameworks), restructure spacex.pvt post-xAI merger.
