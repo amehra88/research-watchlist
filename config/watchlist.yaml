@@ -386,6 +386,9 @@ tier_1_bctk:
       notes: "4+ trajectory (operator-locked): HBM hot, sharp positive earnings revisions, pricing power, memory up-cycle. Held at 4+ rather than 5 by Korea-listing access friction for some US investors and DRAM cyclicality. Factors: hot sector, earnings revisions, pricing power; cyclicality/access cap."
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02. Sources: public data, operator input (bought into BCTK 2026-06-01; investor_interest locked at 4+). No notes/000660.KS/ corpus yet. Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
+  - ticker: A000660
+    themes: []      # TODO: assign themes via WATCHLIST email
+    added_date: 2026-06-04
   - ticker: AMD
     themes: [silicon_architecture_competition, ai_infrastructure_capex, hyperscaler_revenue_concentration, model_efficiency_evolution, inference_compute_economics]
     added_date: 2026-05-09
