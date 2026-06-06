@@ -698,6 +698,9 @@ tier_1_bctk:
       notes: "Small-cap, pre-scale/approaching profitability, speculative auto-ADAS recovery; higher risk and lower current investor appeal than the AI-compute names. Factors: growth rate, market-cap tier (small), sector cyclicality."
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data. Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
+  - ticker: INIO
+    themes: []      # TODO: assign themes via WATCHLIST email
+    added_date: 2026-06-06
   - ticker: IOT
     themes: [ai_native_vertical, vertical_ai_applications, enterprise_ai_adoption, data_center_deployment_constraints]
     added_date: 2026-05-09
