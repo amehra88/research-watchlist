@@ -90,6 +90,12 @@ def demo_join(store):
         cand = [r for r in a.records.values()
                 if r.get("ticker") == "NVDA" and r.get("kind") == "child"
                 and "guidance" in (r.get("facets") or [])]
+    # prefer an earnings-note chunk that actually states a forward outlook number
+    def _illustrative(r):
+        t = (r.get("text") or "").lower()
+        return (r.get("doc_type") == "earnings_transcript",
+                sum(k in t for k in ("guid", "expect", "outlook", "revenue", "next quarter")))
+    cand.sort(key=_illustrative, reverse=True)
     print("\n=== A<->B JOIN demo (guidance_with_track_record) ===")
     if not cand:
         print("  no NVDA guidance chunk in Store A; skipping")

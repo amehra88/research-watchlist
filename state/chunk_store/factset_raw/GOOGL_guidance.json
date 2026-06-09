@@ -1,0 +1,32 @@
+{
+  "data": [
+    {
+      "requestId": "GOOGL-US",
+      "fsymId": null,
+      "metric": null,
+      "currency": null,
+      "estimateCurrency": null,
+      "periodicity": null,
+      "consensusDate": null,
+      "fiscalYear": null,
+      "fiscalEndDate": null,
+      "relativePeriod": null,
+      "fiscalPeriod": null,
+      "guidanceDate": null,
+      "inputDateHigh": null,
+      "inputDateLow": null,
+      "inputDateHighTime": null,
+      "inputDateLowTime": null,
+      "guidanceMidpoint": null,
+      "guidanceLow": null,
+      "guidanceHigh": null,
+      "guidanceRange": null,
+      "prevMidpoint": null,
+      "prevLow": null,
+      "prevHigh": null,
+      "meanBefore": null,
+      "meanSurpriseAmt": null,
+      "meanSurpriseAmtPercent": null
+    }
+  ]
+}

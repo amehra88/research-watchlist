@@ -56,9 +56,13 @@ state/news_digest_seen.jsonl
 state/factset_cache/
 logs/news_digest_*.txt
 
-# Chunk store (Store A) — embeddings + caches are regenerable via ingest.py.
-# chunks.jsonl is small metadata but is a derived artifact too; regenerate, don't commit.
-state/chunk_store/
+# Chunk store — embeddings + caches + DERIVED metrics are regenerable; ignore the
+# dir's contents but TRACK state/chunk_store/factset_raw/ (Store B source-of-truth:
+# the FactSet guidance+surprise pulls, not regenerable without MCP access).
+state/chunk_store/*
+!state/chunk_store/factset_raw/
+# (metrics.jsonl / credibility.json are direct children of chunk_store/, so they stay
+#  ignored by the `*` rule above — derived from factset_raw via ingest_metrics.py)
 
 # Obsidian per-device workspace state (don't sync between devices)
 .obsidian/workspace.json

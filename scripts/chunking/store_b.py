@@ -29,9 +29,12 @@ STORE_DIR = Path("/root/research-watchlist/state/chunk_store")
 _METRICS_FILE = "metrics.jsonl"
 _CRED_FILE = "credibility.json"
 
-# FactSet labels NVDA's fiscal year by the calendar year the FY ~ends-prior; its
-# quarter ending Apr-2026 is FactSet FY2026/P1 but NVDA (and our notes) call it
-# 1Q27. Calendar-FY names (GOOGL) need no shift. Extend per off-cycle ticker.
+# FactSet CONVENTION QUIRK (not a bug): for off-calendar fiscal years FactSet's
+# `fiscalYear` can trail the company's own FY label by a year. NVDA's quarter
+# ending 2026-04-30 is FactSet fiscalYear=2026/period=1, but NVDA — and our gold
+# notes — call it "1Q27" (NVDA's FY27 ends Jan-2027). So we add +1 to FactSet's
+# fiscalYear for NVDA to match the note convention. Calendar-FY names (GOOGL)
+# align already → offset 0. Add an entry per off-cycle ticker as Store B grows.
 _FY_LABEL_OFFSET = {"NVDA": 1}
 
 
