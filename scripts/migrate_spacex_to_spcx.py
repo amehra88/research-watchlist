@@ -60,6 +60,43 @@ TI_BLOCK = (
 )
 
 
+# New supply-chain edges that replace the read-throughs formerly encoded in the
+# spacex.pvt `affects: [NVDA, GEV, TSLA]` list. NVDA is preserved by retargeting
+# the existing NVDA->spacex.pvt edge; GEV and TSLA need fresh edges.
+GEV_EDGE = (
+    "- source: GEV\n"
+    f"  target: {TICKER}\n"
+    "  kind:\n"
+    "  - supplier\n"
+    "  significance: medium\n"
+    "  notes: Data-center power read-through. GEV growth narrative has shifted toward "
+    "data-center power (gas turbines, grid equipment) and SpaceX is a major data-center "
+    "power consumer via xAI/Grok training (Colossus) and Starlink ground operations. "
+    "Created on the SpaceX IPO 2026-06-12, replacing the read-through formerly encoded in "
+    "the spacex.pvt private_drivers affects list.\n"
+    "  provenance: manual\n"
+)
+TSLA_EDGE = (
+    "- source: TSLA\n"
+    f"  target: {TICKER}\n"
+    "  kind:\n"
+    "  - competitor\n"
+    "  significance: medium\n"
+    "  notes: Primary kind competitor reflects technology adjacency — Tesla (Optimus, "
+    "Dojo, FSD compute) and SpaceX/SpaceXAI (Grok training compute) overlap on AI and "
+    "robotics training infrastructure. Operator-flagged dimension is governance — "
+    "shared-CEO (Musk) concentration risk across both names, encoded as competitor since "
+    "the schema has no governance_link kind. Created on the SpaceX IPO 2026-06-12, "
+    "replacing the spacex.pvt affects read-through.\n"
+    "  provenance: manual\n"
+)
+# (marker that proves the edge already exists -> idempotent skip, block to append)
+SCM_NEW_EDGES = [
+    (f"- source: GEV\n  target: {TICKER}", GEV_EDGE),
+    (f"- source: TSLA\n  target: {TICKER}", TSLA_EDGE),
+]
+
+
 def _yaml():
     y = YAML()
     y.preserve_quotes = True
@@ -134,13 +171,32 @@ def transform_ticker_identity(text):
 
 
 def transform_supply_chain(text):
+    notes = []
+    new = text
+    # a. retarget the existing NVDA->spacex.pvt edge (historical comment left as-is)
     old_line = f"target: {PVT_ID}"
-    if old_line not in text:
-        return text, [f"no `target: {PVT_ID}` in supply-chain-manual (skip)"]
-    new = text.replace(old_line, f"target: {TICKER}")
-    # historical provenance comment is left intact (accurate history)
-    return new, [f"retargeted `target: {PVT_ID}` -> `target: {TICKER}` "
-                 "(historical comment left as-is)"]
+    if old_line in new:
+        new = new.replace(old_line, f"target: {TICKER}")
+        notes.append(f"retargeted `target: {PVT_ID}` -> `target: {TICKER}` "
+                     "(historical comment left as-is)")
+    else:
+        notes.append(f"no `target: {PVT_ID}` to retarget (already migrated?)")
+    # b. append GEV/TSLA read-through edges (idempotent)
+    if not new.endswith("\n"):
+        new += "\n"
+    for marker, block in SCM_NEW_EDGES:
+        src = marker.split("source: ", 1)[1].split("\n", 1)[0]
+        if marker in new:
+            notes.append(f"edge {src} -> {TICKER} already present (skip)")
+        else:
+            new += block
+            notes.append(f"appended new edge {src} -> {TICKER}")
+    # c. safety: confirm the result still parses as YAML
+    try:
+        _yaml().load(new)
+    except Exception as e:  # pragma: no cover
+        notes.append(f"!! WARNING: generated YAML failed to parse: {e}")
+    return new, notes
 
 
 def rename_notes(apply):

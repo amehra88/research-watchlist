@@ -19,10 +19,10 @@ sources_verified: 2026-06-09
 | Pricing | After close **Wed 2026-06-11** | Final pricing release lands that evening |
 | First trade | **Thu 2026-06-12**, **Nasdaq Global Select** | Ticker **SPCX** (dual Nasdaq Texas listing reported) |
 | Offer price | **$135.00 / share** | **Fixed price**, not a book-built range (unusual; set by Musk) |
-| Shares offered | **~555.6M** base (+ **~83.33M** greenshoe, 15%) | Up to ~639M if over-allotment exercised |
+| Shares offered | **~555.6M** base (+ **~83.33M** greenshoe †, 15%) | Up to ~639M if over-allotment exercised |
 | Raise | **~$75B** base (up to ~$85.7B w/ greenshoe) | Largest IPO on record |
 | Valuation | **~$1.75T** headline (**~$1.77T** fully diluted) | $1.77T = CNBC arithmetic at $135 *assuming EchoStar-spectrum + Cursor deals close* |
-| Float | **~3–5%, very thin** | Sources range 3% (offered free float) to ~4.2–5% of shares out |
+| Float | **~3–5%, very thin** † | Sources range 3% (offered free float) to ~4.2–5% of shares out |
 | Retail allocation | **up to ~30%** (~$22.5B) | vs. typical 5–10%; via Robinhood, SoFi, E*Trade, Fidelity, Schwab |
 
 **Structure flags / risks:**
@@ -35,7 +35,7 @@ sources_verified: 2026-06-09
 ## 2. Business lines
 
 - **Launch services** — Falcon 9 / Falcon Heavy / Starship; dominant global launch cadence.
-- **Starlink** — satellite broadband subscriptions; **~58% of FY2024 revenue** ($7.7B of ~$13.1B; Sacra/Payload). *Period caveat:* the S-1 reports "Connectivity" at **$11.387B FY2025** and **$3.257B Q1'26** — cite the period explicitly when using a %.
+- **Starlink** — satellite broadband subscriptions; **~58% of FY2024 revenue** † ($7.7B of ~$13.1B; Sacra/Payload). *Period caveat:* the S-1 reports "Connectivity" at **$11.387B FY2025** and **$3.257B Q1'26** — cite the period explicitly when using a %.
 - **xAI / Grok** — frontier-model player; see §4.
 - **Compute footprint** — major NVDA consumer (Colossus cluster; planned orbital data centers); **early adopter of NVIDIA's "Vera" CPU** (announced GTC Taipei 2026-06-01; NVIDIA named the adopter as "SpaceXAI").
 
@@ -60,4 +60,6 @@ sources_verified: 2026-06-09
 - S-1 (SEC EDGAR, CIK 0001181412, Reg. 333-296070), filed 2026-05-20; S-1/A No.1 2026-06-01 — pull exact greenshoe / free-float / Starlink revenue-share from EDGAR before final use (SEC.gov blocked automated fetch this session).
 - CNBC pricing/Morningstar coverage 2026-06-03; The Daily Upside syndicate 2026-05-21; Bloomberg float feedback-loop 2026-06-09; CNBC retail-access 2026-05-21; Sacra/Payload FY2024 revenue; CNN/Reuters xAI 2026-02-02; The Verge 2026-05-06; Data Center Knowledge / NVIDIA GTC 2026-06-01.
 
-*All figures verified 2026-06-09 via secondary sources; confirm the three highest-variance items (greenshoe, free-float %, Starlink revenue share) against the EDGAR S-1 before relying on them downstream.*
+**† Per pre-IPO reporting (Reuters, Bloomberg, CNBC, etc.) — this profile is NOT authoritative on these.** The three †-marked figures (greenshoe, free-float %, Starlink revenue share) are the highest-variance items across secondary sources; **confirm against the final S-1 on EDGAR post-effectiveness** before relying on them downstream.
+
+*All other figures verified 2026-06-09 via secondary sources.*
