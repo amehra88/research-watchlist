@@ -31,9 +31,11 @@ _CACHE_PATH = Path("/root/research-watchlist/state/chunk_store/embed_cache.json"
 
 def load_key() -> None:
     """Populate GEMINI_API_KEY, preferring /root/podcasts/.env (known-valid)
-    over the expired shell key. Idempotent."""
-    if os.environ.get("GEMINI_API_KEY"):
-        return
+    over the expired shell key. Idempotent.
+
+    The .env value, when present, OVERRIDES any pre-existing shell
+    GEMINI_API_KEY: the shell key is documented-stale, so an early return on
+    `os.environ.get(...)` would silently embed against the expired key."""
     envf = Path("/root/podcasts/.env")
     if envf.exists():
         for line in envf.read_text().splitlines():
