@@ -155,7 +155,9 @@ LLM-tag at ingestion — a natural extension of `enrich_sidecars.py` (which alre
    - **3a. ✅ Fixed the heuristic facet tagger (tf·idf ranking + broadened `operating_kpis` cue) + buyback gold-spec; re-ran (§11b). vector-only recall@5 14→17/17; soft facet-boost 14/16/17. Closed on NVDA-1Q27 only — see 3b.**
    - **3b. ✅ Added a 2nd gold note (GOOGL 1Q26, 15 cases) authored pre-fix (§11c). Found+fixed a hardcoded-roster gap (now per-doc from `speakers:` frontmatter) + 1 gold over-reach; GOOGL recall@5 12→15/15, NVDA no regressions, combined vector @5 = 32/32. Soft-boost retriever holds on a second note.**
 4. ◧ **Code-complete; embedding path UNVERIFIED.** Store-A schema + embedding + ingestion + retrieval job (`schema.sql`, `embed.py`, `store.py`, `ingest.py`, `retrieve.py`, `eval_store.py`; §12). Retriever = vector + facet soft boost (NOT a hard gate, §11b–c). **Decision (2026-06-03): pgvector is the locked target, but runs file-backed *today* (`FileStore`, numpy cosine) — the JOIN that justifies a DB is Store B (step 5), so a daemon buys nothing at ~2.3k vectors. `schema.sql` is the durable pgvector spec; the swap to managed pgvector is the step-5 trigger (`CHUNK_STORE_BACKEND=pg`, `PgStore`).** Ranking+plumbing verified on cached vectors (reproduces §11c, soft-boost 25/31/32); **`embed.py`→Gemini never executed (key expired) → `ingest.py --all` on a refreshed key is the open acceptance gate.** Still 2 notes / NVDA-flavored cues → the LLM tagger (§8) is the real generalizer.
-5. ◻ Store B: FactSet guidance-beat time series + credibility score → **also the managed-pgvector cutover** (the A↔B JOIN goes live here).
+5. ✅ Store B: FactSet guidance-beat time series + credibility score → **also the managed-pgvector cutover** (the A↔B JOIN goes live here).
+   - **5a. ✅ File-backed Store B** (commit `022731b`, 2026-06-09): FactSet guidance+surprise → credibility scores; A↔B JOIN; `factset_raw/` git-tracked.
+   - **5b. ✅ Managed-pgvector cutover** (2026-06-10, §13): local Postgres 16 + pgvector 0.6.0 on the droplet; 3,005 chunks + 31 metrics + 2 credibility rows migrated; `PgStore`/`PgMetricsStore` parity proven vs file-backed (Store A + Store B); `CHUNK_STORE_BACKEND=pg` live; file-backed retained as fallback.
 6. ◻ `people/` dossiers (deferred).
 
 ## 11. Embedding recall experiment (2026-06-03) — result
@@ -255,3 +257,24 @@ What this does **NOT** yet prove (two open gaps, both because the measured path 
 Verified cleanly: backend seam (`pg` → step-5 `NotImplementedError`; unknown → `ValueError`); `_parse_roster` hardened against a bare-string `speakers:` entry → all 56 notes chunk (487 parents + 2,339 children); keyword baseline unchanged (NVDA 11/17, GOOGL 7/15 → no regression).
 
 **Status: code-complete; embedding path + full-corpus ingest UNVERIFIED pending key refresh.** Not "done" until `ingest.py --all` runs green on a live key.
+
+## 13. Step 5b — managed-pgvector cutover (2026-06-10)
+
+**Deployment.** Local **Postgres 16 + pgvector 0.6.0** on the (resized 4 GB) droplet — *not* Neon / DO Managed PG. Operator chose droplet-upsize + local install for stack simplicity (keeps the whole research system on one box; no external DB dependency or egress). `schema.sql` loaded: `chunks`, `metrics`, `metrics_credibility`. `DATABASE_URL` resolves from `/root/podcasts/.env` (never committed; see `pgconn.py`). The backend is selected per-invocation by `CHUNK_STORE_BACKEND` (`file` default | `pg`). **Wiring caveat:** the retrieval layer still has **no production consumer** — nothing outside `scripts/chunking/` calls `get_store()`/`retrieve()` yet (the layer remains pre-prod per §0), and `CHUNK_STORE_BACKEND` is **not pinned** in any env file/cron. So pg is *migrated, parity-verified, and the intended backend*, but "live" here means **ready-and-selected-when-invoked-with `=pg`**, not serving traffic. Pinning `CHUNK_STORE_BACKEND=pg` in the prod env (e.g. `/root/podcasts/.env`) is the remaining flip, due when the first prod consumer lands.
+
+**Migration** (`migrate_to_pg.py`): **3,005 chunks** (527 parents + 2,478 children) + **31 metrics** + **2 credibility** rows, file-backed → pg.
+
+**Parity proven (this is the gate).** `PgStore` *inherits* `FileStore.search()` — pgvector does **no** ranking; embeddings load from pg into the same numpy structures and are scored by the identical cosine + soft-facet-boost path. So the cutover is a pure data-integrity swap, and parity = byte-identical eval output:
+
+| Eval (`eval_store.py` → backend) | FileStore | PgStore |
+|---|---|---|
+| Full corpus (n=32) | 14/28/28 | **14/28/28** |
+| Gold-only (2 notes, 20p+111c) | 25/31/32 | **25/31/32** |
+
+Per-dataset numbers **and MISS lists** are identical in both modes. Full-corpus 14/28/28 is the documented stale-eval (gold questions target one quarter; the corpus now holds many quarters per ticker — *not* a regression). Gold-only reproduces the canonical §11c baseline. **Store B parity** also verified (not covered by `eval_store.py`): `credibility()`, `track_record()`, and the `join_guidance_chunk()` A↔B JOIN return identical output across `MetricsStore` vs `PgMetricsStore` for NVDA + GOOGL (floats within 1e-9; NVDA `sandbag_index` matches to full precision) — confirms the NUMERIC→float and DATE→isoformat conversions in `PgMetricsStore` round-trip cleanly.
+
+**CEILING — 3072-dim vectors cannot be indexed today.** pgvector hnsw/ivfflat cap at **2,000 dims**; our Gemini `gemini-embedding-001` vectors are **3,072**. `halfvec` (indexable to 4,000 dims) needs pgvector **≥ 0.7.0**; we have 0.6.0. So similarity queries are **brute-force sequential scans** — fine at 3,005 rows (single-digit ms). **Upgrade path** when the corpus grows ~10× (≈30 k+ rows, or sub-second latency starts to matter): pgvector ≥ 0.7.0 + convert the `embedding` column to `halfvec(3072)` + build an HNSW index.
+
+**Backups.** Nightly `pg_dump` → `/root/backups/chunk_store/YYYYMMDD.sql.gz`, 03:00 ET, 14-day retention, alert-wrapped (`/root/backups/pg_dump_chunk_store.sh`). Restore-verified to a scratch DB (vector ext + 3005/31/2 rows + 3072-dim round-trip). **On-droplet only — off-site is an open gap** (no rclone/aws/doctl/restic configured): the file-backed fallback AND `embed_cache.json` are gitignored, so the droplet holds the only durable copies of the embeddings; droplet loss ⇒ full Gemini re-embed.
+
+**Fallback.** File-backed store kept intact (`CHUNK_STORE_BACKEND=file`, the current default); pg is the migrated/verified backend, selected with `=pg`.
