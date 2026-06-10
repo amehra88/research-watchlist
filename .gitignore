@@ -64,6 +64,9 @@ state/chunk_store/*
 # (metrics.jsonl / credibility.json are direct children of chunk_store/, so they stay
 #  ignored by the `*` rule above — derived from factset_raw via ingest_metrics.py)
 
+# v3 ingest runtime state (watermark — regenerable via DB rescan)
+state/v3_ingest/
+
 # Obsidian per-device workspace state (don't sync between devices)
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
