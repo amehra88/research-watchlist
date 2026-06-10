@@ -52,11 +52,11 @@ BUDGET_WARN_USD = 0.50             # warn (not abort) if pre-flight estimate exc
 MODEL = "claude-sonnet-4-6"        # Sonnet: substantive-vs-name-drop judgment quality
 CLAUDE_TIMEOUT_S = 300
 
-# Which watchlist.yaml theme categories are extractable. Per the spec this is
-# strategic[] only; widen to more categories by adding names here (e.g.
-# "macro_policy" to allow ai_regulation / antitrust_action). One-line swap —
-# see Checkpoint B discussion (regulation-heavy episodes land in macro_policy).
-THEME_SCOPE = ["strategic"]
+# Which watchlist.yaml theme categories are extractable. Operator decision
+# (Checkpoint B): strategic[] + macro_policy[] = 25 tags, so regulation-heavy
+# episodes (ai_regulation / antitrust_action) aren't dropped. One-line swap to
+# widen (add "demand"/"supply"/"margins_pricing") or narrow.
+THEME_SCOPE = ["strategic", "macro_policy"]
 
 # Pre-flight cost model (Sonnet 4.6, USD per 1M tokens). Used ONLY for the budget
 # warning; actual cost is read back from claude's total_cost_usd after the call.
@@ -146,9 +146,16 @@ def save_watermark(wm: dict | None, processed: list[dict], total_written: int) -
 
 def fetch_candidates(cutoff: str) -> list[dict]:
     """
-    summaries JOIN episodes, created_at >= cutoff, ascending. We use >= (not >) so
-    same-second ties at the boundary are never lost; the file-exists check skips
-    already-written ones cheaply, BEFORE any LLM cost.
+    summaries JOIN episodes, created_at > cutoff, ascending.
+
+    Strict `>` (not `>=`) so an already-processed boundary episode is never re-fetched
+    — important for resolved-but-skipped empty-both episodes, whose note file doesn't
+    exist and so wouldn't be caught by the file-exists guard. Safe against same-second
+    ties because the pipeline is sequential (v3 ingest runs AFTER the summarizer in
+    run_daily, never concurrent) and created_at is real-time monotonic (datetime('now')):
+    once a batch has processed everything <= T, no future insert can land at <= T.
+    The file-exists check remains as a secondary idempotency guard (manual re-runs,
+    watermark resets).
     """
     if not PODCASTS_DB.exists():
         raise RuntimeError(f"podcasts DB not found: {PODCASTS_DB}")
@@ -165,7 +172,7 @@ def fetch_candidates(cutoff: str) -> list[dict]:
                    e.date_published AS date_published
             FROM summaries s
             JOIN episodes e ON s.episode_uuid = e.uuid
-            WHERE s.created_at >= ?
+            WHERE s.created_at > ?
               AND s.summary_text IS NOT NULL
               AND TRIM(s.summary_text) <> ''
             ORDER BY s.created_at ASC
@@ -403,33 +410,50 @@ def main() -> int:
 
     extractions, _cost = extract_all(new_eps, tickers, themes)
 
-    written, written_eps, empty_both = 0, [], []
+    # Write notes for resolved episodes with >=1 tag. Skip empty-both (no tickers AND
+    # no themes) per operator's signal-density preference. Episodes the LLM failed to
+    # resolve (not in `extractions`) are left for next run.
+    written, empty_both, unresolved = 0, [], []
     for ep in new_eps:
-        ex = extractions.get(ep["episode_uuid"], {"tickers": [], "themes": []})
-        t, th = ex["tickers"], ex["themes"]
+        uuid = ep["episode_uuid"]
         path = note_path(ep)
-        tag = ("thematic-only" if (not t and th) else
-               "empty-both" if (not t and not th) else "tagged")
+        if uuid not in extractions:
+            unresolved.append(ep)
+            log(f"  EPISODE {uuid} [UNRESOLVED] extraction dropped uuid — retry next run")
+            continue
+        t, th = extractions[uuid]["tickers"], extractions[uuid]["themes"]
         if not t and not th:
             empty_both.append(ep)
-        log(f"  EPISODE {ep['episode_uuid']} [{tag}] tickers={t} themes={th} -> {path.name}")
-        if args.dry_run:
-            written_eps.append(ep)
+            log(f"  EPISODE {uuid} [empty-both] no tickers/themes -> SKIP (signal-density)")
             continue
-        path.write_text(build_note(ep, t, th))
+        tag = "thematic-only" if not t else "tagged"
+        log(f"  EPISODE {uuid} [{tag}] tickers={t} themes={th} -> {path.name}")
+        if not args.dry_run:
+            path.write_text(build_note(ep, t, th))
         written += 1
-        written_eps.append(ep)
+
+    # Watermark advances over the contiguous resolved prefix (ascending). The first
+    # unresolved episode halts advancement so it (and later) is retried next run.
+    # Written notes beyond a gap are protected by the file-exists check regardless.
+    resolved_prefix = []
+    for ep in new_eps:
+        if ep["episode_uuid"] in extractions:
+            resolved_prefix.append(ep)
+        else:
+            break
 
     if empty_both:
-        log(f"EMPTY_BOTH count={len(empty_both)} (no tickers AND no themes — "
-            f"written as-is per spec; see Checkpoint C re: skip policy)")
+        log(f"EMPTY_BOTH skipped={len(empty_both)} (no tickers AND no themes)")
+    if unresolved:
+        log(f"UNRESOLVED={len(unresolved)} (watermark held before them; retry next run)")
 
     if args.dry_run:
-        log(f"DRY-RUN complete: would write {len(written_eps)} notes "
-            f"(capped={capped}); watermark NOT advanced")
+        log(f"DRY-RUN complete: would write {written} notes (capped={capped}); "
+            f"watermark NOT advanced")
     else:
-        save_watermark(wm, processed=written_eps, total_written=written)
-        log(f"DONE mode={mode} written={written} capped={capped}")
+        save_watermark(wm, processed=resolved_prefix, total_written=written)
+        log(f"DONE mode={mode} written={written} skipped_empty={len(empty_both)} "
+            f"unresolved={len(unresolved)} capped={capped}")
     return 0
 
 
