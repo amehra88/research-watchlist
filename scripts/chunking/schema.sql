@@ -81,39 +81,72 @@ CREATE INDEX IF NOT EXISTS chunks_themes_idx   ON chunks USING GIN (themes);
 
 -- ---------------------------------------------------------------------------
 -- STORE B — structured metrics (the numbers: actuals, consensus, guidance).
--- Keyed ticker x period x metric. DDL ONLY in step 4 — POPULATED IN STEP 5
--- from FactSet (Fundamentals / EstimatesConsensus / Metrics). The
--- guidance-credibility score (§2a) is derived from this table.
+-- Keyed ticker x period x metric. POPULATED in step 5b from FactSet (guidance +
+-- surprise endpoints) via ingest_metrics.py. The guidance-credibility score
+-- (§2a) is derived from these rows and cached in metrics_credibility.
+--
+-- RECONCILED 2026-06-10 (step 5b): the original step-4 DDL (actual/consensus/
+-- guidance_low/guidance_high/beat_miss/magnitude — 11 cols) had drifted from the
+-- evolved file-backed store_b.py record shape, which carries the full three-
+-- relationship model (actual-vs-consensus, actual-vs-own-guide, guide-vs-
+-- consensus) verified against live FactSet 2026-06-09. Columns below now mirror
+-- scripts/chunking/store_b.py :: build_metrics() output EXACTLY. The earlier
+-- "loaded verbatim" claim no longer held; this is the corrected contract.
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS metrics (
-    ticker         TEXT NOT NULL,
-    period         TEXT NOT NULL,                   -- fiscal period, e.g. 1Q27
-    metric         TEXT NOT NULL,                   -- e.g. revenue, dc_gross_margin, eps
-    actual         NUMERIC,                         -- reported actual
-    consensus      NUMERIC,                         -- street consensus at the time
-    guidance_low   NUMERIC,                         -- guided range (low)
-    guidance_high  NUMERIC,                         -- guided range (high)
-    beat_miss      TEXT,                            -- beat | miss | in_line (vs consensus/guide)
-    magnitude      NUMERIC,                         -- beat/miss magnitude (e.g. % or abs)
-    source         TEXT DEFAULT 'factset',
-    as_of          DATE,
+    ticker                 TEXT NOT NULL,
+    period                 TEXT NOT NULL,           -- fiscal label, e.g. 1Q27 (store_b.fiscal_label)
+    metric                 TEXT NOT NULL,           -- e.g. SALES
+    fiscal_end             DATE,                    -- fiscalEndDate (the period dedupe key)
+    -- guidance side ----------------------------------------------------------
+    guidance_date          DATE,
+    guidance_low           NUMERIC,
+    guidance_mid           NUMERIC,
+    guidance_high          NUMERIC,
+    consensus_at_guide     NUMERIC,                 -- FactSet meanBefore
+    guide_vs_consensus_pct NUMERIC,                 -- decimal fraction (sandbag-at-guide tell)
+    -- actual side ------------------------------------------------------------
+    actual                 NUMERIC,                 -- surpriseAfter
+    consensus_at_print     NUMERIC,                 -- surpriseBefore
+    beat_vs_consensus_pct  NUMERIC,                 -- decimal fraction (normalized from surprisePercent)
+    surprise_date          DATE,
+    -- derived: actual vs their OWN guidance (the §2a credibility signal) ------
+    beat_vs_guidance       TEXT CHECK (beat_vs_guidance IN ('above','below','in_range')),
+    beat_vs_guidance_pct   NUMERIC,
+    source                 TEXT DEFAULT 'factset',
+    as_of                  DATE,
     PRIMARY KEY (ticker, period, metric)
 );
 
 CREATE INDEX IF NOT EXISTS metrics_ticker_metric_idx ON metrics (ticker, metric);
+CREATE INDEX IF NOT EXISTS metrics_fiscal_end_idx    ON metrics (fiscal_end);
+
+-- §2a guidance-credibility score, aggregated per (ticker, metric) by
+-- store_b.credibility_score(). Cached here as JSONB (mirrors the file-backed
+-- credibility.json) so the A<->B JOIN is fully pg-native — no Python recompute
+-- needed to attach a management team's credibility to a guidance chunk.
+CREATE TABLE IF NOT EXISTS metrics_credibility (
+    ticker  TEXT NOT NULL,
+    metric  TEXT NOT NULL,
+    score   JSONB NOT NULL,                         -- the full credibility_score() dict
+    PRIMARY KEY (ticker, metric)
+);
 
 -- ---------------------------------------------------------------------------
 -- THE JOIN that justifies one Postgres for both stores (§2, §2a) — the reason
--- this is pgvector and not a bare vector index. A retrieved `guidance` chunk
--- (the prose "what they guided") JOINs to that management team's quantitative
--- beat/miss track record (the quant "their history of hitting it"). Sketch
--- only — the credibility aggregation lands with Store B in step 5.
---
--- CREATE VIEW guidance_with_track_record AS
--- SELECT c.chunk_id, c.ticker, c.fiscal_quarter, c.answered_by, c.text,
---        m.metric, m.beat_miss, m.magnitude
--- FROM   chunks c
--- JOIN   metrics m
---   ON   m.ticker = c.ticker
--- WHERE  'guidance' = ANY (c.facets)
---   AND  c.time_orientation = 'forward';
+-- this is pgvector and not a bare vector index. A retrieved `guidance`/forward
+-- chunk (the prose "what they guided") JOINs to that management team's
+-- quantitative beat/miss track record (the quant "their history of hitting
+-- it"). Reproduces store_b.join_guidance_chunk() as a SQL view. ACTIVE as of
+-- step 5b: each forward guidance chunk -> its most recent judged metric rows.
+-- ---------------------------------------------------------------------------
+CREATE OR REPLACE VIEW guidance_with_track_record AS
+SELECT c.chunk_id, c.ticker, c.fiscal_quarter, c.answered_by, c.text,
+       m.period, m.metric, m.fiscal_end,
+       m.beat_vs_guidance, m.beat_vs_guidance_pct, m.beat_vs_consensus_pct
+FROM   chunks c
+JOIN   metrics m
+  ON   m.ticker = c.ticker
+WHERE  'guidance' = ANY (c.facets)
+  AND  c.time_orientation = 'forward'
+  AND  m.beat_vs_guidance IS NOT NULL;
