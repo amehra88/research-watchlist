@@ -148,7 +148,7 @@ def chunk_transcript(pdf_path: Path) -> list[Chunk]:
         chunks.append(Chunk(
             chunk_id=f"{parent_id}-{n:02d}", doc_id=meta["doc_id"],
             parent_id=parent_id, kind="child", text=body,
-            ticker=meta["ticker"], doc_type=meta["doc_type"],
+            tickers=[meta["ticker"]] if meta.get("ticker") else [], doc_type=meta["doc_type"],
             event_date=meta["event_date"], fiscal_quarter=meta["fiscal_quarter"],
             section="Q&A",
             answered_by=", ".join(ans_by) or None,
@@ -184,7 +184,7 @@ def chunk_transcript(pdf_path: Path) -> list[Chunk]:
                 chunks.append(Chunk(
                     chunk_id=f"{pr_parent}-{k:02d}", doc_id=meta["doc_id"],
                     parent_id=pr_parent, kind="child", text=text,
-                    ticker=meta["ticker"], doc_type=meta["doc_type"],
+                    tickers=[meta["ticker"]] if meta.get("ticker") else [], doc_type=meta["doc_type"],
                     event_date=meta["event_date"], fiscal_quarter=meta["fiscal_quarter"],
                     section="Prepared remarks", speaker=line,
                     speaker_role=role_from_title(title), **tags))

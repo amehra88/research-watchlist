@@ -111,7 +111,7 @@ class Chunk:
     kind: str                 # "parent" | "child"
     text: str
     # --- provenance / structural (inherited from doc) ---
-    ticker: Optional[str]
+    tickers: list             # PER-CHUNK ticker array (multi-ticker notes, §v3); [] for macro/sector
     doc_type: str
     event_date: Optional[str]
     fiscal_quarter: Optional[str]
@@ -147,17 +147,22 @@ def _norm_role(title: str) -> str:
     return (title or "").split("&")[0].strip()[:24] or "exec"
 
 
-def _parse_roster(text: str) -> dict:
-    """Per-doc {last_name: role} from the note's YAML `speakers:` frontmatter.
-    Generalizes answerer-role lookup beyond the hardcoded global EXEC_ROLES so a
-    new ticker's CFO/CBO resolve without editing code (step 3b)."""
+def _parse_frontmatter(text: str) -> dict:
+    """The note's YAML frontmatter as a dict ({} if absent/malformed)."""
     fm = re.match(r"^---\n(.*?)\n---\n", text, re.S)
     if not fm:
         return {}
     try:
-        meta = yaml.safe_load(fm.group(1)) or {}
+        return yaml.safe_load(fm.group(1)) or {}
     except yaml.YAMLError:
         return {}
+
+
+def _parse_roster(text: str) -> dict:
+    """Per-doc {last_name: role} from the note's YAML `speakers:` frontmatter.
+    Generalizes answerer-role lookup beyond the hardcoded global EXEC_ROLES so a
+    new ticker's CFO/CBO resolve without editing code (step 3b)."""
+    meta = _parse_frontmatter(text)
     roster = {}
     for sp in (meta.get("speakers") or []):
         # Tolerate a malformed `speakers:` entry that is a bare string rather
@@ -174,22 +179,35 @@ def _parse_roster(text: str) -> dict:
 def parse_doc_meta(path: Path) -> dict:
     text = path.read_text(encoding="utf-8")
     doc_id = hashlib.sha256(text.encode("utf-8")).hexdigest()
+    fm = _parse_frontmatter(text)
     parts = path.parts
-    ticker = parts[parts.index("notes") + 1] if "notes" in parts else None
-    if ticker in ("sector",):
-        ticker = None  # sector notes are multi-ticker; assigned per-segment downstream
-    m = re.match(r"(\d{4})(\d{2})(\d{2})-(.+)\.md$", path.name)
+    # base_ticker drives ONLY the chunk_id prefix (kept separate from `tickers`
+    # so legacy IDs stay byte-identical); `tickers` is the retrieval array.
+    base_ticker = parts[parts.index("notes") + 1] if "notes" in parts else None
+    if base_ticker in ("sector",):
+        base_ticker = None  # sector notes are multi-ticker; assigned per-segment downstream
+    # -? makes the inner date separators optional: matches legacy 20260521-… AND
+    # ISO-dashed 2026-05-21-… filenames (CKPT C; verified non-regressive corpus-wide).
+    m = re.match(r"^(\d{4})-?(\d{2})-?(\d{2})-(.+)\.md$", path.name)
     event_date = f"{m.group(1)}-{m.group(2)}-{m.group(3)}" if m else None
     tail = m.group(4) if m else ""
     fq = None
     qm = re.search(r"([1-4]Q\d{2})", tail)
     if qm:
         fq = qm.group(1)
-    doc_type = "earnings_transcript" if fq else (
+    # tickers: frontmatter `tickers:` is canonical (multi-ticker; may be []);
+    # absent -> [base_ticker] (legacy single-ticker note path -> ['NVDA']).
+    if "tickers" in fm:
+        tickers = [t for t in (fm.get("tickers") or []) if t]
+    else:
+        tickers = [base_ticker] if base_ticker else []
+    themes = list(fm.get("themes") or []) if "themes" in fm else []  # union'd per-chunk
+    doc_type = fm.get("doc_type") or (                               # FM wins, else heuristic
+        "earnings_transcript" if fq else
         "conference_transcript" if "conf" in tail else "operator_note")
-    return dict(doc_id=doc_id, ticker=ticker, event_date=event_date,
-                fiscal_quarter=fq, doc_type=doc_type, text=text,
-                roster=_parse_roster(text))
+    return dict(doc_id=doc_id, tickers=tickers, base_ticker=base_ticker,
+                event_date=event_date, fiscal_quarter=fq, doc_type=doc_type,
+                themes=themes, text=text, roster=_parse_roster(text))
 
 
 # ---------------------------------------------------------------------------
@@ -264,10 +282,22 @@ def _compute_idf(texts: list[str]) -> dict:
     return {f: math.log((n + 1) / (df[f] + 1)) + 1 for f in _FACET_CUES}
 
 
+def _detect_sections(lines: list[str]) -> re.Pattern:
+    """Pick the section delimiter: the FIRST of ## / ### / full-line **bold**
+    that is PRESENT in the doc wins (CKPT D cascade). All 62 legacy notes use
+    ##, so they are unaffected (identical sections); podcast/external notes that
+    lack ## fall through to ### or bold so they still split into sections."""
+    for pat in (r"^##\s+(.*)$", r"^###\s+(.*)$", r"^\*\*(.+?)\*\*\s*$"):
+        rx = re.compile(pat)
+        if any(rx.match(ln) for ln in lines):
+            return rx
+    return re.compile(r"^##\s+(.*)$")  # harmless default (matches nothing -> 0 sections)
+
+
 def chunk_note(path: Path) -> list[Chunk]:
     meta = parse_doc_meta(path)
     lines = meta["text"].splitlines()
-    base = f"{meta['ticker'] or 'SECTOR'}-{meta['fiscal_quarter'] or _slug(path.stem)}"
+    base = f"{meta['base_ticker'] or 'SECTOR'}-{meta['fiscal_quarter'] or _slug(path.stem)}"
     # Per-doc roster (from the note's `speakers:` frontmatter) augments the
     # hardcoded global EXEC_ROLES so a new ticker's CFO/CBO resolve as answerers
     # without a code edit; the global dict remains the fallback (step 3b).
@@ -275,15 +305,16 @@ def chunk_note(path: Path) -> list[Chunk]:
     exec_names = tuple(roster)
     chunks: list[Chunk] = []
 
-    # split into ## sections
+    # split into sections — cascade ## -> ### -> full-line **bold** (CKPT D).
+    section_rx = _detect_sections(lines)
     sections: list[tuple[str, list[str]]] = []
     cur_title, cur_body = None, []
     for ln in lines:
-        h2 = re.match(r"^##\s+(.*)$", ln)
-        if h2:
+        h = section_rx.match(ln)
+        if h:
             if cur_title is not None:
                 sections.append((cur_title, cur_body))
-            cur_title, cur_body = h2.group(1).strip(), []
+            cur_title, cur_body = h.group(1).strip(), []
         elif cur_title is not None:
             cur_body.append(ln)
     if cur_title is not None:
@@ -316,10 +347,14 @@ def chunk_note(path: Path) -> list[Chunk]:
     for u in units:
         tags = tag_chunk(u["text"], section=u["section"],
                          doc_type=meta["doc_type"], idf=idf, exec_names=exec_names)
+        # Axis 3: union doc-level frontmatter themes with the per-chunk heuristic
+        # themes (FM first, dedup, order-preserving). Legacy notes carry no FM
+        # themes -> no-op -> byte-identical to today.
+        tags["themes"] = list(dict.fromkeys(list(meta["themes"]) + list(tags.get("themes", []))))
         child = u["child"] or {}
         chunks.append(Chunk(
             chunk_id=u["chunk_id"], doc_id=meta["doc_id"], parent_id=u["parent_id"],
-            kind=u["kind"], text=u["text"], ticker=meta["ticker"],
+            kind=u["kind"], text=u["text"], tickers=meta["tickers"],
             doc_type=meta["doc_type"], event_date=meta["event_date"],
             fiscal_quarter=meta["fiscal_quarter"], section=u["section"],
             speaker=child.get("speaker"), speaker_role=child.get("speaker_role"),
