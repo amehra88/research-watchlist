@@ -25,7 +25,7 @@ import yaml
 from chunker import Chunk
 from eval import check
 from retrieve import retrieve
-from store import FileStore
+from store import get_store
 
 HERE = Path(__file__).resolve().parent
 KS = (1, 3, 5)
@@ -65,9 +65,11 @@ def run(label, ticker, eval_rel, store):
 
 
 def main():
-    store = FileStore()
+    store = get_store()  # honors CHUNK_STORE_BACKEND (file | pg) — the step-5b gate
     p, c = store.count()
-    print(f"store: {p} parents + {c} children\n=== recall@k through retrieve.py -> FileStore ===")
+    backend = type(store).__name__
+    print(f"store: {p} parents + {c} children [{backend}]\n"
+          f"=== recall@k through retrieve.py -> {backend} ===")
     combined = {k: 0 for k in KS}
     total = 0
     for label, ticker, eval_rel in DATASETS:

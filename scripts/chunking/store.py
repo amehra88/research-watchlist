@@ -203,16 +203,93 @@ def _parse_date(s: str) -> Optional[date]:
 
 
 # ---------------------------------------------------------------------------
-class PgStore(Store):
-    """Managed-pgvector backend — STEP 5. Swapped in when Store B + the
-    Store-A<->B JOIN (schema.sql) make a real database earn its keep. Load
-    schema.sql into a managed instance, set DATABASE_URL + CHUNK_STORE_BACKEND=pg.
-    Same interface as FileStore; the retriever is unchanged."""
+class PgStore(FileStore):
+    """Managed-pgvector backend (step 5b). Durable rows live in Postgres
+    (schema.sql `chunks`), but RANKING is inherited from FileStore unchanged:
+    embeddings are loaded from pg into the SAME in-memory numpy structures and
+    scored by the SAME cosine + soft-facet-boost code path (search/_normalize/
+    get_parent/count are all inherited). The migration is therefore a pure
+    data-integrity swap, NOT a ranking change — the gold eval must be byte-
+    identical to the file backend. SQL/ANN ranking stays deferred until the
+    corpus outgrows exact scan (schema.sql §ANN; vector(3072) is also past
+    pgvector's 2000-dim index cap, so exact scan is the only option today).
+    The pg-native win is the A<->B JOIN — see store_b.PgMetricsStore."""
 
-    def __init__(self, *a, **kw):
-        raise NotImplementedError(
-            "PgStore is the step-5 managed-pgvector backend; not built yet. "
-            "Use CHUNK_STORE_BACKEND=file (the default) until Store B lands.")
+    # the 20 Chunk fields (embedding handled separately, as FileStore does)
+    _META_COLS = ["chunk_id", "doc_id", "parent_id", "kind", "text", "ticker",
+                  "doc_type", "event_date", "fiscal_quarter", "section",
+                  "speaker", "speaker_role", "answered_by", "answerer_role",
+                  "answer_directness", "asker_citation", "claim_source",
+                  "time_orientation", "facets", "themes"]
+
+    def __init__(self):
+        import pgconn
+        self._conn = pgconn.connect()
+        self.records = {}
+        self._emb_ids = []
+        self._emb = None
+        self._load()
+
+    # --- persistence (pg-backed; overrides FileStore's file I/O) ------------
+    def _load(self) -> None:
+        self.records.clear()
+        with self._conn.cursor() as cur:
+            cur.execute(f"SELECT {', '.join(self._META_COLS)} FROM chunks")
+            for row in cur.fetchall():
+                rec = dict(zip(self._META_COLS, row))
+                ed = rec.get("event_date")
+                # DATE -> 'YYYY-MM-DD' str so search()'s string compares and
+                # _parse_date behave EXACTLY as on the file backend.
+                rec["event_date"] = ed.isoformat() if ed is not None else None
+                rec["facets"] = rec.get("facets") or []   # TEXT[] -> list (NULL-safe)
+                rec["themes"] = rec.get("themes") or []
+                self.records[rec["chunk_id"]] = rec
+            cur.execute("SELECT chunk_id, embedding FROM chunks "
+                        "WHERE embedding IS NOT NULL")
+            ids, vecs = [], []
+            for cid, emb in cur.fetchall():
+                ids.append(cid)
+                vecs.append(np.asarray(emb, dtype=np.float32))
+            self._emb_ids = ids
+            self._emb = np.vstack(vecs).astype(np.float32) if vecs else None
+        self._normalize()  # inherited; idempotent on already-normalized vectors
+
+    def _save(self) -> None:  # writes go through upsert(); no file persistence
+        pass
+
+    def upsert(self, records: list[dict]) -> int:
+        """Idempotent by chunk_id (ON CONFLICT). Mirrors FileStore.upsert
+        semantics; parents are inserted before children to satisfy the
+        self-referential parent_id FK across execute_values pages."""
+        from psycopg2.extras import execute_values
+        cols = self._META_COLS + ["embedding"]
+        pid_i = self._META_COLS.index("parent_id")
+        rows = []
+        for r in records:
+            r = dict(r)
+            emb = r.get("embedding")
+            row = [r.get(c) for c in self._META_COLS]
+            row[self._META_COLS.index("event_date")] = r.get("event_date") or None
+            row.append(np.asarray(emb, dtype=np.float32) if emb is not None else None)
+            rows.append(row)
+        rows.sort(key=lambda row: 0 if row[pid_i] is None else 1)  # parents first
+        set_clause = ", ".join(f"{c}=EXCLUDED.{c}" for c in cols if c != "chunk_id")
+        with self._conn.cursor() as cur:
+            execute_values(
+                cur,
+                f"INSERT INTO chunks ({', '.join(cols)}) VALUES %s "
+                f"ON CONFLICT (chunk_id) DO UPDATE SET {set_clause}",
+                rows)
+        self._conn.commit()
+        self._load()  # refresh in-memory view so search() reflects the write
+        return len(records)
+
+    def clear(self) -> None:
+        with self._conn.cursor() as cur:
+            cur.execute("TRUNCATE chunks CASCADE")
+        self._conn.commit()
+        self.records.clear()
+        self._emb_ids, self._emb = [], None
 
 
 # ---------------------------------------------------------------------------

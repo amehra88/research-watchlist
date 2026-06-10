@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import statistics
+from decimal import Decimal as _Decimal
 from pathlib import Path
 from typing import Optional
 
@@ -215,3 +216,103 @@ class MetricsStore:
             "credibility": self.credibility(ticker),
             "track_record": self.track_record(ticker, n=n),
         }
+
+
+# ---------------------------------------------------------------------------
+# Pg-backed Store B + the pg-native A<->B join (step 5b managed-pgvector swap)
+# ---------------------------------------------------------------------------
+class PgMetricsStore:
+    """Postgres-backed Store B. Same interface as MetricsStore, but metrics live
+    in schema.sql `metrics`, the credibility cache in `metrics_credibility`
+    (JSONB), and the A<->B JOIN is pg-native (track_record + credibility are SQL
+    reads keyed on ticker — no Python recompute). This is pg's raison d'être per
+    schema.sql: a retrieved guidance chunk JOINs to its management's quant
+    track record in the same database."""
+
+    _COLS = ["ticker", "period", "metric", "fiscal_end", "guidance_date",
+             "guidance_low", "guidance_mid", "guidance_high", "consensus_at_guide",
+             "guide_vs_consensus_pct", "actual", "consensus_at_print",
+             "beat_vs_consensus_pct", "surprise_date", "beat_vs_guidance",
+             "beat_vs_guidance_pct", "source", "as_of"]
+    _DATE_COLS = ("fiscal_end", "guidance_date", "surprise_date", "as_of")
+
+    def __init__(self):
+        import pgconn
+        self._conn = pgconn.connect()
+
+    def write(self, records: list[dict], cred: dict[str, dict]) -> None:
+        from psycopg2.extras import execute_values, Json
+        rows = [[(r.get(c) or None) if c in self._DATE_COLS else r.get(c)
+                 for c in self._COLS] for r in records]
+        keys = ("ticker", "period", "metric")
+        set_clause = ", ".join(f"{c}=EXCLUDED.{c}" for c in self._COLS if c not in keys)
+        cred_rows = [[k.split(":", 1)[0], k.split(":", 1)[1], Json(v)]
+                     for k, v in cred.items()]
+        with self._conn.cursor() as cur:
+            execute_values(
+                cur,
+                f"INSERT INTO metrics ({', '.join(self._COLS)}) VALUES %s "
+                f"ON CONFLICT (ticker, period, metric) DO UPDATE SET {set_clause}",
+                rows)
+            if cred_rows:
+                execute_values(
+                    cur,
+                    "INSERT INTO metrics_credibility (ticker, metric, score) VALUES %s "
+                    "ON CONFLICT (ticker, metric) DO UPDATE SET score = EXCLUDED.score",
+                    cred_rows)
+        self._conn.commit()
+
+    def credibility(self, ticker: str, metric: str = "SALES") -> Optional[dict]:
+        with self._conn.cursor() as cur:
+            cur.execute("SELECT score FROM metrics_credibility "
+                        "WHERE ticker = %s AND metric = %s", (ticker, metric))
+            row = cur.fetchone()
+        return row[0] if row else None  # JSONB -> dict
+
+    def _rowdicts(self, cur) -> list[dict]:
+        cols = [d[0] for d in cur.description]
+        out = []
+        for row in cur.fetchall():
+            rec = dict(zip(cols, row))
+            for c in self._DATE_COLS:                      # DATE -> str (file parity)
+                if rec.get(c) is not None:
+                    rec[c] = rec[c].isoformat()
+            for c in rec:                                  # NUMERIC -> float (Decimal parity)
+                if isinstance(rec[c], _Decimal):
+                    rec[c] = float(rec[c])
+            out.append(rec)
+        return out
+
+    def track_record(self, ticker: str, metric: str = "SALES", n: int = 4) -> list[dict]:
+        """Most-recent n JUDGED periods (actual vs own guide), newest first."""
+        with self._conn.cursor() as cur:
+            cur.execute(
+                f"SELECT {', '.join(self._COLS)} FROM metrics "
+                "WHERE ticker = %s AND metric = %s AND beat_vs_guidance IS NOT NULL "
+                "ORDER BY fiscal_end DESC LIMIT %s", (ticker, metric, n))
+            return self._rowdicts(cur)
+
+    def join_guidance_chunk(self, chunk: dict, n: int = 4) -> Optional[dict]:
+        """Pg-native A<->B JOIN — same shape as MetricsStore.join_guidance_chunk."""
+        ticker = chunk.get("ticker")
+        if not ticker:
+            return None
+        return {
+            "chunk_id": chunk.get("chunk_id"),
+            "ticker": ticker,
+            "fiscal_quarter": chunk.get("fiscal_quarter"),
+            "narrative": chunk.get("text"),
+            "credibility": self.credibility(ticker),
+            "track_record": self.track_record(ticker, n=n),
+        }
+
+
+def get_metrics_store():
+    """Backend dispatch, parallel to store.get_store(): file (default) | pg."""
+    import os
+    backend = os.environ.get("CHUNK_STORE_BACKEND", "file").lower()
+    if backend == "file":
+        return MetricsStore()
+    if backend == "pg":
+        return PgMetricsStore()
+    raise ValueError(f"unknown CHUNK_STORE_BACKEND: {backend!r} (file | pg)")
