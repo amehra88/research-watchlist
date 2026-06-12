@@ -225,6 +225,10 @@ class PgStore(FileStore):
     def __init__(self):
         import pgconn
         self._conn = pgconn.connect()
+        # Backend-agnostic self-descriptor (parity with FileStore.dir). Kept a
+        # bare label — never interpolate DATABASE_URL here (would leak password
+        # into ingest logs). ingest.py:76 prints this after upsert.
+        self.dir = "pg://chunk_store"
         self.records = {}
         self._emb_ids = []
         self._emb = None
