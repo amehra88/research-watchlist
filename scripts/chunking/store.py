@@ -44,6 +44,8 @@ class Hit:
     chunk: dict          # the matched child chunk (all Chunk fields)
     score: float
     parent: Optional[dict] = None  # auto-merge target (§3a), filled by retriever
+    track_record: Optional[list] = None  # A<->B JOIN: mgmt quant history (guidance chunks only)
+    credibility: Optional[dict] = None   # A<->B JOIN: mgmt credibility score (guidance chunks only)
 
 
 # ---------------------------------------------------------------------------

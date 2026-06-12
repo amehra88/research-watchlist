@@ -18,10 +18,25 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import logging
 import re
 
 from embed import embed_one
 from store import get_store, Hit
+from store_b import get_metrics_store  # mirrors store.get_store() pattern
+
+log = logging.getLogger(__name__)
+
+# Lazy, cached Store B handle — built on first guidance-chunk enrichment so a
+# retrieval over non-guidance content never pays the metrics-store connect cost.
+_metrics_store = None
+
+
+def _get_metrics_store():
+    global _metrics_store
+    if _metrics_store is None:
+        _metrics_store = get_metrics_store()
+    return _metrics_store
 
 # Production §7 ranking weights. Untuned-but-reasonable; tune on a multi-note
 # corpus (the gold eval pins the facet_lambda=0.05 baseline that these extend).
@@ -59,6 +74,25 @@ def retrieve(question: str, k: int = 5, *, ticker: str = None, since: str = None
     )
     for h in hits:  # auto-merge: hand back the parent section for context (§3a)
         h.parent = store.get_parent(h.chunk["chunk_id"])
+
+        # A<->B JOIN: forward-guidance chunks carry their management's quant
+        # track record + credibility (store_b.join_guidance_chunk). Additive
+        # post-processing — never affects ranking. Returns None gracefully when
+        # Store B has no data for the ticker (most tickers today; see
+        # store-b-coverage-expansion).
+        chunk = h.chunk
+        facets = chunk.get("facets") or []
+        if "guidance" in facets and chunk.get("time_orientation") == "forward":
+            try:
+                enrichment = _get_metrics_store().join_guidance_chunk(chunk)
+                if enrichment:
+                    # `or None`: an empty track record (ticker not in Store B)
+                    # is absence, not a result — keep the None contract uniform.
+                    h.track_record = enrichment.get("track_record") or None
+                    h.credibility = enrichment.get("credibility")
+            except Exception as e:  # noqa: BLE001 — enrichment must not break retrieval
+                log.warning("guidance enrichment failed for %s: %s",
+                            chunk.get("chunk_id"), e)
     return hits
 
 
