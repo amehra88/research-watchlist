@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import statistics
+from datetime import date as _date
 from decimal import Decimal as _Decimal
 from pathlib import Path
 from typing import Optional
@@ -35,12 +36,51 @@ _CRED_FILE = "credibility.json"
 # ending 2026-04-30 is FactSet fiscalYear=2026/period=1, but NVDA — and our gold
 # notes — call it "1Q27" (NVDA's FY27 ends Jan-2027). So we add +1 to FactSet's
 # fiscalYear for NVDA to match the note convention. Calendar-FY names (GOOGL)
-# align already → offset 0. Add an entry per off-cycle ticker as Store B grows.
+# align already → offset 0.
+#
+# As Store B grew past NVDA/GOOGL this hand-coded dict became the highest-risk
+# scaling point: a missing off-cycle ticker yields wrong-but-plausible period
+# labels that silently corrupt the credibility math. It is now a DEFENSIVE
+# FALLBACK only — derive_fy_offset() computes the offset per ticker straight
+# from FactSet's own fiscalEndDate/fiscalYear/fiscalPeriod (see ingest_metrics.py).
 _FY_LABEL_OFFSET = {"NVDA": 1}
 
 
-def fiscal_label(ticker: str, fiscal_year: int, fiscal_period: int) -> str:
-    yr = int(fiscal_year) + _FY_LABEL_OFFSET.get(ticker, 0)
+def derive_fy_offset(records: list[dict]) -> Optional[int]:
+    """Derive the (note-label year − FactSet fiscalYear) offset from raw FactSet
+    rows (guidance OR surprise), with no hand-coding.
+
+    The company labels a fiscal year by the CALENDAR YEAR IN WHICH IT ENDS;
+    FactSet's `fiscalYear` integer can trail that for off-calendar FYs. For each
+    record we shift its period-end forward to the FY-end quarter and read off the
+    calendar year there:
+
+        fy_end_year = year( fiscalEndDate + 3*(4 - fiscalPeriod) months )
+        offset      = fy_end_year − factset_fiscalYear
+
+    Majority-vote across all of a ticker's records → robust to a single stray
+    52/53-week label that drifts a few days across a year boundary. Returns None
+    when no record carries the needed fields (caller falls back to
+    _FY_LABEL_OFFSET)."""
+    votes: dict[int, int] = {}
+    for r in records:
+        fe, fy, fp = r.get("fiscalEndDate"), r.get("fiscalYear"), r.get("fiscalPeriod")
+        if not fe or fy is None or fp is None:
+            continue
+        d = _date.fromisoformat(fe)
+        months = (d.month - 1) + 3 * (4 - int(fp))   # shift to the FY-end quarter
+        fy_end_year = d.year + months // 12
+        votes[fy_end_year - int(fy)] = votes.get(fy_end_year - int(fy), 0) + 1
+    if not votes:
+        return None
+    return max(votes, key=votes.get)
+
+
+def fiscal_label(ticker: str, fiscal_year: int, fiscal_period: int,
+                 offset: Optional[int] = None) -> str:
+    if offset is None:                               # defensive fallback only
+        offset = _FY_LABEL_OFFSET.get(ticker, 0)
+    yr = int(fiscal_year) + offset
     return f"{int(fiscal_period)}Q{yr % 100:02d}"
 
 
@@ -60,7 +100,8 @@ def _dedupe_by_period(rows: list[dict]) -> dict:
 
 
 def build_metrics(ticker: str, guidance_rows: list[dict], surprise_rows: list[dict],
-                  *, metric: str = "SALES", as_of: Optional[str] = None) -> list[dict]:
+                  *, metric: str = "SALES", as_of: Optional[str] = None,
+                  fy_offset: Optional[int] = None) -> list[dict]:
     g = _dedupe_by_period(guidance_rows)
     s = _dedupe_by_period(surprise_rows)
     records = []
@@ -69,7 +110,7 @@ def build_metrics(ticker: str, guidance_rows: list[dict], surprise_rows: list[di
         base = gr or sr
         rec = {
             "ticker": ticker,
-            "period": fiscal_label(ticker, base["fiscalYear"], base["fiscalPeriod"]),
+            "period": fiscal_label(ticker, base["fiscalYear"], base["fiscalPeriod"], fy_offset),
             "fiscal_end": fe,
             "metric": metric,
             # guidance side -------------------------------------------------

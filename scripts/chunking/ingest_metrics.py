@@ -1,125 +1,197 @@
 #!/usr/bin/env python3
 """
-Store B ingest (file-backed). Reads raw FactSet JSON (pulled by a FactSet-MCP
-agent into state/chunk_store/factset_raw/ — the production puller; manual tonight),
-transforms via store_b.build_metrics, writes metrics.jsonl + credibility.json,
-and (--demo) shows the Store-A <-> Store-B join on a real guidance chunk.
+Store B ingest (multi-ticker x multi-metric). Reads raw FactSet JSON pulled by a
+FactSet-MCP agent into state/chunk_store/factset_raw/, transforms via
+store_b.build_metrics, and writes to the configured backend (file | pg, selected
+by CHUNK_STORE_BACKEND through store_b.get_metrics_store()).
 
-    python3 scripts/chunking/ingest_metrics.py            # build + report
-    python3 scripts/chunking/ingest_metrics.py --demo     # + A<->B join demo
+Raw layout — ONE combined file per (metric, kind) holding every ticker's rows,
+keyed back to a ticker by FactSet `requestId` (== the id passed to the MCP, e.g.
+"NVDA-US"):
+    factset_raw/{METRIC}_{kind}.json        kind in {guidance, surprise}
+e.g. factset_raw/SALES_guidance.json, factset_raw/INC_GROSS_surprise.json
+
+The FY-label offset (note-label year - FactSet fiscalYear) is DERIVED per ticker
+straight from FactSet's own fiscalEndDate via store_b.derive_fy_offset() — no
+hand-coding — and cached to factset_raw/_fy_offsets.json. The legacy hand-coded
+store_b._FY_LABEL_OFFSET is a defensive fallback only.
+
+    python3 scripts/chunking/ingest_metrics.py                      # build + write + report
+    python3 scripts/chunking/ingest_metrics.py --dry-run            # build + report, NO write
+    python3 scripts/chunking/ingest_metrics.py --tickers NVDA,AMD --metrics SALES,EPS
 """
+import argparse
 import json
 import sys
 from datetime import date
 from pathlib import Path
 
+import yaml
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from store_b import STORE_DIR, MetricsStore, build_metrics, credibility_score  # noqa: E402
+from store_b import (  # noqa: E402
+    STORE_DIR, build_metrics, credibility_score, derive_fy_offset,
+    get_metrics_store, _FY_LABEL_OFFSET,
+)
 
 RAW = STORE_DIR / "factset_raw"
-TICKERS = ["NVDA", "GOOGL"]
-METRIC = "SALES"
+OFFSETS_FILE = RAW / "_fy_offsets.json"
+REPO = Path("/root/research-watchlist")
+METRICS = ["SALES", "INC_GROSS", "EPS"]   # SALES + gross-income-$ + EPS (per operator decision)
+KINDS = ("guidance", "surprise")
 
 
-def _raw(ticker: str, kind: str) -> list[dict]:
-    p = RAW / f"{ticker}_{kind}.json"
-    return json.loads(p.read_text()).get("data", []) if p.exists() else []
+# ---------------------------------------------------------------------------
+# Universe + identity (ticker <-> FactSet id)
+# ---------------------------------------------------------------------------
+def universe() -> list[str]:
+    """T1 + T2 tickers from watchlist.yaml (dedup; drop the A000660 alias of
+    000660.KS)."""
+    w = yaml.safe_load((REPO / "config" / "watchlist.yaml").read_text())
+    out: list[str] = []
+    for block in ("tier_1_bctk", "tier_2_active_candidates"):
+        for it in (w.get(block) or []):
+            tk = it if isinstance(it, str) else (it.get("ticker") or list(it.keys())[0])
+            if tk and tk not in out:
+                out.append(tk)
+    return [t for t in out if t != "A000660"]
 
 
-def build() -> tuple[list[dict], dict]:
+def id_maps(tickers: list[str]) -> tuple[dict, dict]:
+    """(ticker -> factset_id, factset_id -> ticker) for the given tickers.
+    factset_id from ticker_identity.yaml, else default TICKER-US."""
+    idmap = yaml.safe_load((REPO / "config" / "ticker_identity.yaml").read_text())
+    tk_to_fid, fid_to_tk = {}, {}
+    for tk in tickers:
+        fid = ((idmap.get(tk) or {}).get("factset_id")) or f"{tk}-US"
+        tk_to_fid[tk] = fid
+        fid_to_tk[fid] = tk
+    return tk_to_fid, fid_to_tk
+
+
+# ---------------------------------------------------------------------------
+# Raw I/O — combined {metric}_{kind}.json grouped ticker -> [rows]
+# ---------------------------------------------------------------------------
+def rows_for(metric: str, kind: str, fid_to_tk: dict) -> dict[str, list[dict]]:
+    p = RAW / f"{metric}_{kind}.json"
+    if not p.exists():
+        return {}
+    data = json.loads(p.read_text()).get("data", [])
+    grouped: dict[str, list[dict]] = {}
+    for r in data:
+        tk = fid_to_tk.get(r.get("requestId"))
+        if tk:
+            grouped.setdefault(tk, []).append(r)
+    return grouped
+
+
+# ---------------------------------------------------------------------------
+# FY offsets — derived per ticker, cached
+# ---------------------------------------------------------------------------
+def derive_offsets(tickers: list[str], fid_to_tk: dict) -> dict[str, int]:
+    """Union every ticker's raw rows across metric x kind, majority-vote the FY
+    offset. Falls back to the hand-coded _FY_LABEL_OFFSET only when derivation
+    yields nothing (no usable records)."""
+    per_tk: dict[str, list[dict]] = {t: [] for t in tickers}
+    for metric in METRICS:
+        for kind in KINDS:
+            for tk, rows in rows_for(metric, kind, fid_to_tk).items():
+                per_tk.setdefault(tk, []).extend(rows)
+    offsets, derived_flags = {}, {}
+    for tk in tickers:
+        d = derive_fy_offset(per_tk.get(tk, []))
+        derived_flags[tk] = d is not None
+        offsets[tk] = d if d is not None else _FY_LABEL_OFFSET.get(tk, 0)
+    return offsets, derived_flags
+
+
+# ---------------------------------------------------------------------------
+# Build
+# ---------------------------------------------------------------------------
+def build(tickers, metrics, fid_to_tk, offsets):
     as_of = date.today().isoformat()
     all_records, cred = [], {}
-    for tk in TICKERS:
-        recs = build_metrics(tk, _raw(tk, "guidance"), _raw(tk, "surprise"),
-                             metric=METRIC, as_of=as_of)
-        all_records.extend(recs)
-        cred[f"{tk}:{METRIC}"] = credibility_score(recs)
+    for metric in metrics:
+        g = rows_for(metric, "guidance", fid_to_tk)
+        s = rows_for(metric, "surprise", fid_to_tk)
+        for tk in tickers:
+            recs = build_metrics(tk, g.get(tk, []), s.get(tk, []),
+                                 metric=metric, as_of=as_of, fy_offset=offsets.get(tk))
+            if not recs:
+                continue
+            all_records.extend(recs)
+            c = credibility_score(recs)
+            if c:
+                cred[f"{tk}:{metric}"] = c
     return all_records, cred
 
 
+# ---------------------------------------------------------------------------
+# Report
+# ---------------------------------------------------------------------------
 def _fmt(x, p="{:.1f}"):
     return "—" if x is None else p.format(x)
 
 
-def report(records, cred, store):
-    print(f"\n=== Store B written: {store.dir / 'metrics.jsonl'} ===")
-    print(f"records: {len(records)}  |  tickers: {sorted({r['ticker'] for r in records})}")
+def report(records, cred, offsets, derived_flags, tickers, metrics):
+    print(f"\n=== Store B build: {len(records)} metric rows, "
+          f"{len(cred)} credibility (ticker:metric) pairs ===")
 
-    print("\n--- sample NVDA metrics rows (judged periods, newest 5) ---")
-    nv = [r for r in records if r["ticker"] == "NVDA" and r.get("beat_vs_guidance")]
-    for r in sorted(nv, key=lambda r: r["fiscal_end"], reverse=True)[:5]:
-        print(f"  {r['period']:>5}  guide[{_fmt(r['guidance_low'])}/{_fmt(r['guidance_mid'])}/"
-              f"{_fmt(r['guidance_high'])}]  actual={_fmt(r['actual'])}  "
-              f"vsGuide={r['beat_vs_guidance']:>8} ({_fmt(r['beat_vs_guidance_pct'],'{:+.1%}')})  "
-              f"vsCons={_fmt(r['beat_vs_consensus_pct'],'{:+.1%}')}  "
-              f"guideVsStreet={_fmt(r['guide_vs_consensus_pct'],'{:+.1%}')}")
+    print("\n--- derived FY offsets (note-label year − FactSet fiscalYear) ---")
+    for tk in tickers:
+        src = "derived" if derived_flags.get(tk) else "fallback"
+        print(f"  {tk:>10}: {offsets.get(tk):+d}   ({src})")
 
-    print("\n--- GOOGL state (no-guidance fallback) ---")
-    gg = [r for r in records if r["ticker"] == "GOOGL"]
-    sample = sorted(gg, key=lambda r: r["fiscal_end"], reverse=True)[:3]
-    for r in sample:
-        print(f"  {r['period']:>5}  guidance={r['beat_vs_guidance']}  actual={_fmt(r['actual'])}  "
-              f"vsCons={_fmt(r['beat_vs_consensus_pct'],'{:+.1%}')}")
-
-    print("\n--- credibility scores ---")
-    for key, c in cred.items():
-        if c.get("guides_quantitatively"):
-            print(f"  {key}: hit_rate={_fmt(c['guide_hit_rate'],'{:.0%}')} "
-                  f"(in-band {_fmt(c['guide_hit_rate_inrange'],'{:.0%}')})  "
-                  f"avg_beat_vs_guide={_fmt(c['avg_beat_vs_guidance'],'{:+.1%}')}  "
-                  f"sandbag_index={_fmt(c['sandbag_index'],'{:+.3f}')}  "
-                  f"consistency={_fmt(c['consistency'],'{:.2f}')}  "
-                  f"n={c['n_guided_periods']} {c['date_range']}")
-        else:
-            print(f"  {key}: NO QUANTITATIVE GUIDANCE -> fallback: "
-                  f"consensus_beat_rate={_fmt(c['consensus_beat_rate'],'{:.0%}')} "
-                  f"avg_beat_vs_consensus={_fmt(c['avg_beat_vs_consensus'],'{:+.1%}')} "
-                  f"n={c['n_consensus_periods']}")
+    print("\n--- per (ticker, metric) coverage ---")
+    by_pair = {}
+    for r in records:
+        by_pair.setdefault((r["ticker"], r["metric"]), []).append(r)
+    for tk in tickers:
+        for m in metrics:
+            recs = by_pair.get((tk, m), [])
+            c = cred.get(f"{tk}:{m}")
+            if not recs:
+                print(f"  {tk:>10} {m:<10}: no rows (not covered)")
+                continue
+            judged = [r for r in recs if r.get("beat_vs_guidance") is not None]
+            if c and c.get("guides_quantitatively"):
+                print(f"  {tk:>10} {m:<10}: {len(recs):>2} rows, {len(judged):>2} judged | "
+                      f"hit={_fmt(c['guide_hit_rate'],'{:.0%}')} "
+                      f"sandbag={_fmt(c['sandbag_index'],'{:+.3f}')} "
+                      f"n={c['n_guided_periods']} {c.get('date_range')}")
+            else:
+                cb = c.get("consensus_beat_rate") if c else None
+                n = c.get("n_consensus_periods") if c else 0
+                print(f"  {tk:>10} {m:<10}: {len(recs):>2} rows, NO quant guidance → "
+                      f"consensus-beat fallback (beat_rate={_fmt(cb,'{:.0%}')}, n={n})")
 
 
-def demo_join(store):
-    """A<->B JOIN: find a real Store-A guidance/forward chunk and attach Store B."""
-    sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from store import FileStore
-    a = FileStore()
-    cand = [r for r in a.records.values()
-            if r.get("ticker") == "NVDA" and r.get("kind") == "child"
-            and "guidance" in (r.get("facets") or [])
-            and r.get("time_orientation") == "forward"]
-    if not cand:  # relax if the exact facet∧forward combo isn't present
-        cand = [r for r in a.records.values()
-                if r.get("ticker") == "NVDA" and r.get("kind") == "child"
-                and "guidance" in (r.get("facets") or [])]
-    # prefer an earnings-note chunk that actually states a forward outlook number
-    def _illustrative(r):
-        t = (r.get("text") or "").lower()
-        return (r.get("doc_type") == "earnings_transcript",
-                sum(k in t for k in ("guid", "expect", "outlook", "revenue", "next quarter")))
-    cand.sort(key=_illustrative, reverse=True)
-    print("\n=== A<->B JOIN demo (guidance_with_track_record) ===")
-    if not cand:
-        print("  no NVDA guidance chunk in Store A; skipping")
-        return
-    joined = store.join_guidance_chunk(cand[0], n=4)
-    c = joined["credibility"]
-    print(f"  chunk_id: {joined['chunk_id']}  ({joined['fiscal_quarter']})")
-    print(f"  narrative: {(joined['narrative'] or '')[:200].strip()}…")
-    print(f"  -> management credibility (SALES guidance): hit_rate="
-          f"{c['guide_hit_rate']:.0%}, avg_beat_vs_guide={c['avg_beat_vs_guidance']:+.1%}, "
-          f"sandbag_index={c['sandbag_index']:+.3f}  (n={c['n_guided_periods']})")
-    print("  -> last 4 quarters (actual vs their own guide):")
-    for r in joined["track_record"]:
-        print(f"       {r['period']}: actual {r['actual']:.0f} vs guide-mid "
-              f"{r['guidance_mid']:.0f}  = {r['beat_vs_guidance']} ({r['beat_vs_guidance_pct']:+.1%})")
-
-
+# ---------------------------------------------------------------------------
 def main():
-    records, cred = build()
-    store = MetricsStore()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--tickers", help="comma list; default = T1+T2 universe")
+    ap.add_argument("--metrics", help=f"comma list; default = {','.join(METRICS)}")
+    ap.add_argument("--dry-run", action="store_true", help="build + report, do NOT write")
+    args = ap.parse_args()
+
+    tickers = args.tickers.split(",") if args.tickers else universe()
+    metrics = args.metrics.split(",") if args.metrics else METRICS
+    _, fid_to_tk = id_maps(tickers)
+
+    offsets, derived_flags = derive_offsets(tickers, fid_to_tk)
+    OFFSETS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    OFFSETS_FILE.write_text(json.dumps(offsets, indent=2, sort_keys=True))
+
+    records, cred = build(tickers, metrics, fid_to_tk, offsets)
+    report(records, cred, offsets, derived_flags, tickers, metrics)
+
+    if args.dry_run:
+        print("\n[dry-run] no write performed.")
+        return
+    store = get_metrics_store()
     store.write(records, cred)
-    report(records, cred, store)
-    if "--demo" in sys.argv:
-        demo_join(store)
+    print(f"\n=== wrote to {type(store).__name__} "
+          f"(CHUNK_STORE_BACKEND): {len(records)} rows, {len(cred)} cred pairs ===")
 
 
 if __name__ == "__main__":
