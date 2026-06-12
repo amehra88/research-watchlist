@@ -108,6 +108,12 @@ def build_metrics(ticker: str, guidance_rows: list[dict], surprise_rows: list[di
     for fe in sorted(set(g) | set(s)):
         gr, sr = g.get(fe), s.get(fe)
         base = gr or sr
+        # skip pure-null periods (no actual AND no guidance) — FactSet returns a
+        # quarterly row even for names with no coverage / pre-IPO (e.g. SPCX); a
+        # row carrying neither side is noise, not a (mis)signal.
+        if (sr is None or sr.get("surpriseAfter") is None) and \
+           (gr is None or gr.get("guidanceMidpoint") is None):
+            continue
         rec = {
             "ticker": ticker,
             "period": fiscal_label(ticker, base["fiscalYear"], base["fiscalPeriod"], fy_offset),
@@ -132,9 +138,13 @@ def build_metrics(ticker: str, guidance_rows: list[dict], surprise_rows: list[di
             "as_of": as_of,
         }
         # derived: actual vs their OWN guidance (the credibility signal) ----
-        if rec["actual"] is not None and rec["guidance_mid"] is not None:
-            a, lo, mid, hi = (rec["actual"], rec["guidance_low"],
-                              rec["guidance_mid"], rec["guidance_high"])
+        # Needs the FULL band (low, mid, high) to classify above/below/in_range.
+        # Across the broader universe a few names issue a point/one-sided guide
+        # (midpoint present, low/high null — e.g. INDI SALES); those are left
+        # un-judged rather than crashing the above/below comparison.
+        a, lo, mid, hi = (rec["actual"], rec["guidance_low"],
+                          rec["guidance_mid"], rec["guidance_high"])
+        if None not in (a, lo, mid, hi):
             rec["beat_vs_guidance"] = ("above" if a > hi else
                                        "below" if a < lo else "in_range")
             rec["beat_vs_guidance_pct"] = (a - mid) / mid if mid else None
@@ -177,7 +187,10 @@ def credibility_score(records: list[dict]) -> dict:
         })
         return out
 
-    beats = [r["beat_vs_guidance_pct"] for r in judged]
+    # beat_vs_guidance_pct can be None on a judged row when guidance_mid == 0
+    # (e.g. a breakeven EPS guide) — filter before the mean/stdev aggregates.
+    beats = [r["beat_vs_guidance_pct"] for r in judged
+             if r["beat_vs_guidance_pct"] is not None]
     # hit = actual at/above guide midpoint; in-range = within the guided band
     hit_mid = sum(1 for r in judged if r["actual"] >= r["guidance_mid"]) / len(judged)
     hit_band = sum(1 for r in judged if r["beat_vs_guidance"] in ("above", "in_range")) / len(judged)
@@ -194,9 +207,9 @@ def credibility_score(records: list[dict]) -> dict:
         "n_guided_periods": len(judged),
         "guide_hit_rate": hit_mid,
         "guide_hit_rate_inrange": hit_band,
-        "avg_beat_vs_guidance": statistics.mean(beats),
+        "avg_beat_vs_guidance": (statistics.mean(beats) if beats else None),
         "sandbag_index": (statistics.mean(sb) if sb else None),
-        "consistency": 1.0 - (statistics.pstdev(beats) if len(beats) > 1 else 0.0),
+        "consistency": (1.0 - statistics.pstdev(beats)) if len(beats) > 1 else None,
         "date_range": [judged[0]["fiscal_end"], judged[-1]["fiscal_end"]],
     })
     return out
