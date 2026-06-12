@@ -164,12 +164,6 @@ private_drivers:
     affects: [META]
     notes: "TikTok competitive dynamics affect META ad market share and engagement metrics. US regulatory trajectory is the swing variable."
     added_date: 2026-05-10
-  - name: SpaceX
-    pvt_id: spacex.pvt   # transitional — retire to ticker SPCX when the IPO prices (~2026-06-11/12), promote to T1
-    aliases: ["SpaceX", "Space Exploration Technologies Corp.", "Starlink", "xAI", "Grok", "SpaceXAI"]
-    affects: [NVDA, GEV, TSLA]
-    notes: "Starlink revenue + launch cadence reshape space economics (read-through to space-economy publics RKLB/IRDM/ASTS if added). NOW ALSO encompasses xAI: SpaceX acquired xAI 2026-02-02 (share exchange, 1 xAI -> 0.1433 SpaceX); May 2026 xAI was dissolved as a separate company — Grok and X moved under SpaceX's 'SpaceXAI' division. So SpaceX is also a frontier-model player (Grok — frontier_model_competition) and a major NVDA compute consumer (Colossus cluster; planned orbital data centers); TSLA cross-pollination on Grok. IPO imminent: confidential filing 2026-04-01, public S-1 out, expected price ~2026-06-11 / list ~06-12 at ~$1.8T (raise up to $75B). ON IPO -> rename this entry in place to the real ticker and promote to T1 (pre-IPO watchlist handoff). Absorbed former xai.pvt 2026-06-02. OPERATOR SIGNAL (2026-06-03, non-public, unverified): SpaceX has an agreement to acquire Cursor/Anysphere (best-of-breed AI coding-agent harness, ~$1.2B ARR), expected to close within 12 months — this would add a leading coding-agent harness to the SpaceXAI stack, giving SpaceX a position in agent_framework_landscape (harness axis) on top of frontier_model_competition. Track for confirmation; on close, fold Cursor exposure into the post-IPO SPCX entry rather than a standalone .pvt."
-    added_date: 2026-05-10   # restructured 2026-06-02 to absorb xAI (formerly xai.pvt)
   - name: Stripe
     pvt_id: stripe.pvt
     aliases: ["Stripe", "STRIPE, INC."]
@@ -1090,9 +1084,9 @@ tier_2_active_candidates:
     themes: [enterprise_ai_adoption, ai_infrastructure_software, observability_competitive_landscape, ai_agent_monetization, ai_re_architected_incumbent]
     added_date: 2026-05-09
   - ticker: SPCX
-    themes: [space_economy]
+    themes: [space_economy, frontier_model_competition, ai_infrastructure_capex]
     added_date: 2026-05-31
-    notes: "SpaceX. Pending IPO (expected ~early-mid June 2026); ticker SPCX not yet trading. MCP enrichment (FactSet/InsiderScore) will return empty until the listing prices. Currently also carried in private_drivers (affects: GEV) — retire that entry once the IPO closes and SPCX trades as a public name."
+    notes: "SpaceX (Space Exploration Technologies). Public as of 2026-06-12 on Nasdaq (SPCX); IPO priced ~$135/share fixed, ~$1.75T valuation. Consolidated entity: launch services + Starlink (~58% of FY24 rev) + xAI/Grok (absorbed 2026-02-02, folded into SpaceX's AI division May 2026). Major NVDA compute consumer (Colossus; Vera CPU early adopter; planned orbital DCs). Read-through: NVDA, GEV (power), TSLA (Grok). Contingencies still riding on this name: EchoStar spectrum + Cursor/Anysphere (operator signal, non-public) deals — fold Cursor in on close, no standalone .pvt. Promote to T1 automatically when SPCX appears in BCTK. See notes/SPCX/_profile.md."
   - ticker: TXN
     themes: [automotive_semiconductor_demand, semiconductor_cycle, data_center_deployment_constraints, ai_infrastructure_capex, china_us_tensions]
     added_date: 2026-05-09

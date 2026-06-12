@@ -261,3 +261,9 @@ POET:
   name: "POET Technologies"
   factset_id: "POET-US"
   google: '"POET Technologies" OR POET stock'   # "POET"/"poet" common word — name quote-anchored
+
+# ── Added on SpaceX IPO (spacex.pvt -> SPCX promotion) ──
+SPCX:
+  name: "SpaceX"
+  factset_id: "SPCX-US"
+  google: '"SpaceX" OR SPCX stock'
