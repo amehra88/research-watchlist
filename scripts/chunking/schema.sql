@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS chunks (
     text              TEXT NOT NULL,
 
     -- provenance / structural (inherited from the parent doc) ----------------
-    ticker            TEXT,                         -- PER-SEGMENT (§7); may differ from doc.primary_ticker; NULL for multi-ticker sector notes
+    tickers           TEXT[] NOT NULL DEFAULT '{}', -- PER-CHUNK ticker array (§v3 multi-ticker); [] for macro/sector notes. Mirrors chunker.py Chunk.tickers.
     doc_type          TEXT NOT NULL,                -- earnings_transcript | conference_transcript | operator_note | ...
     event_date        DATE,
     fiscal_quarter    TEXT,                         -- e.g. 1Q27
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS chunks (
 );
 
 -- Metadata filters used as hard scopes where correct (§7: ticker/date/quarter).
-CREATE INDEX IF NOT EXISTS chunks_ticker_idx   ON chunks (ticker);
+CREATE INDEX IF NOT EXISTS chunks_tickers_idx  ON chunks USING GIN (tickers);
 CREATE INDEX IF NOT EXISTS chunks_event_date_idx ON chunks (event_date);
 CREATE INDEX IF NOT EXISTS chunks_doc_id_idx   ON chunks (doc_id);
 -- Soft-boost ranking signals (§7, §11b-c): facet/theme overlap, not a hard gate.
@@ -141,12 +141,12 @@ CREATE TABLE IF NOT EXISTS metrics_credibility (
 -- step 5b: each forward guidance chunk -> its most recent judged metric rows.
 -- ---------------------------------------------------------------------------
 CREATE OR REPLACE VIEW guidance_with_track_record AS
-SELECT c.chunk_id, c.ticker, c.fiscal_quarter, c.answered_by, c.text,
+SELECT c.chunk_id, c.tickers, c.fiscal_quarter, c.answered_by, c.text,
        m.period, m.metric, m.fiscal_end,
        m.beat_vs_guidance, m.beat_vs_guidance_pct, m.beat_vs_consensus_pct
 FROM   chunks c
 JOIN   metrics m
-  ON   m.ticker = c.ticker
+  ON   m.ticker = ANY (c.tickers)
 WHERE  'guidance' = ANY (c.facets)
   AND  c.time_orientation = 'forward'
   AND  m.beat_vs_guidance IS NOT NULL;

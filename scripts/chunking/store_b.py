@@ -205,8 +205,11 @@ class MetricsStore:
         """The A<->B JOIN (reproduces schema.sql guidance_with_track_record).
         Given a Store-A `guidance`/forward chunk, attach its management's
         quantitative track record + credibility score, keyed on ticker."""
-        ticker = chunk.get("ticker")
-        if not ticker:
+        # §v3: chunk carries `tickers` (array). base_ticker is the canonical
+        # path-derived owner; fall back to tickers[0] for source-dir notes with
+        # no path ticker. Skip the join when neither is present.
+        ticker = chunk.get("base_ticker") or (chunk.get("tickers") or [None])[0]
+        if ticker is None:
             return None
         return {
             "chunk_id": chunk.get("chunk_id"),
@@ -294,8 +297,9 @@ class PgMetricsStore:
 
     def join_guidance_chunk(self, chunk: dict, n: int = 4) -> Optional[dict]:
         """Pg-native A<->B JOIN — same shape as MetricsStore.join_guidance_chunk."""
-        ticker = chunk.get("ticker")
-        if not ticker:
+        # §v3: base_ticker (canonical, path-derived) or tickers[0]; skip if neither.
+        ticker = chunk.get("base_ticker") or (chunk.get("tickers") or [None])[0]
+        if ticker is None:
             return None
         return {
             "chunk_id": chunk.get("chunk_id"),

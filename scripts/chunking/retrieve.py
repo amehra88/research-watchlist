@@ -79,7 +79,7 @@ def main():
         ans = (f"  →{c['answered_by']}/{c.get('answerer_role')}"
                f"({c.get('answer_directness') or '?'})" if c.get("answered_by") else "")
         print(f"\n[{rank}] {h.score:.3f}  {c['chunk_id']}{ans}")
-        print(f"     {c.get('ticker')} | {c.get('section')} | "
+        print(f"     {c.get('tickers')} | {c.get('section')} | "
               f"facets={c.get('facets')} [{c.get('claim_source')}/{c.get('time_orientation')}]")
         print(f"     {c['text'][:200].strip()}…")
         if h.parent:

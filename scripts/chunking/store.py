@@ -172,7 +172,7 @@ class FileStore(Store):
         for row, cid in enumerate(self._emb_ids):
             rec = self.records[cid]
             # hard scoping
-            if ticker and rec.get("ticker") != ticker:
+            if ticker and ticker not in (rec.get("tickers") or []):
                 continue
             if since and (rec.get("event_date") or "") < since:
                 continue
@@ -216,7 +216,7 @@ class PgStore(FileStore):
     The pg-native win is the A<->B JOIN — see store_b.PgMetricsStore."""
 
     # the 20 Chunk fields (embedding handled separately, as FileStore does)
-    _META_COLS = ["chunk_id", "doc_id", "parent_id", "kind", "text", "ticker",
+    _META_COLS = ["chunk_id", "doc_id", "parent_id", "kind", "text", "tickers",
                   "doc_type", "event_date", "fiscal_quarter", "section",
                   "speaker", "speaker_role", "answered_by", "answerer_role",
                   "answer_directness", "asker_citation", "claim_source",
