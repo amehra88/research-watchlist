@@ -150,3 +150,5 @@ JOIN   metrics m
 WHERE  'guidance' = ANY (c.facets)
   AND  c.time_orientation = 'forward'
   AND  m.beat_vs_guidance IS NOT NULL;
+
+GRANT SELECT ON guidance_with_track_record TO research;
