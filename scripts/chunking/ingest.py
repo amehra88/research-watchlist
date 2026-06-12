@@ -25,7 +25,7 @@ from pathlib import Path
 
 from chunker import chunk_note
 from embed import embed, EMBED_DIM
-from store import FileStore
+from store import get_store
 
 NOTES_ROOT = Path("/root/research-watchlist/notes")
 
@@ -37,7 +37,7 @@ def _iter_notes(args) -> list[Path]:
 
 
 def ingest(notes: list[Path], *, rebuild: bool = False) -> None:
-    store = FileStore()
+    store = get_store()
     if rebuild:
         store.clear()
 
