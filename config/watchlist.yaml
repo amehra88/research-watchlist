@@ -905,6 +905,10 @@ tier_1_bctk:
       notes: "Steady compounder; 2Q26 beat-and-raise with FY26 guidance up across revenue/margin/EPS/FCF and early Ansys synergies. Design-IP segment bottoming and China demand are watch-items; premium valuation caps upside. Factors: earnings revisions, ROIC, growth (source: notes/SNPS/20260528-2Q26.md)."
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02. Sources: notes/SNPS/20260528-2Q26.md, public data, OPERATOR-PRIVATE SIGNAL: Cadence outperforming SNPS on share (competitive_advantage 4/4/4 reflects this; public-data analyst view alone might suggest higher). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
+  - ticker: SPCX
+    themes: [space_economy, frontier_model_competition, ai_infrastructure_capex]
+    notes: "SpaceX (Space Exploration Technologies). Public as of 2026-06-12 on Nasdaq (SPCX); IPO priced ~$135/share fixed, ~$1.75T valuation. Consolidated entity: launch services + Starlink (~58% of FY24 rev) + xAI/Grok (absorbed 2026-02-02, folded into SpaceX's AI division May 2026). Major NVDA compute consumer (Colossus; Vera CPU early adopter; planned orbital DCs). Read-through: NVDA, GEV (power), TSLA (Grok). Contingencies still riding on this name: EchoStar spectrum + Cursor/Anysphere (operator signal, non-public) deals — fold Cursor in on close, no standalone .pvt. Promote to T1 automatically when SPCX appears in BCTK. See notes/SPCX/_profile.md."
+    added_date: 2026-05-31
   - ticker: SPOT
     themes: [ai_re_architected_incumbent, ad_market_strength, vertical_ai_applications, ai_generated_content]
     added_date: 2026-05-09
@@ -1083,10 +1087,6 @@ tier_2_active_candidates:
   - ticker: SNOW
     themes: [enterprise_ai_adoption, ai_infrastructure_software, observability_competitive_landscape, ai_agent_monetization, ai_re_architected_incumbent]
     added_date: 2026-05-09
-  - ticker: SPCX
-    themes: [space_economy, frontier_model_competition, ai_infrastructure_capex]
-    added_date: 2026-05-31
-    notes: "SpaceX (Space Exploration Technologies). Public as of 2026-06-12 on Nasdaq (SPCX); IPO priced ~$135/share fixed, ~$1.75T valuation. Consolidated entity: launch services + Starlink (~58% of FY24 rev) + xAI/Grok (absorbed 2026-02-02, folded into SpaceX's AI division May 2026). Major NVDA compute consumer (Colossus; Vera CPU early adopter; planned orbital DCs). Read-through: NVDA, GEV (power), TSLA (Grok). Contingencies still riding on this name: EchoStar spectrum + Cursor/Anysphere (operator signal, non-public) deals — fold Cursor in on close, no standalone .pvt. Promote to T1 automatically when SPCX appears in BCTK. See notes/SPCX/_profile.md."
   - ticker: TXN
     themes: [automotive_semiconductor_demand, semiconductor_cycle, data_center_deployment_constraints, ai_infrastructure_capex, china_us_tensions]
     added_date: 2026-05-09
