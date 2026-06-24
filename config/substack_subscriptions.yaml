@@ -1,0 +1,214 @@
+# config/substack_subscriptions.yaml
+# Path A v3 Substack channel — the 20-publication v1 list.
+#
+# Consumed by scripts/v3_ingest/substacks.py to match an inbound newsletter's
+# From header to publication metadata (tier, themes). Matching is best-effort: an
+# unmatched sender is still ingested (publication: unknown) — never dropped.
+#
+# Per-pub fields:
+#   name             display name (-> publication slug in note filenames)
+#   url              canonical publication URL (web)
+#   sender_patterns  case-insensitive substrings matched against the full From
+#                    header (email + display name). Most Substack-hosted pubs send
+#                    from "<slug>@substack.com" REGARDLESS of a custom web domain;
+#                    self-hosted/non-Substack pubs send from their own domain.
+#   tier             free | paid | free_plus_paid
+#   status           subscribed | action_required | skip   (operator-maintained)
+#   default_themes   chunker hints (best-guess; the LLM still extracts per-post)
+#   notes            provenance / open decisions
+#
+# Gmail filter (see scripts/mac_setup/SUBSTACK_GMAIL_SETUP.md) routes all of these
+# to the "Substack" label, skipping inbox so the transcript poller never sees them.
+#
+# verified 2026-06-24 via web search (URLs + sending domains).
+
+publications:
+
+  # ───────── Original cluster (general tech / finance / strategy) ─────────
+
+  - name: "AI: Reset to Zero"
+    url: "https://michaelparekh.substack.com/"
+    sender_patterns: ["michaelparekh@substack.com", "michaelparekh", "AI: Reset to Zero"]
+    tier: free
+    status: action_required          # operator subscribes with research Gmail
+    default_themes: [ai_infrastructure_capex, model_efficiency_evolution, ai_agent_ecosystem]
+    notes: "Michael Parekh (ex-Goldman); daily AI analysis. Substack-hosted."
+
+  - name: "Stratechery"
+    url: "https://stratechery.com/"
+    sender_patterns: ["stratechery.com", "Stratechery"]
+    tier: paid
+    status: open_decision            # SEE notes — paid; sends from stratechery.com (Passport), NOT substack.com
+    default_themes: [platform_strategy, ai_re_architected_incumbent, platform_take_rate]
+    notes: >
+      OPEN DECISION: Ben Thompson's Stratechery is PAID (Stratechery Plus) and
+      self-hosted via Passport — emails come from stratechery.com, not substack.com,
+      so the Gmail filter MUST include a stratechery.com clause. Operator currently
+      pays via a different email. Options: (a) migrate the Stratechery account email
+      to ashimmehratranscripts@gmail.com, or (b) forward Stratechery mail there, or
+      (c) sign up the free tier (limited). No action until operator decides.
+
+  - name: "Sharp Tech"
+    url: "https://stratechery.com/company/sharp-tech/"
+    sender_patterns: ["stratechery.com", "Sharp Tech"]
+    tier: paid
+    status: open_decision            # bundled with Stratechery Plus; mostly a PODCAST (email may be show-notes only)
+    default_themes: [platform_strategy, ai_infrastructure_capex]
+    notes: >
+      Bundled into Stratechery Plus (same decision as Stratechery). Primarily a
+      podcast — its email may be short show-notes rather than long-form prose, so
+      synthesized value is lower. Sends from stratechery.com (Passport).
+
+  - name: "Net Interest"
+    url: "https://www.netinterest.co/"
+    sender_patterns: ["netinterest@substack.com", "netinterest", "Net Interest", "netinterest.co"]
+    tier: free_plus_paid
+    status: action_required
+    default_themes: [platform_take_rate, capital_allocation_discipline]
+    notes: "Marc Rubinstein; financial-sector deep dives. Substack (custom domain netinterest.co)."
+
+  - name: "The Diff"
+    url: "https://www.thediff.co/"
+    sender_patterns: ["diff@substack.com", "thediff", "The Diff", "thediff.co"]
+    tier: free_plus_paid
+    status: action_required
+    default_themes: [platform_strategy, capital_allocation_discipline, ai_infrastructure_capex]
+    notes: "Byrne Hobart; inflections in finance & tech. Substack (diff.substack.com / thediff.co)."
+
+  - name: "Doomberg"
+    url: "https://doomberg.substack.com/"
+    sender_patterns: ["doomberg@substack.com", "Doomberg"]
+    tier: paid
+    status: skip                     # operator does not subscribe — SKIP from v1
+    default_themes: [energy_power_constraints, commodity_supply_chains]
+    notes: "OPEN DECISION (resolved=SKIP): paid, operator doesn't have it. Kept in config for completeness; not subscribed."
+
+  - name: "Not Boring"
+    url: "https://www.notboring.co/"
+    sender_patterns: ["notboring@substack.com", "notboring", "Not Boring", "notboring.co"]
+    tier: free
+    status: action_required
+    default_themes: [platform_strategy, ai_agent_ecosystem]
+    notes: "Packy McCormick; business strategy. Substack (notboring.co)."
+
+  - name: "Bits about Money"
+    url: "https://www.bitsaboutmoney.com/"
+    sender_patterns: ["bitsaboutmoney@substack.com", "bitsaboutmoney", "Bits about Money", "bitsaboutmoney.com"]
+    tier: free
+    status: action_required
+    default_themes: [payments_infrastructure, platform_take_rate]
+    notes: "Patrick McKenzie (patio11); payments/fintech plumbing. Substack (bitsaboutmoney.com)."
+
+  - name: "The Generalist"
+    url: "https://www.generalist.com/"
+    sender_patterns: ["generalist@substack.com", "generalist", "The Generalist", "generalist.com"]
+    tier: free_plus_paid
+    status: action_required
+    default_themes: [platform_strategy, ai_agent_ecosystem, venture_funding_cycle]
+    notes: "Mario Gabriele; company/VC deep dives. Substack (generalist.com)."
+
+  # ───────── Infrastructure cluster (semis / compute) ─────────
+
+  - name: "SemiAnalysis"
+    url: "https://newsletter.semianalysis.com/"
+    sender_patterns: ["semianalysis@substack.com", "semianalysis", "SemiAnalysis", "semianalysis.com"]
+    tier: paid
+    status: open_decision            # SEE notes — $500/yr
+    default_themes: [ai_infrastructure_capex, hbm_competitive_landscape, datacenter_buildout_pacing, ai_compute_topology, semiconductor_cycle]
+    notes: >
+      OPEN DECISION: Dylan Patel's SemiAnalysis is the highest-signal semis source
+      but the paid tier is ~$500/yr. Free tier exists (Substack-hosted, sends from
+      substack.com). Operator decides: pay for full access vs. free-tier-only. The
+      channel works either way; paid just yields more posts.
+
+  - name: "Fabricated Knowledge"
+    url: "https://www.fabricatedknowledge.com/"
+    sender_patterns: ["fabricatedknowledge@substack.com", "fabricatedknowledge", "Fabricated Knowledge", "fabricatedknowledge.com"]
+    tier: free_plus_paid
+    status: action_required
+    default_themes: [semiconductor_cycle, ai_infrastructure_capex, memory_pricing_cycle]
+    notes: "Doug O'Laughlin; semiconductor industry analysis. Substack (fabricatedknowledge.com)."
+
+  - name: "Nutty"
+    url: "https://nuttycld.substack.com/"
+    sender_patterns: ["nuttycld@substack.com", "nuttycld", "Nutty"]
+    tier: free_plus_paid
+    status: action_required
+    default_themes: [power_semiconductors, ai_infrastructure_capex, datacenter_power_density]
+    notes: "Analog IC designer (handle nuttycld); power semis + AI infra physical bottlenecks. Substack-hosted."
+
+  - name: "Vik's Newsletter"
+    url: "https://www.viksnewsletter.com/"
+    sender_patterns: ["viksnewsletter@substack.com", "viksnewsletter", "Vik's Newsletter", "viksnewsletter.com"]
+    tier: free_plus_paid
+    status: action_required
+    default_themes: [ai_compute_topology, photonics_interconnect, advanced_packaging, hbm_competitive_landscape]
+    notes: "Vikram Sekar (EE PhD); AI-infra layer — photonics/interconnect/packaging/power. Substack (viksnewsletter.com)."
+
+  - name: "Elevator Pitches"
+    url: "https://elevatorpitches.substack.com/"
+    sender_patterns: ["elevatorpitches@substack.com", "elevatorpitches", "Elevator Pitches"]
+    tier: free_plus_paid
+    status: action_required
+    default_themes: [equity_stock_ideas, capital_allocation_discipline, ai_infrastructure_capex]
+    notes: "Curated stock ideas from institutional investor letters. Substack-hosted."
+
+  - name: "Thoughts of Chairman Michael (ML Liebreich)"
+    url: "https://mliebreich.substack.com/"
+    sender_patterns: ["mliebreich@substack.com", "mliebreich", "Chairman Michael", "Liebreich"]
+    tier: free_plus_paid
+    status: action_required
+    default_themes: [energy_power_constraints, datacenter_power_density, electrification_demand]
+    notes: "Michael Liebreich (BNEF founder); energy/power/electrification — the AI-power nexus. Substack-hosted."
+
+  # ───────── AI / Power cluster ─────────
+
+  - name: "Nate's Substack"
+    url: "https://natesnewsletter.substack.com/"
+    sender_patterns: ["natesnewsletter@substack.com", "natesnewsletter", "Nate's Substack", "Nate B Jones"]
+    tier: free_plus_paid
+    status: action_required
+    default_themes: [ai_agent_ecosystem, model_efficiency_evolution, ai_enterprise_adoption]
+    notes: "Nate B Jones; AI strategy/build for practitioners. Substack-hosted."
+
+  - name: "The Rundown AI"
+    url: "https://www.therundown.ai/"
+    sender_patterns: ["therundown.ai", "rundown", "The Rundown"]
+    tier: free
+    status: action_required
+    default_themes: [ai_agent_ecosystem, ai_product_launches]
+    notes: >
+      Rowan Cheung; daily AI news. NOT Substack — runs on beehiiv and sends from
+      therundown.ai (or a beehiiv relay). The Gmail filter MUST include a
+      therundown.ai clause. Lower analytic depth (news roundup) — keep but expect
+      thinner synthesis.
+
+  - name: "AI Supremacy"
+    url: "https://www.ai-supremacy.com/"
+    sender_patterns: ["aisupremacy@substack.com", "aisupremacy", "AI Supremacy", "ai-supremacy.com"]
+    tier: free_plus_paid
+    status: action_required
+    default_themes: [ai_infrastructure_capex, ai_agent_ecosystem, china_ai_infrastructure_demand]
+    notes: "Michael Spencer; AI industry analysis. Substack (ai-supremacy.com)."
+
+  - name: "The Algorithmic Bridge"
+    url: "https://www.thealgorithmicbridge.com/"
+    sender_patterns: ["thealgorithmicbridge@substack.com", "thealgorithmicbridge", "Algorithmic Bridge", "thealgorithmicbridge.com"]
+    tier: free_plus_paid
+    status: action_required
+    default_themes: [model_efficiency_evolution, ai_agent_ecosystem, ai_safety_policy]
+    notes: "Alberto Romero; AI from a human lens. Substack (thealgorithmicbridge.com)."
+
+  # ───────── Added ─────────
+
+  - name: "Police Briefing"
+    url: "https://www.policebriefing.com/"
+    sender_patterns: ["policebriefing.com", "policebriefing", "Police Briefing"]
+    tier: unknown
+    status: action_required
+    default_themes: []
+    notes: >
+      Operator-added (policebriefing.com). Platform/sending-domain unconfirmed by
+      web search — Gmail filter includes a policebriefing.com clause as a fallback.
+      default_themes left empty (content focus unconfirmed); the LLM extracts
+      per-post. CONFIRM sender domain on first delivery.
