@@ -54,7 +54,7 @@ def query_facets(question: str) -> set:
 
 
 def retrieve(question: str, k: int = 5, *, ticker: str = None, since: str = None,
-             store=None, production_boosts: bool = False) -> list[Hit]:
+             themes: list = None, store=None, production_boosts: bool = False) -> list[Hit]:
     """Return top-k child Hits, each auto-merged to its parent section.
 
     Default is the VERIFIED config: facet soft boost only (the §11c retriever
@@ -63,11 +63,17 @@ def retrieve(question: str, k: int = 5, *, ticker: str = None, since: str = None
     UNMEASURED on a full corpus (they demonstrably reorder results), so they
     are OFF by default until tuned + re-evaluated on the embedded corpus. Keep
     default == measured config; do not flip until §7 weights are measured.
+
+    themes: HARD scoping filter (like ticker/since) — keep only chunks carrying
+    ANY of these theme tags. None/[] = no theme filter (behavior unchanged). The
+    v3 ingest channels (inbox_processor, substacks) pass their LLM-extracted
+    themes here so a query surfaces same-theme chunks across tickers.
     """
     store = store or get_store()
     qvec = embed_one(question, "retrieval_query")
     hits = store.search(
         qvec, k, query_facets=query_facets(question), ticker=ticker, since=since,
+        themes=themes,
         facet_lambda=FACET_LAMBDA,
         operator_boost=OPERATOR_BOOST if production_boosts else 0.0,
         recency_lambda=RECENCY_LAMBDA if production_boosts else 0.0,

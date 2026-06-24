@@ -145,6 +145,7 @@ class FileStore(Store):
                query_facets: Optional[set] = None,
                ticker: Optional[str] = None,
                since: Optional[str] = None,
+               themes: Optional[list] = None,
                facet_lambda: float = 0.05,
                operator_boost: float = 0.0,
                recency_lambda: float = 0.0,
@@ -157,7 +158,12 @@ class FileStore(Store):
           facets). NOT a hard gate.
         - operator_boost: §7 additive bonus for claim_source == operator_opinion.
         - recency_lambda / halflife: §7 recency decay (additive, half-life days).
-        - ticker / since: HARD scoping filters (correct as gates per §7).
+        - ticker / since / themes: HARD scoping filters (correct as gates per §7).
+          themes keeps only chunks carrying ANY of the given theme tags (set
+          overlap); None/[] disables it (unchanged behavior). This is the single
+          theme-filter site for BOTH backends — PgStore inherits this in-memory
+          search (step-5b is a data-integrity swap, not a ranking/SQL change), so
+          there is no separate SQL path; themes are already loaded into rec.
         All optional weights default OFF so the gold eval reproduces the
         documented soft-boost numbers exactly.
         """
@@ -177,6 +183,8 @@ class FileStore(Store):
             if ticker and ticker not in (rec.get("tickers") or []):
                 continue
             if since and (rec.get("event_date") or "") < since:
+                continue
+            if themes and not (set(themes) & set(rec.get("themes") or [])):
                 continue
             score = float(sims[row])
             if facet_lambda and qf:

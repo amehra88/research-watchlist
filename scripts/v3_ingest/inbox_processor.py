@@ -253,13 +253,13 @@ def chunk_validate(stem: str, tickers: list[str], themes: list[str],
 
 # ───────────────────────────── Retrieval (cross-references) ─────────────────────────────
 
-def retrieve_related(query: str, tickers: list[str]):
+def retrieve_related(query: str, tickers: list[str], themes: list[str] = None):
     from retrieve import retrieve
     seen: set[str] = set()
     out = []
     for tk in (tickers[:MAX_TICKERS_RETRIEVE] or [None]):
         try:
-            hits = retrieve(query, k=RETRIEVE_PER_TICKER, ticker=tk)
+            hits = retrieve(query, k=RETRIEVE_PER_TICKER, ticker=tk, themes=themes or None)
         except Exception as e:  # noqa: BLE001 — one ticker's retrieval miss must not abort
             log(f"  retrieve failed (ticker={tk}): {type(e).__name__}: {e}")
             continue
@@ -484,7 +484,7 @@ def process_one(path: Path, *, dry_run: bool, valid_tickers: set[str],
 
     # d. related corpus + e. track records
     query = (content[:600] + " " + " ".join(themes)).strip()
-    related = retrieve_related(query, tickers)
+    related = retrieve_related(query, tickers, themes)
     related_block = render_related(related)
     track_block = render_track_records(tickers)
     log(f"  related_chunks={len(related)}")
