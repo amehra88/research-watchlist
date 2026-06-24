@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  launchd agent for the Path A inbox channel (Mac side).
+  Runs research-watchlist-sync.sh every 900s (15 min): pushes operator inbox
+  submissions to origin/main and pulls the droplet's {stem}.summary.md results.
+
+  BEFORE LOADING: replace the __HOME__ tokens with your real home dir. From a
+  shell:  sed -i '' "s|__HOME__|$HOME|g" com.amehra.research-watchlist-sync.plist
+  (See README_MAC_SETUP.md.)
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.amehra.research-watchlist-sync</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>__HOME__/research-watchlist/scripts/mac_setup/research-watchlist-sync.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>__HOME__/research-watchlist</string>
+
+    <!-- Every 15 minutes. -->
+    <key>StartInterval</key>
+    <integer>900</integer>
+
+    <!-- Run once at load so the first sync happens immediately. -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- One-shot per interval; do NOT relaunch on exit. -->
+    <key>KeepAlive</key>
+    <false/>
+
+    <!-- git lives in /usr/bin (Xcode CLT) or Homebrew; cover both arches. -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>__HOME__/Library/Logs/research-watchlist-sync.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>__HOME__/Library/Logs/research-watchlist-sync.err.log</string>
+</dict>
+</plist>
