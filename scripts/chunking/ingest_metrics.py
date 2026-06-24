@@ -11,6 +11,18 @@ keyed back to a ticker by FactSet `requestId` (== the id passed to the MCP, e.g.
     factset_raw/{METRIC}_{kind}.json        kind in {guidance, surprise}
 e.g. factset_raw/SALES_guidance.json, factset_raw/INC_GROSS_surprise.json
 
+PULL CONVENTION (the factset-pull-drop fix — do NOT change frequency):
+The FactSet-MCP EstimatesConsensus pull MUST use periodicity='QTR' with
+frequency='AM' (Actual Monthly). AM oversamples each fiscal period ~3x; the
+redundant monthly rows collapse to one-per-period in store_b._dedupe_by_period
+(keyed on fiscalEndDate). The original pull used frequency='AQ' (quarterly),
+which lands in sampling gaps for off-calendar fiscal years and silently DROPS a
+quarter (neighbors present, target absent, a few rows duplicated) — e.g. AVGO
+lost FY22Q2 (2022-04-30) and FY23Q3 (2023-07-31). coverage_gaps() below is the
+regression guard that catches a recurrence. Pull the full ids list in batches
+(ids accepts ≤3000; ~10/call keeps each response under the MCP size cap) over a
+window like 2020-06-01 → today.
+
 The FY-label offset (note-label year - FactSet fiscalYear) is DERIVED per ticker
 straight from FactSet's own fiscalEndDate via store_b.derive_fy_offset() — no
 hand-coding — and cached to factset_raw/_fy_offsets.json. The legacy hand-coded
@@ -83,6 +95,54 @@ def rows_for(metric: str, kind: str, fid_to_tk: dict) -> dict[str, list[dict]]:
         if tk:
             grouped.setdefault(tk, []).append(r)
     return grouped
+
+
+# ---------------------------------------------------------------------------
+# Coverage guard — interior fiscal-quarter gaps (the factset-pull-drop tell)
+# ---------------------------------------------------------------------------
+def coverage_gaps(tickers: list[str], fid_to_tk: dict) -> dict[str, list[dict]]:
+    """Detect interior MISSING QUARTERS in each ticker's reported-actuals series.
+
+    This is the guard for the pull-drop bug class (see the
+    factset-pull-stage-drops-guidance note): a too-coarse FactSet sampling
+    frequency (the original pull used frequency='AQ') lands in gaps for
+    off-calendar fiscal years and silently omits a quarter — neighbors present,
+    target absent, a couple of rows duplicated. The fix is frequency='AM'
+    (monthly oversampling, collapsed by store_b._dedupe_by_period); this guard
+    proves it took.
+
+    Every fiscal quarter has an ACTUAL, so the surprise series is the dense
+    reference: walk its sorted unique fiscalEndDates and flag any consecutive
+    gap that is ~2x the ticker's own modal cadence (a skipped quarter) while
+    that cadence is itself quarterly (≤130d) — which keeps genuine
+    semi-annual/annual reporters from false-positiving. Returns
+    {metric: [{ticker, gap_after, gap_before, days}]}; empty == clean.
+
+    WARN, not raise: production ingest must not be wedged by one irregular name.
+    The report prints it loudly; a non-empty result is the actionable signal.
+    """
+    from datetime import date as _d
+    out: dict[str, list[dict]] = {}
+    for metric in METRICS:
+        s = rows_for(metric, "surprise", fid_to_tk)
+        flagged = []
+        for tk in tickers:
+            fes = sorted({r["fiscalEndDate"] for r in s.get(tk, [])
+                          if r.get("fiscalEndDate") and r.get("surpriseAfter") is not None})
+            if len(fes) < 3:
+                continue
+            ds = [_d.fromisoformat(x) for x in fes]
+            gaps = [(ds[i + 1] - ds[i]).days for i in range(len(ds) - 1)]
+            modal = sorted(gaps)[len(gaps) // 2]          # median cadence
+            if modal > 130:                               # not a quarterly reporter
+                continue
+            for i, g in enumerate(gaps):
+                if g >= 1.6 * modal:                      # a skipped interior quarter
+                    flagged.append({"ticker": tk, "gap_after": fes[i],
+                                    "gap_before": fes[i + 1], "days": g})
+        if flagged:
+            out[metric] = flagged
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -184,6 +244,19 @@ def main():
 
     records, cred = build(tickers, metrics, fid_to_tk, offsets)
     report(records, cred, offsets, derived_flags, tickers, metrics)
+
+    # Coverage guard: interior missing-quarter detector (factset-pull-drop class).
+    gaps = coverage_gaps(tickers, fid_to_tk)
+    if gaps:
+        print("\n⚠️  COVERAGE GAPS — interior missing quarters in the actuals series")
+        print("    (pull-drop tell; re-pull the named ticker/metric with frequency='AM')")
+        for metric, flagged in gaps.items():
+            for f in flagged:
+                print(f"    {f['ticker']:>10} {metric:<10}: "
+                      f"{f['gap_after']} → {f['gap_before']} ({f['days']}d gap)")
+    else:
+        print("\n✓ coverage guard: no interior quarter gaps across "
+              f"{len(tickers)} tickers × {len(METRICS)} metrics")
 
     if args.dry_run:
         print("\n[dry-run] no write performed.")

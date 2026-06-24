@@ -1090,6 +1090,87 @@ tier_2_active_candidates:
   - ticker: TXN
     themes: [automotive_semiconductor_demand, semiconductor_cycle, data_center_deployment_constraints, ai_infrastructure_capex, china_us_tensions]
     added_date: 2026-05-09
+  - ticker: ADI
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: AMBA
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: BABA
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: BIDU
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: CRDO
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: CSCO
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: HPE
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: HPQ
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: HSAI
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: HTFL
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: MDB
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: NBIS
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: NTES
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: NVMI
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: PANW
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: PLAB
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: SE
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: TSEM
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: TTWO
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: WMT
+    themes: []
+    added_date: 2026-06-24
+    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+
 
 # ---------------------------------------------------------------------------
 # Tier 3 — Watchlist (§4.1). Broader tracked universe (~150 names target).
