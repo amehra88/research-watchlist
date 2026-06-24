@@ -71,9 +71,11 @@ CHUNKING_DIR = REPO_ROOT / "scripts" / "chunking"
 MODEL = "claude-sonnet-4-6"        # matches podcasts pipeline + cost-model decision
 CLAUDE_TIMEOUT_S = 300
 CONTENT_CAP = 12_000               # head chars of submitted content passed to synth
-RELATED_K = 8                      # 5-10 cross-reference candidates
+RELATED_K = 8                      # per-ticker (intersection) budget — strongest signal, kept first
 RETRIEVE_PER_TICKER = 4
 MAX_TICKERS_RETRIEVE = 4
+CROSS_TICKER_K = 6                 # cross-ticker theme pass (ticker=None, themes only) — modest
+RELATED_TOTAL_K = 12               # cap on the merged set fed to the synthesizer
 VALID_PROCESS = {"transcript", "link", "note"}
 DOC_TYPE_BY_PROCESS = {"transcript": "earnings_transcript",
                        "note": "operator_note", "link": "news"}
@@ -254,22 +256,61 @@ def chunk_validate(stem: str, tickers: list[str], themes: list[str],
 # ───────────────────────────── Retrieval (cross-references) ─────────────────────────────
 
 def retrieve_related(query: str, tickers: list[str], themes: list[str] = None):
+    """Cross-reference candidates for the synthesizer, in priority order:
+
+    1. PER-TICKER (intersection): for each extracted ticker, chunks for THAT ticker
+       (optionally on-theme) — the strongest signal, kept first.
+    2. CROSS-TICKER (theme breadth): ONE ticker=None + themes pass that surfaces
+       chunks from OTHER tickers sharing the extracted themes — the operator's
+       cross-ticker analytical pattern ("NVDA vs AMD on inference silicon").
+
+    Skips the cross-ticker pass when themes is empty (ticker=None + themes=None is a
+    whole-corpus similarity dump — useless). When there are no tickers AND themes
+    are present, the cross-ticker pass is the PRIMARY retrieval. An untagged note
+    (no tickers, no themes) falls back to one generic similarity pass (prior
+    behavior). Merged set deduped by chunk_id, capped at RELATED_TOTAL_K."""
     from retrieve import retrieve
+    themes = themes or None
     seen: set[str] = set()
-    out = []
-    for tk in (tickers[:MAX_TICKERS_RETRIEVE] or [None]):
+
+    def _pull(k, *, ticker=None):
         try:
-            hits = retrieve(query, k=RETRIEVE_PER_TICKER, ticker=tk, themes=themes or None)
-        except Exception as e:  # noqa: BLE001 — one ticker's retrieval miss must not abort
-            log(f"  retrieve failed (ticker={tk}): {type(e).__name__}: {e}")
-            continue
+            hits = retrieve(query, k=k, ticker=ticker, themes=themes)
+        except Exception as e:  # noqa: BLE001 — one pass's miss must not abort the rest
+            log(f"  retrieve failed (ticker={ticker}, themes={bool(themes)}): "
+                f"{type(e).__name__}: {e}")
+            return []
+        fresh = []
         for h in hits:
             cid = h.chunk.get("chunk_id")
             if cid in seen:
                 continue
             seen.add(cid)
-            out.append(h)
-    return out[:RELATED_K]
+            fresh.append(h)
+        return fresh
+
+    # Pass 1 — per ticker. With no real tickers: a themed cross-ticker pass becomes
+    # primary (pass 2); only an untagged note (no tickers, no themes) does a single
+    # ticker=None similarity fallback here.
+    real_tickers = tickers[:MAX_TICKERS_RETRIEVE]
+    if real_tickers:
+        loop = real_tickers
+    elif not themes:
+        loop = [None]            # untagged note → generic similarity fallback (prior behavior)
+    else:
+        loop = []                # no tickers but themes present → pass 2 is primary
+    per_ticker = []
+    for tk in loop:
+        per_ticker.extend(_pull(RETRIEVE_PER_TICKER, ticker=tk))
+    per_ticker = per_ticker[:RELATED_K]
+
+    # Pass 2 — cross-ticker theme breadth (only when we have themes to scope it).
+    cross = _pull(CROSS_TICKER_K, ticker=None) if themes else []
+
+    merged = (per_ticker + cross)[:RELATED_TOTAL_K]
+    log(f"  related: {len(per_ticker)} per-ticker + {len(cross)} cross-ticker "
+        f"= {len(merged)} merged")
+    return merged
 
 
 def render_related(hits) -> str:
