@@ -38,26 +38,24 @@ publications:
     url: "https://stratechery.com/"
     sender_patterns: ["stratechery.com", "Stratechery"]
     tier: paid
-    status: open_decision            # SEE notes — paid; sends from stratechery.com (Passport), NOT substack.com
+    status: action_required          # RESOLVED 2026-06-24: FORWARD to research Gmail
     default_themes: [platform_strategy, ai_re_architected_incumbent, platform_take_rate]
     notes: >
-      OPEN DECISION: Ben Thompson's Stratechery is PAID (Stratechery Plus) and
-      self-hosted via Passport — emails come from stratechery.com, not substack.com,
-      so the Gmail filter MUST include a stratechery.com clause. Operator currently
-      pays via a different email. Options: (a) migrate the Stratechery account email
-      to ashimmehratranscripts@gmail.com, or (b) forward Stratechery mail there, or
-      (c) sign up the free tier (limited). No action until operator decides.
+      RESOLVED 2026-06-24 (operator): keep the existing paid Stratechery account and
+      auto-FORWARD its mail to ashimmehratranscripts@gmail.com. Sends from
+      stratechery.com (Passport), so the Gmail filter's stratechery.com clause catches
+      it. Operator action: set up the forward.
 
   - name: "Sharp Tech"
     url: "https://stratechery.com/company/sharp-tech/"
     sender_patterns: ["stratechery.com", "Sharp Tech"]
     tier: paid
-    status: open_decision            # bundled with Stratechery Plus; mostly a PODCAST (email may be show-notes only)
+    status: action_required          # RESOLVED 2026-06-24: covered by the Stratechery forward
     default_themes: [platform_strategy, ai_infrastructure_capex]
     notes: >
-      Bundled into Stratechery Plus (same decision as Stratechery). Primarily a
-      podcast — its email may be short show-notes rather than long-form prose, so
-      synthesized value is lower. Sends from stratechery.com (Passport).
+      RESOLVED 2026-06-24 (operator): flows via the same Stratechery Plus forward.
+      Primarily a podcast — its email may be short show-notes rather than long-form
+      prose, so synthesized value is lower. Sends from stratechery.com (Passport).
 
   - name: "Net Interest"
     url: "https://www.netinterest.co/"
@@ -113,13 +111,12 @@ publications:
     url: "https://newsletter.semianalysis.com/"
     sender_patterns: ["semianalysis@substack.com", "semianalysis", "SemiAnalysis", "semianalysis.com"]
     tier: paid
-    status: open_decision            # SEE notes — $500/yr
+    status: action_required          # RESOLVED 2026-06-24: FREE TIER only
     default_themes: [ai_infrastructure_capex, hbm_competitive_landscape, datacenter_buildout_pacing, ai_compute_topology, semiconductor_cycle]
     notes: >
-      OPEN DECISION: Dylan Patel's SemiAnalysis is the highest-signal semis source
-      but the paid tier is ~$500/yr. Free tier exists (Substack-hosted, sends from
-      substack.com). Operator decides: pay for full access vs. free-tier-only. The
-      channel works either way; paid just yields more posts.
+      RESOLVED 2026-06-24 (operator): subscribe the FREE tier with the research Gmail;
+      paid (~$500/yr) deferred. Substack-hosted (sends from substack.com). Channel
+      ingests the free posts; revisit paid later if depth warrants.
 
   - name: "Fabricated Knowledge"
     url: "https://www.fabricatedknowledge.com/"
