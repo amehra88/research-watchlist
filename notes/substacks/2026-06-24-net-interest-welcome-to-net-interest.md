@@ -1,0 +1,48 @@
+---
+doc_type: substack_post
+source: substack
+publication: Net Interest
+publication_url: https://www.netinterest.co/
+source_email: <20260624205113.3.f0a974df553cf754.w3ayd70x@mg-d1.substack.com>
+source_sender: Marc Rubinstein from Net Interest <netinterest@substack.com>
+source_url: ''
+source_date: '2026-06-24'
+subscription_tier: free_plus_paid
+tickers: []
+themes: []
+ingestion_date: '2026-06-25'
+extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
+---
+
+# Welcome to Net Interest!
+
+Thank you for signing up for free updates from Net Interest. (If this wasn’t you, [click here to unsubscribe](https://email.mg-d1.substack.com/c/eJx0kD2ynTAMhVeDu8cYyWAoXKRhG4ywBXiCDeOfJHf3Ge5rborUZ86nT8dS4f1KL1Pj5qPPB7uvXNdsk7-Lv6JwBqdVjnYQbDo9AqICrQUH8ueyc-REhd1C5SMdoBOHUYAw4aAY5TjhoJ21m-6sHp0eRxo74Q1IGOQACmTfddhiu0matHJb36PddK_a30gvp-WfRsmwf7mufeQK2Z-tvYLwedkSv11MSZXFaY5S7tzgjwbmBubIxcfCiXP5p9nATPb5r4HZ-UzrycsbI-66LvYKoUZfXgvHJ3Lf8Luup7f01BbvjMK-n0QylA8fAh-JSqL4vVxulNwf3lsz19VdgXw0Hz6i_Hfzmjk9F3pACagBxC8DfwMAAP__1r2PfA).)
+
+You can expect an email every Friday from Net Interest. And if you want more, please consider becoming a paid subscriber.
+
+Paid subscribers receive in-depth comment on major themes in the financial sector, access to a podcast series featuring interviews with experts in the field, and the keys to an archive of over 200 past issues of evergreen content — all for $30/month.
+
+You can read more about the thinking behind Net Interest [here](https://email.mg-d1.substack.com/c/eJx00EGu4yAMgOHThF0jYiehXbCYTa8RGXASNIVEYKbT24_6nkbq5q1t2Z9-T8LbUV625TXmWHcOl9pc9SWeEo-sgsWb01c_K7aDuQLiCMYoThQfy8aZCwmHheRjOsOgdgs3ItRmRPSecbhONDv2oN2wGjRXraIFDbOeYQQ9DQP22K-abmYM6zShX8009k-kVzD6bzfqtF3C0L9xQv5374-kYl3Wwl8WK6Wxethd5Kwd_urg3sH9-Xz2mSVm4cJVen90cD87uMcs5QjNx7xdMsvl_4Y6m1v8kVLLUV4LZ3IPDt_Hz-Ye0dM7yxKDHXGabqpYqntMifdCUih_l6vdqLc364tZmwtHopjth0XJj81b5fL-MAFqQAOg_lj4FwAA__9YtY_p).
+
+### Past Issues
+
+A full index of the 200+ past issues, the companies they explore and the books they source is available [here](https://email.mg-d1.substack.com/c/eJx0kc2OnDoQhZ8G70CmCkOz8OLqJp1EURbRjPKzQsZVGCtgkG3S3fP0ETObbLKuOqrvfGVNZrfFhz7C5INPM1OZjjHZ6PfstyBIYz_Ki20F67q7AGIDXSd4NX4ZHAeOJjMNJv81baEWs1Y4yl72auRWgsULTQRKEjGQbXpSwmuQ0MoWGpCqrrHCapKm7xqalEI7daqpbmge1Ml70cjVlVRXJ1w29ldlt1X4NEyRX1l0jgeLRc8576nA_wq4FnClzabKbZtb-AwUcE17ZENpZs7pXCjgWn_68dN9_o5f3fPLl_f3OXz4uNffkF-evIlPZY3l7fZ8_x9V2Z4RJp8LQOepwHdS7Mc42G1dj-DzY-BgxoXpjWY_xsVbc3ocPOkGlepF1CbNfl15jiZHE95Up6KR7uzx2isdI22r8UEHzj5kjpyyyP980pE4nhcUoATsAMRvDX8CAAD__8RZncM).
+
+And to keep you going before the next issue of Net Interest, here are some articles from the archive:
+
+- A [look back](https://email.mg-d1.substack.com/c/eJx00D2upDAMwPHTkA6UOEBmihTbzDVQPsxg7SSgxFmW2694r3nNVi4s2T_9g2N87-WyLa-UqW4Y-9p8DYUOpj2LaPXTy0eYBVplHqD1CMYITI4-yxszFscYF8c_tjMosdkYDKigZ_XwE4DCWSoj0T_hnjGugixImOUMI8hJKT3oYZXuaca4TpMOq5nG4dTuikb-7UaZ3n1Uw41jF34PYU-C6rIW_LJYLg3Fx27MR-30rw5eHbzO8xwyMmXGgpWHsHfwOjp48UaFr_5CV2pPuV8puxxQHM0vYU-pZeJrwez8B-P37aP5DwV3V1ko2lFP01MU6-pGKeFWHBeXv8PVbpTvW_WlrM3HPTnK9gdF8H-Tt4rl_jCBlqANgPhj4V8AAAD__0qCjvk) at my (first) 30 years in finance, with an emphasis on what hasn’t changed.
+
+- My viral analysis of the [demise of Silicon Valley Bank](https://email.mg-d1.substack.com/c/eJx00DGS4yAQheHTiEwqaJCwA4JNfA1VCxqrawRSARqvb7-lmcTJxi94X_0eGz338nZnjpy5rhT6ei7VFz4a71kEp--LvPlJkFP2BlobsFZQQt7mJ2Uq2CjM2D7WCZRYnfSkMEaQWktlKAQbR6vMtEjtlb-RYAcSJjmBATkqpQc9RIl3a0IcR-2jHc3w0vgOVv7tjEzPPqjhwjX0X4Pfk-A6x0I_FtfKSWJza2tH7fSfDh4dPF6v15CpcW5UqLbB7x08jg4ebaU-UOJK_R77yhv7PfffuG307hfMX-I4l9nvKZ2Z23umjMtG4fflOJeNPV59Zg7O6HG8i-KwrpwSrQVbwfybsHZGPi_fj7eeS9gTcnYfKNH-G_-sVK6HEbQEbQHEt4N_AQAA__-RfpMX), following one I wrote six months earlier on how banks (like Silicon Valley Bank) are [giant bond funds and what can go wrong](https://email.mg-d1.substack.com/c/eJx00L2u3CAQhuGrMZ0tPMCyLijS7G1YAww2yoItfuLs3Uc-pzlN6pHme_Q6bLQd5WN6DjHHupMfa7fVlXi2eGTmjVgsf7oHIzPrJwghQWtGCeN73ShTwUZ-xfbj-oCZ7UY8pbZPy3VQAsEvQfoFhfCcu2UJgCwa4PDgD5DA1TyLSUyB46KlD0oJF7SS0yXw4zX_O0iettHP041r6H5P7kgs1jUU-rKYVjqxt9lbO-sgfg3wGuB1XdeUqcXcqFBtkzsGeJ0DvBJm3GLeRhztkf0Yevbs7HZ1R0o9x_ZZKaN9k_9-fHb7jg7vJGv0RgqlFlYM1j2mRHvBVjB_V6uD5NtN-iLWbv2RMGbzw8Haf3v3SuVeUCA4CA3A_hj4FwAA___yT43z).
+
+- Since winding up my hedge fund several years ago, I’m often asked whether I intend to return to the job of full-time investing. Short answer: no. But to help others, I published [So You Want to Launch a Hedge Fund?](https://email.mg-d1.substack.com/c/eJx00L2ynSAUxfGnkQ4HNyjHgiLNeQ1nC1tlIuDwEXPePuO9zW1Sr2L95m-x0p7yx7S4-ejLQY6Xthab_VV9iswZOa_iZSdGZtAvkFKB1owC-nPZKVLGSm7B-mOdYGCHWYcXWrlOs55oc5uaCUb5QqGVGGAWM_MGBExiAgViHAbZy34TOGvltnGUdtOj6m-JH6fF306JsHM39A-uov3d2xSYL8uW6ctiam7ETnPUepVO_urg3cH7vu8-UvWxUqZSe5s6eF8dvEvin9T4jbHymviJLdqDIz_I7cS3Fh272rrYFEKLvn4Wirie5L5vrrae3uITaPHOKDmOM8sGy-FDoCNjzRi_G5ZOif0BfoFLW10K6KP5oWL1v_Vbofw8jCAFSA3A_hj4FwAA__9rDJK5) If that whets your appetite, I followed it up with [this](https://email.mg-d1.substack.com/c/eJx0kL2uozAQRp8Gd0FmbGMoXGyT10CDPYB1sUH-WTZvvyJp0txiqpG-c3QsFlqP9DI1Lj76vJF75Dpnm_xZ_BGZM2Kc-WB7RqbTAwghQWtGAf0-rRQpYSE3Yfn69tCxzXQwqhFVL4YRB1rEwOfFoXNaWeGElcwb4NDzHiRw1XWiFe3CcdTSLUoJu2gl20vgy2n-r5E8rA_XtbdcQfvT2iMwn6cl0dvFlFSJ7WYr5cyN-NPAs4HndV1tpOJjoUS5tPZo4HneR_jzOA_HzjpP9gihRl9eE0Wcd3KfsbPOu7d4Z5i8M1IoNbJkMG8-BNoSloTxUyo3kq-3xlsr19kdAX00X2xWfm1cM6WboEBwEBqA_TXwPwAA__-lDYnB).
+
+- And in [Banks in Disguise](https://email.mg-d1.substack.com/c/eJx00L-OozAQx_GnwV2QGduQFC6uyWugsT3AaGOD_Oe4vP2J3SbN1iPN76Ovx0rrnt-2pYUTl43CrTRXfOaj8p5EsOrh5N2Pguww3UEpDdMkKCK_5pUSZawUZqwf1xEGsdmgQftBU8AQwN3JGzPc5YJy9FoBeMEWJIxyBA3SDIPqVb9IfEw6LMYov0xG96fCd5jkv07LuN7C0F-4iv6r93sUXOYl07fF1txIvOxW61E69aeDZwfP8zz7RJVTpUyl9n7v4Hl08HSYvsqN0y1wWRsXEkdzs99jbInre6aE7kXh5-vR3Is9Xj1mDlYrYx4iWywbx0hbxpox_SQrnZbr5fn2lebCHpGT_UCI-mvsVihfCwaUBDUBiL8W_gcAAP__zbuNXA), I unmask a series of companies that may look like a Starbucks, a Carnival, a Delta Air Lines to you but to me (a reformed banks analyst) they look like … banks in disguise.
+
+### Questions?
+
+Learn more by clicking [here](https://email.mg-d1.substack.com/c/eJx0kD2O5CAQRk9jsrFwAWY6INikr2EVUNhoDbb4WW_ffuWZDTqZuKR673sOG61HeZmeQ8yxbuQ_arfVlXi2eGTmjXhY_ulmRmbSnyCEBK0ZJYz7slKmgo38gu3tOsPENuPCFJSSHj2X0mqSXDs9TwJn9BRcYNEAh5nPIIGraRKjGAPHh5Y-KCVc0EqOl8CX1_zvIHlaP_w03nIN3e_RHYnFuoRCXy6mlU5sN1trZx3ErwGeAzyv6xoztZgbFaptdMcAz__7LLGz28UdKfUc22uhjHYn__3p7HaPDu8GS_RGCqUerBisW0yJtoKtYP7OVAfJ19vhy6l264-EMZs3MGs_Bu6Vyk1QIDgIDcD-GPgXAAD__xorieM).
+
+I don’t use X/Twitter as much as I used to, but you can still contact me there [@MarcRuby](https://email.mg-d1.substack.com/c/eJx0kD3SnDAMQE-Du48xso3ZwkWa7dLkAox_BHiCDWPL2XD7DLtNmq-WRu_peUu4HuUyLS8xx7ph-KrNVV_iSfHILBjxcHzyI0Mz6AmEkKA1w2TjPq-YsVjCMFv6bzrCwDYjpwBaWzFOoLhAFdAvU9BuBM6lFsCiAQ4jH0ECV8MgetEv3D60DItSwi9ayf4l7BU0_9tJntavMPS3HFn_u_dHYrHOS8G3i6HSkO1mIzprJ3508OzgSa9IhOVe7uD50xb_q7mLnc3N_kip5UjXjNm6HcPnwtncHr29f59jMFIo9WDF2LrFlHArlorNnzy1k3y92W-X2lw4ko3ZZKSYCQtWYvRt2Fax3AQFgoPQAOyPgX8BAAD__x7_hTc). My DMs are open.
+
+Private podcast setup:
+To set up your podcast app, [click this link](https://email.mg-d1.substack.com/c/eJx0kk1vozAQhn8N3IqMP6AcOFTNpktUE22VbZK9IGMPwXyYLDYh5Nevkl562dNIM4d553lGCgenYVzSyVTaaFuDerJTaeWoz04PxlcpSUr0LCMf0jB-xoRQHMc-9EJ3xQkMjMKBKoT7No1w6NepCCXEApeRqihDNK4YTnCSRJEskYqT0NcpRjhCEaYYsTAkAQkqJJKYqooxIquY0WAmYlExunoU9acnFQb3cE7INpBD72tbVCM8sqRunMDv0tq5s_XIi4fXHl7P8xwYcNo4GMG6QA4eXnfaOjAeWbuhvdcVLJtQ4s_lgLs2a4aQN3zmDSe8yWzWd7V6zSK-k5Q3_JavMsKXWf851HPWDNf8dlq2O874St7eXzdnSbje6s2s9pnLVzzMd61-f93c1D579Ev80RwPOXo_5J36-TlnBgVUHOX2lzaweYO3_W67sOfywwBv8WWU7u_lx6zql-vxN2upf57KQg59PxntlgKMKDtQX8efp7LTUty1FVqllDCW-GMqbK37HupRuFGYL7PWo-h0x_bAaKdSDb3QJv3Gynf__YnJwnjfwDBBmMQY-5cU_wsAAP___JzGEw) on your phone.

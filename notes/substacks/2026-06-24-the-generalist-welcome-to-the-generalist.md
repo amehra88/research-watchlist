@@ -1,0 +1,106 @@
+---
+doc_type: substack_post
+source: substack
+publication: The Generalist
+publication_url: https://www.generalist.com/
+source_email: <20260624205532.3.b967672276ee8aee.fdur36fz@mg-d1.substack.com>
+source_sender: The Generalist <thegeneralist@substack.com>
+source_url: ''
+source_date: '2026-06-24'
+subscription_tier: free_plus_paid
+tickers: []
+themes: []
+ingestion_date: '2026-06-25'
+extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
+---
+
+# Welcome to The Generalist
+
+You made it!
+
+You may not know it yet, but you’ve joined an eclectic cabal of founders, investors, operators, and thinkers, all bonded by a desire to understand what the future holds. Welcome to our motley crew!
+
+Our writing has been commended by the likes of The Financial Times, The Wall Street Journal, Kevin Kelly, and Tim Ferriss. We hope you enjoy it, too.
+
+To unlock everything The Generalist has to offer, [we recommend upgrading to our premium newsletter: Generalist+.](https://email.mg-d1.substack.com/c/eJx00DtuxCAQgOHTmG4tPGCwC4o0ew2Lx9igGGzxiLQ5feTdFNkiNWLmm9_qituRH6qlNaRQPLpbaabYHM4ajkScYrOhkxUE1SAnYIyPjBOMOuzLhgmzrugWXf-8yoESr4BbNhuLVEtOJ8vcDIyitNRY5wYHJCigIKgADnQcGfSsN7OQQgJIgThpxH51LTOxfnecxu3mhv7CVW0_e3tEEsqyZnxaVM0Nya58rWfp2EcH9w7u1ePLuIdS3_52cP-90yA5m1nsEWNLoT4WTNrs6F4Tz2b2YPXVYglODaMUnGSliw8xos-6Zp1euUrH6XZZnrbSjDuiDkm9IUj9N3UrmK8dIzAKTAKQLwU_AQAA__9Z9I2F) For $22/month, you’ll unlock a massive library of case studies, interviews, tactical guides, and private databases, all designed to make you a better investor, operator, and technologist:
+
+## What’s inside our premium newsletter?
+
+Why does Reid Hoffman believe it’s essential to have a good theory of the game? Did Vinod Khosla really say failure doesn’t matter? If you [upgrade to Generalist+ today](https://email.mg-d1.substack.com/c/eJx00DvOnDAQwPHT4G6RPX5B4SLNXgP5MYAVbJAfkTanj9htssVXj2bmp7-3DbezvEzPa8yx7hgetbvqS7xaPDMJhs-OTl4RNExPwLmQXBBMNh7LhhmLbRgW2_6bakbJbriG4GdmhWYTgJyQrX5mVKt5QkflRKIBCooqEECl5DDy0c1KKw2gFeJkEcc19MLV-ncQNG2PwMYb16z_PfozkViXteDbYlrpSA6zt3bVgf8a4DnAs-34MR6xtq_dAZ5e6FlymMnV3eLPlHqO7bVgtu7A8Dl4dXdEb-8USwyGSa0EKcbWPaaEe7Gt2PypVQdBt5vyptXuwplszObLQNqPpXvFcv-QwClwDUD-GPgXAAD__6Ryip0), you’ll get your answers and be granted full access to our premium catalog, including:
+
+### No Rivals: The Definitive Founders Fund Story
+
+Our most ambitious investigation yet—a four-part, 35,000-word deep dive into Silicon Valley's most controversial and successful venture firm. After 18 months of research, interviews with more than a dozen key figures, and analysis of previously undisclosed returns data, we've assembled the comprehensive story of Peter Thiel's venture fund. Discover the philosophy, personalities, and contrarian bets that built a Silicon Valley powerhouse and shaped everything from social media to space exploration to the White House itself.
+
+#### [No Rivals: The Prophet (Part I)](https://email.mg-d1.substack.com/c/eJx00M1uhCAQwPGnkZsGBwQ9cOjF1zAIg5IKGj662T594-6hvfQ8mZlf_kYX3M70VDU6H33e0ba5rtkkfxV_RmIVm1Y6GkFQ9XIExvjAOMGg_bFsGDHpgnbR5c9U9pTsapq40SMFS61AzvlEnRsEpZMcqOwpI14BBUEFcKDDwKBj3ToJKSSAFIijRuycrYkJ991wGrbW9t2NK9p8duYMxOfFJXxZVEkVyaH2Uq7csI8G5gbmx-PRvZGHz-XeaWC-GpjdWaPFlFtXo217ctV1MWcINfryXDDq9UD7vnnV9fBG3zUWb1U_SMFJUjrvPgTcky5Jx3ew3HC63ZqXLtfVnkH7qMqOvwpS_o1dM6b7xwCMApMA5EvBTwAAAP__SIqL9w)
+
+#### [No Rivals: The Disciples (Part II)](https://email.mg-d1.substack.com/c/eJx00DsOnDAQgOHT4A5kxsaGwkUaroH8GIMVbJAfWW1OH7FbJE3q0cx8-q2uuF_5rVryIYVyoOtLM8XmcNdwJeIUWwydrSCoRjkDY3xinGDU4dx2TJh1Rbfp-s9UjpQcShg--kVwN_uFG-3sbL1zXsMoHbUSSVBAQVABHOg0MRjYYBYhhQSQAnHWiIN3LTPhf3ecxr134_DgqrY_B3tFEsrmM34squaG5FRHrXfp2I8O1g7W1-s1fJFnKPXZ6WC9O1j91ZLDXHrfkuuB3M1s9oqxpVDfGyZtTnTfm3czZ7D6qbEFp8ZJCk6y0uUIMeKRdc06fYOVjtP90Xx0pRl3RR2Sqgf-VZD639itYH5-TMAoMAlAfin4EwAA__-Se43h)
+
+#### [No Rivals: The Gospel (Part III)](https://email.mg-d1.substack.com/c/eJx00L2unTAMwPGnIRso2CFwhwxdeA1kEgNRSUD56NHt01ecM7RLZ8v2T39LhfcrfZsaNx99Pti1ua7ZJn8Xf0XhDH6tcrJasOnHCRDVgEpwIH8uO0dOVNgtVP6Zjr0Uh5G9xUkSappUDxOwnrBnLS3JQQ2IwhuQoKUGBXIYEDrs1i896hFg1MwTMXebqwn19rtRMuyt67sHV8j-7OwVhM_LlvhtMSVVFqc5Srlzgz8amBuYX69X90GePpdnp4H5bmDerhodp9xuNboWxV3XxV4h1OjL98KR1pPd5-Zd19Nbemos3pl-GLUSyVA-fAh8JCqJ4idYbpTcH81bl-vqrkA-mnLwX4Uo_41dM6fnxwAoAUcA8cvAnwAAAP__KKmL4w)
+
+#### [No Rivals: The Kingdom (Part IV)](https://email.mg-d1.substack.com/c/eJx00DsOnDAQgOHT4A5kxsaGwkUaroH8GIMVbJAfWW1OH7FbJE3q0cx8-q2uuF_5rVryIYVyoOtLM8XmcNdwJeIUWwydrSCoRjkDY3xinGDU4dx2TJh1Rbfp-s9UjpQcSgjrUcLM-DJTI_04cikE8mV2HryYSVBAQVABHOg0MRjYYBYhhQSQAnHWiIN3LTPhf3ecxr134_DgqrY_B3tFEsrmM34squaG5FRHrXfp2I8O1g7W1-s1fJFnKPXZ6WC9O1j91ZLDXHrfkus5uZvZ7BVjS6G-N0zanOi-N-9mzmD1U2MLTo2TFJxkpcsRYsQj65p1-gYrHaf7o_noSjPuijokVQ_8qyD1v7Fbwfz8mIBRYBKA_FLwJwAA___hc4x8)
+
+### The Future 50
+
+Access our database of the world’s highest potential startups valued at or under $200 million. This is the product of a five-month process involving the wisdom of elite venture practitioners, access to confidential information, and detailed independent research. How can we ensure Generalist supporters know about the world's most promising startups before they become well-known? The Future 50 is our version of an early detection system for great companies, driven by our editorial process.
+
+#### [Introducing The Future 50](https://email.mg-d1.substack.com/c/eJx00DsOnDAQgOHT4A5kxi8oXKThGsiPAaxgg_zIanP6iN0iaVKPZubT70zF_cpv3dIWUigH-r40W1wOdw1XIl6z2dLJSYJ6VBMwxgXjBKMJ57pjwmwq-tXUf6ZqpOTQdhr5NDsuvaOonFDTbA0wz8COs3COBA0UJJXAgQrBYGCDnaWSCkBJxMkgDptvmcntd8dp3Hs_Dg-uGvdzcFckoaxbxo9F19yQnPqo9S4d-9HB0sHyer2GL_IMpT47HSx3B8vWasvYC9oDBU7uZld3xdhSqO8Vk7En-u_Ju9kzOPPEWIPXo1CSk6xNOUKMeGRTs0nfXqXjdH8wH1xp1l_RhKTrgX8RpP63dSuYnx8CGAWmAMgvDX8CAAD__ynQi3A)
+
+### Letters to a Young Investor
+
+A monthly email correspondence on the craft of investing between me and a legendary investor. Explore our recent letters:
+
+#### [Letters to a Young Investor: Reid Hoffman on Airbnb and Stripe](https://email.mg-d1.substack.com/c/eJx00DsOnDAQgOHT4A5kj8GGwkUaroH8GIMVbJAfWW1OH7FbJE3q0cx8-q2uuF_5rVryIYVyoOtLM8XmcNdwJeIUXwydrSComJyB83HiI8Gow7ntmDDrim7T9Z-pZJQcilkjqHBU2lGiA2_5MqNYqKWMzZ45EhRQEFTACHSaOAx8MIuQQgJIgThrxMG7lrnwv7uRxr13bHhwVdufg70iCWXzGT8WVXNDcqqj1rt0_EcHawfr6_UavsgzlPrsdLDeHawn1oq59BmD64_L-6hTz8jdzGavGFsK9b1h0uZE9z19N3MGq58oW3CKTVKMJCtdjhAjHlnXrNO3W-lGuj-oD7I0466oQ1L1wL8YUv_bvBXMz48JOAUuAcgvBX8CAAD__06nj4M)
+
+#### [Letters to a Young Investor: Ho Nam](https://email.mg-d1.substack.com/c/eJx00M9uhCAQx_GnkZsGB8HdA4defA0zwKikgoY_3WyfvnH30F56Jszvk6_FQuuRnrrGxUefN3Jtribb5M_ij8icFnfDb1Yx0v14AyEGKQZGAf0-rxQpYSE3Y_nzOvacbRokACpuBt6DtFYQCOUkonD93RBXzGvgoLiCAbiUAjrRmbsa1QgwKqIbEnWLq0mo5bsZeFhb13cXrqD97OwRmM_zkuhl0SVVYrveSjlzIz4amBqYHo9H90buPpfrTwPT2cC0HW3E0PbsrGa2Rwg1-vKcKaLZyb2PndXs3uKVYfZO93JUA0sa8-ZDoC1hSRjfpXIz8PVivFi5GncE9FGXjX7nWfm3cs2Urg0JgoMYAdiXhp8AAAD__-k7iZY)
+
+#### [Kirsten Green: A Consumer Investing Masterclass](https://email.mg-d1.substack.com/c/eJx00L2upSAQwPGnkU6DA4IWFNv4GoaPQckVNHzsyd2n33hOsdvcejIzv_ytrrhf-Vu15EMK5UDXl2aKzeGu4UrEKbYYOltBUI1yBsb4xDjBqMO57Zgw64pu0_W_qRwpORRSMc6azgsHuZjZSDkyM1vuuUfPRk-CAgqCCuBAp4nBwAazCCkkgBSIs0YcvGuZCf-n4zTuvRuHB1e1_RrsFUkom8_4tqiaG5JTHbXepWO_Olg7WF-v1_BBnqHUZ6eD9e5g_Qq5VEz9nhFTD-RuZrNXjC2F-r1h0uZE97l5N3MGq58aW3BqnKTgJCtdjhAjHlnXrNMnWOk43R_NW1eacVfUIal64D8FqT_GbgXz82MCRoFJAPJbwd8AAAD__zNkjMM)
+
+### Letters to a Young Founder
+
+A similar monthly email correspondence, but from the perspective of exceptional, time-tested founders. Dig into our letters with Vinod Khosla and Marc Lore.
+
+#### [Letters to a Young Founder: Vinod Khosla](https://email.mg-d1.substack.com/c/eJx00L2upSAQwPGnkU4DA4IWFNv4GoaPUckVNHzck7tPv_GcYrfZejIzv_ydqbhf-Ue3tIUUyoG-L80Wl8Ndw5WI13y2dHKSoGZqAs7FyAXBaMK57pgwm4p-NfWfqWKUHFpxi4ZRzz0TahvdhFIAznRkAHJ2EwkaKEgqQQAdRw4DH-wslVQASiJOBnHYfMtcbr87QePeezY8uGrc1-CuSEJZt4xvi665ITn1UetdOv6rg6WD5fV6DR_kGUp9djpY7g6W75Au338dVzlNz8jd7OquGFsK9WfFZOyJ_nPybvYMzjwx1uA1G5UUJGtTjhAjHtnUbNKnV-kE3R_MG1ea9Vc0Iel64F8Eqf9t3Qrm58cInAJXAORbw58AAAD__146jBY)
+
+#### [How Marc Lore Architects Unicorns](https://email.mg-d1.substack.com/c/eJx00M2unSAQwPGnkZ0GBwXugkU3voYZYFRSQcNHT26fvvGcRbvpejIzv_wdVtqv_G1a2kIK5SDfl2aLy-Gu4UrMG_FluXaSkRmVBiGmWUyMIoZz3SlRxkp-xfrPVI2cHcZOQmsFevOorZotaimknLUSIyqJGwsGOEguYQI-zwIGMdgvqaQCUJJII9Gw-ZaF3H53E49778fhwVV0Pwd3RRbKumV6W0zNjdhpjlrv0okfHSwdLK_Xa_ggz1Dqs9PBcnewRMyuP69M_cjuZld3xdhSqN8rJbQn-c-9u9kzOHxKrMGbcVZyYtlgOUKMdGSsGdMnVukmvj-St6w066-IIZl60F8Bq_8N3Qrl58cMgoNQAOyXgT8BAAD__65zit4)
+
+### The Investors Guides
+
+A step-by-step breakdown of the essential challenges of raising, running, and succeeding as a private market investor. [How do you raise your first fund?](https://email.mg-d1.substack.com/c/eJx00TvO3SAQBeDVmM4WDDbYBUWauw2Lx2CjGLB4JLpZfeT_NvmL1KPR-XSO1Q2PXN6qJx9SqCe6sXZTbQl3CzkRp_hm6GoFQcXkCpzPC58JRh2u_cCERTd0u27_XCWj5FR-ZasRm9jotjCv_cJWJ72gwDbuLHASFFAQVMAMdFk4THwym5BCAkiBuGrEybteuPB_hpnGY3RsenBN25-TzZGEuvuCXxbVSkdyqbO1uw78xwCvAV7txI_xCrV9-x3gdQ_wOvPvseWx6FBxfOdeRh9KbaPvyZG7m93mGHsK7b1j0uZC9wm6u7mC1U9Fe3CKLVLMpChdzxAjnkW3otOnxTrM9HiIX-TajctRh6S-2Uj77wK9YnkyFuAUuAQgvxT8DQAA__8bIJTP) [What are the best ways to spot a supertrend?](https://email.mg-d1.substack.com/c/eJx00D2OpDAQhuHT4AxkymDowMEmXAP5pwBrsY3s8q56Tj-iO5kOJi6Vvkev1YR7yk9V4-ajLwe6tlRTbPYX-RSZU-Jh-GwlQ9VPMwgxjGJgGLQ_1x0jZk3oVk0_rlPP2aFgBBSil6O00iJYNCAsR-QzaO0MMK-Ag-QSBuDjKKATnXnISU4Ak0ScNWK3uZqF3L6agYe9dX1340jbv51NgfmybhlfFkW5IjvVQXSVRvxpYGlgoQPfxtMX-vhtYLkaWI70v6XUlitRq9tSL8yUMTp2VbPaFEKNnp4rRm1OdO-Rq5rTW33nWb1T_TjJgWWly-FDwCNryjq-C5Zm4PvNe3FLNS4F7aP6cDH6tX4tmO-NEQQHMQGwfwq-AwAA___FzJQj) Which sourcing channels are most effective, and why? [How do you find your first unicorn?](https://email.mg-d1.substack.com/c/eJx00DsOnDAQxvHT4A5kxmBD4SIN10B-jMEKtpEfiTanj9htskXq0ej76W9UxSPll2zR-ejLibYvTReT_V19isRKtmq6GE5QjmIBxqaZTQSD8td-YMSsKtpd1X-uYqTklIpNdJm50LiOi0bt0BqzLtRxtepVOOIlUOCUwwR0nhkMbNArF1wACI64KMTB2ZYZd3-6iYajt-Pw4KoyPweTAvFldxnfFllzQ3LJs9a7dOxHB1sHWz3xY7x8qV-_HWx3B9uZfvc19c5H26u-RW9SjuRuejcphBZ9fe0Ylb7Qfhbupi9v1NNm91aOs-ATyVKV04eAZ1Y1q_jJV7qJHo_tbS1N2xSUj_ILRep_07eC-dmYgVFgAoD8kvA3AAD__0_Fkw8) What tools should you use to run your internal systems? [What should you do when competing head-to-head for a deal?](https://email.mg-d1.substack.com/c/eJx00TGO5CAQBdDTmMwWXRjoCQg26WtYBZTbaA22oJjR7OlXnk62g41Lpf_0f0Cm51G_XS9rKqltFMfWfQs1nZyOIqJTH17egxHkbvYOSs1azYIypn15UqGKTHFB_udqb1JsDoOdpQS1ktfggTBqb5RZUVvtAVeRHEgw0sAMUmsFk5r8h7HGAlhDdEeiaY29KrP-GWaZn2O8TReOMfyewpFFasta6cfiuHYSu9uYzzaoXwM8BnjwRi_jnhq__Q7wOAd4bMfXyMf4lcqIYzjySZw4fdIYCXdxdr-EI-deEn8vVNDvFF9JZ_d7Cnh1tKTobtqaWVSHbUs501aRK5ZXjW2Y5fMy_phb9_HImIp7wwn-7wS9Ub0yNCgJygKITwd_AwAA___a0JYB) The Investors Guide series answers these questions and many more.
+
+#### [How to Raise Your First Fund](https://email.mg-d1.substack.com/c/eJx00M2OpSAQhuGrkZ0GCwFdsJiNt2FASiUjYPgZc-bqO56z6N70ulL5nryrLrjH9FI1bC64fKBtczV5Te4qLgZiFZsMHVdBUPVyBMYGzgaCXrtz2TFg0gXtosuPq-wpORTwkU8SzGRHRKEtE5QyjmaSAzWsB-IUUBBUwACUcwYd68wkpJAAUiCOGrHbbE1MbP-bgfq9tX334Ipe_3Zr9MTlZUv4tqiSKpJTHaVcuWF_GpgbmO_77j7I0-Xy_DQwXw3MR7zbEtukXcb2FWtqN5dyabcaLLmqWdbofQ2uvBYM2pxoPwNXNadb9ZNmcVb1XIqBJKXz4bzHI-mSdPjUy81A94f2puZqbPTaBVUO_CaR8mv5mjE9GxwYBSYByD8FXwEAAP__Nc6Rhg)
+
+#### [How to Spot a Supertrend](https://email.mg-d1.substack.com/c/eJx00M2unSAQwPGnkZ0GBwVdsOjmvIbhYzySChgYam6fvvGeRbvpejIzv_ydIXzn8qVb2kMK9UDf12arK-GikBPzWqyWL04y1KNaQIhpFhPDaMK5vTFhMYR-M_TPVI2cHXpWyu7zaAX3bl3QCbsgH2GEla_jwj0LGjhILmECPs8CBjHYVSqpAJREXAzisPtWhNx_dxOP796Pw4Mj434OLkcW6rYX_LZoKg3ZqQ-iq3biRwevDl73fQ8f5BkqPTsdvK4OXke-e8p9vTL1pq_twkIFk2dXs5vLMbYU6GvDZOyJ_nP8avYMzjxZtuD1OCs5saJNPUKMeBRDxaRPudpN_P2wvpm1WZ-jCUnTgX85jP5bvVUsz48ZBAehANgvDX8CAAD__yyhkDs)
+
+#### [How to Find a Unicorn](https://email.mg-d1.substack.com/c/eJx00LuunDAQgOGnwR3IzBh7t3CRZl8D-TIsVrCNfAk6efqIs0XSpB7NzKffmUbvXL50T1tIoe7kx9ptdSWcLeTEvMan5Q8nGelZPQBRLCgYRROO9U2JimnkV9P-maqZs12TQjAbbjMHS-jFA5-LWhygJStQehY0cJBcggC-LAgTTvYplVQAShI9DNG0-V5Qbr8HweN79PN045pxPyeXIwt13Qp9W3Qrndih99bOOuCPAV4DvK7rmj7II9R27wzwOgd47fkaWx63kPxoxp6CyyWxs9vV5Rh7Cu1rpWTsQf5z-ez2CM7cTdbg9bwoKVjRpu4hRtqLacWkT7Y6CP6-Td_G2q3P0YSk205_Laz9N3mvVO4fCyAHVADsl4Y_AQAA__-42o8o)
+
+### The Founders Guides
+
+Eight unicorn founders answering your most pressing operational questions. [How do the best CEOs hire upwards?](https://email.mg-d1.substack.com/c/eJx00D2OrDAMwPHTkG5QcCCBIsVruAbKh4HokYASZ6XZ06-YaXaKrS3bP_2dIdzO_NQ1rSGFsqN_lGqLy-GicCbmtZgsH51kqDs1ghD9IHqG0YRj2TBhNoR-MfRrqjrOdo1Tj4IL6UB5yb1AtU5r50YL3A8oJQsaOEguoQc-DAJa0dpJKqkAlEQcDWK7-pqFXL-bnsft4bv2xpFx_1t3RhbKsmZ8WTTliuzQO9FVGvGvgbmBmXZ8G49Q6GO3gflqYLbZhES5FnoAu6pd3BljTYGeCyZjD_Tvw1e1R3DmTrIEr7tByZ5lbcoeYsQ9G8omvauVpufbTXoRS7X-jCYk_WFh9GfxWjDfPwYQHIQCYF8afgIAAP__iUiPOg) [How do they optimize their investor base?](https://email.mg-d1.substack.com/c/eJx00D2OrDAMwPHTkG5QcCCBIsVruAbKh4HokYASZ6XZ06-YaXaKrS3bP_2dIdzO_NQ1rSGFsqN_lGqLy-GicCbmtZgsH51kqDs1ghD9IHqG0YRj2TBhNoR-MfRrqjrOdu1R9m4YJylGgFWg4lNnvZn84NeJI2dBAwfJJfTAh0FAK1o7SSUVgJKIo0FsV1-zkOt30_O4PXzX3jgy7n_rzshCWdaML4umXJEdeie6SiP-NTA3MNOOb-MRCn3sNjBfDcw2m5Ao10KPkV3VLu6MsaZAzwWTsQf69-Gr2iM4cydZgtfdoGTPsjZlDzHing1lk97VStPz7Sa9iKVaf0YTkv6wMPqzeC2Y7x8DCA5CAbAvDT8BAAD__5Lnj0Y) [How do they learn from their customers?](https://email.mg-d1.substack.com/c/eJx00L2upSAQwPGnke4YGBSwoNjG1zCDjEpW0PCxyd2n33hPs6e49WRmfvmvWGm_8pdtaQsplIP8qzRX1hzuGq7EvJWT42ZVjKzQBqQcRjkwihjOZadEGSv5Bet_Uy04O6zY0EwevRDcGDFptYEZnQQ54CQMeRYscFBcwQB8HCX0sneT0koDaEVkkKjffMtSbX-7gcf95UX_4Cquv_v1iiyUZcv0bbE1N2KnPWq9Syd_dTB3MNeD3sYzlPqx28F8dzC7jCHV3Ep9TexublmvGFsK9WuhhO4k_z58N3eGFZ8kS_BWjFoNLFssR4iRjow1Y3pXK93A94f0TSzN-StiSPbDwuqPxVuh_PwYQXKQGoD9sfAvAAD__xfvjuA) Learn from the best and bring the lessons to your company or portfolio.
+
+#### [The Founders Guide to Hiring Upward](https://email.mg-d1.substack.com/c/eJx00D2u3CAQwPHTmG4tPGDYV1Ck8TUsPgYbxWALhqxeTh95t0ia1KOZ-envLeF21m_TS0wltR3Do3XXfE0XpbOwYMSX40-vGJpJP0EIOQvJMNt0rBsWrJYwrJb-meqJs92EoBz6WUUFqFDJoLnk0UYxcx4BHUsGOCiuQAKfZwGjGN2X0koDaIX4tIhjDL0KFX8PkuftEabxxpH1P0d_ZpbaGiu-LYZqR3aYnehqg_gxwDLA8nq9xg_ySI3unQGWa4DFVZsK1d7oAezqbvVnzr0k-l6xWHdg-By8ujuSt3eKNQUzzVpJVo1te8oZ92qp2vKp1QbJt5vyprXuwpltKoZ2_Etg9N_SvWG9f8wgOAgNwH4Z-BMAAP__htiMgQ)
+
+#### [The Founders Guide to Optimizing Your Fundraise](https://email.mg-d1.substack.com/c/eJx00D2u3CAQwPHTmG4tdsBgFxRp9hrWAIONYrDFR1Yvp4_8tkia1KOZ-envsNF2li_Tc4g51p38o3ZbXYlXi2dm3ojF8tkpRuapZxBCTkIyShiPdaNMBRv5Fds_U_3kbDciSBEWvThcguV-sUEuGsnOwqPy88SiAQ6KK5DAp0nAKEa7KK00gFZEMxKNwfciVPg9SJ62h3-ON66h-zm6M7FY11Do22Ja6cQOs7d21UH8GOA1wOv9fo8f5BFru3cGeF0DvGzBmFvptT1mdnW7ujOlnmP7WimjPch_Dl7dHtHhnWKN3jwnrSQrBuseU6K9YCuYP7XqIPl2U75ptVt_JozZtJ3-Elj7b-leqdw_JhAchAZgvwz8CQAA__-pv4yl)
+
+### Our podcast
+
+If you’re interested in our writing, we think you’ll love our podcast. Each week, we interview an exceptional founder, investor, or thinker to explore some aspect of the future. That might be discussing AI agency with Reid Hoffman, “xenotransplantation” with Josh Wolfe, technology super-cycles with Roelof Botha, the geopolitics of semiconductors with Chris Miller, or Great Power conflict with Trae Stephens.
+
+In just 60 minutes each week, we hope to introduce you to ideas, technologies, and people before you might have discovered them otherwise. We’d love to have you subscribe:
+
+[YouTube](https://email.mg-d1.substack.com/c/eJx00M-r1DAQwPG_prm9kk6apO-QgyiLIiiKnsskmbbBJl3yw3X966W7Fy_vPMzMl4_DSuuR76alJaRQNvIvpdnicrjWcCTmjXi1fHKKkRn0BEKMUoyMIoZ9XilRxkp-xvrfVA-cbYYvcpLOTzhwkgPXo9KccLET8snjKFgwwEFxBSNwKQX0orevSisNoBXRhET94lsWavnbjTyuL37oz7iK7lfvjshCmZdMjxZTcyO2m63Wa-nEuw4uHVxut1t_P1ptls6FDi5uw5Ro7-Dy87388_3b108_Jre0-CHDR_z8xY8ruzY7uyPGlkK9z5TQ7uSf96_N7sHhKTMHbwap1ciywbKFGGnLWDOmJ17pRr6eZY_S0qw_IoZk6kZPtj2Uyuqb8K1QPn9IEByEBmC_DfwLAAD__3QKkGU)
+
+[Spotify](https://email.mg-d1.substack.com/c/eJx00L2O3CAQwPGnMd1Z7IDBW1CksU6po0s6i4_BJjFg8ZHL5ukj3zZprh7NzF8_qxtuuTxUTz6kUHd0L7Wbaks4W8iJOMXuhs5WEFQ3OQNjfGKcYNThWDdMWHRDt-r231TeKNmVmAxKnIyWfBZ34LPX8j5zOwP1gk6eBAUUBBXAgU4Tg5GN5i6kkABSIM4acfSuFyb834HTuL2423jFNW1_jTZHEurqC360qFY6kkPtrZ11YF8GWAZY8olprGduwT-ujQGWuuf3ARYRX_sr0m8_xY-3P-em3_n3-vWNnN2sNsfYU2iPFZM2B7rn7bObI1h9qazBqdskBSdF6bqHGHEvuhWdnnB14HS7qj4qazcuRx2Sajs-yY5QG2mfoveK5foxAaPAJAD5reBfAAAA__82dI8l)
+
+[Apple](https://email.mg-d1.substack.com/c/eJx0kcuupSAQRb9GZsdg8VAHDHrib5gCSiUtaHh0cvvrO54zuD25U3bIWnuXw0r7lb9MS1tIoRzkX6XZ4nK4a7gS80bMlk9OMzLDOIEQUgnJKGI4150SZazkV6z_pePA2WG2mQZFXILcHEpQCiVaN2_ezsoPNLFggIPmGiRwpQT0orezHvUIMGqiCYn6zbcs9Pa3kzzuLz_0j1xF97t3V2ShrFumt4upuRE7zVHrXTrxq4Olg-W-vMNSS4_3fdLzp4Olle-kg6Ue9PoUOcP7Ifhh4mrS09PjbnZ1V4wthfq1UkJ7kv_A7mbP4PCZaQ3eDGrUkmWD5Qgx0pGxZkyfJUsn-f5ovrVLs_6KGJKpB32jWf3xCq1QfhgKBAcxArA_Bv4FAAD__yAPlM4)
+
+### Thank you
+
+I’m honored that you decided to join The Generalist, and I take every subscription seriously. If you have any questions or comments, love or hate something, or just want to say hey, hit me up.
+
+I’m glad you’re here,
+
+Mario
+
+Private podcast setup:
+To set up your podcast app, [click this link](https://email.mg-d1.substack.com/c/eJx0kstym0oQhp8GdqKGGa4LFj52qYxKg08SSZazoebSiEFclJnBGJ4-hbRINll1V3d19d_f34JZuAx6zsa-Ur0yNciNGbkRWt2sGnpXZiTlKBGRC5kfJ5iQICSBCx1TbXmBHjSzIEtm_-rGPnLrjLAw5CSWlSAgkBAJMJ5yhDBKY58n3FUZRjhCEQ4wCkOCPeLxNIqjGOM4AkgYgFfJUZOoWpwAdZeN9L1VnGXi6omhc5UpKw13LZnVI7htVlt7Mw55cvDWwdtpmryHyFYZu844eLum0Dtka4frGl9g3vkCn-Yzbq95M_i0oRNtKKFNbvKureVzHtGDCGhDl-LluFA1qZ_nesqb4atYLvPbgYZ0ofP-eXcThKo3tZvke27p4UiK5pvaP-8W-Z7f6xx_bz7OBdqfi1a-nqa8R97m-rQ5fkjz46xzPKdfpvgVykR-lvUs09NO_v8a7l80VPDfk3sbeSmGrht7ZecSesZbkI_jbyNvlWCrbaWSmR_GUeDqjJladR3UmlnN-oezxgnQZcV2x2hGLoeOqT6zNfzB5dp_fsVoQK87QkwQJjHG7meGfwcAAP__CH3Hbw) on your phone.
