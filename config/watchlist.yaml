@@ -555,6 +555,9 @@ tier_1_bctk:
       notes: "AI-consumption tailwind, strong growth + FCF, premium multiple; usage-model volatility and valuation temper. Factors: hot sector, growth rate, FCF; valuation/usage-volatility cap."
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/DDOG/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
+  - ticker: DPC
+    themes: []      # TODO: assign themes via WATCHLIST email
+    added_date: 2026-06-26
   - ticker: ENTG
     themes: [foundry_capacity, semiconductor_cycle, advanced_materials_ai_infra, china_export_controls, lithography_roadmap, nand_demand_cycle]
     added_date: 2026-05-09
