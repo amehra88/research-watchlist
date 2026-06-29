@@ -557,6 +557,7 @@ tier_1_bctk:
     scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/DDOG/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: DPC
     themes: []      # TODO: assign themes via WATCHLIST email
+    notes: "DPC Holdings PLC (parent of Doncasters Group) — Jersey-domiciled, NYSE-listed. 250-year-old UK manufacturer of aerospace + industrial gas turbine (IGT) engine components (turbine blades, structural/rotating parts). IPO 2026-06-25 at $33 (~$21.7B mcap); BCTK initiated 0.67% position late June (per 06/26/2026 daily holdings). Read-through: aerospace/defense supply chain + IGT demand tied to data-center / grid power buildout."
     added_date: 2026-06-26
   - ticker: ENTG
     themes: [foundry_capacity, semiconductor_cycle, advanced_materials_ai_infra, china_export_controls, lithography_roadmap, nand_demand_cycle]

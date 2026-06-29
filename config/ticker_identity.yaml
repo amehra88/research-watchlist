@@ -72,6 +72,11 @@ DDOG:
   factset_id: "DDOG-US"
   google: '"Datadog" OR DDOG stock'
 
+DPC:
+  name: "DPC Holdings PLC (Doncasters)"
+  factset_id: "DPC-US"            # added 2026-06-29 BCTK reconciliation: Jersey-domiciled UK aerospace + industrial gas turbine engine components maker (250-year-old Doncasters Group); IPO 2026-06-25 NYSE at $33; BCTK 0.67% weight per 06/26 daily holdings
+  google: '"Doncasters" OR DPC Holdings'
+
 ENTG:
   name: "Entegris"
   factset_id: "ENTG-US"
