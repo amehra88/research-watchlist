@@ -97,9 +97,14 @@ GEV:
   factset_id: "GEV-US"
   google: '"GE Vernova" OR GEV stock'
 
+GOOG:
+  name: "Alphabet (Class C)"
+  factset_id: "GOOG-US"            # added 2026-06-29 BCTK reconciliation: GOOG (Class C) is BCTK's primary holding (5.54%); query anchors "Google"
+  google: '"Google" OR GOOG stock'
+
 GOOGL:
   name: "Alphabet"
-  factset_id: "GOOGL-US"           # operator 2026-06-02: query anchors "Google" (more news coverage than legal name "Alphabet")
+  factset_id: "GOOGL-US"           # operator 2026-06-02: query anchors "Google" (more news coverage than legal name "Alphabet"). KEPT in identity (existing notes/GOOGL/ + chunks resolve); removed from watchlist T1 in favor of GOOG
   google: '"Google" OR GOOGL stock'
 
 GWRE:

@@ -638,9 +638,10 @@ tier_1_bctk:
       notes: "One of the hottest power/electrification narratives, sharp positive earnings revisions, datacenter-power demand tailwind, FCF inflection. Factors: hot sector, earnings revisions, FCF, momentum."
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/GEV/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
-  - ticker: GOOGL
+  - ticker: GOOG
     themes: [hyperscaler_capex_buildout, ad_market_strength, search_disruption, ai_agent_monetization, silicon_architecture_competition, autonomous_vehicle_competition, agentic_commerce, agent_framework_landscape]
     added_date: 2026-05-09
+    tier_change_note: "Class swap 2026-06-29: GOOG (Class C, BCTK primary 5.54%) replaces GOOGL (Class A, 0.51%) in T1; themes/scoring ported from prior GOOGL entry."
     ai_positioning: "5"
     competitive_advantage:
       innovation_rate: "5"
@@ -825,22 +826,6 @@ tier_1_bctk:
     potential_investor_interest:
       score: "4"
       notes: "Hot sector epicenter. Largest mcap in tech. Index weight enormous. Positive earnings revisions. Pricing power. Buybacks active. Some valuation caution at current levels. 1Q27 print (2026-05-21) converted capital-return posture to structural ~50%-of-FCF commitment: $119B total buyback authorization (+$80B incremental), 25x dividend hike to $0.25, alongside third consecutive quarter of YoY revenue acceleration ($82B/+85%) and Q2'27 guide ~$10B above consensus. Directional pressure 4→4+ now, with 4+→5 live for Q2'27 print on 2026-08-26 if trajectory holds. Cap: valuation caution at ~$5.4T mcap. (source: ticker-synthesis run 7, 2026-06-01)"
-  - ticker: PLTR
-    themes: [enterprise_ai_adoption, ai_native_vertical, vertical_ai_applications, ai_agent_monetization, agent_framework_landscape]
-    added_date: 2026-05-09
-    ai_positioning:
-      score: "5"
-      notes: "Palantir AIP is a leading enterprise AI-deployment/operations platform — strong government base plus rapidly accelerating US commercial. One of the clearest pure AI-software winners; ontology is the differentiator."
-    competitive_advantage:
-      innovation_rate: "4"
-      distribution: "4"
-      overall: "4"
-      notes: "Innovation 4: AIP + ontology differentiation, bootcamp-led product motion; 4+. Distribution 4: land-and-expand scaling fast but still gov-weighted with a building commercial base; sales-motion-dependent. Overall 4: strong AI-deployment moat, 4+ trajectory as commercial scales, held below 5 on still-building distribution breadth."
-    potential_investor_interest:
-      score: "5"
-      notes: "Hottest AI-software narrative, retail magnet, S&P 500 inclusion, strong growth + Rule-of-40. Extreme valuation is the sole caution. Factors: hot sector, growth rate, index inclusion, retail/momentum; valuation watch."
-    scoring_date: 2026-06-02
-    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/PLTR/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: PWR
     themes: [data_center_deployment_constraints, ai_infrastructure_capex]
     added_date: 2026-05-09
@@ -873,9 +858,6 @@ tier_1_bctk:
       notes: "Recent IPO (2024), hot cyber-resilience category, strong growth; lock-up overhang largely behind, profitability path the watch-item. Factors: hot sector, growth rate, recent IPO; profitability watch."
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/RBRK/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
-  - ticker: SEI
-    themes: []      # TODO: assign themes via WATCHLIST email
-    added_date: 2026-06-01
   - ticker: SHOP
     themes: [ai_re_architected_incumbent, ai_agent_monetization, search_disruption, enterprise_ai_adoption, agentic_commerce]
     added_date: 2026-05-09
@@ -892,22 +874,6 @@ tier_1_bctk:
       notes: "Growth reacceleration plus FCF/margin inflection and an agentic-commerce narrative; premium multiple. Factors: hot sector, growth rate, FCF; valuation cap."
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/SHOP/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
-  - ticker: SNPS
-    themes: [foundry_capacity, silicon_architecture_competition, china_export_controls, ai_infrastructure_capex, lithography_roadmap, chip_design_competition]
-    added_date: 2026-05-09
-    ai_positioning:
-      score: "4"
-      notes: "EDA is indispensable for AI chip design and Synopsys is half the EDA duopoly; AI-driven tools (Synopsys.ai; agentic AI / multi-physics fusion called out as the next monetization leg in 2Q26). One step removed from AI compute -> 4, trending 4+ (source: notes/SNPS/20260528-2Q26.md)."
-    competitive_advantage:
-      innovation_rate: "4"
-      distribution: "4"
-      overall: "4"
-      notes: "Innovation 4: strong EDA + Synopsys.ai tooling and Ansys integration broadening the platform, but recent quarters show share loss to Cadence. Distribution 4: entrenched but trajectorily eroding against Cadence; the duopoly framing alone overstates current strength. Overall 4: still a top-2 EDA franchise with AI-tooling tailwind, but the competitive-position trajectory is downward not stable. (OPERATOR-PRIVATE SIGNAL: Cadence outperforming on share)"
-    potential_investor_interest:
-      score: "4"
-      notes: "Steady compounder; 2Q26 beat-and-raise with FY26 guidance up across revenue/margin/EPS/FCF and early Ansys synergies. Design-IP segment bottoming and China demand are watch-items; premium valuation caps upside. Factors: earnings revisions, ROIC, growth (source: notes/SNPS/20260528-2Q26.md)."
-    scoring_date: 2026-06-02
-    scoring_notes: "Initial scoring 2026-06-02. Sources: notes/SNPS/20260528-2Q26.md, public data, OPERATOR-PRIVATE SIGNAL: Cadence outperforming SNPS on share (competitive_advantage 4/4/4 reflects this; public-data analyst view alone might suggest higher). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
   - ticker: SPCX
     themes: [space_economy, frontier_model_competition, ai_infrastructure_capex]
     notes: "SpaceX (Space Exploration Technologies). Public as of 2026-06-12 on Nasdaq (SPCX); IPO priced ~$135/share fixed, ~$1.75T valuation. Consolidated entity: launch services + Starlink (~58% of FY24 rev) + xAI/Grok (absorbed 2026-02-02, folded into SpaceX's AI division May 2026). Major NVDA compute consumer (Colossus; Vera CPU early adopter; planned orbital DCs). Read-through: NVDA, GEV (power), TSLA (Grok). Contingencies still riding on this name: EchoStar spectrum + Cursor/Anysphere (operator signal, non-public) deals — fold Cursor in on close, no standalone .pvt. Promote to T1 automatically when SPCX appears in BCTK. See notes/SPCX/_profile.md."
@@ -976,22 +942,6 @@ tier_1_bctk:
       notes: "REIT with a strong demographic tailwind, defensive, strong senior-housing-operating performance, index inclusion; data-driven capital allocation a differentiator. Factors: demographic growth, defensive, index inclusion, ROIC."
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02. Sources: public data, OPERATOR-PRIVATE SIGNAL: WELL uses AI for operations and market-selection (buy/sell) decisions, making it an AI-beneficiary not REIT-noise (ai_positioning 3 reflects this; public-data analyst view alone might score 1). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
-  - ticker: ZS
-    themes: [cybersecurity_competitive_landscape, enterprise_ai_adoption, ai_infrastructure_software]
-    added_date: 2026-05-11
-    ai_positioning:
-      score: "3"
-      notes: "Zscaler — SSE/zero-trust security (ZIA/ZPA) with AI applied to threat detection and data protection. Security-first, not AI-first; 3+ on AI-security feature expansion."
-    competitive_advantage:
-      innovation_rate: "4"
-      distribution: "4"
-      overall: "4"
-      notes: "Innovation 4: SSE platform leadership expanding into AI/data security. Distribution 4: large enterprise zero-trust base with strong channel, but facing platform encroachment from CRWD/PANW/Microsoft. Overall 4: SSE leader; competitive intensity and billings scrutiny are the watch-items."
-    potential_investor_interest:
-      score: "3"
-      notes: "3+ trajectory: solid security-spend exposure, but platform competition and billings/growth-deceleration scrutiny make it less of a momentum name than CRWD. Factors: sector, growth (decelerating); competition cap."
-    scoring_date: 2026-06-02
-    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/ZS/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
 tier_2_active_candidates:
   - ticker: 005930.KS
     themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, model_efficiency_evolution, china_export_controls, nand_demand_cycle]
@@ -1181,6 +1131,61 @@ tier_2_active_candidates:
 # synthesis when patterns emerge across multiple Tier 3 names; queryable on
 # demand. Distinction from Tier 2 is plausibility of action.
 # ---------------------------------------------------------------------------
+  - ticker: PLTR
+    themes: [enterprise_ai_adoption, ai_native_vertical, vertical_ai_applications, ai_agent_monetization, agent_framework_landscape]
+    added_date: 2026-05-09
+    tier_change_note: "Demoted T1→T2 2026-06-29: held in May BCTK position, exited in June rotation; still in universe."
+    ai_positioning:
+      score: "5"
+      notes: "Palantir AIP is a leading enterprise AI-deployment/operations platform — strong government base plus rapidly accelerating US commercial. One of the clearest pure AI-software winners; ontology is the differentiator."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: AIP + ontology differentiation, bootcamp-led product motion; 4+. Distribution 4: land-and-expand scaling fast but still gov-weighted with a building commercial base; sales-motion-dependent. Overall 4: strong AI-deployment moat, 4+ trajectory as commercial scales, held below 5 on still-building distribution breadth."
+    potential_investor_interest:
+      score: "5"
+      notes: "Hottest AI-software narrative, retail magnet, S&P 500 inclusion, strong growth + Rule-of-40. Extreme valuation is the sole caution. Factors: hot sector, growth rate, index inclusion, retail/momentum; valuation watch."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/PLTR/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
+  - ticker: SEI
+    themes: []      # TODO: assign themes via WATCHLIST email
+    added_date: 2026-06-01
+    tier_change_note: "Demoted T1→T2 2026-06-29: held in May BCTK position, exited in June rotation; still in universe."
+  - ticker: SNPS
+    themes: [foundry_capacity, silicon_architecture_competition, china_export_controls, ai_infrastructure_capex, lithography_roadmap, chip_design_competition]
+    added_date: 2026-05-09
+    tier_change_note: "Demoted T1→T2 2026-06-29: held in May BCTK position, exited in June rotation; still in universe."
+    ai_positioning:
+      score: "4"
+      notes: "EDA is indispensable for AI chip design and Synopsys is half the EDA duopoly; AI-driven tools (Synopsys.ai; agentic AI / multi-physics fusion called out as the next monetization leg in 2Q26). One step removed from AI compute -> 4, trending 4+ (source: notes/SNPS/20260528-2Q26.md)."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: strong EDA + Synopsys.ai tooling and Ansys integration broadening the platform, but recent quarters show share loss to Cadence. Distribution 4: entrenched but trajectorily eroding against Cadence; the duopoly framing alone overstates current strength. Overall 4: still a top-2 EDA franchise with AI-tooling tailwind, but the competitive-position trajectory is downward not stable. (OPERATOR-PRIVATE SIGNAL: Cadence outperforming on share)"
+    potential_investor_interest:
+      score: "4"
+      notes: "Steady compounder; 2Q26 beat-and-raise with FY26 guidance up across revenue/margin/EPS/FCF and early Ansys synergies. Design-IP segment bottoming and China demand are watch-items; premium valuation caps upside. Factors: earnings revisions, ROIC, growth (source: notes/SNPS/20260528-2Q26.md)."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02. Sources: notes/SNPS/20260528-2Q26.md, public data, OPERATOR-PRIVATE SIGNAL: Cadence outperforming SNPS on share (competitive_advantage 4/4/4 reflects this; public-data analyst view alone might suggest higher). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
+  - ticker: ZS
+    themes: [cybersecurity_competitive_landscape, enterprise_ai_adoption, ai_infrastructure_software]
+    added_date: 2026-05-11
+    tier_change_note: "Demoted T1→T2 2026-06-29: held in May BCTK position, exited in June rotation; still in universe."
+    ai_positioning:
+      score: "3"
+      notes: "Zscaler — SSE/zero-trust security (ZIA/ZPA) with AI applied to threat detection and data protection. Security-first, not AI-first; 3+ on AI-security feature expansion."
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "Innovation 4: SSE platform leadership expanding into AI/data security. Distribution 4: large enterprise zero-trust base with strong channel, but facing platform encroachment from CRWD/PANW/Microsoft. Overall 4: SSE leader; competitive intensity and billings scrutiny are the watch-items."
+    potential_investor_interest:
+      score: "3"
+      notes: "3+ trajectory: solid security-spend exposure, but platform competition and billings/growth-deceleration scrutiny make it less of a momentum name than CRWD. Factors: sector, growth (decelerating); competition cap."
+    scoring_date: 2026-06-02
+    scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/ZS/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
 tier_3_watchlist:
   - ticker: AAON
     themes: [data_center_deployment_constraints, thermal_management_cooling]
