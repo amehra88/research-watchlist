@@ -118,7 +118,9 @@ def run_claude(prompt: str, *, allowed_tools: str = "") -> tuple[str, float]:
     result = subprocess.run(cmd, capture_output=True, text=True,
                             timeout=CLAUDE_TIMEOUT_S, cwd=str(REPO_ROOT), env=_claude_env())
     if result.returncode != 0:
-        raise RuntimeError(f"claude -p rc={result.returncode} stderr={result.stderr[:300]}")
+        # Auth/usage errors land on STDOUT (stderr is usually empty) — log both.
+        raise RuntimeError(f"claude -p rc={result.returncode} "
+                           f"stderr={result.stderr[:200]!r} stdout={result.stdout[:300]!r}")
     env = json.loads(result.stdout)
     if env.get("is_error"):
         raise RuntimeError(f"claude -p is_error: {str(env.get('result'))[:200]}")
@@ -602,7 +604,7 @@ def main() -> int:
 
     wm = load_watermark()
     newly_done: dict[str, str] = {}
-    processed = skipped = failed = 0
+    processed = skipped = failed = claude_failed = 0
     total_cost = 0.0
 
     for path in candidates:
@@ -620,6 +622,8 @@ def main() -> int:
                 newly_done[path.name] = dt.datetime.now().isoformat(timespec="seconds")
         except Exception as e:  # noqa: BLE001 — per-file isolation; retried next run
             failed += 1
+            if "claude -p rc=" in str(e):   # auth/CLI failure, not a content parse error
+                claude_failed += 1
             log(f"  FAILED {path.name}: {type(e).__name__}: {e}")
 
     if not args.dry_run and newly_done:
@@ -627,6 +631,12 @@ def main() -> int:
 
     log(f"DONE mode={mode} processed={processed} skipped_existing={skipped} "
         f"failed={failed} cost=${total_cost:.4f}")
+    # All-fail signal: every claude -p call failed and nothing was processed → almost
+    # certainly expired subscription auth. Exit non-zero so alert_on_failure.sh pages.
+    if not args.dry_run and processed == 0 and claude_failed > 0:
+        log(f"AUTH_SUSPECT processed=0 with {claude_failed} claude -p failure(s) — "
+            f"likely expired subscription auth; exiting non-zero to trigger alert")
+        return 1
     return 0
 
 

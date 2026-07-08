@@ -294,7 +294,9 @@ def run_claude(prompt: str) -> tuple[str, float]:
         timeout=CLAUDE_TIMEOUT_S, cwd=str(REPO_ROOT),
     )
     if result.returncode != 0:
-        raise RuntimeError(f"claude -p rc={result.returncode} stderr={result.stderr[:300]}")
+        # Auth/usage errors land on STDOUT (stderr is usually empty) — log both.
+        raise RuntimeError(f"claude -p rc={result.returncode} "
+                           f"stderr={result.stderr[:200]!r} stdout={result.stdout[:300]!r}")
     envelope = json.loads(result.stdout)
     text = envelope.get("result", "")
     cost = float(envelope.get("total_cost_usd", 0.0) or 0.0)
@@ -454,6 +456,13 @@ def main() -> int:
         save_watermark(wm, processed=resolved_prefix, total_written=written)
         log(f"DONE mode={mode} written={written} skipped_empty={len(empty_both)} "
             f"unresolved={len(unresolved)} capped={capped}")
+    # All-fail signal: had episodes to extract but every one came back unresolved and
+    # nothing was written → almost certainly expired subscription auth (all claude -p
+    # calls failed). Exit non-zero so alert_on_failure.sh pages.
+    if not args.dry_run and new_eps and written == 0 and len(unresolved) == len(new_eps):
+        log(f"AUTH_SUSPECT all {len(new_eps)} episode(s) unresolved, 0 written — "
+            f"likely expired subscription auth; exiting non-zero to trigger alert")
+        return 1
     return 0
 
 

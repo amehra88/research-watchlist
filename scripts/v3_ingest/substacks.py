@@ -64,7 +64,7 @@ GMAIL_LABEL = "Substack"
 MODEL = "claude-sonnet-4-6"
 CLAUDE_TIMEOUT_S = 300
 CONTENT_CAP = 16_000               # chars of post body passed to the LLM extractor
-MAX_MESSAGES_PER_RUN = 50
+MAX_MESSAGES_PER_RUN = 250          # headroom over label size so the backlog fully drains
 
 sys.path.insert(0, str(CHUNKING_DIR))   # chunker / ingest / store / embed
 
@@ -112,7 +112,10 @@ def run_claude(prompt: str) -> tuple[str, float]:
     result = subprocess.run(cmd, capture_output=True, text=True,
                             timeout=CLAUDE_TIMEOUT_S, cwd=str(REPO_ROOT), env=_claude_env())
     if result.returncode != 0:
-        raise RuntimeError(f"claude -p rc={result.returncode} stderr={result.stderr[:300]}")
+        # The CLI writes its auth/usage error envelope to STDOUT, not stderr, so log both
+        # (stderr is usually empty on an auth failure — see substack_claude_p_rc1_failure).
+        raise RuntimeError(f"claude -p rc={result.returncode} "
+                           f"stderr={result.stderr[:200]!r} stdout={result.stdout[:300]!r}")
     env = json.loads(result.stdout)
     if env.get("is_error"):
         raise RuntimeError(f"claude -p is_error: {str(env.get('result'))[:200]}")
@@ -455,7 +458,7 @@ def main() -> int:
     log(f"messages_in_scope={len(msgs)}")
 
     newly: dict[str, str] = {}
-    processed = skipped = failed = 0
+    processed = skipped = failed = claude_failed = 0
     total_cost = 0.0
     try:
         for _uid, msg in msgs[:MAX_MESSAGES_PER_RUN]:
@@ -473,6 +476,8 @@ def main() -> int:
                     newly[mid] = dt.datetime.now().isoformat(timespec="seconds")
             except Exception as e:  # noqa: BLE001 — per-message isolation; retried next run
                 failed += 1
+                if "claude -p rc=" in str(e):   # auth/CLI failure, not a benign body reject
+                    claude_failed += 1
                 log(f"  FAILED msg_id={mid or '(none)'}: {type(e).__name__}: {e}")
     finally:
         if imap is not None:
@@ -485,6 +490,12 @@ def main() -> int:
         save_watermark(wm, newly)
     log(f"DONE mode={mode} processed={processed} skipped={skipped} failed={failed} "
         f"cost=${total_cost:.4f}")
+    # All-fail signal: every claude -p call failed and nothing was processed → almost
+    # certainly expired subscription auth. Exit non-zero so alert_on_failure.sh pages.
+    if not args.dry_run and processed == 0 and claude_failed > 0:
+        log(f"AUTH_SUSPECT processed=0 with {claude_failed} claude -p failure(s) — "
+            f"likely expired subscription auth; exiting non-zero to trigger alert")
+        return 1
     return 0
 
 

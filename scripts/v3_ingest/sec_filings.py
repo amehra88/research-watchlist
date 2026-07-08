@@ -112,7 +112,9 @@ def run_claude(prompt: str) -> tuple[str, float]:
     result = subprocess.run(cmd, capture_output=True, text=True,
                             timeout=CLAUDE_TIMEOUT_S, cwd=str(REPO_ROOT), env=_claude_env())
     if result.returncode != 0:
-        raise RuntimeError(f"claude -p rc={result.returncode} stderr={result.stderr[:300]}")
+        # Auth/usage errors land on STDOUT (stderr is usually empty) — log both.
+        raise RuntimeError(f"claude -p rc={result.returncode} "
+                           f"stderr={result.stderr[:200]!r} stdout={result.stdout[:300]!r}")
     env = json.loads(result.stdout)
     if env.get("is_error"):
         raise RuntimeError(f"claude -p is_error: {str(env.get('result'))[:200]}")
