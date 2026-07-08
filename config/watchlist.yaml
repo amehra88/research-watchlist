@@ -652,6 +652,9 @@ tier_1_bctk:
     potential_investor_interest:
       score: "5"
       notes: "Strong investor enthusiasm. Mega-cap index weight. AI capability story compelling. Gemini quality climbing, search defense holding better than feared."
+  - ticker: GOOGL
+    themes: []      # TODO: assign themes via WATCHLIST email
+    added_date: 2026-06-30
   - ticker: GWRE
     themes: [ai_re_architected_incumbent, enterprise_ai_adoption, vertical_ai_applications]
     added_date: 2026-05-09
