@@ -1,0 +1,66 @@
+# config/sec_subscriptions.yaml
+#
+# Path A v3 SEC filings channel (scripts/v3_ingest/sec_filings.py).
+# Polls EDGAR daily for new filings from the T1+T2 watchlist universe
+# (config/watchlist.yaml tier_1_bctk + tier_2_active_candidates; NOT .pvt privates,
+# NOT tier_3). CIK is resolved at runtime from EDGAR company_tickers.json and cached
+# to state/v3_ingest/sec_cik_map.json.
+#
+# Form routing is automatic: EDGAR's submissions JSON returns only the forms a filer
+# actually files, so US filers naturally yield 8-K/10-K/10-Q and ADRs yield 20-F/6-K.
+# No per-ticker ADR classification list is maintained.
+
+user_agent: "Ashim Mehra research-watchlist amehra@baron.com"
+
+# Forms we ingest, grouped by cadence for backfill windowing.
+forms:
+  periodic: ["10-K", "10-Q", "20-F"]   # annual/quarterly -> periodic_days window
+  event:    ["8-K", "6-K"]             # event-driven     -> event_days window
+  include_amendments: true             # also match 10-K/A, 10-Q/A, 8-K/A, 20-F/A, 6-K/A
+
+# Forms deliberately NOT ingested (documented intent; never requested):
+#   S-1 (IPOs covered elsewhere), DEF 14A (proxies — separate channel if needed),
+#   144/3/4/5 (insider transactions — InsiderScore handles), SC 13D/G (ownership).
+skip_forms: ["S-1", "DEF 14A", "144", "3", "4", "5", "SC 13D", "SC 13G"]
+
+backfill:
+  event_days: 30
+  periodic_days: 365
+  # Bound the one-time backfill volume per ticker per form. Generous enough that a
+  # daily incremental run (new filings only) never hits these caps.
+  max_per_form:
+    "8-K": 8
+    "6-K": 4
+    "10-Q": 2
+    "10-K": 1
+    "20-F": 1
+
+# 8-K item filter. KEEP a filing when its item set INTERSECTS `signal`.
+# `noise` items suppress a filing ONLY when they are its SOLE items — earnings
+# 8-Ks are filed as "2.02,9.01" (press release as EX-99.1 under Item 9.01) and
+# MUST survive via the 2.02 signal.
+eight_k_items:
+  signal: ["1.01", "1.02", "2.01", "2.02", "2.05", "4.01", "4.02", "5.02", "5.07", "7.01", "8.01"]
+  noise:  ["9.01", "3.03", "5.03"]
+
+# Section extraction targets per periodic form (item number -> label). Sections not
+# listed are skipped — financial statements are already covered via FactSet
+# fundamentals, so we extract only the narrative/risk items.
+sections:
+  "10-K": {"1A": "Risk Factors", "7": "Management's Discussion and Analysis", "7A": "Quantitative and Qualitative Disclosures About Market Risk"}
+  "10-Q": {"2": "Management's Discussion and Analysis", "3": "Quantitative and Qualitative Disclosures About Market Risk"}
+  "20-F": {"3": "Key Information", "5": "Operating and Financial Review and Prospects"}
+
+# Truncate pathologically long sections (e.g. ADR 20-F Item 3 Key Information runs
+# 400K+ chars of risk factors) to bound embedding cost / corpus bloat.
+max_section_chars: 200000
+
+# Tickers known to lack EDGAR coverage (Korea Exchange listings -> Korea DART,
+# deferred to Phase 2). Auto-skipped anyway (absent from company_tickers.json);
+# listed here for explicit, logged intent.
+known_no_edgar: ["000660.KS", "005930.KS", "A000660"]
+
+# Manual CIK overrides for tickers that mis-map or need pinning (TICKER -> CIK int).
+cik_overrides: {}
+
+rate_limit_sleep_s: 0.2   # sleep after EVERY EDGAR request (<= 10 req/s SEC cap)
