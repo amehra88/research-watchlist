@@ -55,6 +55,8 @@ tmp/
 state/news_digest_seen.jsonl
 state/factset_cache/
 logs/news_digest_*.txt
+# v3 news-flow brief section for combine_and_send (ephemeral daily)
+logs/report_news_*.txt
 
 # Chunk store — embeddings + caches + DERIVED metrics are regenerable; ignore the
 # dir's contents but TRACK state/chunk_store/factset_raw/ (Store B source-of-truth:

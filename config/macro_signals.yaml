@@ -1,0 +1,115 @@
+# macro_signals — Pass-C taxonomy for the v3 news-flow/IR channel (classify_llm.py).
+#
+# The 61-theme master list in watchlist.yaml `themes:` is a TECH/company-thesis axis
+# (Pass B, "themes"). This file is a distinct, net-new MACRO-ECONOMIC axis (Pass C):
+# top-down signals a tech-focused PM tracks because they move rates, multiples, capex
+# appetite, and — critically — the energy/power envelope of the AI datacenter buildout.
+#
+# Each category is a candidate tag the LLM classifier may assign to a story (non-exclusive:
+# a story may carry several). Keep tight and PM-relevant, not an econ textbook. A story
+# earns a macro tag only when it is SUBSTANTIVELY about that signal, not a passing mention.
+#
+# Schema per category: name, description, example_triggers (a few phrases), relevance_note.
+
+version: 1
+
+categories:
+  - name: fed_policy
+    description: >
+      U.S. monetary-policy actions and signals: FOMC rate decisions, the dot plot,
+      Fed officials' guidance, balance-sheet (QT/QE) moves, and the market's rate-path
+      expectations.
+    example_triggers:
+      - "Fed holds rates / cuts 25bp / hikes"
+      - "FOMC minutes signal fewer cuts"
+      - "Powell testimony / Jackson Hole remarks"
+      - "dot plot shows two cuts in 2026"
+    relevance_note: >
+      The discount rate on long-duration tech cash flows. Higher-for-longer compresses
+      growth/software multiples and raises the hurdle on debt-funded datacenter capex;
+      cuts do the reverse. First-order for the whole book.
+
+  - name: inflation
+    description: >
+      Inflation prints and wage data that drive the Fed reaction function: CPI, core CPI,
+      PCE / core PCE, PPI, ECI, average hourly earnings.
+    example_triggers:
+      - "CPI comes in hot / cool vs consensus"
+      - "core PCE ticks up to 3.1%"
+      - "PPI surprise / wage growth reaccelerates"
+    relevance_note: >
+      Sets the Fed path (→ fed_policy) and real rates. Sticky inflation = higher-for-longer
+      = multiple compression for unprofitable/long-duration names; disinflation is a
+      tailwind. Also a read on component/input cost pressure.
+
+  - name: employment
+    description: >
+      Labor-market data: nonfarm payrolls, unemployment rate, JOLTS openings, initial /
+      continuing jobless claims, quits rate, participation.
+    example_triggers:
+      - "NFP beats / misses; unemployment rate rises to 4.5%"
+      - "JOLTS openings fall sharply"
+      - "jobless claims jump / tech layoffs"
+    relevance_note: >
+      The other half of the Fed's dual mandate and a growth read. Labor loosening pulls
+      cuts forward (risk-on for growth tech); a hot labor market delays them. Tech-sector
+      layoffs also read on enterprise-software demand and margin trajectory.
+
+  - name: growth
+    description: >
+      Real-activity indicators on the trajectory of output and demand: GDP, PMIs
+      (S&P Global / ISM manufacturing & services), retail sales, industrial production,
+      durable goods, consumer confidence.
+    example_triggers:
+      - "GDP revised up to 3.2% / recession-scare"
+      - "ISM manufacturing back above 50 / services contracts"
+      - "retail sales soft; consumer confidence slumps"
+    relevance_note: >
+      Cyclical demand for semis, hardware, ads, and enterprise IT budgets. A growth scare
+      hits cyclical/consumer-tech and ad-exposed names first; reacceleration supports
+      capex and the semi cycle (→ semiconductor_cycle).
+
+  - name: geopolitical
+    description: >
+      Cross-border political events that reprice risk or reshape trade: armed conflicts,
+      elections, sanctions, tariffs and trade policy, export controls, Taiwan-Strait / China
+      tensions, chip-equipment restrictions.
+    example_triggers:
+      - "new tariffs on Chinese semis / retaliation"
+      - "expanded export controls on advanced GPUs to China"
+      - "Taiwan-Strait escalation; election shifts trade stance"
+    relevance_note: >
+      Directly hits the AI-compute supply chain: Taiwan (TSM) concentration risk, China
+      export controls gating GPU/HBM/tooling revenue, and tariffs on hardware costs.
+      Overlaps the china_export_controls / china_us_tensions theme axis but here framed as
+      a top-down risk-repricing event.
+
+  - name: commodity
+    description: >
+      Commodity-price and supply moves — with special weight on ENERGY given the
+      AI-power thesis: crude oil, natural gas, electricity/power prices, uranium, copper
+      and industrial metals, and agricultural staples.
+    example_triggers:
+      - "natural gas / power prices spike in PJM"
+      - "uranium rallies on reactor-restart demand"
+      - "copper squeeze; oil breaks $90"
+    relevance_note: >
+      THE energy-to-AI bridge. Datacenter buildout is power-constrained (→ energy_power
+      _constraints, nuclear_energy_buildout, datacenter_buildout_pacing): gas/power/uranium
+      prices set the marginal cost and feasibility of compute expansion. Copper/metals read
+      on grid and datacenter construction. Oil is the macro-inflation/geopolitical relay.
+
+  - name: cross_asset
+    description: >
+      Market-structure and risk-appetite signals across asset classes: the rates curve
+      (2s10s, 10Y yield), credit spreads (IG/HY), the U.S. dollar (DXY), volatility (VIX),
+      and crypto (BTC) as a risk-on/off barometer.
+    example_triggers:
+      - "10Y yield spikes to 5%; curve dis-inverts"
+      - "HY credit spreads blow out / VIX above 30"
+      - "dollar surges; Bitcoin sells off with risk assets"
+    relevance_note: >
+      The plumbing of risk appetite. Rising yields and widening spreads drain liquidity
+      from long-duration tech and raise the cost of capex financing; a spiking VIX or
+      risk-off crypto move front-runs multiple compression. A fast read on whether the
+      tape is risk-on or risk-off for the whole book.

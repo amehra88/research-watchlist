@@ -1,0 +1,62 @@
+# config/ir_feeds.yaml — IR / newsroom RSS feeds for the v3 news-flow channel.
+#
+# STATUS: ADDITIVE, NOT WIRED. This config is a staging ground for a future phase that
+# adds IR/newsroom press-release RSS as a THIRD source alongside Google RSS + FactSet.
+# news_digest.py does NOT read this file yet — the channel ships on Google RSS + FactSet,
+# both real and working. Turning IR on is a follow-up: add an ir_feeds source module that
+# reads `feed_url` where feed_type == "rss", parses items into the same article dict as
+# google_rss.fetch(), and merges them into the pool before dedup.
+#
+# Discovery is timeboxed and partial (v3 build, 2026-07-08): the 3 feeds below were fetched
+# and confirmed to return valid press-release RSS/XML. The rest are marked TODO — several
+# top names sit behind Q4/Nasdaq IR platforms that 403 automated fetches (the feed may exist
+# but needs a browser UA / manual confirmation) or use non-standard paths. Fill in as found.
+#
+# Schema per entry:
+#   ticker       watchlist symbol
+#   feed_url     RSS/Atom URL (null when none found yet)
+#   feed_type    "rss" | "atom" | null
+#   status       "verified" (fetched, valid feed) | "todo" (not yet found/confirmed)
+#   verified_date  ISO date the feed was last confirmed (verified entries only)
+#   note         freeform
+
+version: 1
+wired_into_pipeline: false          # flip to true only when ir_feeds source module lands
+
+feeds:
+  - ticker: NVDA
+    feed_url: "https://nvidianews.nvidia.com/releases.xml"
+    feed_type: rss
+    status: verified
+    verified_date: "2026-07-08"
+    note: "NVIDIA newsroom all-releases feed; also per-category feeds at /cats/press_release.xml"
+
+  - ticker: AAPL
+    feed_url: "https://www.apple.com/newsroom/rss-feed.rss"
+    feed_type: atom
+    status: verified
+    verified_date: "2026-07-08"
+    note: "Apple Newsroom Atom 1.0 feed; items tagged PRESS RELEASE among newsroom updates"
+
+  - ticker: AMD
+    feed_url: "https://ir.amd.com/rss/news-releases.xml"
+    feed_type: rss
+    status: verified
+    verified_date: "2026-07-08"
+    note: "AMD IR press-releases (Q4 platform, /rss/news-releases.xml pattern)"
+
+  # ── TODO: top T1 names — feed not yet confirmed (Q4/Nasdaq IR endpoints 403 automated fetch;
+  #    confirm the URL from a browser, or the newsroom equivalent, then set status: verified) ──
+  - {ticker: AVGO, feed_url: null, feed_type: null, status: todo, note: "Broadcom — investors.broadcom.com 403'd the guessed /rss/news-releases.xml"}
+  - {ticker: TSM,  feed_url: null, feed_type: null, status: todo, note: "TSMC — pr.tsmc.com newsroom; ir.tsmc.com did not resolve; find EN press RSS"}
+  - {ticker: MU,   feed_url: null, feed_type: null, status: todo, note: "Micron — investors.micron.com 403'd the guessed feed path"}
+  - {ticker: GOOG, feed_url: null, feed_type: null, status: todo, note: "Alphabet — blog.google has feeds; IR press RSS to confirm"}
+  - {ticker: META, feed_url: null, feed_type: null, status: todo, note: "Meta — investor.atmeta.com; confirm press RSS"}
+  - {ticker: INTC, feed_url: null, feed_type: null, status: todo, note: "Intel — newsroom.intel.com; www.intc.com/rss/news-releases.xml 404'd"}
+  - {ticker: MSFT, feed_url: null, feed_type: null, status: todo, note: "Microsoft — news.microsoft.com has RSS; confirm exact URL"}
+  - {ticker: TSLA, feed_url: null, feed_type: null, status: todo, note: "Tesla — ir.tesla.com; press RSS to confirm"}
+  - {ticker: MRVL, feed_url: null, feed_type: null, status: todo, note: "Marvell — investor.marvell.com (Q4 platform)"}
+  - {ticker: ANET, feed_url: null, feed_type: null, status: todo, note: "Arista — investors.arista.com (Q4 platform)"}
+  - {ticker: PANW, feed_url: null, feed_type: null, status: todo, note: "Palo Alto Networks — investors.paloaltonetworks.com"}
+  - {ticker: NOW,  feed_url: null, feed_type: null, status: todo, note: "ServiceNow — investors.servicenow.com"}
+  - {ticker: CSCO, feed_url: null, feed_type: null, status: todo, note: "Cisco — newsroom.cisco.com has RSS; confirm URL"}

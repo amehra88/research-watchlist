@@ -1,6 +1,16 @@
 """
 filter — HIGH / MEDIUM / DROP classification (spec §5, v1.5).
 
+    ┌──────────────────────────────────────────────────────────────────────────┐
+    │ SUPERSEDED (v3 news-flow channel, 2026-07-08) — NO LONGER ON THE PATH.     │
+    │ news_digest.py now classifies via scripts/newsdigest/classify_llm.py       │
+    │ (batched claude -p 3-pass: materiality / themes / macro). The LLM's         │
+    │ materiality judgment replaces the heuristic source-tier / story-volume      │
+    │ verdict below — and fixes the SPOT/"spot" substring false-positive that     │
+    │ this module's _headline_mentions() token match could not.                   │
+    │ Kept for reference / rollback; not imported by the production pipeline.      │
+    └──────────────────────────────────────────────────────────────────────────┘
+
 Per Google cluster, compute story_volume and FactSet corroboration, then assign a
 level with a human-readable reason. FactSet articles for the same ticker are matched
 to clusters by headline token-overlap (FACTSET_MATCH_JACCARD).

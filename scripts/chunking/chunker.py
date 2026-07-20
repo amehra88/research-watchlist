@@ -184,8 +184,11 @@ def parse_doc_meta(path: Path) -> dict:
     # base_ticker drives ONLY the chunk_id prefix (kept separate from `tickers`
     # so legacy IDs stay byte-identical); `tickers` is the retrieval array.
     base_ticker = parts[parts.index("notes") + 1] if "notes" in parts else None
-    if base_ticker in ("sector",):
-        base_ticker = None  # sector notes are multi-ticker; assigned per-segment downstream
+    if base_ticker in ("sector", "news"):
+        base_ticker = None  # sector/news notes are multi-ticker; tickers come from frontmatter
+        # (news: v3 news-flow channel — notes/news/ is macro/multi-ticker, so the path segment
+        #  'news' must NOT become a base_ticker, which would pollute ticker queries per the
+        #  data_hygiene_invalid_base_ticker hazard. Tickers are read from FM `tickers:` only.)
     # -? makes the inner date separators optional: matches legacy 20260521-… AND
     # ISO-dashed 2026-05-21-… filenames (CKPT C; verified non-regressive corpus-wide).
     m = re.match(r"^(\d{4})-?(\d{2})-?(\d{2})-(.+)\.md$", path.name)

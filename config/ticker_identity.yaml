@@ -277,3 +277,151 @@ SPCX:
   name: "SpaceX"
   factset_id: "SPCX-US"
   google: '"SpaceX" OR SPCX stock'
+
+# ───────────────────────────── v3 news channel: T1+T2 coverage backfill (2026-07-08) ─────────────────────────────
+# The materiality pass classifies over the full 83-ticker T1+T2 universe (watchlist.yaml).
+# These 35 entries close the gap between ticker_identity (was 52) and the 83 universe so
+# Google sourcing + FactSet cover every non-exempt name. factset_id = {TICKER}-US for every
+# US-listed name (incl. foreign-incorporated ADRs — matches the SPOT-US precedent; FactSet
+# keys off the US listing). Korean KRX code A000660 (SK Hynix) is EXEMPT: it is a redundant
+# alt-id for the existing "000660.KS" entry and has no FactSet-US coverage.
+ADI:
+  name: "Analog Devices"
+  factset_id: "ADI-US"
+  google: '"Analog Devices" OR ADI stock'
+AMAT:
+  name: "Applied Materials"
+  factset_id: "AMAT-US"
+  google: '"Applied Materials" OR AMAT stock'
+AMBA:
+  name: "Ambarella"
+  factset_id: "AMBA-US"
+  google: '"Ambarella" OR AMBA stock'
+ARM:
+  name: "Arm Holdings"
+  factset_id: "ARM-US"                       # REVIEW: UK-incorporated, Nasdaq ADS; "arm" common word — name quote-anchored
+  google: '"Arm Holdings" OR ARM stock'
+BABA:
+  name: "Alibaba Group Holding"
+  factset_id: "BABA-US"
+  google: '"Alibaba" OR BABA stock'
+BIDU:
+  name: "Baidu"
+  factset_id: "BIDU-US"
+  google: '"Baidu" OR BIDU stock'
+CIEN:
+  name: "Ciena"
+  factset_id: "CIEN-US"
+  google: '"Ciena" OR CIEN stock'
+CRDO:
+  name: "Credo Technology Group Holding"
+  factset_id: "CRDO-US"                       # Cayman-incorporated, Nasdaq listing
+  google: '"Credo Technology" OR CRDO stock'
+CRWV:
+  name: "CoreWeave"
+  factset_id: "CRWV-US"
+  google: '"CoreWeave" OR CRWV stock'
+CSCO:
+  name: "Cisco Systems"
+  factset_id: "CSCO-US"
+  google: '"Cisco Systems" OR CSCO stock'
+DASH:
+  name: "DoorDash"
+  factset_id: "DASH-US"
+  google: '"DoorDash" OR DASH stock'
+DOCN:
+  name: "DigitalOcean Holdings"
+  factset_id: "DOCN-US"
+  google: '"DigitalOcean" OR DOCN stock'
+GLW:
+  name: "Corning"
+  factset_id: "GLW-US"
+  google: '"Corning" OR GLW stock'
+HPE:
+  name: "Hewlett Packard Enterprise"
+  factset_id: "HPE-US"
+  google: '"Hewlett Packard Enterprise" OR HPE stock'
+HPQ:
+  name: "HP Inc"
+  factset_id: "HPQ-US"                        # REVIEW: "HP" ambiguous — name quote-anchored
+  google: '"HP Inc" OR HPQ stock'
+HSAI:
+  name: "Hesai Group"
+  factset_id: "HSAI-US"                       # Cayman-incorporated ADR, Nasdaq (dual HKEX 2525)
+  google: '"Hesai" OR HSAI stock'
+HTFL:
+  name: "HeartFlow"
+  factset_id: "HTFL-US"
+  google: '"HeartFlow" OR HTFL stock'
+INIO:
+  name: "INNIO Group"
+  factset_id: "INIO-US"                       # REVIEW: Netherlands-incorporated (INNIO N.V.), Nasdaq; gas-engine power-gen for datacenters
+  google: '"INNIO" OR INIO stock'
+INTC:
+  name: "Intel"
+  factset_id: "INTC-US"
+  google: '"Intel" OR INTC stock'
+MDB:
+  name: "MongoDB"
+  factset_id: "MDB-US"
+  google: '"MongoDB" OR MDB stock'
+NBIS:
+  name: "Nebius Group"
+  factset_id: "NBIS-US"                       # Netherlands-incorporated (Nebius Group N.V.), Nasdaq
+  google: '"Nebius" OR NBIS stock'
+NOW:
+  name: "ServiceNow"
+  factset_id: "NOW-US"                        # REVIEW: "now" common word — name quote-anchored
+  google: '"ServiceNow" OR NOW stock'
+NTES:
+  name: "NetEase"
+  factset_id: "NTES-US"
+  google: '"NetEase" OR NTES stock'
+NVMI:
+  name: "Nova"
+  factset_id: "NVMI-US"                       # REVIEW: Israel-based Nova Ltd; "Nova" common word — name quote-anchored
+  google: '"Nova" semiconductor OR NVMI stock'
+NXPI:
+  name: "NXP Semiconductors"
+  factset_id: "NXPI-US"
+  google: '"NXP Semiconductors" OR NXPI stock'
+PANW:
+  name: "Palo Alto Networks"
+  factset_id: "PANW-US"
+  google: '"Palo Alto Networks" OR PANW stock'
+PLAB:
+  name: "Photronics"
+  factset_id: "PLAB-US"
+  google: '"Photronics" OR PLAB stock'
+RDDT:
+  name: "Reddit"
+  factset_id: "RDDT-US"
+  google: '"Reddit" OR RDDT stock'
+ROKU:
+  name: "Roku"
+  factset_id: "ROKU-US"
+  google: '"Roku" OR ROKU stock'
+SE:
+  name: "Sea Limited"
+  factset_id: "SE-US"                         # REVIEW: "SE" very common token — name quote-anchored
+  google: '"Sea Limited" OR "Sea Ltd" stock'
+SNOW:
+  name: "Snowflake"
+  factset_id: "SNOW-US"                       # REVIEW: "snow" common word — name quote-anchored
+  google: '"Snowflake" stock OR SNOW earnings'
+TSEM:
+  name: "Tower Semiconductor"
+  factset_id: "TSEM-US"
+  google: '"Tower Semiconductor" OR TSEM stock'
+TTWO:
+  name: "Take-Two Interactive Software"
+  factset_id: "TTWO-US"
+  google: '"Take-Two Interactive" OR TTWO stock'
+TXN:
+  name: "Texas Instruments"
+  factset_id: "TXN-US"
+  google: '"Texas Instruments" OR TXN stock'
+WMT:
+  name: "Walmart"
+  factset_id: "WMT-US"
+  google: '"Walmart" OR WMT stock'
