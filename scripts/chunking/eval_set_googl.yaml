@@ -11,17 +11,20 @@
 
 cases:
   - q: "What was Alphabet's consolidated revenue and how fast did it grow?"
+    expect_doc_type: earnings_transcript
     expect_facets: [revenue]
     expect_section: "Actuals"
     expect_contains: "$109.9B"
     note: backward actuals (pairs with the forward capex case for time_orientation)
 
   - q: "How fast did Google Cloud revenue grow this quarter?"
+    expect_doc_type: earnings_transcript
     expect_facets: [revenue]
     expect_contains: "+63%"
     note: segment growth rate
 
   - q: "What did Alphabet raise its FY26 capex guidance to?"
+    expect_doc_type: earnings_transcript
     expect_facets: [guidance, fcf]
     expect_section: "Forward guidance"
     expect_contains: "$180–190B"
@@ -29,17 +32,20 @@ cases:
     note: forward capex guide; fcf/capex facet; must not return backward actuals
 
   - q: "What did management signal about 2027 capex?"
+    expect_doc_type: earnings_transcript
     expect_facets: [guidance]
     expect_contains: "2027"
     expect_time: forward
     note: first multi-year forward-capex frame
 
   - q: "What is Alphabet's new strategy for selling TPUs to third parties?"
+    expect_doc_type: earnings_transcript
     expect_facets: [competitive_advantage]
     expect_contains: "select group of customers"
     note: merchant-silicon shift; tests competitive_advantage cue on non-NVDA silicon vocab
 
   - q: "How large is Google Cloud's backlog?"
+    expect_doc_type: earnings_transcript
     expect_facets: [operating_kpis, revenue]
     expect_contains: "$462B"
     note: >
@@ -49,34 +55,40 @@ cases:
       the suite. The $462B chunk must carry BOTH facets.
 
   - q: "How did Search advertising revenue grow this quarter?"
+    expect_doc_type: earnings_transcript
     expect_facets: [revenue]
     expect_contains: "$60.4B"
     note: Search reacceleration
 
   - q: "What was Google Cloud's operating margin and how did it change?"
+    expect_doc_type: earnings_transcript
     expect_facets: [margins]
     expect_contains: "32.9%"
     note: margins.operating facet
 
   - q: "What did Pichai say about Cloud being supply-constrained?"
+    expect_doc_type: earnings_transcript
     expect_section: "Q&A"
     expect_contains: "would have been higher"
     expect_answered_by: "Pichai"
     note: Q&A answerer IS in the global roster — should resolve
 
   - q: "What did management say about upside to Search ad coverage?"
+    expect_doc_type: earnings_transcript
     expect_section: "Q&A"
     expect_contains: "coverage number"
     expect_answered_by: "Schindler"
     note: answerer is CBO Schindler — NOT in global EXEC_ROLES; tests per-doc roster
 
   - q: "What drove Google Cloud's margin expansion?"
+    expect_doc_type: earnings_transcript
     expect_section: "Q&A"
     expect_contains: "scientific process"
     expect_answered_by: "Ashkenazi"
     note: answerer is CFO Ashkenazi — NOT in global EXEC_ROLES; tests per-doc roster
 
   - q: "What inference-cost efficiency gain did the new TPU deliver?"
+    expect_doc_type: earnings_transcript
     expect_facets: [product]
     expect_contains: "80% better performance per dollar"
     note: >
@@ -92,6 +104,7 @@ cases:
     note: capital_allocation; dividend cue
 
   - q: "Why was the EPS beat so much larger than the revenue beat?"
+    expect_doc_type: earnings_transcript
     expect_contains: "mark-to-market"
     note: quality-of-earnings — OI&E unrealized gains, not operating outperformance
 

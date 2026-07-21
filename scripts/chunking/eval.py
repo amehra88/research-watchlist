@@ -63,6 +63,8 @@ def check(case: dict, hit) -> list[str]:
         fails.append(f"missing text {case['expect_contains']!r}")
     if "expect_section" in case and case["expect_section"].lower() not in (hit.section or "").lower():
         fails.append(f"section {hit.section!r} != ~{case['expect_section']!r}")
+    if "expect_doc_type" in case and getattr(hit, "doc_type", None) != case["expect_doc_type"]:
+        fails.append(f"doc_type {getattr(hit, 'doc_type', None)!r} != {case['expect_doc_type']!r}")
     for f in case.get("expect_facets", []):
         if not any(x == f or x.startswith(f + ".") for x in hit.facets):
             fails.append(f"facet {f!r} not in {hit.facets}")
