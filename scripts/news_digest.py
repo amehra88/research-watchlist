@@ -57,6 +57,7 @@ from newsdigest.sources import load_classifier           # noqa: E402
 from newsdigest import google_rss, factset_news          # noqa: E402
 from newsdigest.cluster import cluster_items             # noqa: E402
 from newsdigest import classify_llm, summarize           # noqa: E402
+from newsdigest import pre_filter, merge, verdict_cache  # noqa: E402  (pre-LLM volume reduction: Levers 1-3)
 
 LOG_PATH = os.path.join(REPO_ROOT, "logs", "news_digest.log")
 LEDGER_PATH = os.path.join(REPO_ROOT, "state", "news_digest_seen.jsonl")
@@ -471,6 +472,21 @@ def main():
 
     # ── Phase 1c: cluster ──
     clusters = cluster_pool(kept, classifier)
+    n_clustered = len(clusters)
+
+    # ── Phase 1d: pre-LLM volume reduction (NO claude -p) — filter-first, then merge ──
+    # Lever 2: drop boilerplate CATEGORIES (13F/analyst-stub/listicle/price-stub); FactSet exempt.
+    clusters, filt_reasons = pre_filter.filter_clusters(clusters, logger=logger)
+    n_filtered = len(clusters)
+    # Lever 1: collapse event-fragments (name-stripped content-signature, T=0.3). MUST be after the
+    # filter — filter-first removes the template-spam that would otherwise over-merge.
+    clusters = merge.merge_clusters(clusters, ticker_names, logger=logger)
+    n_merged = len(clusters)
+
+    # MAX_CLUSTERS is now a high safety BACKSTOP (the levers do the real cleanup). It drops the
+    # lowest-volume excess; merged real-events sort UP (higher volume), boilerplate is already gone,
+    # so the surviving top-N is higher-signal than before. Kept at 300 (lowering re-introduces the
+    # material-single-source FN the tier/volume gate died on — see the quota-budget memory).
     dropped_cap = 0
     if len(clusters) > MAX_CLUSTERS:
         clusters.sort(key=lambda c: (c.volume, c.representative["published"]), reverse=True)
@@ -478,11 +494,21 @@ def main():
         clusters = clusters[:MAX_CLUSTERS]
         logger.warning("cluster cap: kept %d, dropped %d (MAX_CLUSTERS=%d)",
                        MAX_CLUSTERS, dropped_cap, MAX_CLUSTERS)
-    logger.info("clustered: %d clusters", len(clusters))
+    logger.info("clustered %d → filtered %d (−%d boilerplate) → merged %d → %d to classify",
+                n_clustered, n_filtered, n_clustered - n_filtered, n_merged, len(clusters))
 
-    # ── Phase 2: LLM classify ──
+    # ── Phase 2: LLM classify (with the Lever 3 verdict cache) ──
+    # Self-populating per-day content-hash cache: within a run window, the brief/postmarket reuse the
+    # verdicts premarket already produced instead of re-calling claude -p on the same clusters. A hash
+    # hit is safe (same tokens = same story); a miss just classifies. dry-run does not use the cache.
+    cache = None
+    if not args.dry_run:
+        vc_path = os.path.join(REPO_ROOT, "state", f"news_verdict_cache_{date_str}.json")
+        vtag = verdict_cache.build_version_tag(ticker_names, valid_themes, macro_cfg)
+        cache = verdict_cache.VerdictCache(vc_path, vtag)
     classifications, c_cost, unclassified = classify_llm.classify_clusters(
-        clusters, macro_cfg, ticker_names, valid_themes, REPO_ROOT, logger=logger)
+        clusters, macro_cfg, ticker_names, valid_themes, REPO_ROOT,
+        logger=logger, cache=cache, now=now)
     survivors_cc = [(c, classifications[c.hash]) for c in clusters
                     if c.hash in classifications and classifications[c.hash].is_survivor]
     logger.info("classified: %d verdicts, %d survivors, %d unclassified (cost=$%.4f)",

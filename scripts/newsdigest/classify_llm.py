@@ -37,7 +37,12 @@ from dataclasses import dataclass, field
 # variance blew a batch past the timeout and (pre-fix) silently dropped all 40 of its
 # clusters. 20 ≈ ~95s (~3x headroom); the split-on-timeout recovery below forgives the
 # rare slow batch, so this is the safety margin, not a hard guarantee.
-BATCH_SIZE = 20
+BATCH_SIZE = 40                  # Lever 4 (2026-07-21): 20→40 halves classify calls. The oversized-
+                                 # batch timeout that made 40 unsafe pre-2026-07-08 is now covered by
+                                 # the split-ladder in _classify_recursive (a timed-out 40-batch splits
+                                 # to 20+20 and completes) — net-fewer calls even when some batches split.
+                                 # Summarizer stays at 20 (no split-ladder). See the quota-budget memory.
+PROMPT_VERSION = "v3.1-2026-07"  # bump on any classifier prompt/logic change → invalidates the verdict cache
 MODEL = "claude-sonnet-4-6"      # matches the substack/inbox v3 extractors
 CLAUDE_TIMEOUT_S = 300
 MAX_TRANSIENT_RETRIES = 2        # rc!=0 / unparseable → retry SAME batch (with backoff)
@@ -371,14 +376,20 @@ def _classify_recursive(batch, ctx: _Ctx, depth: int = 0) -> dict:
 
 def classify_clusters(clusters, macro_cfg, ticker_names, valid_themes, repo_root,
                       batch_size: int = BATCH_SIZE, timeout: int = CLAUDE_TIMEOUT_S,
-                      logger=None) -> tuple[dict, float, list]:
+                      logger=None, cache=None, now=None) -> tuple[dict, float, list]:
     """Classify all clusters. Returns ({cluster_id: Classification}, total_cost_usd, unclassified).
 
     `unclassified` is the list of cluster hashes that could NOT be classified — a PROCESSING
     FAILURE distinct from a below-bar DROP. Two ways in: (1) retries+splits exhausted for a
     genuine timeout/transient error; (2) a session-limit 429 aborted the run fast (quota gone,
     no point retrying). Either way the caller must fail loud so the run never silently
-    under-reports the news pool (the 2026-07-08 timeout-drop / 2026-07-20 session-limit defects)."""
+    under-reports the news pool (the 2026-07-08 timeout-drop / 2026-07-20 session-limit defects).
+
+    Lever 3 (2026-07-21) — optional `cache` (a VerdictCache): a cluster whose content-hash is already
+    in the cache reuses that verdict at ZERO cost/calls, so the morning brief no longer re-classifies
+    the ~300 clusters premarket already judged 24 min earlier. A hash hit is SAFE — same hash = same
+    normalized token content = same story. Only cache MISSES call claude -p; new verdicts are written
+    back. `now` is required when a cache is passed (for TTL)."""
     ctx = _Ctx(
         macro_cfg=macro_cfg,
         ticker_names=ticker_names,
@@ -390,9 +401,22 @@ def classify_clusters(clusters, macro_cfg, ticker_names, valid_themes, repo_root
         logger=logger,
     )
     out: dict[str, Classification] = {}
+    to_classify = clusters
+    if cache is not None:
+        to_classify = []
+        for c in clusters:
+            hit = cache.get(c.hash, now)
+            if hit is not None:
+                hit.cluster_id = c.hash        # echo this run's cluster id
+                out[c.hash] = hit
+            else:
+                to_classify.append(c)
+        ctx.logger and ctx.logger.info(
+            "verdict cache: %d hit / %d miss (reused %d verdict(s), classifying %d)",
+            cache.hits, cache.misses, len(out), len(to_classify))
     try:
-        for i in range(0, len(clusters), batch_size):
-            out.update(_classify_recursive(clusters[i:i + batch_size], ctx))
+        for i in range(0, len(to_classify), batch_size):
+            out.update(_classify_recursive(to_classify[i:i + batch_size], ctx))
     except SessionLimitError as e:
         # Fast-abort: quota is exhausted, so stop calling claude -p entirely. Everything
         # classified before the 429 is kept; the remainder falls through to `unclassified`.
@@ -401,6 +425,12 @@ def classify_clusters(clusters, macro_cfg, ticker_names, valid_themes, repo_root
             "abort; remainder UNCLASSIFIED (no retry/split). Quota %s",
             ctx.calls, e, len(out), len(clusters),
             (f"resets — {e.reset_hint}" if e.reset_hint else "reset time unknown"))
+
+    if cache is not None:
+        for c in to_classify:                  # persist only the freshly-classified verdicts
+            if c.hash in out:
+                cache.put(c.hash, out[c.hash], now)
+        cache.save()
 
     unclassified = [c.hash for c in clusters if c.hash not in out]
     if unclassified:
