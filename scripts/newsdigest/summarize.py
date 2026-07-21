@@ -20,7 +20,7 @@ import os
 import re
 from dataclasses import dataclass, field
 
-from .classify_llm import _run_claude, _extract_json_array, MODEL  # reuse the claude -p wrapper
+from .classify_llm import _run_claude, _extract_json_array, SessionLimitError, MODEL  # reuse the claude -p wrapper
 
 BATCH_SIZE = 20                    # survivors are far fewer than the raw pool
 MACRO_LABEL = "MACRO / no single ticker"
@@ -116,8 +116,20 @@ def _validate(obj) -> Summary:
 
 
 def summarize_survivors(survivors, repo_root, batch_size: int = BATCH_SIZE,
-                        logger=None) -> tuple[dict, float]:
-    """survivors: list of (cluster, Classification). Returns ({cluster_id: Summary}, cost)."""
+                        logger=None) -> tuple[dict, float, list]:
+    """survivors: list of (cluster, Classification). Returns
+    ({cluster_id: Summary}, cost, unsummarized_hashes).
+
+    `unsummarized` is the list of survivor cluster hashes with no summary — a PROCESSING
+    FAILURE the caller must fail loud on (never a silent drop from the digest). Two ways in:
+      • a genuine per-batch error (timeout / unparseable) leaves THAT batch's items
+        unsummarized but the run CONTINUES — per-batch isolation, so other batches still
+        summarize;
+      • a session-limit 429 ABORTS the run fast (NON-RETRYABLE): every remaining batch is
+        left unsummarized. Retrying/continuing only fires more doomed calls at the drained
+        quota — the 2026-07-21 pathology where the summarizer plowed all ~13 batches into a
+        429 wall (07:46→07:48) instead of stopping. Mirrors classify_llm.classify_clusters'
+        429 fast-abort + fail-loud contract exactly."""
     out: dict[str, Summary] = {}
     total_cost = 0.0
     for i in range(0, len(survivors), batch_size):
@@ -134,11 +146,23 @@ def summarize_survivors(survivors, repo_root, batch_size: int = BATCH_SIZE,
                     s = _validate(obj)
                     if s.cluster_id:
                         out[s.cluster_id] = s
-        except Exception as e:  # noqa: BLE001 — per-batch isolation
+        except SessionLimitError as e:
+            # 429 quota exhaustion is NON-RETRYABLE and NON-CONTINUABLE: stop calling claude -p
+            # entirely. Everything summarized before the 429 is kept; the remainder falls through
+            # to `unsummarized` (fail-loud). Distinct from a generic per-batch failure below.
+            if logger:
+                logger.error(
+                    "SUMMARIZER ABORTED (session limit 429): %s — %d/%d survivor(s) summarized "
+                    "before abort; remainder UNSUMMARIZED (no retry). Quota %s",
+                    e, len(out), len(survivors),
+                    f"resets — {e.reset_hint}" if e.reset_hint else "reset time unknown")
+            break
+        except Exception as e:  # noqa: BLE001 — per-batch isolation for genuine (non-429) failures
             if logger:
                 logger.warning("summarizer batch %d-%d failed: %s: %s",
                                i, i + len(batch), type(e).__name__, e)
-    return out, total_cost
+    unsummarized = [c.hash for c, _cls in survivors if c.hash not in out]
+    return out, total_cost, unsummarized
 
 
 # ───────────────────────────── prompt render (Checkpoint A) ─────────────────────────────

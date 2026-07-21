@@ -489,9 +489,14 @@ def main():
                 len(classifications), len(survivors_cc), len(unclassified), c_cost)
 
     # ── Phase 3: summarize survivors ──
-    summaries, s_cost = summarize.summarize_survivors(survivors_cc, REPO_ROOT, logger=logger)
+    summaries, s_cost, unsummarized = summarize.summarize_survivors(
+        survivors_cc, REPO_ROOT, logger=logger)
     survivors = [(c, cls, summaries[c.hash]) for c, cls in survivors_cc if c.hash in summaries]
-    logger.info("summarized: %d items (cost=$%.4f)", len(survivors), s_cost)
+    logger.info("summarized: %d items (%d unsummarized, cost=$%.4f)",
+                len(survivors), len(unsummarized), s_cost)
+    if unsummarized:
+        banners.append(f"{len(unsummarized)} classified stor{'y' if len(unsummarized) == 1 else 'ies'} "
+                       f"not summarized (claude -p quota/error) — omitted from digest, see log")
 
     # ── Phase 4: route + render ──
     company, themes, macro = route(survivors)
@@ -551,16 +556,18 @@ def main():
     else:  # brief — no email; report_news already written
         logger.info("brief mode: no email; report_news is the deliverable")
 
-    # ── fail loud on unclassified clusters ──────────────────────────────────────────
-    # Filing/reporting/delivery above already ran, so partial results are saved. But an
-    # unclassified cluster is a PROCESSING FAILURE (claude -p unavailable), NOT a below-bar
-    # drop — exit non-zero so alert_on_failure.sh fires. This is the guardrail against the
-    # 2026-07-08 defect where a timed-out batch silently vanished from the pool. NOTE: this
-    # only alerts if the invocation is wrapped by alert_on_failure.sh (see run_daily.sh);
-    # a bare `... --brief || true` would swallow it.
-    if unclassified:
-        logger.error("run INCOMPLETE: %d cluster(s) unclassified (processing failure, not "
-                     "below-bar drops) — exiting non-zero to trigger alerting", len(unclassified))
+    # ── fail loud on unclassified OR unsummarized clusters ───────────────────────────
+    # Filing/reporting/delivery above already ran, so partial results are saved. But a cluster
+    # that was classified-material yet left unclassified (claude -p down at classify) OR
+    # unsummarized (claude -p down at summarize — the 2026-07-21 session-limit 429) is a
+    # PROCESSING FAILURE, NOT a below-bar drop — exit non-zero so alert_on_failure.sh fires.
+    # Guardrail against silent under-reporting (2026-07-08 classify drop / 2026-07-21 summarize
+    # drop). NOTE: this only alerts if the invocation is wrapped by alert_on_failure.sh (see
+    # run_daily.sh); a bare `... --brief || true` would swallow it.
+    if unclassified or unsummarized:
+        logger.error("run INCOMPLETE: %d unclassified + %d unsummarized cluster(s) (processing "
+                     "failure, not below-bar drops) — exiting non-zero to trigger alerting",
+                     len(unclassified), len(unsummarized))
         sys.exit(1)
 
 
