@@ -13,11 +13,11 @@ tickers:
 themes:
 - model_commoditization
 - foundation_model_economics
-- inference_compute_economics
-- model_efficiency_evolution
-- ai_infrastructure_capex
 - frontier_model_competition
-ingestion_date: '2026-07-25'
+- inference_compute_economics
+- ai_infrastructure_capex
+- model_efficiency_evolution
+ingestion_date: '2026-07-26'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
