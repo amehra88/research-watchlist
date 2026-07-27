@@ -12,14 +12,14 @@ tickers:
 - META
 - SPCX
 themes:
-- ai_infrastructure_capex
+- hyperscaler_capex_buildout
 - datacenter_buildout_pacing
 - data_center_deployment_constraints
-- hyperscaler_capex_buildout
+- ai_infrastructure_capex
 - foundation_model_economics
-- ai_regulation
+- inference_compute_economics
 - sovereign_ai_deployments
-ingestion_date: '2026-07-26'
+ingestion_date: '2026-07-27'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

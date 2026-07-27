@@ -11,13 +11,14 @@ subscription_tier: free_plus_paid
 tickers:
 - NVDA
 themes:
-- model_commoditization
 - foundation_model_economics
+- model_commoditization
 - frontier_model_competition
 - inference_compute_economics
-- ai_infrastructure_capex
+- china_ai_infrastructure_demand
 - model_efficiency_evolution
-ingestion_date: '2026-07-26'
+- ai_infrastructure_capex
+ingestion_date: '2026-07-27'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

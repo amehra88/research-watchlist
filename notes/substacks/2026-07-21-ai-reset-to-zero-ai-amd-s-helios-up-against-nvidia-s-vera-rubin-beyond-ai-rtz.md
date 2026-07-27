@@ -14,12 +14,13 @@ tickers:
 - MSFT
 - META
 themes:
-- silicon_architecture_competition
-- ai_compute_topology
-- inference_compute_economics
-- hyperscaler_capex_buildout
 - chip_design_competition
-ingestion_date: '2026-07-26'
+- ai_compute_topology
+- silicon_architecture_competition
+- hyperscaler_capex_buildout
+- inference_compute_economics
+- ai_infrastructure_capex
+ingestion_date: '2026-07-27'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
