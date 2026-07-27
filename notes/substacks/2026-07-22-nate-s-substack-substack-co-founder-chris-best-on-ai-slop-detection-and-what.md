@@ -12,7 +12,8 @@ tickers: []
 themes:
 - ai_generated_content
 - model_efficiency_evolution
-ingestion_date: '2026-07-26'
+- foundation_model_economics
+ingestion_date: '2026-07-27'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

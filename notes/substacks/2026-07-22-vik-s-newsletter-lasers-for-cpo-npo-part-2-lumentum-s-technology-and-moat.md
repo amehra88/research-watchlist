@@ -13,8 +13,7 @@ tickers:
 themes:
 - ai_compute_topology
 - networking_competitive_landscape
-- advanced_materials_ai_infra
-ingestion_date: '2026-07-26'
+ingestion_date: '2026-07-27'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
