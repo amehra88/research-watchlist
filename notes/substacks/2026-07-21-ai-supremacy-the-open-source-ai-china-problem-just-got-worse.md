@@ -10,23 +10,22 @@ source_date: '2026-07-21'
 subscription_tier: free_plus_paid
 tickers:
 - BABA
-- GOOG
+- GOOGL
 - META
 - NVDA
 - SPCX
 themes:
-- frontier_model_competition
 - china_us_tensions
 - china_export_controls
+- frontier_model_competition
 - model_commoditization
 - model_efficiency_evolution
-- ai_regulation
 - hyperscaler_capex_buildout
 - enterprise_ai_adoption
 - foundation_model_economics
-- ai_inference_margin_compression
 - hbm_competitive_landscape
-ingestion_date: '2026-07-26'
+- ai_regulation
+ingestion_date: '2026-07-27'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

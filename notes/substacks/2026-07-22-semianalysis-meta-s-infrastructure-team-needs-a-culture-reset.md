@@ -11,16 +11,16 @@ subscription_tier: paid
 tickers:
 - META
 - NVDA
+- AMD
 - AVGO
 themes:
 - ai_infrastructure_capex
-- hyperscaler_capex_buildout
 - silicon_architecture_competition
 - chip_design_competition
 - ai_compute_topology
-- datacenter_buildout_pacing
+- hyperscaler_capex_buildout
 - inference_compute_economics
-ingestion_date: '2026-07-26'
+ingestion_date: '2026-07-27'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
