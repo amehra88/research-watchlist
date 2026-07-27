@@ -13,18 +13,16 @@ tickers:
 - SPCX
 - 005930.KS
 - GOOGL
-- NVDA
 themes:
 - ai_infrastructure_capex
-- hyperscaler_capex_buildout
 - datacenter_buildout_pacing
 - frontier_model_competition
 - foundation_model_economics
-- silicon_architecture_competition
+- chip_design_competition
+- ai_regulation
 - search_disruption
 - handset_competition
-- hbm_competitive_landscape
-ingestion_date: '2026-07-26'
+ingestion_date: '2026-07-27'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
