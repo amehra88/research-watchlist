@@ -11,18 +11,16 @@ subscription_tier: free
 tickers:
 - AMD
 - SPCX
-- 005930.KS
-- GOOGL
 themes:
+- hyperscaler_capex_buildout
 - ai_infrastructure_capex
 - datacenter_buildout_pacing
 - frontier_model_competition
 - foundation_model_economics
-- chip_design_competition
 - ai_regulation
-- search_disruption
+- chip_design_competition
 - handset_competition
-ingestion_date: '2026-07-27'
+ingestion_date: '2026-08-01'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

@@ -10,15 +10,12 @@ source_date: '2026-07-23'
 subscription_tier: paid
 tickers:
 - NVDA
-- CRWV
 themes:
 - ai_compute_topology
-- silicon_architecture_competition
 - inference_compute_economics
-- ai_infrastructure_capex
-- hbm_competitive_landscape
+- silicon_architecture_competition
 - model_efficiency_evolution
-ingestion_date: '2026-07-27'
+ingestion_date: '2026-08-01'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
