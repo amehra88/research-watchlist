@@ -11,18 +11,22 @@ subscription_tier: free
 tickers:
 - NVDA
 - AAPL
+- BABA
 - META
 - MSFT
 - AMZN
-- BABA
 themes:
 - china_us_tensions
 - frontier_model_competition
 - model_commoditization
+- foundation_model_economics
 - ai_regulation
 - china_export_controls
+- china_ai_infrastructure_demand
 - datacenter_buildout_pacing
-ingestion_date: '2026-07-27'
+- ai_infrastructure_capex
+- sovereign_ai_deployments
+ingestion_date: '2026-08-01'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

@@ -16,16 +16,17 @@ tickers:
 - SPCX
 themes:
 - china_us_tensions
-- china_export_controls
 - frontier_model_competition
 - model_commoditization
 - model_efficiency_evolution
+- ai_regulation
+- china_export_controls
 - hyperscaler_capex_buildout
 - enterprise_ai_adoption
 - foundation_model_economics
-- hbm_competitive_landscape
-- ai_regulation
-ingestion_date: '2026-07-27'
+- ai_inference_margin_compression
+- china_ai_infrastructure_demand
+ingestion_date: '2026-08-01'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
