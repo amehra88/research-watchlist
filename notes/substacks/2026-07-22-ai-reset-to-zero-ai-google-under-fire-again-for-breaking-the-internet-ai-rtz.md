@@ -10,15 +10,12 @@ source_date: '2026-07-22'
 subscription_tier: free
 tickers:
 - GOOGL
-- AAPL
-- META
 themes:
 - search_disruption
 - agent_framework_landscape
+- ai_agent_monetization
 - antitrust_action
-- ai_regulation
-- platform_take_rate
-ingestion_date: '2026-07-27'
+ingestion_date: '2026-08-01'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
