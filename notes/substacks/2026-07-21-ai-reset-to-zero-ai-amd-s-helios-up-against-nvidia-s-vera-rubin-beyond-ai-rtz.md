@@ -16,10 +16,10 @@ tickers:
 themes:
 - silicon_architecture_competition
 - ai_infrastructure_capex
-- hyperscaler_capex_buildout
 - inference_compute_economics
+- hyperscaler_capex_buildout
 - chip_design_competition
-ingestion_date: '2026-08-01'
+ingestion_date: '2026-08-02'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
