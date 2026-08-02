@@ -14,10 +14,11 @@ themes:
 - frontier_model_competition
 - china_us_tensions
 - china_export_controls
-- foundation_model_economics
 - model_commoditization
-- ai_infrastructure_capex
-ingestion_date: '2026-08-01'
+- foundation_model_economics
+- hyperscaler_capex_buildout
+- model_efficiency_evolution
+ingestion_date: '2026-08-02'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

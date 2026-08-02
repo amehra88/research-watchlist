@@ -12,13 +12,12 @@ tickers:
 - NVDA
 themes:
 - model_commoditization
-- frontier_model_competition
 - foundation_model_economics
+- frontier_model_competition
 - inference_compute_economics
-- china_ai_infrastructure_demand
-- model_efficiency_evolution
 - ai_infrastructure_capex
-ingestion_date: '2026-08-01'
+- model_efficiency_evolution
+ingestion_date: '2026-08-02'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
