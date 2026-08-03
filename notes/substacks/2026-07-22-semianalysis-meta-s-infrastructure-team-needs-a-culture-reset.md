@@ -9,18 +9,17 @@ source_url: https://open.substack.com/pub/semianalysis/p/metas-infrastructure-te
 source_date: '2026-07-22'
 subscription_tier: paid
 tickers:
-- AMD
-- AVGO
 - META
 - NVDA
+- AVGO
 themes:
-- ai_compute_topology
 - ai_infrastructure_capex
-- chip_design_competition
-- hyperscaler_capex_buildout
-- inference_compute_economics
 - silicon_architecture_competition
-ingestion_date: '2026-08-02'
+- ai_compute_topology
+- chip_design_competition
+- inference_compute_economics
+- hyperscaler_capex_buildout
+ingestion_date: '2026-08-03'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

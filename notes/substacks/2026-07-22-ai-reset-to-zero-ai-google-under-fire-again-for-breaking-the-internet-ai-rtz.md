@@ -12,10 +12,11 @@ tickers:
 - GOOGL
 themes:
 - search_disruption
-- antitrust_action
 - ai_re_architected_incumbent
 - agent_framework_landscape
-ingestion_date: '2026-08-02'
+- ai_regulation
+- antitrust_action
+ingestion_date: '2026-08-03'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
