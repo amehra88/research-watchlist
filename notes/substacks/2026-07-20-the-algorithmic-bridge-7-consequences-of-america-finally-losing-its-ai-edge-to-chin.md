@@ -16,9 +16,9 @@ themes:
 - china_export_controls
 - model_commoditization
 - foundation_model_economics
-- hyperscaler_capex_buildout
+- ai_infrastructure_capex
 - model_efficiency_evolution
-ingestion_date: '2026-08-02'
+ingestion_date: '2026-08-03'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

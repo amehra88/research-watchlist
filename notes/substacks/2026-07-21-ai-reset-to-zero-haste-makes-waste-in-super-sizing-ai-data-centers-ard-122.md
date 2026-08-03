@@ -13,12 +13,14 @@ tickers:
 - SPCX
 - GOOGL
 themes:
-- ai_infrastructure_capex
+- hyperscaler_capex_buildout
 - datacenter_buildout_pacing
 - data_center_deployment_constraints
-- hyperscaler_capex_buildout
+- ai_infrastructure_capex
 - foundation_model_economics
-ingestion_date: '2026-08-02'
+- hyperscaler_revenue_concentration
+- ai_regulation
+ingestion_date: '2026-08-03'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
