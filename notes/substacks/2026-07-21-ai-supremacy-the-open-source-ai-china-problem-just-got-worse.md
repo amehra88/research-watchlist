@@ -9,24 +9,23 @@ source_url: https://open.substack.com/pub/aisupremacy/p/the-open-source-ai-china
 source_date: '2026-07-21'
 subscription_tier: free_plus_paid
 tickers:
-- 000660.KS
 - BABA
 - GOOGL
 - META
 - NVDA
 - SPCX
 themes:
-- frontier_model_competition
+- ai_regulation
+- china_export_controls
 - china_us_tensions
-- model_commoditization
-- model_efficiency_evolution
 - enterprise_ai_adoption
 - foundation_model_economics
+- frontier_model_competition
 - hyperscaler_capex_buildout
-- ai_regulation
-- hbm_competitive_landscape
 - inference_compute_economics
-ingestion_date: '2026-08-02'
+- model_commoditization
+- model_efficiency_evolution
+ingestion_date: '2026-08-03'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

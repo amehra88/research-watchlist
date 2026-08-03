@@ -10,21 +10,22 @@ source_date: '2026-07-21'
 subscription_tier: free
 tickers:
 - NVDA
-- META
+- AAPL
 - MSFT
 - AMZN
-- AAPL
+- META
 - BABA
+- SPCX
 themes:
 - china_us_tensions
-- china_export_controls
-- china_ai_infrastructure_demand
 - frontier_model_competition
 - model_commoditization
 - ai_regulation
+- china_export_controls
 - datacenter_buildout_pacing
-- hyperscaler_capex_buildout
-ingestion_date: '2026-08-02'
+- foundation_model_economics
+- ai_infrastructure_capex
+ingestion_date: '2026-08-03'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
