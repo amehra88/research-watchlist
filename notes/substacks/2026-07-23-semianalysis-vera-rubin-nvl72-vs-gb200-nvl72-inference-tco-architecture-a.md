@@ -10,12 +10,17 @@ source_date: '2026-07-23'
 subscription_tier: paid
 tickers:
 - NVDA
+- CRWV
+- AMD
+- GOOGL
 themes:
 - ai_compute_topology
 - inference_compute_economics
 - silicon_architecture_competition
+- hbm_competitive_landscape
 - model_efficiency_evolution
-ingestion_date: '2026-08-01'
+- datacenter_buildout_pacing
+ingestion_date: '2026-08-03'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
