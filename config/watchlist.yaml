@@ -898,6 +898,9 @@ tier_1_bctk:
       notes: "4+ trajectory: margin inflection, pricing power (price hikes sticking), strong FCF; valuation caps. Factors: pricing power, FCF, margin inflection; valuation cap."
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02. Sources: public data (no notes/SPOT/ corpus yet), OPERATOR-PRIVATE SIGNAL: operator scores SPOT 4+/4+/4+ across ai_positioning, competitive_advantage, and potential_investor_interest, above the public-data analyst draft of 3/4/4 — AI personalization/discovery weighted as core to the engagement engine. Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
+  - ticker: STX
+    themes: []      # TODO: assign themes via WATCHLIST email
+    added_date: 2026-08-06
   - ticker: TSLA
     themes: [autonomous_vehicle_competition, silicon_architecture_competition, humanoid_robotics_competition, energy_storage_buildout, hyperscaler_capex_buildout, china_us_tensions]
     added_date: 2026-05-09
