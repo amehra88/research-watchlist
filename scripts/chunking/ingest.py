@@ -36,7 +36,8 @@ def _iter_notes(args) -> list[Path]:
     return sorted(NOTES_ROOT.rglob("*.md"))
 
 
-def ingest(notes: list[Path], *, rebuild: bool = False) -> None:
+def ingest(notes: list[Path], *, rebuild: bool = False,
+           use_cache: bool | None = None) -> None:
     store = get_store()
     if rebuild:
         store.clear()
@@ -65,9 +66,18 @@ def ingest(notes: list[Path], *, rebuild: bool = False) -> None:
           f"({skipped} skipped) -> {len(child_texts)} children to embed")
 
     if child_texts:
+        # Default OFF, unconditionally: channel appends (substacks/sec/news, one
+        # note per call) are new content with ~0 cache hits, so the 318MB
+        # embed_cache.json must NEVER load on the daily path — that was the OOM.
+        # No batch-size heuristic: even a >50-note append stays light. The cache
+        # only helps bulk re-ingest of EXISTING notes, so main() turns it on ONLY
+        # for --all/--rebuild.
+        if use_cache is None:
+            use_cache = False
         print(f"embedding {len(child_texts)} children via gemini-embedding-001 "
-              f"(dim {EMBED_DIM}; cache-backed) …", file=sys.stderr)
-        vecs = embed(child_texts, "retrieval_document")
+              f"(dim {EMBED_DIM}; cache={'on' if use_cache else 'off'}) …",
+              file=sys.stderr)
+        vecs = embed(child_texts, "retrieval_document", use_cache=use_cache)
         for j, rec_i in enumerate(child_idx):
             all_records[rec_i]["embedding"] = vecs[j]
 
@@ -84,7 +94,11 @@ def main():
     ap.add_argument("--rebuild", action="store_true",
                     help="clear the store before ingesting (full rebuild)")
     args = ap.parse_args()
-    ingest(_iter_notes(args), rebuild=args.rebuild)
+    # Cache ON only for the bulk CLI re-ingest of existing notes (--all/--rebuild),
+    # where it avoids re-embedding unchanged chunks. Every channel append (which
+    # calls ingest() directly, without this flag) defaults OFF and stays light.
+    ingest(_iter_notes(args), rebuild=args.rebuild,
+           use_cache=(args.all or args.rebuild))
 
 
 if __name__ == "__main__":

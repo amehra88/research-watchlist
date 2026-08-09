@@ -102,5 +102,8 @@ def embed(texts: list[str], task_type: str, *, use_cache: bool = True,
     return [cache[k] for k in keys]
 
 
-def embed_one(text: str, task_type: str) -> list[float]:
-    return embed([text], task_type)[0]
+def embed_one(text: str, task_type: str, *, use_cache: bool = False) -> list[float]:
+    """Embed a single text (the query path). Cache defaults OFF: a query is a
+    one-off string that almost never hits the 318MB cache, so loading it per
+    query is pure memory waste (the query-path OOM). Callers may force it on."""
+    return embed([text], task_type, use_cache=use_cache)[0]

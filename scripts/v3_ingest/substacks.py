@@ -159,17 +159,40 @@ def imap_connect() -> imaplib.IMAP4_SSL:
     return imap
 
 
-def fetch_labeled(imap: imaplib.IMAP4_SSL) -> list[tuple[bytes, Message]]:
+def fetch_labeled(imap: imaplib.IMAP4_SSL,
+                  seen: "set[str] | frozenset[str]" = frozenset()) -> list[tuple[bytes, Message]]:
     """Select the Substack label READ-ONLY (EXAMINE — guarantees no flag writes,
-    so \\Seen is never set) and return [(uid, Message)] for ALL messages in it."""
+    so \\Seen is never set) and return [(uid, Message)] for messages whose
+    Message-ID is NOT already in `seen`.
+
+    Message-IDs are read from a cheap HEADER-only fetch first, so already-
+    processed posts are never downloaded in full — every run pulls only new
+    posts' bodies, not the entire label (which grows without bound). Pass
+    seen=frozenset() to fetch everything (dry-run/preview)."""
     typ, _ = imap.select(f'"{GMAIL_LABEL}"', readonly=True)
     if typ != "OK":
         raise RuntimeError(f"cannot select label {GMAIL_LABEL!r} (filter/label not set up yet?)")
     typ, data = imap.search(None, "ALL")
     if typ != "OK":
         raise RuntimeError(f"IMAP search failed: {typ}")
+    uids = data[0].split()
+    # Phase 1 — headers only: decide which UIDs are new WITHOUT downloading bodies.
+    new_uids = []
+    for uid in uids:
+        typ, hdr = imap.fetch(uid, "(BODY.PEEK[HEADER.FIELDS (MESSAGE-ID)])")
+        if typ != "OK" or not hdr or not hdr[0]:
+            new_uids.append(uid)   # header unreadable → fetch in full, to be safe
+            continue
+        mid = message_id(email.message_from_bytes(hdr[0][1]))
+        if mid and mid in seen:
+            continue               # already processed — skip the body download
+        new_uids.append(uid)
+    if seen:
+        log(f"  label={len(uids)} msgs, {len(new_uids)} new after header dedup "
+            f"(skipped {len(uids) - len(new_uids)} already-processed bodies)")
+    # Phase 2 — full body: only for the new messages.
     out = []
-    for uid in data[0].split():
+    for uid in new_uids:
         typ, msg_data = imap.fetch(uid, "(RFC822)")
         if typ != "OK" or not msg_data or not msg_data[0]:
             log(f"  fetch failed uid={uid.decode(errors='ignore')}")
@@ -454,7 +477,8 @@ def main() -> int:
         msgs = [(b"local", email.message_from_bytes(Path(args.eml).read_bytes()))]
     else:
         imap = imap_connect()
-        msgs = fetch_labeled(imap)
+        # Dry-run re-processes seen messages (preview), so don't header-dedup then.
+        msgs = fetch_labeled(imap, frozenset() if args.dry_run else seen)
     log(f"messages_in_scope={len(msgs)}")
 
     newly: dict[str, str] = {}

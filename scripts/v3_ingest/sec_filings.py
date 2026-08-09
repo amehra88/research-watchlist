@@ -694,6 +694,16 @@ def main() -> int:
                 log(f"  FAILED {ticker} {filing['form']} {filing['accession']}: "
                     f"{type(e).__name__}: {e}")
 
+        # Persist progress after EACH ticker. Previously the watermark was saved
+        # only at loop end (below), so a mid-run SIGKILL — e.g. the step-5b OOM —
+        # discarded every ticker's progress, leaving is_first True forever and
+        # re-triggering the heavy backfill each run (SEC dark since Jul 15). Now a
+        # completed ticker's accessions are on disk immediately; the next run
+        # skips its backfill. Notes are already written idempotently, so a crash
+        # between flush and note-write loses nothing re-ingestable.
+        if not args.dry_run:
+            flush_watermark(wm)
+
     if not args.dry_run:
         save_watermark(wm)
     log(f"DONE mode={mode} processed={processed} empty={empty} failed={failed} "

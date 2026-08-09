@@ -279,7 +279,11 @@ class PgStore(FileStore):
         self.records = {}
         self._emb_ids = []
         self._emb = None
-        self._load()
+        self._loaded = False
+        # Lazy load (step-5b OOM fix): do NOT pull the corpus on construction.
+        # ingest builds a fresh PgStore per note and never search()es, so
+        # eagerly materializing ~40k vectors + ~54k rows here (once on __init__,
+        # again on every upsert) is the OOM. Reads load it via _ensure_loaded().
 
     # --- persistence (pg-backed; overrides FileStore's file I/O) ------------
     def _load(self) -> None:
@@ -304,6 +308,7 @@ class PgStore(FileStore):
             self._emb_ids = ids
             self._emb = np.vstack(vecs).astype(np.float32) if vecs else None
         self._normalize()  # inherited; idempotent on already-normalized vectors
+        self._loaded = True
 
     def _save(self) -> None:  # writes go through upsert(); no file persistence
         pass
@@ -332,7 +337,12 @@ class PgStore(FileStore):
                 f"ON CONFLICT (chunk_id) DO UPDATE SET {set_clause}",
                 rows)
         self._conn.commit()
-        self._load()  # refresh in-memory view so search() reflects the write
+        # Write path must NOT reload the corpus (step-5b OOM: a fresh store per
+        # note otherwise pulls ~40k vectors twice per ingest). Invalidate the
+        # cached view; the next read reloads from pg, including this write.
+        self._loaded = False
+        self.records.clear()
+        self._emb_ids, self._emb = [], None
         return len(records)
 
     def clear(self) -> None:
@@ -341,6 +351,33 @@ class PgStore(FileStore):
         self._conn.commit()
         self.records.clear()
         self._emb_ids, self._emb = [], None
+        self._loaded = False
+
+    # --- lazy-load reads (step-5b OOM fix) ---------------------------------
+    def _ensure_loaded(self) -> None:
+        """Materialize the corpus into memory on first read. The write path
+        skips this, so per-note ingest never builds the full vector matrix.
+        Reads pay the one-time load once, then reuse it (same as before)."""
+        if not self._loaded:
+            self._load()
+
+    def search(self, *args, **kwargs) -> list[Hit]:
+        self._ensure_loaded()
+        return super().search(*args, **kwargs)
+
+    def get_parent(self, chunk_id: str) -> Optional[dict]:
+        self._ensure_loaded()
+        return super().get_parent(chunk_id)
+
+    def count(self) -> tuple[int, int]:
+        # Query pg directly: correct even when the in-memory view is unloaded or
+        # invalidated (post-upsert), and avoids a full corpus load just to print
+        # counts. ingest.py calls this right after upsert.
+        with self._conn.cursor() as cur:
+            cur.execute("SELECT count(*) FILTER (WHERE kind = 'parent'), "
+                        "count(*) FILTER (WHERE kind = 'child') FROM chunks")
+            p, c = cur.fetchone()
+        return int(p), int(c)
 
 
 # ---------------------------------------------------------------------------
