@@ -15,17 +15,17 @@ tickers:
 - NVDA
 - SPCX
 themes:
-- ai_regulation
-- china_export_controls
-- china_us_tensions
-- enterprise_ai_adoption
-- foundation_model_economics
 - frontier_model_competition
-- hyperscaler_capex_buildout
-- inference_compute_economics
+- china_us_tensions
+- china_export_controls
 - model_commoditization
 - model_efficiency_evolution
-ingestion_date: '2026-08-03'
+- enterprise_ai_adoption
+- hyperscaler_capex_buildout
+- foundation_model_economics
+- ai_regulation
+- inference_compute_economics
+ingestion_date: '2026-08-09'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

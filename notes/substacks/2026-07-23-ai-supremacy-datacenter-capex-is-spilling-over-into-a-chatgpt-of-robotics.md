@@ -15,7 +15,8 @@ themes:
 - humanoid_robotics_competition
 - defense_drones
 - space_economy
-ingestion_date: '2026-07-27'
+- china_us_tensions
+ingestion_date: '2026-08-09'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

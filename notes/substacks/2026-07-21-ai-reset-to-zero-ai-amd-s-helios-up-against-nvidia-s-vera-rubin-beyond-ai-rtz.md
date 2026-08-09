@@ -13,13 +13,14 @@ tickers:
 - NVDA
 - MSFT
 - META
+- INTC
 themes:
-- silicon_architecture_competition
-- ai_infrastructure_capex
-- inference_compute_economics
 - chip_design_competition
+- ai_infrastructure_capex
+- silicon_architecture_competition
+- inference_compute_economics
 - hyperscaler_capex_buildout
-ingestion_date: '2026-08-03'
+ingestion_date: '2026-08-09'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

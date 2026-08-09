@@ -9,23 +9,21 @@ source_url: https://open.substack.com/pub/michaelparekh/p/setting-the-stage-agai
 source_date: '2026-07-21'
 subscription_tier: free
 tickers:
-- NVDA
 - AAPL
-- MSFT
 - AMZN
-- META
 - BABA
-- SPCX
+- META
+- MSFT
+- NVDA
 themes:
 - china_us_tensions
+- china_export_controls
 - frontier_model_competition
 - model_commoditization
 - ai_regulation
-- china_export_controls
 - datacenter_buildout_pacing
-- foundation_model_economics
-- ai_infrastructure_capex
-ingestion_date: '2026-08-03'
+- china_ai_infrastructure_demand
+ingestion_date: '2026-08-09'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

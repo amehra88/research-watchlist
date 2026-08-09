@@ -11,16 +11,14 @@ subscription_tier: free
 tickers:
 - META
 - SPCX
-- GOOGL
 themes:
-- hyperscaler_capex_buildout
+- ai_infrastructure_capex
 - datacenter_buildout_pacing
 - data_center_deployment_constraints
-- ai_infrastructure_capex
+- hyperscaler_capex_buildout
 - foundation_model_economics
-- hyperscaler_revenue_concentration
-- ai_regulation
-ingestion_date: '2026-08-03'
+- inference_compute_economics
+ingestion_date: '2026-08-09'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

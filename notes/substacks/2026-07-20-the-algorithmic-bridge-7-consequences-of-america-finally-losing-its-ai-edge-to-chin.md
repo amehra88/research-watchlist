@@ -12,11 +12,12 @@ tickers:
 - NVDA
 themes:
 - frontier_model_competition
-- china_us_tensions
-- china_export_controls
 - model_commoditization
+- china_export_controls
+- china_us_tensions
 - foundation_model_economics
-- ai_infrastructure_capex
+- hyperscaler_capex_buildout
+- model_efficiency_evolution
 ingestion_date: '2026-08-09'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---

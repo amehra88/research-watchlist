@@ -10,11 +10,11 @@ source_date: '2026-07-23'
 subscription_tier: free
 tickers: []
 themes:
-- ai_regulation
 - china_us_tensions
+- ai_regulation
 - frontier_model_competition
 - model_commoditization
-ingestion_date: '2026-07-27'
+ingestion_date: '2026-08-09'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 

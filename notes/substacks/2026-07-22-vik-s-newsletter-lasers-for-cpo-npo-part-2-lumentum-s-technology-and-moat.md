@@ -12,9 +12,9 @@ tickers:
 - LITE
 themes:
 - ai_compute_topology
-- advanced_materials_ai_infra
 - networking_competitive_landscape
-ingestion_date: '2026-08-03'
+- advanced_materials_ai_infra
+ingestion_date: '2026-08-09'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
