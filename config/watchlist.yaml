@@ -414,6 +414,115 @@ ingest_comparables:
   #   connector maker whose filings would be mostly noise for the optics thesis. Add here
   #   if the interconnect angle becomes a question in its own right.
 
+# ---------------------------------------------------------------------------
+# tier_4_competitors — companies that threaten a thesis but that NO pipeline can
+# ingest directly. Almost all are non-US-listed.
+#
+# WHY THIS IS NOT tier_3. tier_3_watchlist is read by exactly one script
+# (cron_earnings_reviewer.py) and is a ticker-shaped slot for something you might
+# take a position in. These are neither: you will not buy Shenzhen-listed
+# Eoptolink in BCTK, and you care about it because it threatens COHR/LITE pricing
+# and share. They also have no EDGAR CIK, so sec_filings.py flags and skips them
+# (build_cik_map), exactly as it already does for SK Hynix and Samsung.
+#
+# Putting them in T3 would assert coverage that does not exist — the precise trap
+# AAOI sat in from 2026-06-02, described there as a "Direct competitor-to-watch
+# for LITE and COHR" while the corpus held zero AAOI documents for two months.
+# `edgar_coverage: false` below is deliberate and load-bearing: it states plainly
+# that no primary filings will ever arrive for these names.
+#
+# WHAT THIS IS WIRED TO (evidence about them, never from them):
+#   - scripts/v3_ingest/entities.py resolves extracted mentions to `id` via
+#     `aliases`, so what US filers and analysts say ABOUT them accumulates as
+#     citable claims mapped to `competes_with`.
+#   - NOT read by sec_filings.py load_universe() — adding them there would only
+#     produce flagged/skipped noise every run.
+#
+# `id` uses a `.cn` suffix, mirroring the existing `.pvt` convention: lowercase
+# and dot-suffixed so it can never collide with the `[A-Z]+` ticker regexes that
+# gate the earnings pipeline.
+#
+# CAVEAT ON THE DATA BELOW: exchange codes are recorded from general knowledge
+# and are NOT verified against a market-data source. `verified: false` means
+# confirm before relying on it for anything quantitative.
+# ---------------------------------------------------------------------------
+tier_4_competitors:
+  - id: innolight.cn
+    name: "Innolight Technology (Zhongji Innolight)"
+    aliases: ["Innolight", "InnoLight", "InnoLight Technology", "Zhongji Innolight",
+              "中际旭创", "300308.SZ"]
+    listing: "300308.SZ (Shenzhen)"
+    verified: false
+    country: China
+    layer: transceiver_module
+    competes_with: [COHR, LITE]
+    edgar_coverage: false
+    evidence_sources: [us_filer_mentions, news, factset]
+    notes: "The largest Chinese datacom transceiver maker and the most direct volume threat
+      to COHR/LITE at 400G/800G, moving into 1.6T. Central to COHR's supply_tightness
+      assumption: if Innolight adds capacity at these speeds, the tightness thesis weakens."
+  - id: eoptolink.cn
+    name: "Eoptolink Technology"
+    aliases: ["Eoptolink", "Eoptolink Technology", "新易盛", "300502.SZ"]
+    listing: "300502.SZ (Shenzhen)"
+    verified: false
+    country: China
+    layer: transceiver_module
+    competes_with: [COHR, LITE]
+    edgar_coverage: false
+    evidence_sources: [us_filer_mentions, news, factset]
+    notes: "Fast-growing Chinese transceiver maker, aggressive at 800G/1.6T. Named in the
+      operator's own framing of the question as evidence that Chinese competition at these
+      speeds is real."
+  - id: accelink.cn
+    name: "Accelink Technologies"
+    aliases: ["Accelink", "Accelink Technologies", "光迅科技", "002281.SZ"]
+    listing: "002281.SZ (Shenzhen)"
+    verified: false
+    country: China
+    layer: optical_component
+    competes_with: [COHR, LITE]
+    edgar_coverage: false
+    evidence_sources: [us_filer_mentions, news, factset]
+    notes: "Chinese optical component/subsystem maker with in-house chip capability — the
+      layer where COHR's vertical-integration moat (indium phosphide lasers -> transceivers)
+      would actually be contested."
+  - id: hgtech.cn
+    name: "HG Genuine (Huagong Tech)"
+    aliases: ["HG Genuine", "HGTech", "Huagong Tech", "华工科技", "000988.SZ"]
+    listing: "000988.SZ (Shenzhen)"
+    verified: false
+    country: China
+    layer: optical_component
+    competes_with: [COHR, LITE]
+    edgar_coverage: false
+    evidence_sources: [us_filer_mentions, news, factset]
+    notes: "Laser and optical-module maker; relevant to the domestic-laser-supply question."
+  - id: hisense_broadband.cn
+    name: "Hisense Broadband Multimedia Technologies"
+    aliases: ["Hisense Broadband", "Hisense Broadband Multimedia", "Hisense Optics"]
+    listing: "subsidiary of Hisense — not separately listed"
+    verified: false
+    country: China
+    layer: transceiver_module
+    competes_with: [COHR, LITE]
+    edgar_coverage: false
+    evidence_sources: [us_filer_mentions, news]
+    notes: "Transceiver arm of Hisense. Not separately listed, so even FactSet fundamentals
+      are unlikely — mentions in US filings and trade press are the only evidence path."
+  - id: source_photonics.cn
+    name: "Source Photonics"
+    aliases: ["Source Photonics"]
+    listing: "private (Chinese ownership)"
+    verified: false
+    country: China
+    layer: transceiver_module
+    competes_with: [COHR, LITE]
+    edgar_coverage: false
+    evidence_sources: [us_filer_mentions, news]
+    notes: "Privately held transceiver maker. Included because it appears in competitive
+      discussion of the datacom module market despite having no public disclosure at all."
+
 tier_1_bctk:
   - ticker: 000660.KS
     themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, model_efficiency_evolution, china_export_controls, nand_demand_cycle]
