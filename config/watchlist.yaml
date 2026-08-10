@@ -458,7 +458,9 @@ tier_4_ecosystem:
     aliases: ["Innolight", "InnoLight", "InnoLight Technology", "Zhongji Innolight",
               "中际旭创", "300308.SZ"]
     listing: "300308.SZ (Shenzhen)"
-    verified: false
+    verified: true                    # FactSet_EntityReference, 2026-08-10
+    factset_id: 300308-CN
+    factset_entity_id: 08M33V-E
     country: China
     layer: transceiver_module
     relation: competitor
@@ -472,7 +474,9 @@ tier_4_ecosystem:
     name: "Eoptolink Technology"
     aliases: ["Eoptolink", "Eoptolink Technology", "新易盛", "300502.SZ"]
     listing: "300502.SZ (Shenzhen)"
-    verified: false
+    verified: true                    # FactSet_EntityReference, 2026-08-10
+    factset_id: 300502-CN
+    factset_entity_id: 0C3XFT-E
     country: China
     layer: transceiver_module
     relation: competitor
@@ -486,7 +490,9 @@ tier_4_ecosystem:
     name: "Accelink Technologies"
     aliases: ["Accelink", "Accelink Technologies", "光迅科技", "002281.SZ"]
     listing: "002281.SZ (Shenzhen)"
-    verified: false
+    verified: true                    # FactSet_EntityReference, 2026-08-10
+    factset_id: 002281-CN
+    factset_entity_id: 081TS2-E
     country: China
     layer: optical_component
     relation: competitor
@@ -500,7 +506,9 @@ tier_4_ecosystem:
     name: "HG Genuine (Huagong Tech)"
     aliases: ["HG Genuine", "HGTech", "Huagong Tech", "华工科技", "000988.SZ"]
     listing: "000988.SZ (Shenzhen)"
-    verified: false
+    verified: true                    # FactSet_EntityReference, 2026-08-10
+    factset_id: 000988-CN
+    factset_entity_id: 0626CY-E
     country: China
     layer: optical_component
     relation: competitor
@@ -541,8 +549,10 @@ tier_4_ecosystem:
   - id: mtar.in
     name: "MTAR Technologies"
     aliases: ["MTAR", "MTAR Technologies", "MTAR Technologies Limited", "MTARTECH"]
-    listing: "NSE/BSE India (MTARTECH)"
-    verified: false
+    listing: "BSE 543270 / NSE MTARTECH (India)"
+    verified: true                    # FactSet_EntityReference, 2026-08-10
+    factset_id: MTARTECH-IND
+    factset_entity_id: 06ZFQV-E
     country: India
     layer: sofc_hotbox
     relation: supplier
@@ -558,8 +568,10 @@ tier_4_ecosystem:
   - id: kaori.tw
     name: "Kaori Heat Treatment Co."
     aliases: ["Kaori", "Kaori Heat Treatment", "Kaori Heat Treatment Co., Ltd."]
-    listing: "Taiwan (TPEx) — code unconfirmed"
-    verified: false
+    listing: "8996 (Taiwan)"
+    verified: true                    # FactSet_EntityReference, 2026-08-10
+    factset_id: 8996-TW
+    factset_entity_id: 06RF7H-E
     country: Taiwan
     layer: sofc_hotbox
     relation: supplier
