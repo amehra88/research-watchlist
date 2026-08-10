@@ -471,8 +471,43 @@ def extract_themes(body_md: str, ticker: str, valid_themes: set[str]) -> tuple[l
     return themes, cost
 
 
+# An expired subscription OAuth token fails identically on every call, so retrying
+# it just multiplies a known-doomed request across the whole run (the 2026-07-01 and
+# 2026-08-05 outages produced 678 such failures). Retry transient errors only.
+_AUTH_FAIL_RE = re.compile(
+    r"Failed to authenticate|OAuth session expired|credit balance|Invalid API key",
+    re.IGNORECASE,
+)
+
+THEME_RETRY_SLEEP_S = 5
+
+
+def is_auth_failure(exc: Exception) -> bool:
+    return bool(_AUTH_FAIL_RE.search(str(exc)))
+
+
+def extract_themes_with_retry(body_md: str, ticker: str, valid_themes: set[str],
+                              *, attempts: int = 2) -> tuple[list[str], float]:
+    """extract_themes + one retry for transient failures (timeout, 429, bad JSON).
+    Auth failures re-raise immediately — they are never transient."""
+    last: Exception | None = None
+    for attempt in range(1, attempts + 1):
+        try:
+            return extract_themes(body_md, ticker, valid_themes)
+        except Exception as e:  # noqa: BLE001
+            last = e
+            if is_auth_failure(e):
+                raise
+            if attempt < attempts:
+                log(f"    {ticker} theme extraction attempt {attempt}/{attempts} failed "
+                    f"({type(e).__name__}); retrying in {THEME_RETRY_SLEEP_S}s")
+                time.sleep(THEME_RETRY_SLEEP_S)
+    raise last  # type: ignore[misc]
+
+
 def build_note(*, ticker: str, filing: dict, items: list[str], filing_url: str,
-               press_release_url: str | None, themes: list[str], body_md: str) -> str:
+               press_release_url: str | None, themes: list[str], body_md: str,
+               themes_failed: bool = False) -> str:
     fm = {
         "doc_type": "sec_filing",
         "source": "sec_edgar",
@@ -485,6 +520,11 @@ def build_note(*, ticker: str, filing: dict, items: list[str], filing_url: str,
         "press_release_url": press_release_url or "",
         "tickers": [ticker],
         "themes": themes,
+        # Only emitted when extraction actually failed, so a backfill can find the
+        # affected notes exactly. Inferring them from `themes: []` over-counts by
+        # >2x (the chunker unions doc themes with a per-chunk heuristic) — see
+        # docs/sec-theme-backfill-scope.md.
+        **({"themes_failed": True} if themes_failed else {}),
         "ingestion_date": dt.date.today().isoformat(),
         "extraction_source": "v3 SEC filings pipeline (sec_filings.py); EDGAR; claude-extracted themes",
     }
@@ -542,16 +582,18 @@ def process_filing(filing: dict, *, dry_run: bool, skip_themes: bool,
     if len(body_md) < 60:
         return "empty", 0.0   # nothing substantive extracted — skip, do NOT dump raw doc
 
-    themes, cost = ([], 0.0)
+    themes, cost, themes_failed = ([], 0.0, False)
     if not skip_themes:
         try:
-            themes, cost = extract_themes(body_md, ticker, valid_themes)
+            themes, cost = extract_themes_with_retry(body_md, ticker, valid_themes)
         except Exception as e:  # noqa: BLE001 — themes are optional; chunker adds heuristic themes
+            themes_failed = True   # marked in frontmatter so a backfill can find this note
             log(f"    {ticker} theme extraction failed (continuing): {type(e).__name__}: {e}")
 
     note = build_note(ticker=ticker, filing=filing, items=items_meta,
                       filing_url=f"{base}/{filing['primary_doc']}",
-                      press_release_url=press_release_url, themes=themes, body_md=body_md)
+                      press_release_url=press_release_url, themes=themes, body_md=body_md,
+                      themes_failed=themes_failed)
     path = note_path(ticker, filing, section_tag)
 
     if dry_run:
