@@ -144,10 +144,15 @@ def http_get(url: str) -> requests.Response:
 # ───────────────────────────── Watchlist universe ─────────────────────────────
 
 def load_universe() -> list[str]:
-    """T1 (tier_1_bctk) + T2 (tier_2_active_candidates) tickers from watchlist.yaml."""
+    """T1 (tier_1_bctk) + T2 (tier_2_active_candidates) + ingest_comparables.
+
+    `ingest_comparables` are competitors/suppliers whose filings we want as EVIDENCE
+    without asserting they are investment candidates — the tiers carry portfolio
+    meaning, so a competitor must not be promoted into T2 merely to get it ingested.
+    See the block comment in config/watchlist.yaml."""
     wl = yaml.safe_load(WATCHLIST_YAML.read_text()) or {}
     out: list[str] = []
-    for key in ("tier_1_bctk", "tier_2_active_candidates"):
+    for key in ("tier_1_bctk", "tier_2_active_candidates", "ingest_comparables"):
         for entry in (wl.get(key) or []):
             t = entry.get("ticker") if isinstance(entry, dict) else entry
             if t:

@@ -363,6 +363,57 @@ web_sources:
 #     notes: "..."
 #     added_date: 2026-05-09
 # ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# ingest_comparables — companies whose FILINGS we ingest for competitive
+# evidence, without asserting they are investment candidates.
+#
+# The tiers carry portfolio meaning (T1 = BCTK holdings, T2 = active
+# candidates, T3 = watchlist), so a competitor cannot be promoted into T2 just
+# to get it ingested — that would corrupt the tier semantics. But the SEC
+# channel ingests T1+T2 only, which left the corpus blind to exactly the
+# companies our theses are exposed to: as of 2026-08-10 the corpus held 110
+# documents naming Chinese optical competitors and ZERO documents for AAOI or
+# POET, while COHR's and LITE's theses (both scored 2026-06-02) rest on
+# transceiver supply tightness and vertical laser integration and do not
+# mention Chinese competition at all.
+#
+# Read by scripts/v3_ingest/sec_filings.py load_universe() IN ADDITION to
+# T1+T2. Deliberately NOT read by news_digest.py, cron_earnings_reviewer.py or
+# ingest_metrics.py — this widens evidence coverage only, not the portfolio.
+#
+#   - ticker: FN
+#     informs: [COHR, LITE]      # whose thesis this evidence bears on
+#     notes: "..."
+# ---------------------------------------------------------------------------
+ingest_comparables:
+  - ticker: FN
+    informs: [COHR, LITE]
+    added_date: 2026-08-10
+    notes: "Fabrinet (NYSE) — the contract manufacturer that actually builds much of the
+      datacom transceiver volume for COHR, LITE and others. Absent from the watchlist
+      entirely until now, which is a live hole: FN's filings disclose datacom transceiver
+      volume, mix and customer-concentration detail that directly tests COHR's
+      supply_tightness assumption from the outside. Not an investment candidate here —
+      ingested as evidence."
+  - ticker: AAOI
+    informs: [COHR, LITE]
+    added_date: 2026-08-10
+    notes: "Applied Optoelectronics — already a T3 stub explicitly described there as a
+      'Direct competitor-to-watch for LITE and COHR in datacenter optics'. The analyst
+      intent was recorded 2026-06-02; the ingestion never followed, so the corpus has no
+      AAOI documents. This closes that gap without changing its tier."
+  - ticker: POET
+    informs: [COHR, LITE]
+    added_date: 2026-08-10
+    notes: "POET Technologies — silicon-photonics optical interposer / CPO light sources.
+      T3 stub, same situation as AAOI. Relevant to the optical-engine and CPO integration
+      layer where COHR's vertical-integration moat would be attacked."
+  # Considered and deliberately NOT ingested:
+  #   APH (Amphenol) — a real optical-interconnect participant, but a large diversified
+  #   connector maker whose filings would be mostly noise for the optics thesis. Add here
+  #   if the interconnect angle becomes a question in its own right.
+
 tier_1_bctk:
   - ticker: 000660.KS
     themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, model_efficiency_evolution, china_export_controls, nand_demand_cycle]
