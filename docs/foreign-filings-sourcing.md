@@ -115,3 +115,61 @@ capacity commentary is an independent window on BE demand that BE's own filings 
   that would be a cleaner route than parsing CNINFO PDFs for financials.
 - Hisense Broadband and Source Photonics remain unverifiable by construction: one is an
   unlisted subsidiary, the other private. Neither will ever have primary disclosure.
+
+---
+
+## PROVEN 2026-08-10: Chinese PDF -> English claims, end to end
+
+Answering *"streetaccount is very surface level ... why don't we use both"* and *"can we get
+it in English or translate it"*.
+
+**Use both — they are different instruments.** StreetAccount gives structured results against
+consensus (a beat/miss number). CNINFO gives the operating detail behind it. Neither
+substitutes for the other.
+
+**No translation step is required.** The CNINFO PDF is TEXT-BASED, not scanned — `pypdf`
+pulled 208,079 chars from Innolight's 229-page FY2025 annual report with no OCR. `claude -p`
+reads the Chinese directly and emits English, preserving the Chinese source phrase for audit.
+CNINFO has no working English portal (`en.cninfo.com.cn` does not resolve), and it does not
+matter.
+
+Measured: one 12,000-char slice of the MD&A -> **11 thesis-linked claims for $0.1478**.
+
+### What the depth route surfaced that StreetAccount cannot
+
+| claim (from the Chinese original) | bears on |
+|---|---|
+| Capacity **+34% YoY to 28.06M units**; production +55% to 23.76M; sales +44% to 21.09M (`产能 2,806万只`) | COHR `supply_tightness` — CHALLENGES |
+| Revenue RMB 37.46B **+64%**, gross margin **expanding 34.65% -> 42.61%** | COHR `supply_tightness` — CHALLENGES harder: scaling without buying share on price |
+| 1.6T uses a **dual platform: EML AND silicon photonics**; silicon photonics also offered at 800G as an EML alternative | LITE `eml_laser_supply_position` — CHALLENGES |
+| First in industry to launch 1.6T-DR8 OSFP224 LPO | COHR `supply_tightness` — CHALLENGES |
+| Raw materials are **externally sourced** optical components and IC chips; **no in-house chip/laser claim** | COHR `vertical_integration_moat` — CONFIRMS |
+| No major capex expansion projects separately disclosed (`重大投资项目建设情况 不适用`) | COHR `supply_tightness` — mild confirm |
+
+**The methodological point:** one document CHALLENGED one COHR assumption and CONFIRMED
+another, in opposite directions, while also hitting LITE. A single "Innolight is a threat"
+verdict would have destroyed both signals. This is the payoff from decomposing a score into
+separate testable assumptions (docs/thesis-assumptions-draft.md).
+
+**Verification status:** extraction is faithful to the quoted Chinese phrases, which are
+carried through for audit. The figures have NOT been independently checked against the
+audited statements, and this is a single document from a single year. Treat as a strong lead
+to verify, not as established fact.
+
+### Recommended shape
+
+- **StreetAccount** (already connected, no build): quarterly results vs consensus for the six
+  verified T4 names. Cheap, structured, English, and these names carry sell-side estimates.
+- **CNINFO annual/interim reports** (small build): MD&A + capacity/product sections only, not
+  whole documents. ~$0.15 per slice, a handful of slices per report.
+- Route the output through `entity_mentions` so claims land beside the US-filing claims and
+  carry the same `affects` mapping.
+
+### Still open
+
+- HKEX (`www1.hkexnews.hk`, reachable): Innolight's 2026 Hong Kong listing should produce
+  BILINGUAL filings under HKEX rules — English originals, no extraction from Chinese needed.
+  Worth checking before building a CNINFO fetcher, since it may supersede it for Innolight.
+- Kaori transcript coverage untested.
+- FactSet Fundamentals/Estimates coverage for these fsymIds untested — likely a cleaner route
+  to financials than parsing PDFs.
