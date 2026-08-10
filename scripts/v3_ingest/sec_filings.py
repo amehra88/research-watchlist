@@ -422,13 +422,118 @@ def extract_item(md: str, target: str) -> str | None:
     return best
 
 
+# ── Heading-anchored fallback ────────────────────────────────────────────────
+# Some issuers (Intel is the reference case) file a 10-K whose narrative carries NO
+# "Item 1A."-style anchors at all: the literal Item strings appear only in a "Form
+# 10-K Cross-Reference Index" table of page numbers at the back. extract_item() then
+# finds headers exclusively inside that index and returns a few hundred chars of page
+# pointers. INTC 10-Ks 2020-2026 all produced ~530-char notes this way, so seven years
+# of Intel MD&A and risk factors never reached the corpus.
+#
+# The fallback anchors on the section's HEADING TEXT instead. A heading line must be
+# the whole line (page-number rows like "Risk Factors 37 37 37" therefore do not match,
+# which is what keeps the table of contents from winning again).
+
+MIN_ITEM_BODY = 2_000        # below this, item-anchored extraction is treated as failed
+
+# Headings that BELONG to a section when the issuer omits the Item anchor. Keyed by
+# the configured label so this works for 10-K/10-Q/20-F alike.
+_SECTION_ALIASES: dict[str, list[str]] = {
+    "managements discussion and analysis": [
+        "operating segment results", "consolidated results of operations",
+        "results of operations", "liquidity and capital resources",
+        "critical accounting estimates",
+    ],
+    "operating and financial review and prospects": [
+        "operating results", "results of operations", "liquidity and capital resources",
+    ],
+    "key information": ["risk factors"],
+}
+
+# Generic top-level headings used ONLY to terminate a span.
+_OTHER_HEADINGS: frozenset[str] = frozenset({
+    "business", "properties", "legal proceedings", "mine safety disclosures",
+    "unresolved staff comments", "cybersecurity", "other key information",
+    "financial statements and supplemental details", "financial statements and supplementary data",
+    "notes to consolidated financial statements", "consolidated financial statements",
+    "auditors reports", "key terms", "controls and procedures", "exhibits",
+    "form 10k crossreference index", "overview", "our strategy", "our business",
+    "information about our executive officers", "market for our common stock",
+    "stock performance graph", "forwardlooking statements",
+    "availability of company information", "directors executive officers and corporate governance",
+    "executive compensation", "principal accountant fees and services",
+})
+
+
+def _norm_heading(s: str) -> str:
+    return re.sub(r"[^a-z0-9 ]", "", (s or "").lower()).strip()
+
+
+def _labels_for(label: str) -> set[str]:
+    n = _norm_heading(label)
+    return {n} | set(_SECTION_ALIASES.get(n, []))
+
+
+def extract_item_by_heading(md: str, label: str, all_labels: list[str]) -> str | None:
+    """Body for a section anchored on its heading TEXT rather than an Item number.
+
+    Span runs from a heading belonging to this section to the next heading belonging
+    to a DIFFERENT one, so a section's own subsections don't truncate it. Consecutive
+    repeats of this section's own headings collapse (issuers repeat the section name
+    as a running page header), and the longest span wins — the table of contents
+    produces short spans, the real section a long one."""
+    mine = _labels_for(label)
+    others = set(_OTHER_HEADINGS)
+    for other in all_labels:
+        if _norm_heading(other) != _norm_heading(label):
+            others |= _labels_for(other)
+    others -= mine
+
+    lines = md.split("\n")
+    marks: list[tuple[int, bool]] = []      # (line index, is_mine)
+    for i, ln in enumerate(lines):
+        s = ln.strip().lstrip("#").strip().rstrip(".")
+        if not s or len(s) > 120:
+            continue
+        n = _norm_heading(s)
+        if n in mine:
+            if marks and marks[-1][1]:
+                continue                     # collapse a run of this section's headings
+            marks.append((i, True))
+        elif n in others:
+            marks.append((i, False))
+
+    best, best_len = None, 0
+    for idx, (line_i, is_mine) in enumerate(marks):
+        if not is_mine:
+            continue
+        end_i = len(lines)
+        for j in range(idx + 1, len(marks)):
+            if not marks[j][1]:
+                end_i = marks[j][0]
+                break
+        body = "\n".join(lines[line_i:end_i]).strip()
+        if len(body) > best_len:
+            best, best_len = body, len(body)
+    return best
+
+
 def extract_sections(md: str, base_form: str) -> tuple[list[str], list[str], list[str]]:
     """Return (section_markdowns, found_item_keys, missing_item_keys) for a periodic form."""
     targets = _CFG.get("sections", {}).get(base_form, {})
     cap = int(_CFG.get("max_section_chars", 200_000))
     bodies, found, missing = [], [], []
+    all_labels = list(targets.values())
     for item_key, label in targets.items():
         sec = extract_item(md, item_key)
+        # Item anchors missing or landing in the cross-reference index -> try headings.
+        # Only replaces when strictly longer, so a healthy extraction is never degraded.
+        if not sec or len(sec) < MIN_ITEM_BODY:
+            alt = extract_item_by_heading(md, label, all_labels)
+            if alt and len(alt) > len(sec or ""):
+                log(f"    section {item_key}: item-anchored gave "
+                    f"{len(sec or '')} chars, heading-anchored gave {len(alt)} — using heading")
+                sec = alt
         if sec:
             if len(sec) > cap:
                 sec = sec[:cap] + f"\n\n…[section truncated at {cap} chars]…"
