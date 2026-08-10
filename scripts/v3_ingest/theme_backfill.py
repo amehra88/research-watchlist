@@ -180,7 +180,7 @@ def main() -> int:
                 f"note left untouched")
             if not args.dry_run:
                 done[doc_id] = {"themes": [], "at": dt.datetime.now().isoformat(timespec="seconds")}
-                st["cost"] = st.get("cost", 0.0) + cost
+                st["cost"] = st.get("cost", 0.0) + c   # per-doc, not the running total
                 save_state(st)
             continue
 

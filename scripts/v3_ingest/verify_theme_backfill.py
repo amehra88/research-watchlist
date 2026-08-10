@@ -105,7 +105,8 @@ def main() -> int:
     targets = {d for d, v in applied.items() if probe_theme in v["themes"]}
     query = probe_theme.replace("_", " ")
     hits = retrieve(query, k=50, themes=[probe_theme])
-    hit_docs = {h.doc_id for h in hits}
+    # Hit wraps the matched child chunk as a dict (Hit.chunk); doc_id lives there.
+    hit_docs = {h.chunk.get("doc_id") for h in hits}
     reached = targets & hit_docs
     print(f"   probe theme: {probe_theme!r} (query {query!r}, k=50)")
     print(f"   backfilled docs carrying it: {len(targets)}")
