@@ -203,6 +203,30 @@ def fetch_labeled(imap: imaplib.IMAP4_SSL,
 
 # ───────────────────────────── Parse + transform ─────────────────────────────
 
+class BenignReject(Exception):
+    """This message is not a readable post and never will be (platform mail,
+    confirmation email, empty body). Permanent — watermark it so it is not
+    re-downloaded and re-rejected on every subsequent run."""
+
+
+# Substack platform mail: notification digests and account plumbing, not posts.
+# Matched on the subject line, which is stable across the mg-d0/mg-d1/mg2 senders.
+# Deliberately narrow — only patterns actually observed in the label. A reject is
+# permanent (see BenignReject), so a false positive silently drops a real post,
+# which is worse than letting an unrecognised platform mail through to the
+# body-length check. Do NOT add loose patterns like "welcome to" here: real post
+# titles ("Welcome to the Inference Era") would match.
+_PLATFORM_SUBJECT_RE = re.compile(
+    r"(posted new notes$|^please confirm your subscription$)",
+    re.IGNORECASE,
+)
+
+
+def is_platform_mail(subject: str) -> bool:
+    """True for Substack's own notification/account mail (never a post body)."""
+    return bool(_PLATFORM_SUBJECT_RE.search(subject or ""))
+
+
 def _decode(s: str | None) -> str:
     if not s:
         return ""
@@ -401,11 +425,16 @@ def load_watermark() -> dict:
             return json.loads(WATERMARK_FILE.read_text())
         except (json.JSONDecodeError, OSError):
             pass
-    return {"processed_message_ids": {}, "runs": 0}
+    return {"processed_message_ids": {}, "rejected_message_ids": {}, "runs": 0}
 
 
-def save_watermark(wm: dict, newly: dict) -> None:
+def save_watermark(wm: dict, newly: dict, rejected: dict | None = None) -> None:
     wm.setdefault("processed_message_ids", {}).update(newly)
+    # Rejects live in their own map (id -> reason) so they are skipped forever but
+    # remain re-processable on demand: clear this key to re-try them after a parser
+    # change. They are deliberately NOT mixed into processed_message_ids.
+    if rejected:
+        wm.setdefault("rejected_message_ids", {}).update(rejected)
     wm["runs"] = wm.get("runs", 0) + 1
     wm["last_run_at"] = dt.datetime.now().isoformat(timespec="seconds")
     WATERMARK_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -422,11 +451,14 @@ def process_message(msg: Message, subs: list[dict], *, dry_run: bool,
     subject = _decode(msg.get("Subject")) or "untitled"
     source_date = msg_date(msg)
 
+    if is_platform_mail(subject):
+        raise BenignReject(f"Substack platform mail, not a post (subject={subject[:60]!r})")
+
     pub = match_publication(sender, subs)
     html = extract_html_body(msg)
     body_md = html_to_markdown(html)
     if len(body_md) < 80:
-        raise ValueError(f"body too short after HTML→md ({len(body_md)} chars) — not a readable post")
+        raise BenignReject(f"body too short after HTML→md ({len(body_md)} chars) — not a readable post")
 
     tickers, themes, cost = extract_tags(body_md, pub, valid_tickers, valid_themes)
     note = build_note(pub=pub, subject=subject, sender=sender, msg_id=mid,
@@ -467,7 +499,9 @@ def main() -> int:
     valid_tickers = load_valid_tickers()
     valid_themes = load_valid_themes()
     wm = load_watermark()
-    seen = set(wm.get("processed_message_ids", {}))
+    # Both maps suppress re-download: processed = ingested, rejected = permanently
+    # not a post. Without the second, platform mail re-fetches and re-fails forever.
+    seen = set(wm.get("processed_message_ids", {})) | set(wm.get("rejected_message_ids", {}))
     mode = "DRY-RUN" if args.dry_run else "LIVE"
     log(f"START mode={mode} backend={os.environ.get('CHUNK_STORE_BACKEND')} "
         f"label={GMAIL_LABEL} publications={len(subs)}")
@@ -482,7 +516,8 @@ def main() -> int:
     log(f"messages_in_scope={len(msgs)}")
 
     newly: dict[str, str] = {}
-    processed = skipped = failed = claude_failed = 0
+    rejected_ids: dict[str, str] = {}
+    processed = skipped = failed = rejected = claude_failed = 0
     total_cost = 0.0
     try:
         for _uid, msg in msgs[:MAX_MESSAGES_PER_RUN]:
@@ -498,6 +533,11 @@ def main() -> int:
                 processed += 1
                 if mid and not args.dry_run:
                     newly[mid] = dt.datetime.now().isoformat(timespec="seconds")
+            except BenignReject as e:
+                rejected += 1
+                if mid and not args.dry_run:
+                    rejected_ids[mid] = str(e)
+                log(f"  REJECTED msg_id={mid or '(none)'}: {e}")
             except Exception as e:  # noqa: BLE001 — per-message isolation; retried next run
                 failed += 1
                 if "claude -p rc=" in str(e):   # auth/CLI failure, not a benign body reject
@@ -510,10 +550,10 @@ def main() -> int:
             except Exception:  # noqa: BLE001
                 pass
 
-    if not args.dry_run and newly:
-        save_watermark(wm, newly)
-    log(f"DONE mode={mode} processed={processed} skipped={skipped} failed={failed} "
-        f"cost=${total_cost:.4f}")
+    if not args.dry_run and (newly or rejected_ids):
+        save_watermark(wm, newly, rejected_ids)
+    log(f"DONE mode={mode} processed={processed} skipped={skipped} "
+        f"rejected={rejected} failed={failed} cost=${total_cost:.4f}")
     # All-fail signal: every claude -p call failed and nothing was processed → almost
     # certainly expired subscription auth. Exit non-zero so alert_on_failure.sh pages.
     if not args.dry_run and processed == 0 and claude_failed > 0:
