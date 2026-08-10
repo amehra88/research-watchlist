@@ -87,16 +87,29 @@ and keeps `chunk_id`s stable, so nothing else in the corpus shifts.
 15/28/28 (see the `eval-baseline-restored` memory). Adding themes changes scope-filter
 behavior, so an eval regression is the signal that the extraction went wrong.
 
-## Prevention
+## Prevention — SHIPPED 2026-08-09 (commit `b1c351aa`)
 
-The channel currently treats a theme-extraction failure as non-fatal and writes the note
-anyway, which is what silently built this backlog. Options, cheapest first:
+The channel treated a theme-extraction failure as non-fatal and wrote the note anyway with
+no marker, which is what silently built this backlog. Now:
 
-- **Record the failure in frontmatter** (e.g. `themes_failed: true`) so a backfill can find
-  affected notes precisely instead of inferring from `themes: []` — which, as shown above,
-  over-counts by more than 2×.
-- **Retry the extraction** once before giving up.
-- Do not fail the whole run on it — partial ingest is still better than none.
+- **`themes_failed: true` in frontmatter**, emitted only when extraction actually failed, so
+  a future backfill finds affected notes exactly instead of inferring from `themes: []` —
+  which, as shown above, over-counts by more than 2×.
+- **One retry** for transient failures (timeout, 429, malformed JSON). Auth failures
+  re-raise immediately: an expired token fails identically on every call, so retrying it
+  multiplies a known-doomed request across the run.
+- The run still does not fail on it — partial ingest beats none.
+
+**This marker does not help with the existing 828.** It only tags notes written from
+2026-08-09 onward; the historical population still has to be identified the measured way
+(docs where every chunk has zero themes).
+
+**Selection path for any backfill:** `themes_failed` is **disk frontmatter only** — there is
+no such chunk field and no pg column, so it cannot be queried from the corpus. Select
+affected notes by globbing `notes/sec/` for the marker (or, for the historical 828, by the
+all-chunks-themeless pg query above), then resolve each note to its `doc_id` and apply the
+`UPDATE chunks SET themes = %s WHERE doc_id = %s` step. Adding a pg column is possible but
+unnecessary and would force a corpus-wide migration.
 
 ## Open question for the operator
 
