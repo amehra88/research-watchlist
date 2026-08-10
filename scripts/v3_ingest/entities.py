@@ -59,6 +59,13 @@ VERTICALS: dict[str, str] = {
         r"innolight|eoptolink|accelink|hisense broadband|hg genuine|source photonics|"
         r"400g|800g|1\.6t|silicon photonics|co-packaged|\bCPO\b|indium phosphide|\bEML\b"
     ),
+    # Bloom Energy's stack depends on hot boxes it does not build. Supplier
+    # concentration (MTAR in India, Kaori in Taiwan) is a thesis risk in the same
+    # way competitor capacity is — hence the same machinery.
+    "bloom": (
+        r"\bMTAR\b|kaori|hot box|hotbox|solid oxide|\bSOFC\b|fuel cell stack|"
+        r"electrolyzer|combined heat and power"
+    ),
 }
 
 ENTITY_TYPES = ("company", "product", "technology", "customer", "facility")
@@ -108,15 +115,16 @@ CREATE TABLE IF NOT EXISTS entity_mentions (
     confidence   text,
     doc_type     text,
     event_date   date,
-    competitor_id text,          -- tier_4_competitors.id when the mention resolves
-    competes_with text[],        -- whose thesis this bears on, from the registry
+    ecosystem_id  text,          -- tier_4_ecosystem.id when the mention resolves
+    relation      text,          -- competitor | supplier | customer | partner (registry)
+    affects       text[],        -- whose thesis this bears on, from the registry
     extracted_at timestamptz NOT NULL DEFAULT now(),
     PRIMARY KEY (chunk_id, entity_key, claim)
 );
 CREATE INDEX IF NOT EXISTS entity_mentions_key_idx     ON entity_mentions (entity_key);
 CREATE INDEX IF NOT EXISTS entity_mentions_subject_idx ON entity_mentions (subject);
 CREATE INDEX IF NOT EXISTS entity_mentions_date_idx    ON entity_mentions (event_date);
-CREATE INDEX IF NOT EXISTS entity_mentions_comp_idx    ON entity_mentions (competitor_id);
+CREATE INDEX IF NOT EXISTS entity_mentions_eco_idx     ON entity_mentions (ecosystem_id);
 """
 
 
@@ -136,7 +144,7 @@ def entity_key(name: str) -> str:
 
 
 def load_competitor_registry() -> tuple[dict[str, str], dict[str, dict]]:
-    """(alias_key -> canonical id, id -> entry) from watchlist tier_4_competitors.
+    """(alias_key -> canonical id, id -> entry) from watchlist tier_4_ecosystem.
 
     These companies file nothing with EDGAR (`edgar_coverage: false`), so the ONLY way
     they enter the corpus is as mentions inside other companies' documents. Resolving
@@ -146,7 +154,7 @@ def load_competitor_registry() -> tuple[dict[str, str], dict[str, dict]]:
     wl = yaml.safe_load((REPO_ROOT / "config" / "watchlist.yaml").read_text()) or {}
     alias_to_id: dict[str, str] = {}
     by_id: dict[str, dict] = {}
-    for e in (wl.get("tier_4_competitors") or []):
+    for e in (wl.get("tier_4_ecosystem") or []):
         cid = e.get("id")
         if not cid:
             continue
@@ -217,8 +225,9 @@ def extract(row: dict, alias_to_id: dict[str, str],
         out.append({
             "entity": name,
             "entity_key": key,
-            "competitor_id": cid,
-            "competes_with": list(reg.get("competes_with") or []),
+            "ecosystem_id": cid,
+            "relation": reg.get("relation"),
+            "affects": list(reg.get("affects") or []),
             # The registry is authoritative on country — an extractor reading a US
             # filing often cannot tell where a named competitor is domiciled.
             "registry_country": reg.get("country"),
@@ -246,13 +255,13 @@ def persist(row: dict, mentions: list[dict]) -> int:
             """INSERT INTO entity_mentions
                (chunk_id, doc_id, subject, entity, entity_key, entity_type, country,
                 role, specs, claim, stance, confidence, doc_type, event_date,
-                competitor_id, competes_with)
-               VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                ecosystem_id, relation, affects)
+               VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                ON CONFLICT (chunk_id, entity_key, claim) DO NOTHING""",
             (row["chunk_id"], row["doc_id"], subject, m["entity"], m["entity_key"],
              m["entity_type"], m["country"], m["role"], m["specs"], m["claim"],
              m["stance"], m["confidence"], row["doc_type"], row["event_date"],
-             m.get("competitor_id"), m.get("competes_with") or []))
+             m.get("ecosystem_id"), m.get("relation"), m.get("affects") or []))
         n += cur.rowcount
     cx.commit()
     return n
@@ -301,7 +310,7 @@ def main() -> int:
             log(f"  [{i}/{len(rows)}] {row['chunk_id'][:46]} ({row['doc_type']}, "
                 f"{row['event_date']}) -> {len(mentions)} mentions")
             for m in mentions:
-                log(f"       {m['entity']:<20} {str(m.get('competitor_id') or '-'):<20} {m['role']:<11}"
+                log(f"       {m['entity']:<20} {str(m.get('ecosystem_id') or '-'):<20} {m['role']:<11}"
                     f"{','.join(m['specs'])[:18]:<20}{m['stance']:<10} {m['claim'][:90]}")
             continue
 

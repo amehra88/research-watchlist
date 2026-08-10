@@ -415,8 +415,14 @@ ingest_comparables:
   #   if the interconnect angle becomes a question in its own right.
 
 # ---------------------------------------------------------------------------
-# tier_4_competitors — companies that threaten a thesis but that NO pipeline can
-# ingest directly. Almost all are non-US-listed.
+# tier_4_ecosystem — companies that MATERIALLY AFFECT a thesis but that NO
+# pipeline can ingest directly. Almost all are non-US-listed.
+#
+# `relation:` says how they matter — competitor OR supplier (or customer/partner).
+# A supplier can break a thesis as surely as a competitor: single-sourced hot
+# boxes are as load-bearing for BE as Chinese transceiver capacity is for COHR.
+# This started life as `tier_4_competitors` and was generalised on 2026-08-10
+# when BE's Indian/Taiwanese suppliers needed the same treatment.
 #
 # WHY THIS IS NOT tier_3. tier_3_watchlist is read by exactly one script
 # (cron_earnings_reviewer.py) and is a ticker-shaped slot for something you might
@@ -434,7 +440,7 @@ ingest_comparables:
 # WHAT THIS IS WIRED TO (evidence about them, never from them):
 #   - scripts/v3_ingest/entities.py resolves extracted mentions to `id` via
 #     `aliases`, so what US filers and analysts say ABOUT them accumulates as
-#     citable claims mapped to `competes_with`.
+#     citable claims mapped to `affects`.
 #   - NOT read by sec_filings.py load_universe() — adding them there would only
 #     produce flagged/skipped noise every run.
 #
@@ -446,7 +452,7 @@ ingest_comparables:
 # and are NOT verified against a market-data source. `verified: false` means
 # confirm before relying on it for anything quantitative.
 # ---------------------------------------------------------------------------
-tier_4_competitors:
+tier_4_ecosystem:
   - id: innolight.cn
     name: "Innolight Technology (Zhongji Innolight)"
     aliases: ["Innolight", "InnoLight", "InnoLight Technology", "Zhongji Innolight",
@@ -455,7 +461,8 @@ tier_4_competitors:
     verified: false
     country: China
     layer: transceiver_module
-    competes_with: [COHR, LITE]
+    relation: competitor
+    affects: [COHR, LITE]
     edgar_coverage: false
     evidence_sources: [us_filer_mentions, news, factset]
     notes: "The largest Chinese datacom transceiver maker and the most direct volume threat
@@ -468,7 +475,8 @@ tier_4_competitors:
     verified: false
     country: China
     layer: transceiver_module
-    competes_with: [COHR, LITE]
+    relation: competitor
+    affects: [COHR, LITE]
     edgar_coverage: false
     evidence_sources: [us_filer_mentions, news, factset]
     notes: "Fast-growing Chinese transceiver maker, aggressive at 800G/1.6T. Named in the
@@ -481,7 +489,8 @@ tier_4_competitors:
     verified: false
     country: China
     layer: optical_component
-    competes_with: [COHR, LITE]
+    relation: competitor
+    affects: [COHR, LITE]
     edgar_coverage: false
     evidence_sources: [us_filer_mentions, news, factset]
     notes: "Chinese optical component/subsystem maker with in-house chip capability — the
@@ -494,7 +503,8 @@ tier_4_competitors:
     verified: false
     country: China
     layer: optical_component
-    competes_with: [COHR, LITE]
+    relation: competitor
+    affects: [COHR, LITE]
     edgar_coverage: false
     evidence_sources: [us_filer_mentions, news, factset]
     notes: "Laser and optical-module maker; relevant to the domestic-laser-supply question."
@@ -505,7 +515,8 @@ tier_4_competitors:
     verified: false
     country: China
     layer: transceiver_module
-    competes_with: [COHR, LITE]
+    relation: competitor
+    affects: [COHR, LITE]
     edgar_coverage: false
     evidence_sources: [us_filer_mentions, news]
     notes: "Transceiver arm of Hisense. Not separately listed, so even FactSet fundamentals
@@ -517,11 +528,50 @@ tier_4_competitors:
     verified: false
     country: China
     layer: transceiver_module
-    competes_with: [COHR, LITE]
+    relation: competitor
+    affects: [COHR, LITE]
     edgar_coverage: false
     evidence_sources: [us_filer_mentions, news]
     notes: "Privately held transceiver maker. Included because it appears in competitive
       discussion of the datacom module market despite having no public disclosure at all."
+
+  # --- Bloom Energy (BE) supply chain -------------------------------------
+  # Operator-sourced 2026-08-10. A supplier concentration is a thesis risk in the
+  # same way a competitor is: BE's stack depends on hot boxes it does not build.
+  - id: mtar.in
+    name: "MTAR Technologies"
+    aliases: ["MTAR", "MTAR Technologies", "MTAR Technologies Limited", "MTARTECH"]
+    listing: "NSE/BSE India (MTARTECH)"
+    verified: false
+    country: India
+    layer: sofc_hotbox
+    relation: supplier
+    affects: [BE]
+    edgar_coverage: false
+    evidence_sources: [us_filer_mentions, news]
+    notes: "Hyderabad-based precision engineering firm that manufactures and supplies solid
+      oxide fuel cell (SOFC) hot boxes and power units DIRECTLY to Bloom Energy
+      (operator-sourced). Relevant to BE as a single-source/geographic-concentration risk on
+      the most critical subassembly in the stack — and as a read-through: MTAR's own
+      disclosure and order book is an independent window on BE demand that BE's filings do
+      not provide. India-listed, so no EDGAR coverage; FactSet may carry fundamentals."
+  - id: kaori.tw
+    name: "Kaori Heat Treatment Co."
+    aliases: ["Kaori", "Kaori Heat Treatment", "Kaori Heat Treatment Co., Ltd."]
+    listing: "Taiwan (TPEx) — code unconfirmed"
+    verified: false
+    country: Taiwan
+    layer: sofc_hotbox
+    relation: supplier
+    affects: [BE]
+    edgar_coverage: false
+    evidence_sources: [us_filer_mentions, news]
+    notes: "Taiwan-based manufacturer of the critical fuel cell reaction/hot boxes for Bloom
+      (operator-sourced). Operator notes Taiwan-based suppliers collectively handle roughly
+      30% of BE's system component manufacturing — a geographic concentration that is a
+      thesis risk in its own right (Taiwan Strait exposure), and one BE's own filings are
+      unlikely to frame that way. The 30% figure is operator-sourced and UNVERIFIED against
+      a primary document."
 
 tier_1_bctk:
   - ticker: 000660.KS
