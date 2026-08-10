@@ -167,9 +167,18 @@ to verify, not as established fact.
 
 ### Still open
 
-- HKEX (`www1.hkexnews.hk`, reachable): Innolight's 2026 Hong Kong listing should produce
-  BILINGUAL filings under HKEX rules — English originals, no extraction from Chinese needed.
-  Worth checking before building a CNINFO fetcher, since it may supersede it for Innolight.
+- **HKEX — CONFIRMED LISTED, RETRIEVAL UNRESOLVED (checked 2026-08-10).** Innolight is dual
+  listed in Hong Kong: issuer lookup returns `ZJ INNOLIGHT`, code **03308**, stockId
+  `1000311764` (`https://www1.hkexnews.hk/search/prefix.do?lang=EN&type=A&name=zhongji&market=SEHK`).
+  Under HKEX rules its HK filings must be BILINGUAL, so English originals should exist and
+  would remove the need to extract from Chinese for this name.
+  BUT `titleSearchServlet.do` returns a well-formed EMPTY result (`recordCnt: 0`) for that
+  stockId over a 19-month window. Since a company that listed in July 2026 must at minimum
+  have filed a prospectus, this is almost certainly a parameter-convention mismatch on our
+  side, NOT an absence of filings. Do not conclude "HKEX has nothing". Unresolved: the
+  servlet may want a different stockId namespace than the prefix API returns.
+  This does not block anything — CNINFO works today and covers Innolight. Revisit if the
+  Chinese-PDF route proves expensive at scale.
 - Kaori transcript coverage untested.
 - FactSet Fundamentals/Estimates coverage for these fsymIds untested — likely a cleaner route
   to financials than parsing PDFs.
