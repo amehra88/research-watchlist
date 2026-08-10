@@ -61,13 +61,42 @@ customer moving volume to a Chinese supplier.
 Post-II-VI/Finisar balance-sheet leverage is a watch-item"*.
 **Challenged by:** leverage flat or rising; refinancing at worse terms; FCF miss.
 
-### **[GAP] — no assumption in your notes covers Chinese competition**
-Nothing in COHR's 2026-06-02 scoring mentions Chinese competitors at all, yet the corpus
-holds 110 documents naming them. Either that is a deliberate judgement (they do not compete
-in COHR's segments / quality tier) — which should be written down as a testable assumption so
-evidence can attack it — or it is an omission. **This is the single most consequential thing
-for you to decide**, because it determines whether incoming Chinese-competitor evidence
-confirms an existing view or contradicts an unstated one.
+### `policy_shelter` — ANSWERED BY OPERATOR 2026-08-10
+**Statement:** Chinese optical vendors compete on product and cost, but US policy limits their
+ability to sell China-manufactured product into US datacenters, so their capacity and price
+position does not translate into share against COHR/LITE in the accounts that matter.
+**Derived from:** operator, 2026-08-10 — *"i think cohr and lite do have competition but not
+clear that us govt will let them keep competing with products made in china."* This resolves
+the earlier [GAP]: the theses were not silent on Chinese competition through oversight, they
+rested on an unstated policy premise.
+**Challenged by:** evidence that Chinese vendors already supply US hyperscalers directly;
+absence of any optical-specific restriction (Section 889 / FCC Covered List / ICTS reach
+transceivers?); Chinese vendors manufacturing outside China (Thailand, Malaysia, Vietnam) to
+sidestep origin rules; hyperscalers qualifying them for non-US regions and then extending.
+**Confirmed by:** an optical-specific rule or procurement restriction; hyperscalers stating a
+non-China sourcing requirement; Chinese vendor disclosure of a US revenue ceiling.
+
+**EVIDENCE STATUS: essentially none in the corpus (measured 2026-08-10).** A tight probe for a
+restriction verb near transceiver/optical/photonic returned 25 documents whose top hits are
+FALSE POSITIVES (AAOI capex commentary). 136 documents mention Section 889 / Covered List /
+Entity List and 1,102 mention tariffs, but these are overwhelmingly generic SEC risk-factor
+boilerplate, not optical-specific rules. **This assumption is currently unfalsifiable from
+what we hold** — that is a coverage gap to close, not a reason for confidence.
+
+**One counter-data-point already in hand.** Innolight's own FY2025 annual report (CNINFO,
+extracted 2026-08-10) states it has *"long-term stable partnerships with globally leading
+cloud data center customers"* via *"primarily a direct sales model"* (`与全球领先的云数据中心客户
+…形成了长期稳定的合作关系；以直接销售模式为主`). If those customers include US hyperscalers,
+they are already inside the accounts the shelter is assumed to protect. Worth resolving
+directly — Innolight's filings disclose customer concentration and geographic revenue split.
+
+**SECOND-ORDER POINT the assumption should not obscure:** a policy shelter is not the same as
+a COHR/LITE win. It walls off *China-manufactured* product, which equally advantages AAOI
+(US), Fabrinet (Thailand) and any non-China supply. AAOI's own filings show capex "materially
+higher" through at least end-2027 expanding 400G/800G/1.6T capacity — inside the shelter. So
+the shelter, if real, redirects competition rather than removing it, and COHR/LITE's
+`supply_tightness` could still erode from non-China capacity. Test the shelter and the
+tightness assumption separately.
 
 ---
 
