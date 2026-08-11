@@ -474,6 +474,21 @@ Entity mentions inside exchanges that resolve to nothing in the watchlist, `priv
 
 `notes/sector/heat-{YYYY}-{QQ}.md`, plus an email rendered through the existing digest plumbing.
 
+**Cadence — quarterly, not weekly.** The metric is per fiscal quarter and earnings are bursty:
+most covered calls land inside a ~3-week window, so a weekly report would emit near-empty output
+for two months and then everything at once. The run fires **once per quarter, roughly 2 weeks
+after the bulk of the covered universe has reported**, with an operator-triggerable re-run for
+late filers.
+
+This is deliberately unlike the news digest's twice-daily cadence: that channel tracks events,
+this one tracks accumulated attention, and a quarterly cadence matches how the underlying
+observations actually arrive.
+
+**First run differs from steady state.** The 9-month backfill produces a single report covering
+3 quarters with prior-quarter comparisons available only for the last two. Steady state produces
+one report per quarter. The first report must say so — its quarter-over-quarter figures are
+thinner than every subsequent one.
+
 Required sections:
 
 1. **Coverage statement, first and unmissable** — companies attempted, covered, and **the named
@@ -525,6 +540,11 @@ mapping is not.
   Chinese extraction for Innolight entirely.
 - **The 828-doc SEC theme backfill** — no longer on this critical path (§1.3). Fix on its own
   schedule for retrieval quality.
+- **Podcasts and substacks as evidence inputs.** 184 substack + ~86 podcast notes exist, but both
+  start 2026-06 (3 months) and they are a third register — independent commentary, not company
+  disclosure and not analyst questions. Folding them into either side would blur the
+  disclosure-vs-question gap that the whole design turns on. Excluded **by decision, not by
+  oversight**; revisit once they have four or more quarters of history.
 - **Any automated write to `config/watchlist.yaml`** — tiers, scores, and vocabulary are
   operator-only, permanently.
 
@@ -594,3 +614,10 @@ The build is done when all of the following hold:
   cleaner than parsing CNINFO PDFs for financials.
 - Cosine threshold for anchor-vs-candidate — to be calibrated empirically against the 61 themes,
   not chosen a priori.
+- **What consumes the output beyond the report.** The natural downstream is
+  `docs/thesis-assumptions-draft.md`, whose `challenged_by` / `confirmed_by` lines are explicitly
+  built to be matched against incoming evidence — the same `claims.jsonl` this system produces.
+  Wiring the two together would turn a heat report into per-assumption confirm/challenge
+  verdicts. **Deliberately not specified here**, because that document is still a proposal
+  awaiting operator review; depending on it would build on unapproved structure. Revisit once the
+  assumptions are approved and in `watchlist.yaml`.
