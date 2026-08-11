@@ -17,6 +17,20 @@ and one conference, trimmed but otherwise unaltered.
     python3 scripts/v3_ingest/transcript_ingest.py                     # full 9-month backfill
     python3 scripts/v3_ingest/transcript_ingest.py --window-months 1   # forward cron
 
+### Forward cron (prepared, NOT installed)
+
+The daily incremental. A 1-month window with the same ledger means each run only
+fetches what is genuinely new; a re-run of a finished slice costs nothing (measured
+at 0.65s, zero API calls). Weekdays only, after the SEC channel at 11:00 UTC:
+
+    30 11 * * 1-5 cd /root/research-watchlist && /root/bin/alert_on_failure.sh \
+      v3_transcripts python3 scripts/v3_ingest/transcript_ingest.py --window-months 1 \
+      >> logs/v3_transcripts.log 2>&1
+
+Deliberately left for the operator to install: it is a recurring production job
+with a real per-run cost, and P1's backfill should be reviewed before a daily
+process starts appending to the same corpus.
+
 Outputs, all under `state/transcripts/`:
 
 | File | Tracked? | What it is |
