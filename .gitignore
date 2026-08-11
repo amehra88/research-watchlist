@@ -54,6 +54,7 @@ tmp/
 # News-digest runtime state (ledger + FactSet result cache + verdict cache — regenerated each run)
 state/news_digest_seen.jsonl
 state/factset_cache/
+state/factset_cache_dryrun/
 state/news_verdict_cache_*.json
 logs/news_digest_*.txt
 # v3 news-flow brief section for combine_and_send (ephemeral daily)
