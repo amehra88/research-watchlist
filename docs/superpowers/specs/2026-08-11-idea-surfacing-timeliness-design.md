@@ -288,7 +288,18 @@ the two gold citations (§11) is a Mizuho conference exchange. The rule, therefo
 
 ### 4.2 `topic_map.py`
 
-Per **analyst** exchange, extract short topic phrases, then map to the vocabulary:
+**Operates over both registers.** Two kinds of input unit, one shared vocabulary:
+
+| Input unit | Register | Feeds |
+|---|---|---|
+| An `analyst` exchange (§4.1) | question side | `n_companies_asked`, `n_banks` (§5) |
+| An MD&A QoQ diff block (§4.4) and a foreign-evidence claim (§4.3) | evidence side | `n_companies_disclosing` (§6.2) |
+
+Both must be mapped to the **same** topic vocabulary — otherwise §6.2's two-count comparison has
+no way to know a disclosure and a question concern the same topic, and the gap metric is not
+computable. The mapping steps below apply identically to both.
+
+Per input unit, extract short topic phrases, then map to the vocabulary:
 
 1. Embed the 61 themes from `config/watchlist.yaml` as anchors (Gemini `gemini-embedding-001`,
    the existing path; ~$0.50–2/mo per `docs/cost-model.md`).
@@ -489,13 +500,17 @@ restated as a number. Every figure prints its denominator and its exclusions.
 | **P1** | `transcript_ingest.py` — 9-month backfill + forward cron; `exchanges.jsonl` | — |
 | **P2** | `topic_map.py` — anchors, mapping, new-theme candidates | P1 |
 | **P3** | `foreign_evidence.py` — StreetAccount + CNINFO → `claims.jsonl` | — (parallel to P2) |
-| **P3b** | `mdna_evidence.py` — QoQ MD&A diff → `claims.jsonl` | — (parallel; corpus already on disk) |
+| **P3b** | `mdna_evidence.py` — QoQ MD&A diff → `claims.jsonl` | **P2** for topic mapping (§4.2); the diff itself has no dependency |
 | **P4** | `diffusion.py` — metrics, detectors, lifecycle staging | P2, P3, P3b |
 | **P5** | Renderer + cron + email | P4 |
 
-P1, P3, and P3b are independent and can proceed concurrently. **P3b is the cheapest of the
-three** — no external API, no new auth, no `claude -p` dependency for the diff itself, and the
-211 documents are already on disk.
+P1 and P3 are independent and can proceed concurrently.
+
+**P3b splits in two.** The diff stage is the cheapest work in the project — no external API, no
+new auth, no `claude -p`, and the 211 documents are already on disk — so it can start immediately
+alongside P1. But its **output must be topic-mapped through §4.2 to be usable**, so the component
+is not complete until P2 lands. Do not sequence P3b as fully parallel; the diff is parallel, the
+mapping is not.
 
 ---
 
@@ -562,6 +577,10 @@ The build is done when all of the following hold:
    consecutive quarters, the QoQ Item 2 diff yields a changed-text block that is a small
    fraction of the section rather than a near-total rewrite. A near-total rewrite means the
    form-type or extraction-variance trap (§4.4) was hit, not that the company rewrote its MD&A.
+5c. **The MD&A path works end to end, not just its plumbing.** At least one stage-1 or stage-2
+   item in the gold quarter is sourced from an MD&A diff — i.e. the diff text was topic-mapped
+   through §4.2, matched against the question side, and contributed a real
+   `n_companies_disclosing` count. 5b tests the diff; this tests the path.
 6. A report renders end to end through the existing digest plumbing.
 7. `python3 scripts/check.py` passes clean.
 
