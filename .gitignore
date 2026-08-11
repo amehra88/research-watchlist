@@ -71,6 +71,16 @@ state/chunk_store/*
 # v3 ingest runtime state (watermark — regenerable via DB rescan)
 state/v3_ingest/
 
+# Transcript ingest (P1) — bulk retrieved chunks, the resume ledger and the raw
+# FactSet payload cache. Regenerable by re-running transcript_ingest.py, and far
+# too large for git (a full 9-month backfill is ~10^5 rows). The small
+# _no_coverage.json IS tracked: it is the documented exclusion list every
+# downstream figure has to print. The {TICKER}.json earnings-reviewer ledgers
+# already in this directory stay tracked too.
+state/transcripts/exchanges.jsonl
+state/transcripts/_progress.json
+state/transcripts/raw/
+
 # Obsidian per-device workspace state (don't sync between devices)
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json

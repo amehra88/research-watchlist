@@ -1,0 +1,23 @@
+{
+ "generated_at": "2026-08-11T22:43:18+00:00",
+ "window": {
+  "start": "2025-11-11",
+  "end": "2026-08-11"
+ },
+ "no_factset_id": [
+  {
+   "ticker": "hisense_broadband.cn",
+   "reason": "no factset_id in tier_4 entry",
+   "route": "tier_4"
+  },
+  {
+   "ticker": "source_photonics.cn",
+   "reason": "no factset_id in tier_4 entry",
+   "route": "tier_4"
+  }
+ ],
+ "no_themes": [],
+ "no_results": [
+  "innolight.cn"
+ ]
+}
