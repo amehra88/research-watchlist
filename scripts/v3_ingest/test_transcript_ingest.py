@@ -316,6 +316,99 @@ def test_ledger_distinguishes_empty_from_failed():
         assert reloaded.done("LITE-US", "q", 0) is False    # failed = retry
 
 
+def test_ledger_remembers_which_page_ended_the_paging():
+    # without this a resumed run re-fetches offset 50 for every query that already
+    # ran out of results at offset 0 — one wasted claude -p call per query
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "_progress.json"
+        led = ti.Ledger(p)
+        led.record("AAOI-US", "q", 0, "ok", 12, raw_returned=12, terminal=True)
+        led.record("LITE-US", "q", 0, "ok", 50, raw_returned=50, terminal=False)
+        led.save()
+
+        reloaded = ti.Ledger(p)
+        assert reloaded.terminated("AAOI-US", "q", 0) is True
+        assert reloaded.terminated("LITE-US", "q", 0) is False
+        assert reloaded.terminated("NEW-US", "q", 0) is False
+
+
+def test_ledger_records_raw_and_validated_counts_separately():
+    # a page where validation dropped chunks must not look like a short page
+    with tempfile.TemporaryDirectory() as d:
+        led = ti.Ledger(Path(d) / "_progress.json")
+        led.record("AAOI-US", "q", 0, "ok", 47, raw_returned=50, terminal=False)
+        e = led.data["entries"][led.key("AAOI-US", "q", 0)]
+        assert e["n_chunks"] == 47 and e["raw_returned"] == 50
+
+
+def test_ledger_coverage_survives_a_resumed_run_that_makes_no_calls():
+    # the resume trap: a name fully covered by an earlier run must stay "covered",
+    # not become "no_results" just because today's run had nothing left to fetch
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "_progress.json"
+        led = ti.Ledger(p)
+        led.record("AAOI-US", "q", 0, "ok", 50, raw_returned=50, terminal=False)
+        led.record("AAOI-US", "q", 50, "ok", 12, raw_returned=12, terminal=True)
+        led.record("INNO-CN", "q", 0, "empty", 0, raw_returned=0, terminal=True)
+        led.record("BROKE-US", "q", 0, "failed: timeout", 0)
+        led.save()
+
+        reloaded = ti.Ledger(p)
+        assert reloaded.coverage("AAOI-US") == "covered"
+        assert reloaded.coverage("INNO-CN") == "no_results"
+        assert reloaded.coverage("BROKE-US") == "incomplete"
+        assert reloaded.coverage("NEVER-US") == "not_queried"
+
+
+def test_ledger_coverage_prefers_ok_over_a_failure_on_another_page():
+    with tempfile.TemporaryDirectory() as d:
+        led = ti.Ledger(Path(d) / "_progress.json")
+        led.record("X-US", "q1", 0, "ok", 50, raw_returned=50)
+        led.record("X-US", "q2", 0, "failed: timeout", 0)
+        assert led.coverage("X-US") == "covered"
+
+
+def test_no_coverage_separates_unknown_from_genuinely_empty():
+    entries = [ti.UniverseEntry("AAOI", "AAOI-US", ["t"], ["tier_1"]),
+               ti.UniverseEntry("XYZ", "XYZ-US", [], ["tier_2"])]
+    out = ti.build_no_coverage(entries, [], empty_names={"INNO"},
+                               incomplete_names={"BROKE"}, window=("a", "b"))
+    assert out["no_results"] == ["INNO"]
+    assert out["incomplete"] == ["BROKE"]
+    assert [n["ticker"] for n in out["no_themes"]] == ["XYZ"]
+
+
+def test_existing_keys_reads_back_both_guards(tmpdir=None):
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "exchanges.jsonl"
+        rows = [ti.row_from_chunk(c, "AAOI", "q", "file") for c in EARNINGS]
+        p.write_text("".join(json.dumps(r) + "\n" for r in rows))
+        vectors, exchanges = ti.existing_keys(p)
+        assert vectors == {r["vector_id"] for r in rows}
+        assert len(exchanges) == 3
+        assert all(v is True for v in exchanges.values())     # all CORRECTED
+        assert ti._exchange_key(rows[0]) in exchanges
+
+
+def test_existing_keys_on_a_missing_file_is_empty_not_an_error():
+    with tempfile.TemporaryDirectory() as d:
+        vectors, exchanges = ti.existing_keys(Path(d) / "nope.jsonl")
+        assert vectors == set() and exchanges == {}
+
+
+def test_exchange_key_matches_across_original_and_corrected_documents():
+    # the cross-run guard: differing vector_ids, same exchange
+    orig = dict(EARNINGS[1],
+                vectorId="3510329-t_3510329-t_qna_4_0",
+                documentID="3510329-t",
+                headline=EARNINGS[1]["headline"].replace("CORRECTED TRANSCRIPT: ",
+                                                         "TRANSCRIPT: "))
+    a = ti.row_from_chunk(orig, "AAOI", "q", "file")
+    b = ti.row_from_chunk(EARNINGS[1], "AAOI", "q", "file")
+    assert a["vector_id"] != b["vector_id"]
+    assert ti._exchange_key(a) == ti._exchange_key(b)
+
+
 def test_ledger_never_treats_a_missing_key_as_done():
     with tempfile.TemporaryDirectory() as d:
         led = ti.Ledger(Path(d) / "_progress.json")

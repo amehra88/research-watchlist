@@ -452,13 +452,26 @@ class Ledger:
         s = self.status(factset_id, query, offset)
         return bool(s and (s == "ok" or s == "empty" or s.startswith("ok")))
 
-    def record(self, factset_id, query, offset, status, n_chunks) -> None:
+    def record(self, factset_id, query, offset, status, n_chunks,
+               raw_returned=None, terminal=False) -> None:
+        """`n_chunks` is what survived validation; `raw_returned` is what the API
+        actually returned. Both are needed: the stop decision keys on the raw count,
+        so without it a resumed run cannot tell a short page from a page where
+        validation dropped chunks, and would re-fetch every terminated query."""
         with self._lock:
             self.data["entries"][self.key(factset_id, query, offset)] = {
                 "status": status,
                 "n_chunks": n_chunks,
+                "raw_returned": raw_returned,
+                "terminal": bool(terminal),
                 "ts": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
             }
+
+    def terminated(self, factset_id, query, offset) -> bool:
+        """True when this page already ended the query's paging — so a resumed run
+        skips the offsets beyond it instead of paying for them again."""
+        e = self.data["entries"].get(self.key(factset_id, query, offset))
+        return bool(e and e.get("terminal"))
 
     def save(self) -> None:
         with self._lock:
@@ -466,6 +479,25 @@ class Ledger:
             tmp = self.path.with_suffix(".tmp")
             tmp.write_text(json.dumps(self.data, indent=1))
             tmp.replace(self.path)
+
+    def coverage(self, factset_id: str) -> str:
+        """Coverage as the LEDGER knows it, across every run — not as this run
+        happened to behave. A resumed run makes no calls for names already done,
+        so in-run activity would mislabel a fully covered name as uncovered.
+
+        ok anywhere -> covered | else failed anywhere -> incomplete |
+        else empty anywhere -> no_results | nothing recorded -> not_queried
+        """
+        prefix = f"{factset_id}|"
+        seen = [e.get("status") or "" for k, e in self.data["entries"].items()
+                if k.startswith(prefix)]
+        if not seen:
+            return "not_queried"
+        if any(s.startswith("ok") for s in seen):
+            return "covered"
+        if any(s.startswith("failed") for s in seen):
+            return "incomplete"
+        return "no_results"
 
     def counts(self) -> dict:
         out: dict[str, int] = {}
@@ -588,7 +620,7 @@ def load_yaml(path: Path):
         return {}
 
 
-def build_no_coverage(entries, unresolved, empty_names, window) -> dict:
+def build_no_coverage(entries, unresolved, empty_names, incomplete_names, window) -> dict:
     """Spec §4.1: names with no coverage are RECORDED, never dropped silently —
     and §11.5 requires every downstream figure to print its exclusions.
 
@@ -597,6 +629,12 @@ def build_no_coverage(entries, unresolved, empty_names, window) -> dict:
       no_themes      — we can ask but have no operator-authored question to ask
                        (inventing one would contaminate the vocabulary, §11.2)
       no_results     — we asked and FactSet has nothing in the window
+      incomplete     — we asked and the call failed, so coverage is UNKNOWN
+
+    `incomplete` is separate from `no_results` for the same reason the ledger keeps
+    `empty` separate from `failed`: a name whose pages all errored has not been
+    shown to be uncovered, and reporting it as such would launder an outage into a
+    finding — the b1c351aa lesson, one level up.
     """
     return {
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
@@ -605,20 +643,33 @@ def build_no_coverage(entries, unresolved, empty_names, window) -> dict:
         "no_themes": [{"ticker": e.ticker, "factset_id": e.factset_id,
                        "routes": e.reasons} for e in entries if not e.themes],
         "no_results": sorted(empty_names),
+        "incomplete": sorted(incomplete_names),
     }
 
 
-def existing_vector_ids(path: Path) -> set:
-    out = set()
+def existing_keys(path: Path):
+    """(vector_ids, exchange_keys) already on disk.
+
+    Both are needed. vector_id catches the same chunk arriving twice — which it
+    does, since pages overlap. The exchange key catches the SAME exchange arriving
+    under a different documentID (an original and a corrected transcript), whose
+    vector_ids differ by construction. Measured on the 990-row ramp corpus: zero
+    collisions and no headline family split across documentIDs, so this guard is
+    latent today — FactSet appears to retire the original. It is kept because the
+    failure it prevents (a bank counted twice in n_banks) is silent and lands in
+    P4's headline numbers."""
+    vectors, exchanges = set(), {}
     if not path.exists():
-        return out
+        return vectors, exchanges
     with path.open() as fh:
         for line in fh:
             try:
-                out.add(json.loads(line).get("vector_id"))
+                row = json.loads(line)
             except json.JSONDecodeError:
                 continue
-    return out
+            vectors.add(row.get("vector_id"))
+            exchanges[_exchange_key(row)] = bool(row.get("corrected"))
+    return vectors, exchanges
 
 
 def window_bounds(months: int, today: dt.date | None = None):
@@ -680,19 +731,23 @@ def main(argv=None) -> int:
 
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     ledger = Ledger(PROGRESS_PATH)
-    seen_vectors = existing_vector_ids(EXCHANGES_PATH)
-    log(f"exchanges.jsonl already holds {len(seen_vectors)} chunks")
+    seen_vectors, seen_exchanges = existing_keys(EXCHANGES_PATH)
+    log(f"exchanges.jsonl already holds {len(seen_vectors)} chunks "
+        f"({len(seen_exchanges)} distinct exchanges)")
 
     write_lock = threading.Lock()
     raw_dir = None if args.no_raw_cache else RAW_DIR
-    stats = {"written": 0, "dupes": 0, "pages_ok": 0, "pages_empty": 0, "pages_failed": 0}
-    queried, produced = set(), set()
+    stats = {"written": 0, "dupes": 0, "superseded": 0,
+             "pages_ok": 0, "pages_empty": 0, "pages_failed": 0}
+    queried, produced, failed_names = set(), set(), set()
 
     def work(item):
         entry, query = item
         queried.add(entry.ticker)
         for offset in page_offsets(args.limit, args.max_pages):
             if ledger.done(entry.factset_id, query, offset):
+                if ledger.terminated(entry.factset_id, query, offset):
+                    return                 # this query already ran out of results
                 continue
             chunks, status, source = fetch_page(entry.factset_id, query, start, end,
                                                 offset, args.limit, raw_dir=raw_dir)
@@ -700,10 +755,14 @@ def main(argv=None) -> int:
                 kept, status = accept_payload(chunks, source or "model_text")
             else:
                 kept = []
-            ledger.record(entry.factset_id, query, offset, status, len(kept))
+            terminal = not status.startswith("failed") and should_stop_paging(
+                len(chunks), args.limit)
+            ledger.record(entry.factset_id, query, offset, status, len(kept),
+                          raw_returned=len(chunks), terminal=terminal)
 
             if status.startswith("failed"):
                 stats["pages_failed"] += 1
+                failed_names.add(entry.ticker)
                 log(f"  {entry.ticker} offset={offset} {status}")
                 return                     # do not page past an unknown
             if status == "empty":
@@ -714,18 +773,34 @@ def main(argv=None) -> int:
             produced.add(entry.ticker)
             rows = dedupe_rows([row_from_chunk(c, entry.ticker, query, source) for c in kept])
             with write_lock:
-                fresh = [r for r in rows if r["vector_id"] not in seen_vectors]
-                stats["dupes"] += len(rows) - len(fresh)
+                fresh = []
+                for r in rows:
+                    if r["vector_id"] in seen_vectors:
+                        stats["dupes"] += 1
+                        continue
+                    ekey = _exchange_key(r)
+                    if ekey in seen_exchanges:
+                        # same exchange, different documentID — an original/corrected
+                        # pair. Never counted twice; flagged when the stored copy is
+                        # the uncorrected one, which would warrant a rebuild.
+                        stats["dupes"] += 1
+                        if r.get("corrected") and not seen_exchanges[ekey]:
+                            stats["superseded"] += 1
+                            log(f"  NOTE {entry.ticker}: corrected copy of an already-"
+                                f"stored uncorrected exchange ({r['vector_id']})")
+                        continue
+                    fresh.append(r)
+                    seen_vectors.add(r["vector_id"])
+                    seen_exchanges[ekey] = bool(r.get("corrected"))
                 if fresh:
                     with EXCHANGES_PATH.open("a") as fh:
                         for r in fresh:
                             fh.write(json.dumps(r) + "\n")
-                    seen_vectors.update(r["vector_id"] for r in fresh)
                     stats["written"] += len(fresh)
                 ledger.save()
             log(f"  {entry.ticker} offset={offset} kept={len(kept)} new={len(fresh)} "
                 f"src={source}")
-            if should_stop_paging(len(chunks), args.limit):
+            if terminal:
                 return
 
     try:
@@ -738,11 +813,18 @@ def main(argv=None) -> int:
     finally:
         ledger.save()
 
-    no_cov = build_no_coverage(entries, unresolved, queried - produced, (start, end))
+    # Ledger-derived, not run-derived: a resumed run makes no calls for names it
+    # already covered, and those must not read as uncovered. A name that only ever
+    # errored is UNKNOWN coverage, not "no results".
+    no_results = {e.ticker for e in entries
+                  if ledger.coverage(e.factset_id) == "no_results"}
+    incomplete = {e.ticker for e in entries
+                  if ledger.coverage(e.factset_id) == "incomplete"}
+    no_cov = build_no_coverage(entries, unresolved, no_results, incomplete, (start, end))
     NO_COVERAGE_PATH.write_text(json.dumps(no_cov, indent=1))
     log(f"no_coverage: {len(no_cov['no_factset_id'])} unmappable, "
-        f"{len(no_cov['no_themes'])} themeless, {len(no_cov['no_results'])} no-results "
-        f"-> {NO_COVERAGE_PATH}")
+        f"{len(no_cov['no_themes'])} themeless, {len(no_cov['no_results'])} no-results, "
+        f"{len(no_cov['incomplete'])} incomplete -> {NO_COVERAGE_PATH}")
     log(f"done: {stats} ledger={ledger.counts()}")
     return 0
 
