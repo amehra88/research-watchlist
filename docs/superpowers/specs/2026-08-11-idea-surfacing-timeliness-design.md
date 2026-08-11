@@ -41,8 +41,13 @@ Section census across all 4,022 SEC notes (every note has `##` headers; zero exc
 | 10-K Item 7 (MD&A) | 309 | annual |
 | 10-K Item 1A (Risk Factors) | 308 | annual |
 
-**Consequence:** the SEC corpus is dominated by IR-authored press-release language — the
-noisiest register available. It is deliberately **not** the trend substrate for this system.
+**Consequence:** the SEC corpus is dominated by IR-authored press-release language — the noisiest
+register available. The **8-K and EX-99.1 majority (4,192 sections) is deliberately not used**
+for trend work.
+
+The **quarterly MD&A minority is used**, but on the evidence side rather than the heat metric
+(§4.4). The distinction is cadence and completeness, not source: Item 2 is quarterly and complete,
+while Item 1A is annual — which is why register-migration was dropped (§3) and MD&A was kept.
 
 ### 1.3 Theme extraction is broken at the recent end
 
@@ -169,6 +174,7 @@ parameter-convention mismatch. **Out of scope** (§9), but the highest-value ite
 | Decision | Rationale |
 |---|---|
 | **Transcript Q&A is the trend substrate**, not filings or news | Operator's judgement, and correct: Q&A is unscripted and analyst-driven. Filings/news are IR-authored |
+| **Quarterly MD&A is kept — on the evidence side, not the heat metric** (§4.4) | Quarterly cadence, complete text (no retrieval ceiling), lawyered, already on disk. Registers stay separate: `n_banks` is meaningless for a filing, so mixing them would corrupt the breadth metric |
 | **FactSet for text, InsiderScore for calendar + pushback flag** | Verbatim beats AI summary; FactSet types the speaker; InsiderScore has `challenging_analyze_exchanges` |
 | **The 61 themes are demoted to anchors, not deleted** | They are load-bearing (`store.search()` hard filter, chunker union) and are the only labeled history. Deleting breaks retrieval |
 | **Open vocabulary comes from analyst topics, not LLM extraction over the corpus** | Costs embeddings of short phrases instead of ~4,000 `claude -p` calls against a bucket with a proven OAuth-outage failure mode |
@@ -191,7 +197,9 @@ parameter-convention mismatch. **Out of scope** (§9), but the highest-value ite
 
 ## 4. Architecture
 
-Five components. Each is independently testable and owns one job.
+Six components across two sides — a **question side** (what analysts ask) and an **evidence side**
+(what companies disclose). Each component is independently testable and owns one job. The system's
+core signal is the gap between the two sides.
 
 ```
                  ┌─────────────────────────────────────────┐
@@ -206,17 +214,23 @@ Five components. Each is independently testable and owns one job.
                  │    -> anchor to 61 themes | candidate   │
                  └────────────────┬────────────────────────┘
   StreetAccount  ┌────────────────┴────────────────────────┐
-  CNINFO PDFs    │ 3. foreign_evidence.py                  │
-                 │    -> claims.jsonl (affects: [TICKER])  │
+  CNINFO PDFs    │ 3. foreign_evidence.py                  │──┐
+                 │    -> claims.jsonl (affects: [TICKER])  │  │
+                 └─────────────────────────────────────────┘  │
+  notes/sec/     ┌─────────────────────────────────────────┐  │ evidence
+  10-Q Item 2    │ 4. mdna_evidence.py                     │──┤  side
+  10-K Item 7    │    QoQ diff -> claims.jsonl             │  │
+                 │    + first_evidence_date                │  │
+                 └─────────────────────────────────────────┘  │
+                                  v                           v
+                 ┌─────────────────────────────────────────┐
+                 │ 5. diffusion.py                         │
+                 │    question-side counts vs evidence-side│
+                 │    counts; lifecycle stage; detectors   │
                  └────────────────┬────────────────────────┘
                                   v
                  ┌─────────────────────────────────────────┐
-                 │ 4. diffusion.py                         │
-                 │    counts + lifecycle stage + detectors │
-                 └────────────────┬────────────────────────┘
-                                  v
-                 ┌─────────────────────────────────────────┐
-                 │ 5. report renderer (over newsdigest/)   │
+                 │ 6. report renderer (over newsdigest/)   │
                  │    notes/sector/heat-YYYY-QQ.md + email │
                  └─────────────────────────────────────────┘
 ```
@@ -311,7 +325,44 @@ there, which is the entire actionable content of stage 1. The field is also what
 worked example computable — Innolight's FY2025 report is the evidence date that the June 2026
 question is measured against.
 
-### 4.4 `diffusion.py` and 4.5 the renderer
+### 4.4 `mdna_evidence.py` — the US evidence side
+
+10-Q Item 2 / 10-K Item 7 MD&A, already on disk in `notes/sec/`. Measured 2026-08-11:
+
+| | |
+|---|---|
+| Tickers with MD&A in the 9-month window | 70 |
+| Docs in window | 211 |
+| Tickers with **3+ consecutive quarters** | **62 of 70** |
+| Body text | median 53k chars, p90 194k — full sections, not summaries |
+| Most recent | 2026-08-07 |
+
+**Why this survives when Item 1A did not:** Item 1A is annual (0–1 observations in a 9-month
+window, which is why register-migration was dropped, §3). Item 2 is **quarterly** — 3
+observations, the same cadence as transcripts, so it composes with everything else.
+
+**It also hedges the top risk in §10.** FactSet returns the topically-relevant slice of a call,
+not the whole call. MD&A is a complete document with no retrieval ceiling. Where transcript
+recall fails, MD&A does not.
+
+**Note on the theme hole (§1.3):** it broke LLM-extracted *themes*, not documents. MD&A **text**
+is current through 2026-08-07. This component uses the text, not the frontmatter themes, and is
+therefore unaffected.
+
+**The primary signal is the quarter-over-quarter diff.** MD&A is largely carried-forward
+boilerplate, so what *changed* is small and deliberate — every added sentence survived legal
+review. New language in Item 2 is a company choosing to disclose something, and it yields the
+cleanest available `first_evidence_date` (§4.3) for stage-1 detection.
+
+> **Implementation trap, found in the data:** never diff across form types. AMD's 10-K MD&A is
+> ~174k chars against its 10-Q at ~30k; a naive sequential diff reports an enormous false change
+> at every annual filing. Diff 10-Q↔10-Q and 10-K↔10-K only. Extraction length also varies
+> within a ticker (INTC: 58k → 10k across consecutive 10-Qs), so treat a large size delta as
+> suspect extraction before treating it as new disclosure.
+
+Output joins `claims.jsonl` (§4.3) with `first_evidence_date` = `filed_date`.
+
+### 4.5 `diffusion.py` and 4.6 the renderer
 
 Metrics in §5, detectors in §6, output in §7. The renderer reuses `scripts/newsdigest/` plumbing
 (clustering, state-ledger dedup, source tiering, Brevo delivery) rather than building a parallel
@@ -361,9 +412,19 @@ competition."*
 
 ### 6.2 Detector 2 — evidence without question
 
-Topic present in `corprep` speech, in SEC filings, or in foreign evidence (§4.3), with **zero**
-`analyst` questions anywhere in the covered universe. The genuinely unasked question. Only
-computable because FactSet types the speaker.
+Topic present in `corprep` speech, in **MD&A** (§4.4), or in foreign evidence (§4.3), with
+**zero** `analyst` questions anywhere in the covered universe. The genuinely unasked question.
+Only computable because FactSet types the speaker.
+
+**Reported as a gap between two counts, not as a binary flag** — same metric shape, two registers:
+
+| Count | Register |
+|---|---|
+| `n_companies_disclosing` | companies that added MD&A language about the topic this quarter |
+| `n_companies_asked` / `n_banks` | companies where an analyst raised it (§5) |
+
+*"9 companies wrote about it; 1 was asked about it"* is a far more actionable signal than a yes/no
+flag, and it degrades gracefully — a narrowing gap is stage 2 arriving.
 
 ### 6.3 Lifecycle staging — the timeliness answer
 
@@ -409,7 +470,8 @@ Required sections:
    §4.1 caveat that FactSet retrieval is topically-scoped, not whole-call.
 2. **Movers** — topics by change in `n_banks` and `n_companies`, with the prior-quarter figure.
 3. **Stage 1 and 2 items** — the actionable list: evidence without questions, and questions
-   arriving at adjacent names.
+   arriving at adjacent names. Each carries the **disclosure-vs-question gap** (§6.2) and the
+   **lag** (§6.3), e.g. *"9 disclosing / 1 asked; first evidence 2026-04-20, 113 days ago."*
 4. **New-theme candidates** — for naming or rejection.
 5. **Novel names** — unresolved entities by mention breadth.
 6. **Challenging exchanges** — where analysts pushed back hardest.
@@ -427,10 +489,13 @@ restated as a number. Every figure prints its denominator and its exclusions.
 | **P1** | `transcript_ingest.py` — 9-month backfill + forward cron; `exchanges.jsonl` | — |
 | **P2** | `topic_map.py` — anchors, mapping, new-theme candidates | P1 |
 | **P3** | `foreign_evidence.py` — StreetAccount + CNINFO → `claims.jsonl` | — (parallel to P2) |
-| **P4** | `diffusion.py` — metrics, detectors, lifecycle staging | P2, P3 |
+| **P3b** | `mdna_evidence.py` — QoQ MD&A diff → `claims.jsonl` | — (parallel; corpus already on disk) |
+| **P4** | `diffusion.py` — metrics, detectors, lifecycle staging | P2, P3, P3b |
 | **P5** | Renderer + cron + email | P4 |
 
-P1 and P3 are independent and can proceed concurrently.
+P1, P3, and P3b are independent and can proceed concurrently. **P3b is the cheapest of the
+three** — no external API, no new auth, no `claude -p` dependency for the diff itself, and the
+211 documents are already on disk.
 
 ---
 
@@ -493,6 +558,10 @@ The build is done when all of the following hold:
    it as the reference example; if it does not, any other unmapped topic clearing the thresholds
    satisfies this criterion.
 5. Every report figure prints its denominator and its exclusions.
+5b. **MD&A diff produces signal, not noise.** For at least 50 of the 62 tickers with 3+
+   consecutive quarters, the QoQ Item 2 diff yields a changed-text block that is a small
+   fraction of the section rather than a near-total rewrite. A near-total rewrite means the
+   form-type or extraction-variance trap (§4.4) was hit, not that the company rewrote its MD&A.
 6. A report renders end to end through the existing digest plumbing.
 7. `python3 scripts/check.py` passes clean.
 
