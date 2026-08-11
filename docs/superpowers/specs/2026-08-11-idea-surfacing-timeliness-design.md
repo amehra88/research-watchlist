@@ -230,8 +230,10 @@ core signal is the gap between the two sides.
                  └────────────────┬────────────────────────┘
                                   v
                  ┌─────────────────────────────────────────┐
-                 │ 6. report renderer (over newsdigest/)   │
-                 │    notes/sector/heat-YYYY-QQ.md + email │
+                 │ 6. renderers (over newsdigest/)         │
+                 │    a. notes/themes/{theme}.md  quarterly│
+                 │    b. notes/sector/heat-*.md   quarterly│
+                 │    c. transition alert email   on change│
                  └─────────────────────────────────────────┘
 ```
 
@@ -472,22 +474,64 @@ Entity mentions inside exchanges that resolve to nothing in the watchlist, `priv
 
 ## 7. Output
 
-`notes/sector/heat-{YYYY}-{QQ}.md`, plus an email rendered through the existing digest plumbing.
+Three outputs at two cadences. One quarterly output would be wrong in two ways: it would delay
+the stage-transition signal by up to three months — destroying exactly the timeliness the system
+exists to measure — and a dated snapshot is the wrong shape for a vault, where the operator wants
+to open a theme and see its whole history rather than reassemble it across files.
+
+| Output | Where | Cadence | Purpose |
+|---|---|---|---|
+| **Per-theme living note** | `notes/themes/{theme}.md` | appended each quarter | Durable record — one file per theme, full history, stage, citations |
+| **Quarterly digest** | `notes/sector/heat-{YYYY}-{QQ}.md` + email | quarterly | State of the world; links out to theme notes |
+| **Stage-transition alert** | email only | checked daily, **sent only on transition** | The timing signal, while still timely |
+
+### 7.1 Per-theme living note — `notes/themes/{theme}.md`
+
+The primary durable artifact, and a deliberate parallel to the existing `notes/{TICKER}/`
+per-entity convention. Appended once per quarter, never rewritten.
+
+```yaml
+---
+doc_type: theme_state
+theme: chinese_optical_competition
+status: candidate            # candidate | approved  (operator-set, §4.2)
+stage: 2
+tickers: [COHR, LITE, AAOI]  # names where it has been raised or disclosed
+affects: [COHR, LITE]        # holdings whose thesis it bears on
+first_evidence_date: '2026-04-20'
+first_question_date: '2026-06-09'
+lag_days: 50
+---
+```
+
+Body carries one dated section per quarter: the counts (§5), the disclosure-vs-question gap
+(§6.2), stage and lag (§6.3), and **verbatim citations with speaker, firm, and date**. Wikilinks
+run both ways — theme notes link to `[[COHR]]`, and ticker notes gain a themes list — so the
+Obsidian graph shows which themes connect which names. That linkage is close to the original ask:
+*surface where a sub-sector is forming and who is exposed to it.*
+
+**Gate on creation.** Only themes clearing the §5 breadth thresholds get a note. Without this,
+61 files appear on the first run and the signal drowns in its own index.
+
+**These are machine-appended files inside the operator's vault — a first for this repo**, where
+`notes/` today is either agent-authored on demand or ingested from a source. Two consequences:
+the writer must be append-only and idempotent per quarter (re-running a quarter must not
+duplicate a section), and `status: candidate` stays until the operator approves the theme name.
+The system still never writes to `config/watchlist.yaml` (§9).
+
+### 7.2 Quarterly digest
 
 **Cadence — quarterly, not weekly.** The metric is per fiscal quarter and earnings are bursty:
 most covered calls land inside a ~3-week window, so a weekly report would emit near-empty output
-for two months and then everything at once. The run fires **once per quarter, roughly 2 weeks
-after the bulk of the covered universe has reported**, with an operator-triggerable re-run for
-late filers.
+for two months and then everything at once. Fires **once per quarter, roughly 2 weeks after the
+bulk of the covered universe has reported**, with an operator-triggerable re-run for late filers.
 
-This is deliberately unlike the news digest's twice-daily cadence: that channel tracks events,
-this one tracks accumulated attention, and a quarterly cadence matches how the underlying
-observations actually arrive.
+Deliberately unlike the news digest's twice-daily cadence: that channel tracks events, this one
+tracks accumulated attention.
 
-**First run differs from steady state.** The 9-month backfill produces a single report covering
-3 quarters with prior-quarter comparisons available only for the last two. Steady state produces
-one report per quarter. The first report must say so — its quarter-over-quarter figures are
-thinner than every subsequent one.
+**First run differs from steady state.** The 9-month backfill produces a single digest covering
+3 quarters, with prior-quarter comparisons available only for the last two. The first digest must
+say so — its quarter-over-quarter figures are thinner than every subsequent one.
 
 Required sections:
 
@@ -502,9 +546,26 @@ Required sections:
 5. **Novel names** — unresolved entities by mention breadth.
 6. **Challenging exchanges** — where analysts pushed back hardest.
 
-**The coverage denominator is load-bearing.** A diffusion figure that says "11 of 84" while
-silently excluding Innolight and Eoptolink is the AAOI trap from the `tier_4_ecosystem` comment
-restated as a number. Every figure prints its denominator and its exclusions.
+Every item links to its `notes/themes/{theme}.md`.
+
+### 7.3 Stage-transition alert
+
+Email only, deliberately thin — no report, one fact:
+
+> `chinese_optical_competition` moved to **stage 2** — AAOI 2026-08-06 (Simon Leopold, Raymond
+> James). COHR and LITE still unasked. First evidence 2026-04-20, 109 days ago.
+
+Fires on: a stage change (§6.3), or a topic crossing a §5 breadth threshold for the first time.
+Checked **daily** — a comparison, not a count, so it is cheap — and emitted only on change.
+Reuses the news digest's state-ledger dedup so a transition is announced once, never re-sent.
+
+Transcripts arrive in bursts during earnings season and conferences land year-round, so most
+daily checks will find nothing and send nothing. That is the intended behaviour, not a fault.
+
+**The coverage denominator is load-bearing across all three outputs.** A diffusion figure that
+says "11 of 84" while silently excluding Innolight and Eoptolink is the AAOI trap from the
+`tier_4_ecosystem` comment restated as a number. Every figure prints its denominator and its
+exclusions.
 
 ---
 
@@ -517,7 +578,8 @@ restated as a number. Every figure prints its denominator and its exclusions.
 | **P3** | `foreign_evidence.py` — StreetAccount + CNINFO → `claims.jsonl` | — (parallel to P2) |
 | **P3b** | `mdna_evidence.py` — QoQ MD&A diff → `claims.jsonl` | **P2** for topic mapping (§4.2); the diff itself has no dependency |
 | **P4** | `diffusion.py` — metrics, detectors, lifecycle staging | P2, P3, P3b |
-| **P5** | Renderer + cron + email | P4 |
+| **P5** | Theme-note writer (§7.1) + quarterly digest (§7.2) + cron | P4 |
+| **P5b** | Stage-transition alert (§7.3) — daily check, emit on change | P5 (needs stored prior stage to diff against) |
 
 P1 and P3 are independent and can proceed concurrently.
 
@@ -560,6 +622,7 @@ mapping is not.
 | CNINFO `orgId` guessed rather than resolved → false zero | Medium | Always resolve via `topSearch`; treat `totalRecordNum=0` as suspect until the orgId is confirmed |
 | New-theme candidate churn (noise proposed as themes) | Medium | Minimum company-and-bank thresholds; operator approves every name |
 | Foreign figures unaudited | Medium | Carry the source Chinese phrase; label as lead-to-verify |
+| **Machine-appended notes in the operator's vault** (§7.1) — a first for `notes/`, which is otherwise agent-on-demand or ingested | Medium | Append-only and idempotent per quarter; creation gated on breadth thresholds; `status: candidate` until the operator approves the name. Note these land in generic `Auto-sync:` commits within 15 min — expected, not a fault. iPad remains pull-only, so vault writes cannot round-trip back and clobber |
 | Conference transcripts inflate a bank's apparent breadth — the host bank asks nearly every question at its own conference | Medium | **Exclude the host firm from `n_banks` at its own conference.** Per-event deduping does not fix this: it would systematically undercount, since the host is often the *only* questioner. Host firm is derivable from the event headline |
 
 ---
@@ -601,7 +664,13 @@ The build is done when all of the following hold:
    item in the gold quarter is sourced from an MD&A diff — i.e. the diff text was topic-mapped
    through §4.2, matched against the question side, and contributed a real
    `n_companies_disclosing` count. 5b tests the diff; this tests the path.
-6. A report renders end to end through the existing digest plumbing.
+6. A digest renders end to end through the existing digest plumbing.
+6b. **Theme notes are correct in the vault.** Only threshold-clearing themes have a
+   `notes/themes/{theme}.md`; each carries the §7.1 frontmatter; wikilinks resolve in both
+   directions; and **re-running the same quarter appends nothing** (idempotent per quarter).
+6c. **The alert fires once, on the right event.** Replaying the 9-month window emits a stage-2
+   transition for Chinese optical competition dated to the LITE/Mizuho exchange (2026-06-09) and
+   **does not re-emit** it for the AAOI exchange (2026-08-06), which is the same stage.
 7. `python3 scripts/check.py` passes clean.
 
 ---
