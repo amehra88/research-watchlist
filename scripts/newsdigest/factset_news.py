@@ -21,6 +21,7 @@ import subprocess
 from datetime import datetime, timezone
 
 from . import FACTSET_CACHE_HOURS, FACTSET_TIMEOUT_SECONDS
+from .classify_llm import _claude_env, MODEL  # reuse the claude -p auth/model convention
 
 _TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_UnstructuredContent"
 
@@ -121,10 +122,16 @@ def fetch(name, factset_id, window_hours, now, cache_dir, repo_root,
         if cached is not None:
             return cached, "cached"
 
-    cmd = ["claude", "-p", _prompt(name, factset_id, window_hours), "--allowedTools", _TOOL]
+    # --model is pinned: this is an MCP tool wrapper that returns a JSON array, not reasoning
+    # work, and it fires once per ticker per run (~880 calls/day). Left unpinned it inherited the
+    # account default (Opus) and dominated daily usage. env strips ANTHROPIC_API_KEY so the call
+    # stays on subscription auth even when the cron sources podcasts/.env (which carries the key).
+    cmd = ["claude", "-p", _prompt(name, factset_id, window_hours),
+           "--allowedTools", _TOOL, "--model", MODEL]
     try:
         result = subprocess.run(
             cmd, capture_output=True, text=True, timeout=timeout, cwd=str(repo_root),
+            env=_claude_env(),
         )
     except subprocess.TimeoutExpired:
         return [], "error: timeout"

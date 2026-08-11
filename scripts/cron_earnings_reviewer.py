@@ -11,6 +11,7 @@ Configuration is baked in (see CONFIG below). Modify in place if scope/window
 changes.
 """
 import json
+import os
 import re
 import subprocess
 import sys
@@ -81,15 +82,29 @@ def load_watchlist_tickers() -> list[str]:
         )
     return sorted(set(tickers))
 
-def run_claude(prompt: str, timeout_seconds: int = 300) -> tuple[int, str, str]:
+CHEAP_MODEL = "claude-sonnet-4-6"   # for mechanical JSON lookups, not the review itself
+
+
+def _claude_env() -> dict:
+    """Strip ANTHROPIC_API_KEY so claude -p stays on subscription auth."""
+    return {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
+
+
+def run_claude(prompt: str, timeout_seconds: int = 300,
+               model: str | None = None) -> tuple[int, str, str]:
     """
     Invoke claude -p with the given prompt and the project's allowed tools.
     Returns (returncode, stdout, stderr). Captures combined stream into stdout.
+
+    model=None inherits the account default (Opus) — correct for the earnings review,
+    which is the analytical work product. Pass CHEAP_MODEL for mechanical lookups.
     """
     cmd = [
         "claude", "-p", prompt,
         "--allowedTools", ALLOWED_TOOLS,
     ]
+    if model:
+        cmd += ["--model", model]
     try:
         result = subprocess.run(
             cmd,
@@ -97,6 +112,7 @@ def run_claude(prompt: str, timeout_seconds: int = 300) -> tuple[int, str, str]:
             text=True,
             timeout=timeout_seconds,
             cwd=str(REPO_ROOT),
+            env=_claude_env(),
         )
         return result.returncode, result.stdout or "", result.stderr or ""
     except subprocess.TimeoutExpired as e:
@@ -117,7 +133,7 @@ def query_calendar(watchlist_tickers: list[str]) -> list[str] | None:
         "Example output for a day where NVDA and AMD reported: [\"NVDA\", \"AMD\"]. "
         "Example output for a day with no reports: []."
     )
-    rc, stdout, stderr = run_claude(prompt, timeout_seconds=180)
+    rc, stdout, stderr = run_claude(prompt, timeout_seconds=180, model=CHEAP_MODEL)
     if rc != 0:
         log_write(f"  CALENDAR_QUERY_FAILED rc={rc} stderr={stderr[:200]}")
         return None
