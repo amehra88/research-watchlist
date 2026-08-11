@@ -260,6 +260,18 @@ Resumable, and marks failures explicitly rather than writing empty results — r
 from commit `b1c351aa` (`v3 SEC: mark theme-extraction failures in frontmatter + retry transient
 ones`). A silent empty result is the failure mode that created the 828-doc hole.
 
+**Conference events do not carry a fiscal quarter.** Probed chunks from the Mizuho Global
+Technology, TD Cowen, and Jefferies conferences returned `financialYear: 2026` with
+**`financialQuarter` absent**. These are precisely the documents Detector 1 depends on — one of
+the two gold citations (§11) is a Mizuho conference exchange. The rule, therefore:
+
+- `event_type` ∈ {`earnings_call`, `conference`}, derived from the document headline.
+- For conferences, assign the period key from `event_date` (calendar quarter), never from
+  `financialQuarter`. Naive dict access on that field will KeyError on roughly every conference
+  chunk.
+- **Earnings and conference events are counted in separate denominators** (§5). A
+  conference-heavy quarter must not read as broader company coverage than actually exists.
+
 ### 4.2 `topic_map.py`
 
 Per **analyst** exchange, extract short topic phrases, then map to the vocabulary:
@@ -291,6 +303,14 @@ claims land beside US-filing claims and route through the existing `entity_menti
 Every claim carries the source Chinese phrase for audit, and is marked **lead to verify, not
 established fact** — figures have not been checked against audited statements.
 
+**Every claim record must carry `first_evidence_date`** — the publication date of the document
+the claim came from (CNINFO filing date, StreetAccount story date, SEC `filed_date`, or
+`event_date` for `corprep` speech). Without it the lifecycle staging in §6.3 has no clock: the
+detector could say a topic has evidence and no questions, but not *how long* it has been sitting
+there, which is the entire actionable content of stage 1. The field is also what makes the
+worked example computable — Innolight's FY2025 report is the evidence date that the June 2026
+question is measured against.
+
 ### 4.4 `diffusion.py` and 4.5 the renderer
 
 Metrics in §5, detectors in §6, output in §7. The renderer reuses `scripts/newsdigest/` plumbing
@@ -308,7 +328,7 @@ For each (topic, fiscal quarter):
 | `n_companies` | distinct companies where an **analyst** raised it |
 | `n_banks` | distinct `speaker_firm` values raising it — **the primary breadth signal** |
 | `n_exchanges` | raw count (reported, never ranked on) |
-| `denominator` | companies with transcript coverage that quarter |
+| `denominator` | companies with transcript coverage that quarter — reported **separately for earnings calls and conferences** (§4.1), never merged |
 | `challenging_rate` | share of raising calls flagged `challenging_analyze_exchanges > 0` |
 | `first_seen` | earliest quarter observed |
 
@@ -347,7 +367,16 @@ computable because FactSet types the speaker.
 
 ### 6.3 Lifecycle staging — the timeliness answer
 
-The lag between evidence appearing and questions appearing is the timing signal.
+The lag between evidence appearing and questions appearing is the timing signal:
+
+```
+lag = first_question_date - first_evidence_date
+```
+
+where `first_evidence_date` comes from `claims.jsonl` (§4.3) and `first_question_date` is the
+earliest `event_date` of an **analyst** exchange on the topic. A topic with evidence and no
+questions has an open-ended lag measured from `first_evidence_date` to today — that duration,
+not merely the stage label, is what gets reported.
 
 | Stage | State | Read |
 |---|---|---|
@@ -431,7 +460,7 @@ P1 and P3 are independent and can proceed concurrently.
 | CNINFO `orgId` guessed rather than resolved → false zero | Medium | Always resolve via `topSearch`; treat `totalRecordNum=0` as suspect until the orgId is confirmed |
 | New-theme candidate churn (noise proposed as themes) | Medium | Minimum company-and-bank thresholds; operator approves every name |
 | Foreign figures unaudited | Medium | Carry the source Chinese phrase; label as lead-to-verify |
-| Conference transcripts inflate a bank's apparent breadth (a bank hosting a conference asks all the questions) | Low | Count distinct banks per company-event, not per exchange |
+| Conference transcripts inflate a bank's apparent breadth — the host bank asks nearly every question at its own conference | Medium | **Exclude the host firm from `n_banks` at its own conference.** Per-event deduping does not fix this: it would systematically undercount, since the host is often the *only* questioner. Host firm is derivable from the event headline |
 
 ---
 
@@ -441,13 +470,28 @@ The build is done when all of the following hold:
 
 1. `exchanges.jsonl` covers T1+T2+adjacents for the trailing 9 months, and the `no_coverage`
    list explicitly names Innolight and Eoptolink.
-2. **China-laser gold test.** The system independently places Chinese optical competition at
-   **stage 2**, citing AAOI 2026-08-06 (Raymond James) and LITE/Mizuho 2026-06-09 (Mizuho) as the
-   adjacent-name questions, and Innolight FY2025 capacity/margin data as the preceding evidence.
-   This case is known-answer and must be reproduced without hand-holding.
+2. **China-laser gold test — and the trap in it.** The system places Chinese optical competition
+   at **stage 2**, citing AAOI 2026-08-06 (Raymond James) and LITE/Mizuho 2026-06-09 (Mizuho) as
+   the adjacent-name questions, and Innolight FY2025 capacity/margin data as the preceding
+   evidence.
+
+   **This test must be run with a query set generated only from assigned themes (§4.1).** Those
+   two citations were originally found with the direct query *"What are executives discussing
+   about Chinese competitors in lasers?"* — but Chinese competition is a recorded `[GAP]` in
+   COHR/LITE's scoring, so it is *not* an assigned theme and that query will not be generated.
+   Adding it by hand to make the test pass would hardcode the answer and prove nothing.
+
+   Therefore: if the test fails under theme-derived queries, that is **the recall measurement
+   §10 already requires before P4**, not a bug to paper over. The correct responses are to widen
+   query generation beyond assigned themes (e.g. seed from competitor and supplier themes via the
+   supply-chain graph, which is what Detector 1 is *for*), or to accept and document the recall
+   ceiling. A gold test that can be passed by adding the query it tests for is not a test.
 3. Detector 1 fires on COHR/LITE for that topic — the holdings themselves show no such Q&A.
-4. At least one new-theme candidate is proposed that is absent from the 61 (e.g. "Neoclouds",
-   observed at NVDA Q1'27).
+4. At least one new-theme candidate is proposed that is absent from the 61. "Neoclouds" (NVDA
+   Q1'27, Bernstein) is the expected candidate — but it was observed in the **InsiderScore
+   summary**, not FactSet verbatim. Confirm the phrase survives in FactSet's text before treating
+   it as the reference example; if it does not, any other unmapped topic clearing the thresholds
+   satisfies this criterion.
 5. Every report figure prints its denominator and its exclusions.
 6. A report renders end to end through the existing digest plumbing.
 7. `python3 scripts/check.py` passes clean.
