@@ -390,25 +390,15 @@ ingest_comparables:
   - ticker: FN
     informs: [COHR, LITE]
     added_date: 2026-08-10
-    notes: "Fabrinet (NYSE) — the contract manufacturer that actually builds much of the
-      datacom transceiver volume for COHR, LITE and others. Absent from the watchlist
-      entirely until now, which is a live hole: FN's filings disclose datacom transceiver
-      volume, mix and customer-concentration detail that directly tests COHR's
-      supply_tightness assumption from the outside. Not an investment candidate here —
-      ingested as evidence."
+    notes: "Fabrinet (NYSE) — the contract manufacturer that actually builds much of the datacom transceiver volume for COHR, LITE and others. Absent from the watchlist entirely until now, which is a live hole: FN's filings disclose datacom transceiver volume, mix and customer-concentration detail that directly tests COHR's supply_tightness assumption from the outside. Not an investment candidate here — ingested as evidence."
   - ticker: AAOI
     informs: [COHR, LITE]
     added_date: 2026-08-10
-    notes: "Applied Optoelectronics — already a T3 stub explicitly described there as a
-      'Direct competitor-to-watch for LITE and COHR in datacenter optics'. The analyst
-      intent was recorded 2026-06-02; the ingestion never followed, so the corpus has no
-      AAOI documents. This closes that gap without changing its tier."
+    notes: "Applied Optoelectronics — already a T3 stub explicitly described there as a 'Direct competitor-to-watch for LITE and COHR in datacenter optics'. The analyst intent was recorded 2026-06-02; the ingestion never followed, so the corpus has no AAOI documents. This closes that gap without changing its tier."
   - ticker: POET
     informs: [COHR, LITE]
     added_date: 2026-08-10
-    notes: "POET Technologies — silicon-photonics optical interposer / CPO light sources.
-      T3 stub, same situation as AAOI. Relevant to the optical-engine and CPO integration
-      layer where COHR's vertical-integration moat would be attacked."
+    notes: "POET Technologies — silicon-photonics optical interposer / CPO light sources. T3 stub, same situation as AAOI. Relevant to the optical-engine and CPO integration layer where COHR's vertical-integration moat would be attacked."
   # Considered and deliberately NOT ingested:
   #   APH (Amphenol) — a real optical-interconnect participant, but a large diversified
   #   connector maker whose filings would be mostly noise for the optics thesis. Add here
@@ -455,8 +445,7 @@ ingest_comparables:
 tier_4_ecosystem:
   - id: innolight.cn
     name: "Innolight Technology (Zhongji Innolight)"
-    aliases: ["Innolight", "InnoLight", "InnoLight Technology", "Zhongji Innolight",
-              "中际旭创", "300308.SZ"]
+    aliases: ["Innolight", "InnoLight", "InnoLight Technology", "Zhongji Innolight", "中际旭创", "300308.SZ"]
     listing: "300308.SZ (Shenzhen)"
     verified: true                    # FactSet_EntityReference, 2026-08-10
     factset_id: 300308-CN
@@ -467,9 +456,7 @@ tier_4_ecosystem:
     affects: [COHR, LITE]
     edgar_coverage: false
     evidence_sources: [us_filer_mentions, news, factset]
-    notes: "The largest Chinese datacom transceiver maker and the most direct volume threat
-      to COHR/LITE at 400G/800G, moving into 1.6T. Central to COHR's supply_tightness
-      assumption: if Innolight adds capacity at these speeds, the tightness thesis weakens."
+    notes: "The largest Chinese datacom transceiver maker and the most direct volume threat to COHR/LITE at 400G/800G, moving into 1.6T. Central to COHR's supply_tightness assumption: if Innolight adds capacity at these speeds, the tightness thesis weakens."
   - id: eoptolink.cn
     name: "Eoptolink Technology"
     aliases: ["Eoptolink", "Eoptolink Technology", "新易盛", "300502.SZ"]
@@ -483,9 +470,7 @@ tier_4_ecosystem:
     affects: [COHR, LITE]
     edgar_coverage: false
     evidence_sources: [us_filer_mentions, news, factset]
-    notes: "Fast-growing Chinese transceiver maker, aggressive at 800G/1.6T. Named in the
-      operator's own framing of the question as evidence that Chinese competition at these
-      speeds is real."
+    notes: "Fast-growing Chinese transceiver maker, aggressive at 800G/1.6T. Named in the operator's own framing of the question as evidence that Chinese competition at these speeds is real."
   - id: accelink.cn
     name: "Accelink Technologies"
     aliases: ["Accelink", "Accelink Technologies", "光迅科技", "002281.SZ"]
@@ -499,9 +484,7 @@ tier_4_ecosystem:
     affects: [COHR, LITE]
     edgar_coverage: false
     evidence_sources: [us_filer_mentions, news, factset]
-    notes: "Chinese optical component/subsystem maker with in-house chip capability — the
-      layer where COHR's vertical-integration moat (indium phosphide lasers -> transceivers)
-      would actually be contested."
+    notes: "Chinese optical component/subsystem maker with in-house chip capability — the layer where COHR's vertical-integration moat (indium phosphide lasers -> transceivers) would actually be contested."
   - id: hgtech.cn
     name: "HG Genuine (Huagong Tech)"
     aliases: ["HG Genuine", "HGTech", "Huagong Tech", "华工科技", "000988.SZ"]
@@ -527,8 +510,7 @@ tier_4_ecosystem:
     affects: [COHR, LITE]
     edgar_coverage: false
     evidence_sources: [us_filer_mentions, news]
-    notes: "Transceiver arm of Hisense. Not separately listed, so even FactSet fundamentals
-      are unlikely — mentions in US filings and trade press are the only evidence path."
+    notes: "Transceiver arm of Hisense. Not separately listed, so even FactSet fundamentals are unlikely — mentions in US filings and trade press are the only evidence path."
   - id: source_photonics.cn
     name: "Source Photonics"
     aliases: ["Source Photonics"]
@@ -540,8 +522,7 @@ tier_4_ecosystem:
     affects: [COHR, LITE]
     edgar_coverage: false
     evidence_sources: [us_filer_mentions, news]
-    notes: "Privately held transceiver maker. Included because it appears in competitive
-      discussion of the datacom module market despite having no public disclosure at all."
+    notes: "Privately held transceiver maker. Included because it appears in competitive discussion of the datacom module market despite having no public disclosure at all."
 
   # --- Bloom Energy (BE) supply chain -------------------------------------
   # Operator-sourced 2026-08-10. A supplier concentration is a thesis risk in the
@@ -559,12 +540,7 @@ tier_4_ecosystem:
     affects: [BE]
     edgar_coverage: false
     evidence_sources: [us_filer_mentions, news]
-    notes: "Hyderabad-based precision engineering firm that manufactures and supplies solid
-      oxide fuel cell (SOFC) hot boxes and power units DIRECTLY to Bloom Energy
-      (operator-sourced). Relevant to BE as a single-source/geographic-concentration risk on
-      the most critical subassembly in the stack — and as a read-through: MTAR's own
-      disclosure and order book is an independent window on BE demand that BE's filings do
-      not provide. India-listed, so no EDGAR coverage; FactSet may carry fundamentals."
+    notes: "Hyderabad-based precision engineering firm that manufactures and supplies solid oxide fuel cell (SOFC) hot boxes and power units DIRECTLY to Bloom Energy (operator-sourced). Relevant to BE as a single-source/geographic-concentration risk on the most critical subassembly in the stack — and as a read-through: MTAR's own disclosure and order book is an independent window on BE demand that BE's filings do not provide. India-listed, so no EDGAR coverage; FactSet may carry fundamentals."
   - id: kaori.tw
     name: "Kaori Heat Treatment Co."
     aliases: ["Kaori", "Kaori Heat Treatment", "Kaori Heat Treatment Co., Ltd."]
@@ -578,12 +554,7 @@ tier_4_ecosystem:
     affects: [BE]
     edgar_coverage: false
     evidence_sources: [us_filer_mentions, news]
-    notes: "Taiwan-based manufacturer of the critical fuel cell reaction/hot boxes for Bloom
-      (operator-sourced). Operator notes Taiwan-based suppliers collectively handle roughly
-      30% of BE's system component manufacturing — a geographic concentration that is a
-      thesis risk in its own right (Taiwan Strait exposure), and one BE's own filings are
-      unlikely to frame that way. The 30% figure is operator-sourced and UNVERIFIED against
-      a primary document."
+    notes: "Taiwan-based manufacturer of the critical fuel cell reaction/hot boxes for Bloom (operator-sourced). Operator notes Taiwan-based suppliers collectively handle roughly 30% of BE's system component manufacturing — a geographic concentration that is a thesis risk in its own right (Taiwan Strait exposure), and one BE's own filings are unlikely to frame that way. The 30% figure is operator-sourced and UNVERIFIED against a primary document."
 
 tier_1_bctk:
   - ticker: 000660.KS
