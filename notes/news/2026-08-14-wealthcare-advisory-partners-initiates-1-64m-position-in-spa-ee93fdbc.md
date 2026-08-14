@@ -8,8 +8,7 @@ macro_signals: []
 lens_tags:
 - 'Company: SPCX'
 confidence: low
-rationale: Routine $1.64M new institutional position in SpaceX (SPCX); no strategy
-  or business content.
+rationale: Small $1.64M institutional position in SPCX; no fundamental news
 source_urls:
 - https://news.google.com/rss/articles/CBMixwFBVV95cUxNdTgxSWt6SWxZa2Exc0ZLRk1yVmdRZG1GblppTDF6ZU1sejdjUG5YUVZhYUJieFJwMkJNa3E1YkFNM2FGWUJRRGdIWWZlem1JX3k0YV84b1JNa2NQcmF1amN4WUtJUWR2aXBqV1RGVlpUU1ZsSGVyNUVtQkxjMUpQVVM2MkJBZHJDakNTZUFjNkVsOHI5ekNjWDYyQnZHbjhrX05iZWs2R2IyRGxodVBTY0F0c0VNTFRmTjFOOXZTcG5lQmNWN0hF?oc=5
 cluster_headlines:
@@ -23,9 +22,8 @@ extraction_source: v3 news-flow channel (news_digest.py), claude -p 3-pass class
 
 ## Wealthcare Advisory Partners initiates $1.64M position in SpaceX
 
-Routine disclosure; directionally supportive of post-IPO institutional broadening in SPCX but not signal-bearing on its own for a tech PM.
+Minimal signal at this size; provides early data on institutional adoption of SPCX equity post-IPO, but the allocation is not directionally significant for thesis purposes.
 
-- Wealthcare Advisory Partners LLC disclosed a new $1.64M investment in SpaceX (SPCX)
-- No investment rationale or thesis detail provided in the headline
-- Represents a new institutional entrant into SPCX, consistent with post-IPO positioning activity
-- Single outlet; routine 13F-style disclosure
+- Wealthcare Advisory Partners LLC disclosed a new $1.64 million investment in SPCX (SpaceX).
+- Position size is small; headline provides no fundamental catalyst or strategic rationale.
+- Confidence tagged low; classifier treats this as a routine institutional allocation.

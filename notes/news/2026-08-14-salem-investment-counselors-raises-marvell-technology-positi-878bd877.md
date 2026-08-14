@@ -21,10 +21,10 @@ extraction_source: v3 news-flow channel (news_digest.py), claude -p 3-pass class
   + summarizer
 ---
 
-## Salem Investment Counselors raises Marvell Technology position
+## Salem Investment Counselors Raises Marvell Technology Position
 
-Routine filing; no standalone thesis implication for MRVL's AI custom silicon thesis without a broader pattern of institutional accumulation.
+Routine flow; not actionable as a standalone signal but part of the institutional accumulation picture for MRVL within the AI custom silicon cycle.
 
-- Salem Investment Counselors Inc. increased its equity position in Marvell Technology.
-- Routine institutional ownership disclosure with no accompanying strategic commentary.
-- No position size or rationale specified in the headline.
+- Salem Investment Counselors increased its position in Marvell Technology (MRVL).
+- Routine institutional rebalancing with no disclosed fundamental rationale.
+- Low-confidence signal; no company-specific catalyst identified.
