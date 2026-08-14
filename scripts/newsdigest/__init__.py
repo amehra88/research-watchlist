@@ -22,7 +22,9 @@ FACTSET_MATCH_JACCARD = 0.5      # looser overlap to call a Google cluster "corr
 # ── FactSet channel (spec §1 operator decision, §9) ───────────────────────────
 FACTSET_CONCURRENCY = 8          # max concurrent claude -p subprocesses
 FACTSET_CACHE_HOURS = 6          # v2: DRY-RUN ONLY (separate cache dir). Production cron bypasses cache (always fresh).
-FACTSET_TIMEOUT_SECONDS = 120    # per-ticker claude -p hard timeout
+FACTSET_TIMEOUT_SECONDS = 120    # per-chunk claude -p hard timeout
+FACTSET_CHUNK_SIZE = 30          # ids per batched pull; the tool accepts up to 100
+FACTSET_RESULT_LIMIT = 50        # tool max; hitting it exactly triggers a saturation split
 
 # ── State ledger (spec §10) ───────────────────────────────────────────────────
 STALE_HOURS = 18         # skip clusters already surfaced within this many hours
@@ -36,5 +38,6 @@ __all__ = [
     "PREMARKET_WINDOW_HOURS", "POSTMARKET_WINDOW_HOURS", "FEED_CAP",
     "JACCARD_THRESHOLD", "FACTSET_MATCH_JACCARD",
     "FACTSET_CONCURRENCY", "FACTSET_CACHE_HOURS", "FACTSET_TIMEOUT_SECONDS",
+    "FACTSET_CHUNK_SIZE", "FACTSET_RESULT_LIMIT",
     "STALE_HOURS", "LEDGER_PRUNE_HOURS", "SIGNAL_SENTIMENTS",
 ]

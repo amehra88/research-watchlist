@@ -50,7 +50,8 @@ import yaml  # noqa: E402
 
 from newsdigest import (  # noqa: E402
     PREMARKET_WINDOW_HOURS, POSTMARKET_WINDOW_HOURS,
-    FACTSET_CONCURRENCY, STALE_HOURS, LEDGER_PRUNE_HOURS,
+    FACTSET_CONCURRENCY, STALE_HOURS, LEDGER_PRUNE_HOURS,   # FACTSET_CONCURRENCY now caps the
+    #                                        Google RSS fan-out only; FactSet is a batched pass.
 )
 from newsdigest.identity import load_identities          # noqa: E402
 from newsdigest.sources import load_classifier           # noqa: E402
@@ -61,8 +62,6 @@ from newsdigest import pre_filter, merge, verdict_cache  # noqa: E402  (pre-LLM 
 
 LOG_PATH = os.path.join(REPO_ROOT, "logs", "news_digest.log")
 LEDGER_PATH = os.path.join(REPO_ROOT, "state", "news_digest_seen.jsonl")
-FACTSET_CACHE_DIR = os.path.join(REPO_ROOT, "state", "factset_cache")
-FACTSET_CACHE_DRYRUN_DIR = os.path.join(REPO_ROOT, "state", "factset_cache_dryrun")
 NOTES_NEWS_DIR = os.path.join(REPO_ROOT, "notes", "news")
 WATCHLIST_YAML = os.path.join(REPO_ROOT, "config", "watchlist.yaml")
 MACRO_YAML = os.path.join(REPO_ROOT, "config", "macro_signals.yaml")
@@ -115,40 +114,63 @@ def _parse_iso(s, fallback):
         return fallback
 
 
-def _fa_to_item(a: dict, ident, now, classifier) -> dict:
-    """A FactSet article → a pool item dict (same shape as a Google item), sentiment attached."""
-    src = (a.get("source") or "StreetAccount").strip()
+def _fa_to_item(d: dict, now, classifier) -> dict:
+    """A batched FactSet document → ONE pool item (same shape as a Google item).
+
+    Emitted once per documentID, not once per ticker that names it. The old per-ticker pull
+    fetched a story like "Apple partnered with Alibaba" separately under AAPL and again under
+    GOOGL, putting two copies of the same story into the pool. The tool hands back the full id
+    list per document, so the primary ticker carries the item and `_fa_tickers` records every
+    watchlist name it mentions.
+
+    NB `_fa_tickers` is RECORDED BUT NOT YET CONSUMED. Everything downstream (clustering,
+    classify, the ledger, the digest sections) still reads the scalar `ticker`, so a story
+    naming four holdings surfaces once under its primary. That satisfies "no duplicate
+    stories"; richer per-ticker routing would need the ledger and sections to read the list."""
+    src = (d.get("source") or "StreetAccount").strip()
+    tickers = d.get("tickers") or []
     return {
-        "ticker": ident.ticker,
-        "title": (a.get("headline") or "").strip(),
+        "ticker": tickers[0] if tickers else "",
+        "title": (d.get("headline") or "").strip(),
         "source": f"FactSet/{src}",
-        "link": (a.get("url") or "").strip(),
-        "published": _parse_iso(a.get("date"), now),
+        "link": (d.get("url") or "").strip(),
+        "published": _parse_iso(d.get("date"), now),
         "tier": "unknown",
         "_is_factset": True,
-        "_fa_sentiment": a.get("sentiment") or "Neutral",
+        "_fa_sentiment": d.get("sentiment") or "Neutral",
+        "_fa_tickers": tickers,
+        "_fa_doc_id": d.get("documentID") or "",
     }
 
 
-def fetch_one(ident, window, now, classifier, use_factset, cache_dir, use_cache):
-    """Pull Google RSS (+ FactSet) for one identity. Returns (items, g_status, fa_status)."""
-    items, g_status, fa_status = [], None, "disabled"
+def fetch_one(ident, window, now, classifier):
+    """Pull Google RSS for one identity. Returns (items, g_status).
+
+    FactSet is no longer fetched here — it is pulled once for the whole universe by
+    fetch_factset_batch below. Google RSS stays per-identity because its RSS endpoint takes
+    one query at a time."""
+    items, g_status = [], None
     try:
         g_items, g_status = google_rss.fetch(ident.ticker, ident.google, window, now, classifier)
         items.extend(g_items)
     except Exception as e:  # noqa: BLE001 — per-source isolation
         g_status = f"error: {type(e).__name__}: {e}"
-    if use_factset:
-        try:
-            fa_articles, fa_status = factset_news.fetch(
-                ident.name, ident.factset_id, window, now, cache_dir, REPO_ROOT, use_cache=use_cache)
-            for a in fa_articles:
-                it = _fa_to_item(a, ident, now, classifier)
-                if it["title"]:
-                    items.append(it)
-        except Exception as e:  # noqa: BLE001
-            fa_status = f"error: {type(e).__name__}: {e}"
-    return items, g_status, fa_status
+    return items, g_status
+
+
+def fetch_factset_batch(idents, window, now, classifier):
+    """Pull FactSet for the WHOLE universe in a handful of calls. Returns (items, failed).
+
+    Replaces one `claude -p` per ticker (~87 sessions/run, ~800 calls and ~8M billed tokens a
+    day — 93% of all news-pipeline spend) with one session per 30-ticker chunk. The `ids`
+    argument accepts up to 100 identifiers and post-filters a single shared similarity search,
+    so this is lossless: a ticker queried alone returns exactly the documentIDs it gets inside
+    a batch (verified live 2026-08-14 on AAPL/INTC over a 24h window)."""
+    runner = factset_news.make_runner(now, REPO_ROOT)
+    docs, failed = factset_news.fetch_batch(idents, window, runner)
+    items = [it for it in (_fa_to_item(d, now, classifier) for d in docs)
+             if it["title"] and it["ticker"]]
+    return items, failed
 
 
 # ─────────────────────────── dedup + ledger (Phase 1b) ──────────────────────────
@@ -415,8 +437,6 @@ def main():
     mode = "premarket" if args.premarket else "postmarket" if args.postmarket else "brief"
     window = POSTMARKET_WINDOW_HOURS if args.postmarket else PREMARKET_WINDOW_HOURS
     use_factset = not args.no_factset
-    use_cache = args.dry_run
-    cache_dir = FACTSET_CACHE_DRYRUN_DIR if args.dry_run else FACTSET_CACHE_DIR
     now = datetime.now(timezone.utc)
     now_local = datetime.now()
     date_str = now_local.strftime("%Y-%m-%d")
@@ -436,21 +456,28 @@ def main():
     pool, failures = [], []
     g_ok = fa_ok = 0
     with concurrent.futures.ThreadPoolExecutor(max_workers=FACTSET_CONCURRENCY) as ex:
-        futs = {ex.submit(fetch_one, ident, window, now, classifier, use_factset, cache_dir, use_cache): tk
+        futs = {ex.submit(fetch_one, ident, window, now, classifier): tk
                 for tk, ident in src_ids}
         for fut in concurrent.futures.as_completed(futs):
             tk = futs[fut]
-            items, g_status, fa_status = fut.result()
+            items, g_status = fut.result()
             pool.extend(items)
             if g_status == "ok":
                 g_ok += 1
             elif g_status and g_status.startswith("error"):
                 failures.append(f"{tk}: Google — {g_status}")
-            if fa_status in ("ok", "cached", "empty"):
-                fa_ok += 1
-            elif fa_status and fa_status.startswith("error"):
-                failures.append(f"{tk}: FactSet — {fa_status}")
-    logger.info("sourced pool=%d items (google_ok=%d factset_ok=%d)", len(pool), g_ok, fa_ok)
+
+    # FactSet: one batched pass for the whole universe (was one claude -p per ticker).
+    fa_items = []
+    if use_factset:
+        idents = [ident for _tk, ident in src_ids]
+        fa_items, fa_failed = fetch_factset_batch(idents, window, now, classifier)
+        pool.extend(fa_items)
+        fa_ok = len(idents) - len(fa_failed)
+        for tk in sorted(fa_failed):
+            failures.append(f"{tk}: FactSet — error: chunk and per-ticker retry both failed")
+    logger.info("sourced pool=%d items (google_ok=%d factset_ok=%d factset_docs=%d)",
+                len(pool), g_ok, fa_ok, len(fa_items))
 
     google_down = g_ok == 0
     factset_down = use_factset and fa_ok == 0
