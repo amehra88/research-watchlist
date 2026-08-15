@@ -3,7 +3,7 @@ doc_type: substack_post
 source: substack
 publication: AI Supremacy
 publication_url: https://www.ai-supremacy.com/
-source_email: <20260810093105.3.662f28832b6d9cae@mg2.substack.com>
+source_email: <20260810093105.3.662f28832b6d9cae@mg-d1.substack.com>
 source_sender: '"Michael Spencer from AI Supremacy " <aisupremacy@substack.com>'
 source_url: https://open.substack.com/pub/aisupremacy/p/how-ai-demand-for-compute-could-disrupt-america-debt-crisis
 source_date: '2026-08-10'
@@ -17,7 +17,13 @@ ingestion_date: '2026-08-15'
 extraction_source: v3 substack ingest pipeline (substacks.py), claude-extracted tickers/themes
 ---
 
-# [How AI's Demand for Compute could Disrupt America](https://substack.com/app-link/post?publication_id=396235&post_id=210270036&utm_source=post-email-title&utm_campaign=email-post-title&isFreemail=true&r=8ne7oq&token=eyJ1c2VyX2lkIjo1MjMwMjM3MjIsInBvc3RfaWQiOjIxMDI3MDAzNiwiaWF0IjoxNzg2MzU0NzEwLCJleHAiOjE3ODg5NDY3MTAsImlzcyI6InB1Yi0zOTYyMzUiLCJzdWIiOiJwb3N0LXJlYWN0aW9uIn0.kVUhHnFzpnrfP7gbvJjqYXIt7eX805Py0z623N_sqHQ)
+# How AI's Demand for Compute could Disrupt America
+
+You are reading AI Supremacy, where we explore AI at the intersection of business, society, work, culture and technology.
+
+[Read it on the Web](https://substack.com/redirect/e57eeff3-c116-4f02-8eba-b421f15192b4?j=eyJ1IjoiOG5lN29xIn0.bqmJ9TjykdtTXCviJ3jD2X5vxhprRGd5tpCaC89FQIA)
+
+# [How AI's Demand for Compute could Disrupt America](https://substack.com/app-link/post?publication_id=396235&post_id=210270036&utm_source=post-email-title&utm_campaign=email-post-title&isFreemail=true&r=8ne7oq&token=eyJ1c2VyX2lkIjo1MjMwMjM3MjIsInBvc3RfaWQiOjIxMDI3MDAzNiwiaWF0IjoxNzg2NzkzOTQ2LCJleHAiOjE3ODkzODU5NDYsImlzcyI6InB1Yi0zOTYyMzUiLCJzdWIiOiJwb3N0LXJlYWN0aW9uIn0.kVRvlIoM-YA9HXWLPXhwxd3ciz162AjU1F9cXwJJrVc)
 
 ### The spectre of AI, labor participation churn, worker slice of GPD, an ageist AI, a debt binge, a cartel in waiting. An accelerating demand for compute that eats at the fabric of society.
 
@@ -105,7 +111,7 @@ The BLS said that workers share of GDP is the lowest since the series began in 1
 
 The recent U.S. Payrolls told us the economy added 103,000 fewer jobs in May and June than previously estimated (these revisions are getting more common). Volatility in job creation and the decline of professional opportunities is not the thing that worries me the most though, it’s how AI’s demand for compute will impact people, consumers, workers and the majority of citizens in the years and decades to come in the big picture. Will all of that compute build an AI that benefits people? I’m not seeing much evidence so far that it will. What am I missing?
 
-[Leave a comment](https://substack.com/app-link/post?publication_id=396235&post_id=210270036&utm_source=substack&utm_medium=email&isFreemail=true&comments=true&token=eyJ1c2VyX2lkIjo1MjMwMjM3MjIsInBvc3RfaWQiOjIxMDI3MDAzNiwiaWF0IjoxNzg2MzU0NzEwLCJleHAiOjE3ODg5NDY3MTAsImlzcyI6InB1Yi0zOTYyMzUiLCJzdWIiOiJwb3N0LXJlYWN0aW9uIn0.kVUhHnFzpnrfP7gbvJjqYXIt7eX805Py0z623N_sqHQ&r=8ne7oq&utm_campaign=email-half-magic-comments&action=post-comment)
+[Leave a comment](https://substack.com/app-link/post?publication_id=396235&post_id=210270036&utm_source=substack&utm_medium=email&isFreemail=true&comments=true&token=eyJ1c2VyX2lkIjo1MjMwMjM3MjIsInBvc3RfaWQiOjIxMDI3MDAzNiwiaWF0IjoxNzg2NzkzOTQ2LCJleHAiOjE3ODkzODU5NDYsImlzcyI6InB1Yi0zOTYyMzUiLCJzdWIiOiJwb3N0LXJlYWN0aW9uIn0.kVRvlIoM-YA9HXWLPXhwxd3ciz162AjU1F9cXwJJrVc&r=8ne7oq&utm_campaign=email-half-magic-comments&action=post-comment)
 
 The demand for compute is a voracious ghost in the machine that I don’t think humanity has understood or realized yet. There aren’t many warning signs but rising Capex and debt, but this is only the beginning.
 
@@ -171,6 +177,18 @@ Every bubble in history popped [when margin debt hit 3% of GDP](https://substack
 
 [Get Full Access](https://substack.com/redirect/0f0456bf-3d58-40a3-8a91-60b4eb2f8bd7?j=eyJ1IjoiOG5lN29xIn0.bqmJ9TjykdtTXCviJ3jD2X5vxhprRGd5tpCaC89FQIA)
 
-### A Stunning Heist of Capital ...
+### A Stunning Heist of Capital
 
-## Continue reading this post for free in the Substack app
+At a certain point the accelerating demand for compute becomes a runaway train. While those historical examples of the Electricity buildout or the Railway network took decades to generations to see their full impact, the compressed nature of building datacenters, scaling bigger models and racing to make better GPUs truly is horrying compared to the impacts they have on people, environments, communities and livelihoods. The mismatch between the depreciation of the GPUs and the real-world economic value is startling and starkly nonsensical and bizarre. The physical components of Generative AI depreciate in value faster than they generate value in the real world via tokens or whatever other measure you want to track.
+
+The demand for compute of Generative AI truly is a disruptive monstrosity that’s difficult to control once it gets out of hand a bit like the wildfires facing many regions of the West coast of the U.S., Spain or France this summer. Just three years after ChatGPT, not only are they [racing to implement Ads](https://substack.com/redirect/5c3d7fa1-1c22-4eee-8ac9-49f19ef0bedf?j=eyJ1IjoiOG5lN29xIn0.bqmJ9TjykdtTXCviJ3jD2X5vxhprRGd5tpCaC89FQIA) in the populari interface, there’s a reverse situational awareness that things are not adding up. The cognitive dissonance and financial ruin that we have in store for us is ramping up and can ramp up for many years yet before the AI bubble pops. The pressure is building.
+
+There are scenarios where this leads to a debt crisis and the U.S. losing its status as the global reserve currency. The unleashing of geopolitical imperialism, trade tariffs, instigating inflationary wars, and Generative AI being weaponized by the Trump Administration on forced “deals” could also lead to a backlash from the middle and small countries of the world towards the U.S. This as the datacenter roll-out circumvents and continues to erode the checks and balances of democracy and capitalism. We can only assume that a lot of the incredible Earnings growth we are seeing is inflated by the AI bubble and all of these Earnings beats (“peak earnings”) may not be sustainable.
+
+AI won’t just change the future of work, but alter the spectrum of opportunity and freedom. A labor market of algorithms that churns the middle class on the wild speculation of the AI bubble is upon us. That’s not just uncertainty, it’s a brave new world governed by the select few. This bubble has a shadow of AI authoritarianism and operates under the veil of glamorizing Department of War technology, over people. (Generative) AI is not normal technology. This isn’t just about capital control, it’s about AI Supremacy. Meanwhile margin debt relative to GDP in the AI era is beginning to spiral out of control.
+
+Kindly share this piece if you got something out of it:
+
+[Share](https://substack.com/app-link/post?publication_id=396235&post_id=210270036&utm_source=substack&utm_medium=email&utm_content=share&utm_campaign=email-share&action=share&triggerShare=true&isFreemail=true&r=8ne7oq&token=eyJ1c2VyX2lkIjo1MjMwMjM3MjIsInBvc3RfaWQiOjIxMDI3MDAzNiwiaWF0IjoxNzg2NzkzOTQ2LCJleHAiOjE3ODkzODU5NDYsImlzcyI6InB1Yi0zOTYyMzUiLCJzdWIiOiJwb3N0LXJlYWN0aW9uIn0.kVRvlIoM-YA9HXWLPXhwxd3ciz162AjU1F9cXwJJrVc)
+
+Thanks for reading!
