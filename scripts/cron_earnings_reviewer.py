@@ -73,6 +73,12 @@ def load_watchlist_tickers() -> list[str]:
             if not isinstance(ticker, str):
                 bad.append((tier, ticker))
                 continue
+            # `.pvt` ids are private companies with no filings and no transcripts. CLAUDE.md calls
+            # the ticker-only gate here deliberate and load-bearing; it was previously enforced only
+            # by the [A-Z]+ regexes downstream, which this loader never applied. simaai.pvt
+            # (2026-08-19) is the first .pvt to sit in a tier block, so the gate is made explicit.
+            if ticker.endswith(".pvt"):
+                continue
             tickers.append(ticker)
     if bad:
         details = "; ".join(f"{tier}: {t!r} ({type(t).__name__})" for tier, t in bad)

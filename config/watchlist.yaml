@@ -224,6 +224,13 @@ private_drivers:
     affects: [NOW]
     notes: "US enterprise customer-service AI-agent platform; the principal direct competitor to Sierra in autonomous customer support. Key private name in agent_framework_landscape (enterprise vertical-agent axis). Competitive read-through to Salesforce Agentforce (CRM, not in watchlist) and ServiceNow (NOW)."
     added_date: 2026-06-03
+  - name: "SiMa.ai"
+    pvt_id: simaai.pvt
+    aliases: ["SiMa.ai", "SiMa ai", "SiMa", "SiMa Technologies", "Sima.ai"]
+    affects: [NVDA, ARM, QCOM, AMD, TSM]
+    bctk_holding: true
+    notes: "Fabless edge-AI silicon: MLSoC (machine-learning system-on-chip) for embedded and physical-AI inference at the edge rather than datacenter training. FIRST .pvt id that is a BCTK HOLDING rather than only a thesis driver, so it is registered here (the .pvt authority) AND listed in tier_1_bctk — see the tier_1 entry and the .pvt guards added to sec_filings.py / cron_earnings_reviewer.py on 2026-08-19. Read-through: edge/embedded inference is the segment NVDA serves with Jetson and where ARM, QCOM and AMD compete, so SiMa is a datapoint on where inference workloads land. Position and company details are OPERATOR-ASSERTED (2026-08-19); no public filings exist, so nothing here is verifiable against a primary document."
+    added_date: 2026-08-19
 
 # ---------------------------------------------------------------------------
 # External web sources to track over time. Includes company technical blogs,
@@ -752,6 +759,30 @@ tier_1_bctk:
     themes: []      # TODO: assign themes via WATCHLIST email
     notes: "DPC Holdings PLC (parent of Doncasters Group) — Jersey-domiciled, NYSE-listed. 250-year-old UK manufacturer of aerospace + industrial gas turbine (IGT) engine components (turbine blades, structural/rotating parts). IPO 2026-06-25 at $33 (~$21.7B mcap); BCTK initiated 0.67% position late June (per 06/26/2026 daily holdings). Read-through: aerospace/defense supply chain + IGT demand tied to data-center / grid power buildout."
     added_date: 2026-06-26
+  - ticker: simaai.pvt
+    themes: [silicon_architecture_competition, inference_compute_economics, chip_design_competition]
+    added_date: 2026-08-19
+    notes: "SiMa.ai — PRIVATE BCTK holding, added at operator request 2026-08-19. Fabless edge-AI
+      silicon (MLSoC) for embedded / physical-AI inference at the edge rather than datacenter
+      training.
+
+      THIS IS THE FIRST .pvt ID IN A TIER BLOCK, and it is deliberate. The 14 private_drivers are
+      companies that MOVE holdings; this one IS a holding, so T1 (defined as 'BCTK holdings') would
+      be false if it were left out. It keeps the .pvt id rather than being given a pseudo-ticker,
+      because a private company has no symbol and inventing one would collide with the [A-Z]+
+      regexes that gate the earnings pipeline. Registered in private_drivers (the .pvt authority)
+      as simaai.pvt with bctk_holding: true.
+
+      CONSUMERS: sec_filings.py load_universe() and cron_earnings_reviewer.py both read T1 and
+      neither filtered non-ticker ids, so both would have queried EDGAR/transcripts for a private
+      company and produced flagged-and-skipped noise every run. A .pvt guard was added to each on
+      2026-08-19 (sec_filings.py already DOCUMENTED the exclusion at module level but did not
+      enforce it). news_digest.py is safe by construction — it intersects the universe with
+      ticker_identity, which has no .pvt entries.
+
+      Everything here is OPERATOR-ASSERTED: no public filings exist, so no claim in this entry is
+      verifiable against a primary document. Convert to a real ticker on any IPO, per the
+      spacex.pvt -> SPCX precedent (scripts/migrate_spacex_to_spcx.py)."
   - ticker: ENTG
     themes: [foundry_capacity, semiconductor_cycle, advanced_materials_ai_infra, china_export_controls, lithography_roadmap, nand_demand_cycle]
     added_date: 2026-05-09

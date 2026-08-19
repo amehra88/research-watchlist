@@ -143,6 +143,18 @@ def http_get(url: str) -> requests.Response:
 
 # ───────────────────────────── Watchlist universe ─────────────────────────────
 
+def is_private_id(t) -> bool:
+    """True for a `.pvt` pseudo-identifier (private company, e.g. simaai.pvt).
+
+    The module docstring has always said this universe excludes .pvt, but nothing enforced it —
+    fine while every .pvt lived only in private_drivers. simaai.pvt (2026-08-19) is the first
+    private company that is also a BCTK HOLDING and therefore sits in tier_1_bctk, so the
+    exclusion now has to be real: a private company has no CIK, and without this guard every run
+    would flag-and-skip it forever, which is the coverage-theatre the tier_4 block comment warns
+    against."""
+    return str(t).endswith(".pvt")
+
+
 def load_universe() -> list[str]:
     """T1 (tier_1_bctk) + T2 (tier_2_active_candidates) + ingest_comparables.
 
@@ -155,7 +167,7 @@ def load_universe() -> list[str]:
     for key in ("tier_1_bctk", "tier_2_active_candidates", "ingest_comparables"):
         for entry in (wl.get(key) or []):
             t = entry.get("ticker") if isinstance(entry, dict) else entry
-            if t:
+            if t and not is_private_id(t):
                 out.append(str(t))
     # de-dup, preserve order
     seen: set[str] = set()
