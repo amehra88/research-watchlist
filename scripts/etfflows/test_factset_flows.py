@@ -99,6 +99,18 @@ def test_date_chunks_respect_row_cap():
           f"{chunks[0]} .. {chunks[-1]}")
 
 
+def test_chunks_aim_below_the_cap_to_avoid_splitting():
+    """Planning for exactly `limit` makes a full trading period saturate and recurse."""
+    chunks = ff.date_chunks("2023-01-01", "2026-01-01", n_ids=10)
+    worst = 0
+    for cs, ce in chunks:
+        cal = (date.fromisoformat(ce) - date.fromisoformat(cs)).days + 1
+        worst = max(worst, cal * 252 / 365.0 * 10)
+    print(f"       worst projected rows/chunk = {worst:.0f} of {FACTSET_RESULT_LIMIT}")
+    check("planned chunks leave headroom under the cap",
+          worst <= FACTSET_RESULT_LIMIT * 0.9, f"worst={worst:.0f}")
+
+
 def test_date_chunks_no_gaps_or_overlap():
     chunks = ff.date_chunks("2026-01-01", "2026-06-30", n_ids=10)
     for (_, prev_end), (nxt_start, _) in zip(chunks, chunks[1:]):

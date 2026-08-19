@@ -54,6 +54,9 @@ VALUE_FIELD = {
 # at 252 would cost ~24x more calls than it needs.
 ROWS_PER_YEAR = {"flows": 252, "prices": 252, "aum": 12}
 
+# Fraction of the row cap a planned chunk aims to fill. See date_chunks.
+CHUNK_FILL_TARGET = 0.8
+
 
 def _claude_env() -> dict:
     """Strip ANTHROPIC_API_KEY so `claude -p` stays on subscription auth.
@@ -220,7 +223,12 @@ def date_chunks(start: str, end: str, n_ids: int,
     if e < s:
         raise ValueError(f"end {end} before start {start}")
 
-    rows_budget = max(1, limit // n_ids)
+    # Aim BELOW the cap, not at it. Planning for exactly `limit` rows means a chunk that
+    # lands on a full trading period hits the cap exactly, trips the saturation check, and
+    # splits into two more calls — observed on the 2026-08-19 run, where the very first
+    # chunk returned exactly 500 rows and recursed. Filling to ~80% costs a few more planned
+    # chunks and avoids roughly doubling the executed ones.
+    rows_budget = max(1, int(limit * CHUNK_FILL_TARGET) // n_ids)
     span = max(1, int(rows_budget * (365.0 / rows_per_year)))
 
     out, cur = [], s
