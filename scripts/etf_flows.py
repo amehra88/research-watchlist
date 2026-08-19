@@ -33,13 +33,16 @@ from datetime import date, datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from etfflows import build, factset_flows, fear_greed, render, store  # noqa: E402
+from etfflows import build, factset_flows, fear_greed, lookthrough, render, store  # noqa: E402
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 LEDGER = os.path.join(REPO_ROOT, "state", "etf_flows.jsonl")
 TRIGGER_STATE = os.path.join(REPO_ROOT, "state", "etf_flows_triggers.json")
 FG_CACHE = os.path.join(REPO_ROOT, "state", "fear_greed.json")
+LOOKTHROUGH_CACHE = os.path.join(REPO_ROOT, "state", "etf_lookthrough.json")
+# The /root/ws scraper's daily holdings, which supply the BCTK side of the intersection.
+WS_HOLDINGS_DB = "/root/ws/data/etf_holdings.db"
 UNIVERSE = os.path.join(REPO_ROOT, "config", "etf_universe.yaml")
 LOG_DIR = os.path.join(REPO_ROOT, "logs")
 NOTES_DIR = os.path.join(REPO_ROOT, "notes", "flows")
@@ -125,7 +128,70 @@ def do_fetch(args) -> int:
         # Reported, never silent — a partial fetch that looks clean is how a section quietly
         # starts under-reporting.
         log(f"WARNING: {len(total_failed)} tickers failed: {', '.join(sorted(total_failed))}")
+
+    if not args.dry_run and not args.no_lookthrough:
+        do_fetch_lookthrough(args, uni)
     return 0
+
+
+def do_fetch_lookthrough(args, uni) -> None:
+    """Pre-fetch Phase 2 inputs for whatever alerted, during the 05:30 window.
+
+    WHY HERE AND NOT IN --report: look-through needs holdings and volume, which are
+    `claude -p` calls, and --report runs at 07:00 inside run_daily.sh where LLM work is
+    forbidden (the 2026-08-13 quota incident). So the fetch stage resolves which ETFs alerted
+    and caches the RAW inputs; --report re-derives the decomposition from that cache with no
+    LLM calls at all.
+
+    The alert evaluation here is throwaway — it runs against a COPY of the hysteresis state
+    and the result is discarded, so a fetch can never consume an alert that --report should
+    still be able to fire.
+    """
+    state = store.load(ledger_path(args))
+    as_of = store.latest_date(state, "flows")
+    if not as_of:
+        return
+
+    trig_state = _load_json(TRIGGER_STATE, {})
+    probe, _discarded = build.build_report(state, uni, as_of, dict(trig_state), "")
+    etfs = lookthrough.etfs_to_decompose(probe["alerts"], uni)
+    if not etfs:
+        log("look-through: no alerting ETF to decompose")
+        _save_json(LOOKTHROUGH_CACHE, {"as_of": as_of, "holdings": [], "adv": []})
+        return
+
+    log(f"look-through: decomposing {', '.join(etfs)}")
+    try:
+        h_runner = lookthrough.make_holdings_runner(REPO_ROOT)
+        holdings_raw = h_runner(etfs[:10], topn=25)
+    except Exception as exc:                       # noqa: BLE001 — degrade, never fail the fetch
+        log(f"look-through: holdings fetch failed: {exc}")
+        return
+
+    parsed = lookthrough.parse_holdings(holdings_raw)
+    names: list[str] = []
+    for entry in parsed.values():
+        for h in entry["holdings"][:lookthrough.MAX_NAMES]:
+            if h["ticker"] not in names:
+                names.append(h["ticker"])
+
+    adv_raw: list[dict] = []
+    if names:
+        end = args.end or date.today().isoformat()
+        start = (date.fromisoformat(end)
+                 - timedelta(days=lookthrough.ADV_WINDOW_DAYS)).isoformat()
+        try:
+            a_runner = lookthrough.make_adv_runner(REPO_ROOT)
+            for i in range(0, len(names), lookthrough.MAX_ADV_IDS):
+                adv_raw.extend(a_runner(names[i:i + lookthrough.MAX_ADV_IDS], start, end))
+        except Exception as exc:                   # noqa: BLE001
+            # Without ADV the decomposition still renders — days-of-ADV shows '?' rather
+            # than a fabricated 0.
+            log(f"look-through: ADV fetch failed, days-of-ADV will be unavailable: {exc}")
+
+    _save_json(LOOKTHROUGH_CACHE,
+               {"as_of": as_of, "holdings": holdings_raw, "adv": adv_raw})
+    log(f"look-through: cached {len(holdings_raw)} holding rows, {len(adv_raw)} price rows")
 
 
 # ── backfill ──────────────────────────────────────────────────────────────────
@@ -205,6 +271,20 @@ def do_report(args) -> int:
 
     trig_state = _load_json(TRIGGER_STATE, {})
     report, new_trig = build.build_report(state, uni, as_of, trig_state, fg_line)
+
+    # Phase 2, recomputed from the cache the fetch stage wrote. Pure computation — no LLM
+    # calls in the 07:00 path. A cache from a different flow date is ignored rather than
+    # rendered against today's alerts, which would attribute stale weights to a fresh move.
+    cache = _load_json(LOOKTHROUGH_CACHE, {})
+    if report["alerts"] and cache.get("as_of") == as_of:
+        report["lookthrough"] = lookthrough.analyse(
+            report["alerts"], uni,
+            lookthrough.parse_holdings(cache.get("holdings") or []),
+            lookthrough.compute_adv(cache.get("adv") or []),
+            lookthrough.bctk_holdings(WS_HOLDINGS_DB),
+        )
+    elif report["alerts"] and cache:
+        log(f"look-through cache is for {cache.get('as_of')}, not {as_of} — skipping")
 
     main = render.render_main(report)
     table = render.render_table(report)
@@ -296,6 +376,8 @@ def main() -> int:
                         "a failed subset without repeating a whole backfill)")
     p.add_argument("--ledger", help="alternate state ledger path (keeps a smoke test out of "
                                     "the production history)")
+    p.add_argument("--no-lookthrough", action="store_true",
+                   help="skip the Phase 2 pre-fetch during --fetch")
     p.add_argument("--lookback", type=int, default=10,
                    help="days of history for --fetch (default 10, covers a long weekend)")
     p.add_argument("--aum-lookback", type=int, default=45,
