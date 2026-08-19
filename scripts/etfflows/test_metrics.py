@@ -180,6 +180,31 @@ def test_roll_forward_reanchors_on_month_end():
           out[3] == 123.0e9, f"got {out[3]}")
 
 
+def test_step_aum_uses_window_start_not_end():
+    """The denominator must predate the flow it normalises."""
+    dates = ["2026-06-30", "2026-07-01", "2026-07-02", "2026-07-03", "2026-07-04"]
+    anchors = {"2026-06-30": 100e9}
+    out = m.step_aum_series(dates, anchors, window=3)
+    check("window ending 07-04 uses the 06-30 anchor (its start)", out[4] == 100e9,
+          f"got {out[4]}")
+
+
+def test_step_aum_picks_most_recent_prior_anchor():
+    dates = ["2026-06-30", "2026-07-31", "2026-08-03"]
+    anchors = {"2026-06-30": 100e9, "2026-07-31": 123e9}
+    out = m.step_aum_series(dates, anchors, window=1)
+    check("uses June anchor on 06-30", out[0] == 100e9, f"got {out[0]}")
+    check("steps to July anchor on 07-31", out[1] == 123e9, f"got {out[1]}")
+    check("holds July anchor into August", out[2] == 123e9, f"got {out[2]}")
+
+
+def test_step_aum_before_any_anchor_is_none():
+    out = m.step_aum_series(["2026-01-01"], {"2026-06-30": 100e9}, window=1)
+    check("no prior anchor -> None, never back-filled", out[0] is None, f"got {out[0]}")
+    check("empty anchors -> all None",
+          m.step_aum_series(["2026-01-01"], {}, 1) == [None])
+
+
 def test_roll_forward_applies_market_move():
     dates = ["2026-06-30", "2026-07-01"]
     navs = [100.0, 110.0]

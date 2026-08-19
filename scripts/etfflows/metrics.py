@@ -213,6 +213,40 @@ def roll_forward_aum(dates: Sequence[str], navs: Sequence[Num], flows: Sequence[
 
 # ── derived readings ──────────────────────────────────────────────────────────
 
+def step_aum_series(dates: Sequence[str], month_end_aum: dict[str, float],
+                    window: int) -> list[float | None]:
+    """Prior-period AUM denominator for a rolling window, as a month-end step function.
+
+    For the window ending at dates[i], the denominator is the most recent reported month-end
+    AUM at or before the window's START (dates[i-window+1]) — so it never contains the flow
+    it is normalising.
+
+    WHY A STEP FUNCTION RATHER THAN roll_forward_aum: consistency between the baseline and
+    today's reading matters MORE than precision. A z-score compares today's bps against a
+    3-year distribution of bps; if the baseline were built from month-end AUM (all we can
+    afford to backfill — daily NAV over 3y costs ~48 extra `claude -p` calls per endpoint)
+    while today used a daily roll-forward, the two would be on subtly different scales and
+    the z-score would carry that mismatch as a bias. Same estimator both sides, always.
+
+    roll_forward_aum stays for REPORTING current AUM, where daily NAV is available.
+    """
+    if not month_end_aum:
+        return [None] * len(dates)
+    anchors = sorted(month_end_aum.items())
+    out: list[float | None] = []
+    for i in range(len(dates)):
+        j = max(0, i - window + 1)
+        start = dates[j]
+        val = None
+        for d, a in anchors:
+            if d <= start:
+                val = a
+            else:
+                break
+        out.append(val)
+    return out
+
+
 def window_return(navs: Sequence[Num], window: int) -> float | None:
     """Simple NAV return over the trailing window, right-aligned on the last point."""
     if len(navs) < window + 1:
