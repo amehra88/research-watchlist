@@ -228,8 +228,14 @@ def test_spilled_result_is_followed_to_disk():
         with open(spill, "w") as fh:
             json.dump({"data": [{"requestId": "SPY", "date": "2025-08-19",
                                  "fundFlows": -1865645765.4}]}, fh)
+        # VERBATIM message shape, including the sentence-ending period straight after the
+        # path and the instructional tail. An earlier whitespace-terminated regex captured
+        # that trailing dot and silently failed every spilled chunk.
         msg = (f"Error: result (75,593 characters across 3,510 lines) exceeds maximum "
-               f"allowed tokens. Output has been saved to {spill}")
+               f"allowed tokens. Output has been saved to {spill}.\n"
+               f"Format: Plain text\nUse offset and limit parameters to read specific "
+               f"portions of the file.\n- You MUST read the content from the file at "
+               f"{spill} in sequential chunks.\n")
         obj = ff.resolve_payload(msg)
         check("spill pointer is followed", obj is not None and obj["data"][0]["requestId"] == "SPY",
               f"got {obj}")

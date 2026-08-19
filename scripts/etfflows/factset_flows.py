@@ -105,7 +105,10 @@ def _prompt(ids, data_type: str, start: str, end: str, limit: int,
 # The MCP layer spills an oversized tool result to disk and hands the model a pointer instead.
 # Verified 2026-08-19: "Error: result (75,593 characters across 3,510 lines) exceeds maximum
 # allowed tokens. Output has been saved to /root/.claude/projects/.../tool-results/....txt"
-_SPILL_RE = re.compile(r"saved to (/\S+?)(?:[\s'\"]|$)")
+# Anchored on the .txt extension, NOT on the next whitespace: the message renders the path
+# immediately followed by a sentence-ending period ("...1787179767087.txt.\nFormat: ..."),
+# so a whitespace-terminated match captures that trailing dot and the open() fails.
+_SPILL_RE = re.compile(r"saved to (/\S+\.txt)")
 
 
 def _tool_result_blocks(stdout: str) -> list[str]:
