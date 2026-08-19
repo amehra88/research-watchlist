@@ -1420,6 +1420,16 @@ tier_3_watchlist:
   - ticker: CRDO
     themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, hyperscaler_revenue_concentration]
     added_date: 2026-05-09
+  - ticker: CRS
+    themes: [aerospace_defense_aftermarket, space_economy]
+    added_date: 2026-08-19
+    notes: "Carpenter Technology Corp (NYSE: CRS) — specialty alloys and engineered
+      materials: high-temperature nickel/cobalt superalloys, titanium and ultra-high-strength
+      steels for aero-engine, space-launch and industrial applications. Added T3 at operator
+      request 2026-08-19 as an ENABLING-MATERIALS supplier into the space/launch build, i.e.
+      the read-through is upstream of SPCX rather than a launch-economics play. Supply-chain
+      edge SPCX -> CRS (kind: supplier) recorded in /root/research/config/supply-chain-manual.yaml.
+      Sits alongside DPC (Doncasters, T1) as the second aero/space component-materials name."
   - ticker: CRUS
     themes: [handset_competition, semiconductor_cycle]
     added_date: 2026-05-11
