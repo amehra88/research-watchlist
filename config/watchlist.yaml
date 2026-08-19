@@ -51,6 +51,13 @@ themes:
     - nuclear_energy_buildout
     - pc_demand
     - sovereign_ai_deployments
+  # space_supply_chain (added 2026-08-19): BUILD-SIDE inputs to launch and spacecraft —
+  # enabling materials (superalloys, titanium, beryllium), propulsion and structural components,
+  # heat-shield and precision fabrication, avionics. Deliberately NARROWER than space_economy,
+  # which had become a catch-all firing on 727 of 809 SPCX news notes and therefore no longer
+  # discriminated as a retrieval filter. Tag the SUPPLIER's story here; leave launch economics,
+  # constellation and mission news on space_economy. Distinct from aerospace_defense_aftermarket
+  # (service/spares economics, not build-side supply). Constituents: MTRN, CRS, DPC.
   supply:
     - advanced_materials_ai_infra
     - ai_compute_topology
@@ -68,6 +75,7 @@ themes:
     - semiconductor_cycle
     - silicon_architecture_competition
     - solar_supply_chain
+    - space_supply_chain
     - thermal_management_cooling
   margins_pricing:
     - ai_inference_margin_compression
@@ -1452,7 +1460,7 @@ tier_3_watchlist:
     themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, hyperscaler_revenue_concentration]
     added_date: 2026-05-09
   - ticker: CRS
-    themes: [aerospace_defense_aftermarket, space_economy]
+    themes: [aerospace_defense_aftermarket, space_economy, space_supply_chain]
     added_date: 2026-08-19
     notes: "Carpenter Technology Corp (NYSE: CRS) — specialty alloys and engineered
       materials: high-temperature nickel/cobalt superalloys, titanium and ultra-high-strength
@@ -1519,7 +1527,7 @@ tier_3_watchlist:
     themes: [foundry_capacity, semiconductor_cycle, lithography_roadmap]
     added_date: 2026-05-11
   - ticker: MTRN
-    themes: [advanced_materials_ai_infra, aerospace_defense_aftermarket, space_economy]
+    themes: [advanced_materials_ai_infra, aerospace_defense_aftermarket, space_economy, space_supply_chain]
     added_date: 2026-08-19
     notes: "Materion Corp (NYSE: MTRN) — advanced materials: beryllium and specialty alloys,
       precision optics, thin-film deposition materials for semiconductors. Added T3 at operator
