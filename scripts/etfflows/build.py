@@ -48,6 +48,24 @@ class Universe:
     def tickers(self) -> list[str]:
         return sorted(self.tier)
 
+    def restrict(self, keep) -> "Universe":
+        """A view over a subset of tickers, for smoke tests and partial re-runs.
+
+        Tiers, sleeves and overrides are preserved so a restricted run behaves exactly like
+        the full one for the names it keeps — a smoke test that quietly changed trigger
+        eligibility would not be testing the thing we ship.
+        """
+        keep = set(keep)
+        clone = Universe.__new__(Universe)
+        clone.raw = self.raw
+        clone.tier = {k: v for k, v in self.tier.items() if k in keep}
+        clone.sleeve = {k: v for k, v in self.sleeve.items() if k in keep}
+        clone.baseline_years = {k: v for k, v in self.baseline_years.items() if k in keep}
+        clone.overrides = self.overrides
+        clone.pairs = [p for p in self.pairs
+                       if p.get("lead") in keep and all(a in keep for a in p.get("against") or [])]
+        return clone
+
     def trigger_tickers(self) -> list[str]:
         return sorted(t for t, v in self.tier.items() if v == "trigger")
 
@@ -63,7 +81,9 @@ class Universe:
     def factor_tickers(self) -> list[str]:
         sleeve = ((self.raw.get("tiers", {}).get("trigger", {}).get("sleeves", {})
                    .get("factor")) or {})
-        return list(sleeve.get("tickers") or [])
+        # Filtered through self.tier so a restricted view does not report factor names it
+        # no longer carries data for.
+        return [t for t in (sleeve.get("tickers") or []) if t in self.tier]
 
 
 def load_universe(path: str) -> Universe:

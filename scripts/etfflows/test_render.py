@@ -142,9 +142,45 @@ def test_block_b_makes_no_prediction():
     check("positioning framing is stated", "positioning, not direction" in b)
 
 
-def test_block_b_flags_phase_2_as_unwired():
-    b = rd.block_b(sample_report())
-    check("look-through is declared not yet wired", "Phase 2" in b and "not wired" in b)
+def test_block_b_renders_lookthrough():
+    from etfflows.lookthrough import Demand
+    r = sample_report()
+    r["lookthrough"] = [{
+        "etf": "SMH", "horizon": 63, "flow_usd": 4.12e9, "direction": "inflow",
+        "weights_as_of": "2026-07-31", "reconstitution_warning": False,
+        "demands": [
+            Demand("NVDA", "NVIDIA", 21.4, 880.8e6, 22e9, 0.040, True, 6.58),
+            Demand("TSM", "TSMC", 9.6, 394.4e6, 8e9, 0.049, True, 7.67),
+            Demand("AVGO", "Broadcom", 6.6, 272.0e6, None, None, False, None),
+        ],
+        "held": [Demand("NVDA", "NVIDIA", 21.4, 880.8e6, 22e9, 0.040, True, 6.58)],
+    }]
+    b = rd.block_b(r)
+    check("decomposition header present", "WHAT THE CROWDED VEHICLE IS BUYING" in b)
+    check("days of ADV shown, not just dollars", "ADV" in b and "+0.04d" in b, f"got:\n{b}")
+    check("held names marked", "*HELD*" in b)
+    check("weights as-of surfaced", "2026-07-31" in b)
+    check("unknown ADV shows '?', not 0", "?" in b)
+    print("\n" + b)
+
+
+def test_block_b_lookthrough_absent_is_explicit():
+    r = sample_report()
+    r["lookthrough"] = []
+    check("no decomposition says so plainly",
+          "no alerting ETF was eligible" in rd.block_b(r))
+
+
+def test_reconstitution_warning_rendered():
+    from etfflows.lookthrough import Demand
+    r = sample_report()
+    r["lookthrough"] = [{
+        "etf": "MTUM", "horizon": 63, "flow_usd": 1e9, "direction": "inflow",
+        "weights_as_of": "2026-05-31", "reconstitution_warning": True,
+        "demands": [Demand("AVGO", "Broadcom", 5.0, 50e6, 10e9, 0.005, False, None)],
+        "held": [],
+    }]
+    check("rebalance caveat surfaced", "rebalance" in rd.block_b(r))
 
 
 def test_block_b_quiet_day():

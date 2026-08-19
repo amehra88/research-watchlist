@@ -49,6 +49,32 @@ def log(msg: str) -> None:
     print(f"[{datetime.now(timezone.utc).strftime('%H:%M:%S')}] {msg}", flush=True)
 
 
+def ledger_path(args) -> str:
+    return args.ledger or LEDGER
+
+
+def wanted(args, uni) -> set[str] | None:
+    """Parse --tickers once, validating against the WHOLE universe.
+
+    Validation must not happen per tier sublist: a trigger-tier name is legitimately absent
+    from the context list, and checking against that sublist would reject it as unknown.
+    A typo'd ticker still fails loudly, because silently fetching nothing looks exactly like
+    an ETF with no flows.
+    """
+    if not args.tickers:
+        return None
+    want = {t.strip().upper() for t in args.tickers.split(",") if t.strip()}
+    unknown = sorted(want - set(uni.tickers))
+    if unknown:
+        raise SystemExit(f"ERROR: not in the universe: {', '.join(unknown)}")
+    return want
+
+
+def subset(want: set[str] | None, tickers: list[str]) -> list[str]:
+    """Filter one list by an already-validated selection, preserving universe order."""
+    return tickers if want is None else [t for t in tickers if t in want]
+
+
 def _load_json(path, default):
     try:
         with open(path) as fh:
@@ -70,7 +96,7 @@ def _save_json(path, obj):
 def do_fetch(args) -> int:
     """Incremental daily pull. Small by construction: a short lookback, not a re-backfill."""
     uni = build.load_universe(UNIVERSE)
-    tickers = uni.tickers
+    tickers = subset(wanted(args, uni), uni.tickers)
     end = args.end or date.today().isoformat()
 
     runner = factset_flows.make_runner(REPO_ROOT)
@@ -91,7 +117,7 @@ def do_fetch(args) -> int:
             continue
         recs, failed = factset_flows.fetch_range(tickers, series, start, end, runner,
                                                  on_progress=log)
-        n = store.append(LEDGER, recs, series)
+        n = store.append(ledger_path(args), recs, series)
         log(f"{series}: stored {n} rows, {len(failed)} failed tickers")
         total_failed.update(failed)
 
@@ -108,19 +134,21 @@ def do_backfill(args) -> int:
     """The one-shot. Loud about cost, because that cost is the known failure mode."""
     uni = build.load_universe(UNIVERSE)
     end = args.end or date.today().isoformat()
-    trig, ctx = uni.trigger_tickers(), uni.context_tickers()
+    want = wanted(args, uni)
+    trig = subset(want, uni.trigger_tickers())
+    ctx = subset(want, uni.context_tickers())
 
     trig_start = args.start or (date.fromisoformat(end) - timedelta(days=365 * 3)).isoformat()
     ctx_start = (date.fromisoformat(end) - timedelta(days=365)).isoformat()
     price_start = (date.fromisoformat(end) - timedelta(days=365)).isoformat()
-    all_t = uni.tickers
+    all_t = subset(want, uni.tickers)
 
-    plan = [
+    plan = [(series, tks, s, e) for series, tks, s, e in (
         ("flows", trig, trig_start, end),
         ("flows", ctx, ctx_start, end),
         ("aum", all_t, trig_start, end),
         ("prices", all_t, price_start, end),
-    ]
+    ) if tks]
 
     print("\nBACKFILL PLAN")
     print("=" * 68)
@@ -143,11 +171,11 @@ def do_backfill(args) -> int:
     for series, tks, s, e in plan:
         log(f"=== {series} {len(tks)} tickers {s}..{e} ===")
         recs, f = factset_flows.fetch_range(tks, series, s, e, runner, on_progress=log)
-        n = store.append(LEDGER, recs, series)
+        n = store.append(ledger_path(args), recs, series)
         log(f"{series}: stored {n} rows, {len(f)} failed")
         failed.update(f)
 
-    state = store.load(LEDGER)
+    state = store.load(ledger_path(args))
     for series in ("flows", "prices", "aum"):
         cov = store.coverage(state, series)
         if cov:
@@ -163,7 +191,9 @@ def do_backfill(args) -> int:
 def do_report(args) -> int:
     """Zero LLM calls. Pure computation over stored state."""
     uni = build.load_universe(UNIVERSE)
-    state = store.load(LEDGER)
+    if args.tickers:
+        uni = uni.restrict(subset(wanted(args, uni), uni.tickers))
+    state = store.load(ledger_path(args))
 
     as_of = args.as_of or store.latest_date(state, "flows")
     if not as_of:
@@ -238,7 +268,7 @@ def do_selftest(args) -> int:
         print("  FAIL no reading and no cache")
         ok = False
 
-    state = store.load(LEDGER)
+    state = store.load(ledger_path(args))
     latest = store.latest_date(state, "flows")
     cov = store.coverage(state, "flows")
     print(f"ledger: {len(cov)} tickers with flow data, latest={latest}")
@@ -261,6 +291,11 @@ def main() -> int:
     p.add_argument("--start", help="YYYY-MM-DD")
     p.add_argument("--end", help="YYYY-MM-DD")
     p.add_argument("--as-of", help="report for this flow date instead of the newest")
+    p.add_argument("--tickers",
+                   help="comma-separated subset of the universe (smoke tests, or re-fetching "
+                        "a failed subset without repeating a whole backfill)")
+    p.add_argument("--ledger", help="alternate state ledger path (keeps a smoke test out of "
+                                    "the production history)")
     p.add_argument("--lookback", type=int, default=10,
                    help="days of history for --fetch (default 10, covers a long weekend)")
     p.add_argument("--aum-lookback", type=int, default=45,

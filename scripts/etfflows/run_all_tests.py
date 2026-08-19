@@ -11,7 +11,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MODULES = ["test_metrics", "test_triggers", "test_factset_flows",
-           "test_fear_greed", "test_render", "test_build"]
+           "test_fear_greed", "test_render", "test_build", "test_lookthrough"]
 
 
 def main() -> int:

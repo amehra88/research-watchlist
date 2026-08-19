@@ -181,13 +181,55 @@ def block_b(report: dict) -> str:
             out.append(f"  {a.ticker}: outflow against a rising tape — distribution into strength.")
 
     out.append("")
-    out.append("Constituent look-through (implied demand in days of ADV, intersected with")
-    out.append("BCTK holdings) is Phase 2 and is not wired yet.")
+    out += _lookthrough_lines(report.get("lookthrough") or [])
     out.append("")
     out.append("Read as POSITIONING, not direction: ETF flow is largely non-fundamental")
     out.append("demand and mean-reverts over multi-week horizons. Thresholds are provisional")
     out.append("pending calibration against backfilled history.")
     return "\n".join(out)
+
+
+def _days(d: float | None) -> str:
+    """Days of ADV. '?' when the name's liquidity is unknown — never silently 0."""
+    return "?" if d is None else f"{d:+.2f}d"
+
+
+def _lookthrough_lines(results) -> list[str]:
+    """Phase 2 decomposition, rendered only for ETFs that actually alerted.
+
+    Sized in DAYS OF ADV rather than dollars: "$881M of implied NVDA demand" is unreadable
+    without knowing that it is 0.04 of a day's volume, i.e. nothing. The whole point of the
+    unit is to stop a large dollar figure from implying a large effect.
+    """
+    if not results:
+        return ["Constituent look-through: no alerting ETF was eligible for decomposition."]
+
+    out: list[str] = ["WHAT THE CROWDED VEHICLE IS BUYING"]
+    for r in results:
+        flow = usd(r.get("flow_usd"))
+        out.append(f"  {r['etf']} {r['horizon']}d {r.get('direction', '')} {flow} "
+                   f"(weights as of {r.get('weights_as_of') or 'unknown'}):")
+        if r.get("reconstitution_warning"):
+            # A rebalance reshuffles which names are held and reads exactly like a flow event.
+            out.append("    ! near a semi-annual reconstitution — some of this is rebalance, "
+                       "not demand")
+
+        for d in (r.get("demands") or [])[:6]:
+            mark = " *HELD*" if d.in_portfolio else ""
+            out.append(f"    {d.ticker:<6} {d.weight_pct:>5.1f}%  "
+                       f"{usd(d.implied_usd):>9}  {_days(d.days_of_adv):>7} ADV{mark}")
+
+        held = r.get("held") or []
+        if held:
+            names = ", ".join(f"{d.ticker} ({_days(d.days_of_adv)} ADV)" for d in held)
+            out.append(f"    In the book: {names}")
+        else:
+            out.append("    In the book: none of the top names are BCTK holdings.")
+    out.append("")
+    out.append("  Days of ADV = implied demand / the name's own dollar volume. Weights are")
+    out.append("  month-end and drift after a sharp move; synthetic ETFs are never decomposed")
+    out.append("  because swap-backed creations buy no underlying shares.")
+    return out
 
 
 # ── the full table (trailing section) ─────────────────────────────────────────
