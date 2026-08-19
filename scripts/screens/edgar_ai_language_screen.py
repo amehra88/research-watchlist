@@ -10,20 +10,21 @@ UA = "Ashim Mehra ashimmehra@gmail.com"
 BASE = "https://efts.sec.gov/LATEST/search-index"
 
 # (phrase, weight) -- weight = how costly it is to say falsely
+# Revenue-side and data-ownership signals only. Cost-side phrases (inference
+# costs, cost of AI, AI infrastructure costs) were deliberately REMOVED --
+# operator does not want AI-as-a-cost-line as a screening signal. What a company
+# SELLS and what data it OWNS are the thesis; what it spends is not.
 PHRASES = [
     ("AI revenue", 5),
     ("revenue from AI", 5),
     ("AI-driven revenue", 5),
     ("AI monetization", 4),
     ("monetize AI", 4),
-    ("cost of AI", 3),
-    ("AI infrastructure costs", 3),
     ("trained on proprietary", 3),
+    ("our proprietary AI models", 3),
     ("proprietary datasets", 2),
     ("proprietary dataset", 2),
-    ("our proprietary AI models", 3),
     ("our machine learning models", 2),
-    ("inference costs", 3),
     ("our own models", 2),
     ("foundation models", 1),
 ]

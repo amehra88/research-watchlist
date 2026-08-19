@@ -4,6 +4,7 @@
 #   language screen -> companies whose FILINGS carry high-disclosure-cost AI language
 #                      (quantified AI revenue, inference in COGS, proprietary training data)
 #   officer screen  -> companies that NAMED a senior AI officer in an 8-K/proxy
+#   mcp screen      -> companies making their corpus agent-addressable (MCP servers)
 #
 # Both write dated JSON next to this script, then diff against the previous run.
 # The report is written to docs/ so it syncs to Obsidian with everything else.
@@ -29,6 +30,7 @@ echo "[ai-screens] $STAMP starting" >&2
 # EDGAR is rate-limited and occasionally 500s; the scripts retry internally.
 python3 "$HERE/edgar_ai_language_screen.py"
 python3 "$HERE/edgar_ai_officer_screen.py"
+python3 "$HERE/edgar_mcp_screen.py"
 
 {
   echo "# AI application-layer screen — $STAMP"
@@ -44,12 +46,14 @@ python3 "$HERE/edgar_ai_officer_screen.py"
   python3 "$HERE/diff_screens.py" edgar_ai_language_screen
   echo
   python3 "$HERE/diff_screens.py" edgar_ai_officer_screen
+  echo
+  python3 "$HERE/diff_screens.py" edgar_mcp_screen
 } > "$REPORT"
 
 echo "[ai-screens] wrote $REPORT" >&2
 
 # Keep the repo from accumulating unbounded run artifacts: retain the last 8 runs each.
-for p in edgar_ai_language_screen edgar_ai_officer_screen; do
+for p in edgar_ai_language_screen edgar_ai_officer_screen edgar_mcp_screen; do
   ls -1t "$HERE/${p}"_*.json 2>/dev/null | tail -n +9 | xargs -r rm --
 done
 
