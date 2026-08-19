@@ -1578,6 +1578,19 @@ tier_3_watchlist:
   - ticker: QCOM
     themes: [handset_competition, silicon_architecture_competition, china_us_tensions, automotive_semiconductor_demand, ai_infrastructure_capex]
     added_date: 2026-05-11
+  - ticker: RKLB
+    themes: [space_economy, space_supply_chain]
+    added_date: 2026-08-19
+    notes: "Rocket Lab USA (NASDAQ: RKLB) — small/medium-lift launch (Electron, Neutron) plus a
+      Space Systems segment selling spacecraft components (reaction wheels, solar arrays,
+      separation systems) to other satellite builders. Added T3 at operator request 2026-08-19 as
+      the principal listed pure-play COMPETITOR to SPCX in launch. Tagged space_supply_chain as
+      well as space_economy because Space Systems is genuinely build-side component supply, not
+      only launch economics. NOTE ON COVERAGE: T3 is read by cron_earnings_reviewer.py but is NOT
+      in the SEC-filings universe (sec_filings.py load_universe reads T1 + T2 +
+      ingest_comparables only), so RKLB 10-K/10-Q/8-K will NOT be ingested from this entry alone
+      despite RKLB being an active EDGAR filer — add it to ingest_comparables (informs: [SPCX])
+      if primary-filing evidence is wanted."
   - ticker: RKT
     themes: [search_disruption, agentic_commerce, ai_re_architected_incumbent]
     added_date: 2026-05-09
