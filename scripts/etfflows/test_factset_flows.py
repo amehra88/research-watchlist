@@ -12,8 +12,10 @@ What these protect:
 
 No pytest in this env — run directly:  python3 scripts/etfflows/test_factset_flows.py
 """
+import json
 import os
 import sys
+import tempfile
 from datetime import date
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/..")
@@ -199,14 +201,63 @@ def test_chunk_failure_is_reported_not_fatal():
     check("failure is logged for the operator", any("FAIL" in m for m in seen), f"got {seen}")
 
 
-def test_unparseable_output_is_a_failure():
-    """Returning [] on unparseable stdout would read downstream as 'this ETF had no flows'."""
-    runner = ff.make_runner(repo_root=".")
-    check("extractor returns None (not []) on garbage",
-          ff._extract_json_array("I couldn't find that") is None)
-    check("extractor handles code fences",
-          ff._extract_json_array('```json\n[{"a":1}]\n```') == [{"a": 1}])
-    check("runner exists and is callable", callable(runner))
+def _stream_line(payload_text):
+    """One stream-json transcript line carrying a tool_result block."""
+    return json.dumps({"type": "user", "message": {"content": [
+        {"type": "tool_result", "content": [{"type": "text", "text": payload_text}]}]}})
+
+
+def test_tool_result_extracted_from_stream_json():
+    body = json.dumps({"data": [{"requestId": "XLK", "date": "2026-08-18",
+                                 "fundFlows": 47558761.75}]})
+    blocks = ff._tool_result_blocks(_stream_line(body) + "\n")
+    check("tool_result block found", len(blocks) == 1, f"got {blocks}")
+    obj = ff.resolve_payload(blocks[0])
+    check("payload parses to the raw FactSet response",
+          obj["data"][0]["fundFlows"] == 47558761.75, f"got {obj}")
+
+
+def test_spilled_result_is_followed_to_disk():
+    """The real 2026-08-19 case: a 500-row result never reaches the model at all.
+
+    The MCP layer writes it to a file and hands back a pointer, which is exactly why asking
+    the model to 'copy every value verbatim' could not work — it had nothing to copy from.
+    """
+    with tempfile.TemporaryDirectory() as d:
+        spill = os.path.join(d, "tool-result.txt")
+        with open(spill, "w") as fh:
+            json.dump({"data": [{"requestId": "SPY", "date": "2025-08-19",
+                                 "fundFlows": -1865645765.4}]}, fh)
+        msg = (f"Error: result (75,593 characters across 3,510 lines) exceeds maximum "
+               f"allowed tokens. Output has been saved to {spill}")
+        obj = ff.resolve_payload(msg)
+        check("spill pointer is followed", obj is not None and obj["data"][0]["requestId"] == "SPY",
+              f"got {obj}")
+        check("value read byte-exact from the file",
+              obj["data"][0]["fundFlows"] == -1865645765.4)
+
+
+def test_missing_spill_file_is_a_failure_not_empty():
+    obj = ff.resolve_payload("Output has been saved to /nonexistent/nope.txt")
+    check("unreadable spill -> None (a failure), never []", obj is None)
+
+
+def test_no_tool_result_is_a_failure():
+    """Returning [] when the call never happened would write a silent gap into history."""
+    check("garbage transcript yields no blocks", ff._tool_result_blocks("not json\n") == [])
+    check("prose payload does not resolve", ff.resolve_payload("I couldn't find that") is None)
+
+
+def test_prompt_does_not_ask_the_model_to_echo_data():
+    """The whole fix: the model makes the call, it does not retype 500 rows."""
+    p = ff._prompt(["XLK"], "flows", "2026-08-01", "2026-08-19", 500, None)
+    check("prompt pins the tool to a single call", "EXACTLY ONCE" in p)
+    check("prompt asks only for DONE", "DONE" in p)
+    for banned in ("VERBATIM", "JSON array", "Copy every value"):
+        if banned in p:
+            check("prompt no longer requests an echo of the data", False, f"found {banned!r}")
+            return
+    check("prompt no longer requests an echo of the data", True)
 
 
 def test_frequency_is_correct_per_endpoint():
@@ -224,12 +275,13 @@ def test_frequency_is_correct_per_endpoint():
     check("flows passes no frequency", seen["flows"] is None, f"got {seen.get('flows')}")
 
 
-def test_prompt_forbids_null_coercion():
-    p = ff._prompt(["XLK"], "flows", "2026-08-01", "2026-08-19", 500, None)
-    check("prompt pins the tool to a single call", "EXACTLY ONCE" in p)
-    check("prompt explicitly forbids substituting 0 for null",
-          "do NOT substitute 0" in p, "null-coercion instruction missing")
-    check("prompt forbids summarising", "VERBATIM" in p)
+def test_prompt_carries_the_query_arguments():
+    p = ff._prompt(["XLK", "SMH"], "prices", "2026-08-01", "2026-08-19", 500, "D")
+    check("ids passed through", '"XLK"' in p and '"SMH"' in p)
+    check("data_type passed through", "data_type: 'prices'" in p)
+    check("frequency passed through when set", "frequency: 'D'" in p)
+    check("frequency omitted for flows",
+          "frequency" not in ff._prompt(["XLK"], "flows", "2026-08-01", "2026-08-19", 500, None))
 
 
 def main():

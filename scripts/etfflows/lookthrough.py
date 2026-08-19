@@ -37,7 +37,7 @@ import sqlite3
 import subprocess
 from typing import NamedTuple, Sequence
 
-from .factset_flows import _claude_env, _extract_json_array, MODEL
+from .factset_flows import _claude_env, _tool_result_blocks, resolve_payload, MODEL
 
 _OWNERSHIP_TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_Ownership"
 _PRICES_TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_GlobalPrices"
@@ -77,17 +77,26 @@ class Demand(NamedTuple):
 # ── transports ────────────────────────────────────────────────────────────────
 
 def _run(cmd_prompt: str, tool: str, repo_root, timeout: int):
+    """Same transport contract as factset_flows.make_runner: the model makes the call, we
+    read the tool's own output. A full holdings list or a month of constituent volume is
+    easily large enough to spill to disk, so echo-verbatim would fail here for exactly the
+    reasons it failed for flows."""
     result = subprocess.run(
-        ["claude", "-p", cmd_prompt, "--allowedTools", tool, "--model", MODEL],
+        ["claude", "-p", cmd_prompt, "--allowedTools", tool, "--model", MODEL,
+         "--output-format", "stream-json", "--verbose"],
         capture_output=True, text=True, timeout=timeout, cwd=str(repo_root),
         env=_claude_env(),
     )
     if result.returncode != 0:
         raise RuntimeError(f"rc={result.returncode}: {(result.stderr or '').strip()[:200]}")
-    parsed = _extract_json_array(result.stdout or "")
-    if parsed is None:
-        raise ValueError(f"unparseable: {(result.stdout or '').strip()[:200]}")
-    return [r for r in parsed if isinstance(r, dict)]
+    blocks = _tool_result_blocks(result.stdout or "")
+    if not blocks:
+        raise ValueError(f"no tool_result: {(result.stdout or '').strip()[-200:]}")
+    for text in reversed(blocks):
+        obj = resolve_payload(text)
+        if obj is not None and isinstance(obj.get("data"), list):
+            return [r for r in obj["data"] if isinstance(r, dict)]
+    raise ValueError(f"tool_result unusable: {blocks[-1][:200]}")
 
 
 def make_holdings_runner(repo_root, timeout: int = HOLDINGS_TIMEOUT):
@@ -99,12 +108,8 @@ def make_holdings_runner(repo_root, timeout: int = HOLDINGS_TIMEOUT):
             "  assetType: 'EQ'\n"
             f"  topn: '{topn}'\n"
             "Do NOT call the tool more than once. Do NOT paginate.\n\n"
-            "Then return ONLY a JSON array (no prose, no markdown, no code fences) of the "
-            'tool\'s result elements, each as {"requestId": str, "date": "YYYY-MM-DD", '
-            '"securityTicker": str, "securityName": str, "weightClose": number, '
-            '"adjHolding": number}. '
-            "Copy every value VERBATIM — do not summarise, reword, filter, re-rank, round or "
-            "invent. Include every element returned. Return [] if the tool returned none."
+            "Then reply with the single word DONE. Do NOT summarise, quote or repeat any of "
+            "the data — it is read directly from the tool output, not from your reply."
         )
         return _run(prompt, _OWNERSHIP_TOOL, repo_root, timeout)
     return run
@@ -120,11 +125,8 @@ def make_adv_runner(repo_root, timeout: int = ADV_TIMEOUT):
             f"  endDate: '{end}'\n"
             "  fields: ['price', 'volume']\n"
             "Do NOT call the tool more than once. Do NOT paginate.\n\n"
-            "Then return ONLY a JSON array (no prose, no markdown, no code fences) of the "
-            'tool\'s result elements, each as {"requestId": str, "date": "YYYY-MM-DD", '
-            '"price": number-or-null, "volume": number-or-null}. '
-            "Copy every value VERBATIM. If a value is null, return null — do NOT substitute 0. "
-            "Include every element returned. Return [] if the tool returned none."
+            "Then reply with the single word DONE. Do NOT summarise, quote or repeat any of "
+            "the data — it is read directly from the tool output, not from your reply."
         )
         return _run(prompt, _PRICES_TOOL, repo_root, timeout)
     return run

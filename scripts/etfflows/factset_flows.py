@@ -80,14 +80,13 @@ def _extract_json_array(text: str):
 
 def _prompt(ids, data_type: str, start: str, end: str, limit: int,
             frequency: str | None) -> str:
+    """Ask the model to MAKE THE CALL and nothing else.
+
+    It deliberately does NOT ask for the data back — see make_runner. Asking the model to
+    echo rows was slow, lossy, and impossible above ~500 rows because the payload never
+    reaches it in the first place.
+    """
     freq_line = f"  frequency: '{frequency}'\n" if frequency else ""
-    fields = {
-        "flows": '{"requestId": str, "date": "YYYY-MM-DD", "fundFlows": number-or-null}',
-        "prices": '{"requestId": str, "date": "YYYY-MM-DD", "price": number-or-null}',
-        "aum": ('{"requestId": str, "date": "YYYY-MM-DD", '
-                '"shareClassAUMReported": number-or-null, '
-                '"numberOfSharesOutstanding": number-or-null}'),
-    }[data_type]
     return (
         f"Call the FactSet_FundsETF tool EXACTLY ONCE with these arguments:\n"
         f"  ids: {json.dumps(list(ids))}\n"
@@ -98,33 +97,100 @@ def _prompt(ids, data_type: str, start: str, end: str, limit: int,
         f"  limit: {limit}\n"
         "Do NOT call the tool more than once. Do NOT paginate. Do NOT retry with different "
         "arguments.\n\n"
-        "Then return ONLY a JSON array (no prose, no markdown, no code fences) of the tool's "
-        f"result elements, each as {fields}. "
-        "Copy every value VERBATIM from the tool response — do not summarise, reword, filter, "
-        "round, re-rank or invent. "
-        "CRITICAL: if a value is null in the tool response, return null — do NOT substitute 0, "
-        "0.0 or omit the row. A null means the data is not yet available and is meaningfully "
-        "different from a real zero. "
-        "Include every element the tool returned, in the order returned. "
-        "Return [] only if the tool itself returned no results."
+        "Then reply with the single word DONE. Do NOT summarise, quote, reformat or repeat "
+        "any of the data — it is read directly from the tool output, not from your reply."
     )
 
 
+# The MCP layer spills an oversized tool result to disk and hands the model a pointer instead.
+# Verified 2026-08-19: "Error: result (75,593 characters across 3,510 lines) exceeds maximum
+# allowed tokens. Output has been saved to /root/.claude/projects/.../tool-results/....txt"
+_SPILL_RE = re.compile(r"saved to (/\S+?)(?:[\s'\"]|$)")
+
+
+def _tool_result_blocks(stdout: str) -> list[str]:
+    """Every tool_result payload in a stream-json transcript, as text, in order."""
+    out: list[str] = []
+    for line in (stdout or "").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            ev = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        content = (ev.get("message") or {}).get("content")
+        if not isinstance(content, list):
+            continue
+        for block in content:
+            if not isinstance(block, dict) or block.get("type") != "tool_result":
+                continue
+            c = block.get("content")
+            if isinstance(c, str):
+                out.append(c)
+            elif isinstance(c, list):
+                out.append("".join(b.get("text", "") for b in c if isinstance(b, dict)))
+    return out
+
+
+def resolve_payload(text: str) -> dict | None:
+    """One tool_result payload -> the parsed FactSet response, following a spill if needed."""
+    text = (text or "").strip()
+    if not text:
+        return None
+    try:
+        obj = json.loads(text)
+        return obj if isinstance(obj, dict) else None
+    except json.JSONDecodeError:
+        pass
+    m = _SPILL_RE.search(text)
+    if not m:
+        return None
+    try:
+        with open(m.group(1)) as fh:
+            obj = json.load(fh)
+        return obj if isinstance(obj, dict) else None
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
 def make_runner(repo_root, timeout: int = FACTSET_TIMEOUT_SECONDS):
-    """Build the production runner: one `claude -p` per (id-chunk, date-chunk, endpoint)."""
+    """Build the production runner: one `claude -p` per (id-chunk, date-chunk, endpoint).
+
+    THE MODEL MAKES THE CALL; WE READ THE TOOL'S OWN OUTPUT. The obvious design — ask the
+    model to echo the rows back as JSON — was measured on 2026-08-19 and is not viable:
+
+        500 rows, echo-verbatim : 590s, stdout truncated at the FRONT, unparseable
+        500 rows, this approach :  18s, all 500 rows, byte-exact
+
+    The echo approach also cannot work in principle at this size. A large tool result never
+    reaches the model at all: the MCP layer spills it to disk and hands the model a pointer,
+    so "copy every value verbatim" asks it to transcribe data it cannot see. That is why the
+    first backfill produced partial data with loud timeouts rather than an obvious error.
+
+    Reading the raw payload is also strictly more faithful — with no transcription step there
+    is no opportunity to round, reorder or drop a row.
+    """
     def run(ids, data_type, start, end, limit, frequency):
         cmd = ["claude", "-p", _prompt(ids, data_type, start, end, limit, frequency),
-               "--allowedTools", _TOOL, "--model", MODEL]
+               "--allowedTools", _TOOL, "--model", MODEL,
+               "--output-format", "stream-json", "--verbose"]
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout,
                                 cwd=str(repo_root), env=_claude_env())
         if result.returncode != 0:
             raise RuntimeError(f"rc={result.returncode}: {(result.stderr or '').strip()[:200]}")
-        parsed = _extract_json_array(result.stdout or "")
-        if parsed is None:
-            # Unparseable is a FAILURE, not an empty result. Returning [] would silently drop
-            # a whole chunk of history and read downstream as "this ETF had no flows".
-            raise ValueError(f"unparseable: {(result.stdout or '').strip()[:200]}")
-        return [r for r in parsed if isinstance(r, dict)]
+
+        blocks = _tool_result_blocks(result.stdout or "")
+        if not blocks:
+            # No tool_result at all means the call never happened. That is a failure, not an
+            # ETF with no flows — returning [] here would write a silent gap into history.
+            raise ValueError("no tool_result in transcript: "
+                             f"{(result.stdout or '').strip()[-200:]}")
+        for text in reversed(blocks):
+            obj = resolve_payload(text)
+            if obj is not None and isinstance(obj.get("data"), list):
+                return [r for r in obj["data"] if isinstance(r, dict)]
+        raise ValueError(f"tool_result unusable: {blocks[-1][:200]}")
     return run
 
 
