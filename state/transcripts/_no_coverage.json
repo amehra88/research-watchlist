@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-08-19T23:06:09+00:00",
+ "generated_at": "2026-08-19T23:24:50+00:00",
  "window": {
   "start": "2025-11-19",
   "end": "2026-08-19"
@@ -16,7 +16,246 @@
    "route": "tier_4"
   }
  ],
- "no_themes": [],
+ "no_themes": [
+  {
+   "ticker": "A000660",
+   "factset_id": "A000660-US",
+   "routes": [
+    "tier_1"
+   ]
+  },
+  {
+   "ticker": "ADI",
+   "factset_id": "ADI-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "AMBA",
+   "factset_id": "AMBA-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "BABA",
+   "factset_id": "BABA-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "BIDU",
+   "factset_id": "BIDU-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "CRDO",
+   "factset_id": "CRDO-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "CSCO",
+   "factset_id": "CSCO-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "DPC",
+   "factset_id": "DPC-US",
+   "routes": [
+    "tier_1"
+   ]
+  },
+  {
+   "ticker": "GOOGL",
+   "factset_id": "GOOGL-US",
+   "routes": [
+    "tier_1"
+   ]
+  },
+  {
+   "ticker": "HPE",
+   "factset_id": "HPE-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "HPQ",
+   "factset_id": "HPQ-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "HSAI",
+   "factset_id": "HSAI-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "HTFL",
+   "factset_id": "HTFL-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "INIO",
+   "factset_id": "INIO-US",
+   "routes": [
+    "tier_1"
+   ]
+  },
+  {
+   "ticker": "MDB",
+   "factset_id": "MDB-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "NBIS",
+   "factset_id": "NBIS-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "NTES",
+   "factset_id": "NTES-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "NVMI",
+   "factset_id": "NVMI-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "PANW",
+   "factset_id": "PANW-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "PLAB",
+   "factset_id": "PLAB-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "SE",
+   "factset_id": "SE-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "SEI",
+   "factset_id": "SEI-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "STX",
+   "factset_id": "STX-US",
+   "routes": [
+    "tier_1"
+   ]
+  },
+  {
+   "ticker": "TSEM",
+   "factset_id": "TSEM-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "TTWO",
+   "factset_id": "TTWO-US",
+   "routes": [
+    "tier_2"
+   ]
+  },
+  {
+   "ticker": "WMT",
+   "factset_id": "WMT-US",
+   "routes": [
+    "tier_2"
+   ]
+  }
+ ],
  "no_results": [],
- "incomplete": []
+ "incomplete": [
+  "AWS",
+  "AXON",
+  "BE",
+  "CBRS",
+  "CRS",
+  "CRWD",
+  "CRWV",
+  "DASH",
+  "DDOG",
+  "DOCN",
+  "ENTG",
+  "FPS",
+  "FRVO",
+  "GDS",
+  "GEV",
+  "GLW",
+  "GOOG",
+  "GWRE",
+  "HNGE",
+  "INDI",
+  "INTC",
+  "IOT",
+  "LRCX",
+  "META",
+  "MPWR",
+  "MRVL",
+  "MSFT",
+  "MTRN",
+  "MU",
+  "NET",
+  "NOW",
+  "NVDA",
+  "NXPI",
+  "PLTR",
+  "POET",
+  "PWR",
+  "RBRK",
+  "RDDT",
+  "RKLB",
+  "ROKU",
+  "SHOP",
+  "SNOW",
+  "SNPS",
+  "SPCX",
+  "SPOT",
+  "TSLA",
+  "TXN",
+  "WELL",
+  "ZS",
+  "accelink.cn",
+  "eoptolink.cn",
+  "hgtech.cn",
+  "innolight.cn",
+  "kaori.tw",
+  "mtar.in"
+ ]
 }
