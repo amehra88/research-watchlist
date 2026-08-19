@@ -1,0 +1,226 @@
+"""
+Tests for render.py, driven by a hand-written fixture (no fetch, no LLM).
+
+What these protect:
+  • 'n/a' vs '-' vs a number stay distinguishable — a degraded z must never print as 0.0,
+  • Block A carries no interpretation and Block B carries no prediction (the operator asked
+    for facts and analysis to be visibly separate, and the framing is positioning-not-signal),
+  • the as-of date is always printed rather than assumed to be T-1,
+  • cap suppression is always disclosed,
+  • the markdown note opens with '##' (a '#' first heading indexes to zero chunks in pg).
+
+Run:  python3 scripts/etfflows/test_render.py   (also prints a full sample report)
+"""
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/..")
+from etfflows import render as rd  # noqa: E402
+from etfflows import triggers as tg  # noqa: E402
+
+FAILURES = []
+
+
+def check(name, cond, detail=""):
+    if cond:
+        print(f"  ok   {name}")
+    else:
+        print(f"  FAIL {name} {detail}")
+        FAILURES.append(name)
+
+
+def sample_report():
+    alerts = [
+        tg.Alert(ticker="SMH", horizon=63, z=3.4, percentile=99.4, direction="inflow",
+                 flow_usd=4.12e9, flow_bps=88.3, basis="standalone", corroboration="",
+                 severity=3.4),
+        tg.Alert(ticker="MTUM", horizon=5, z=-2.3, percentile=1.2, direction="outflow",
+                 flow_usd=-812e6, flow_bps=-41.0, basis="corroborated",
+                 corroboration="outflow against a rising tape", severity=2.3),
+    ]
+    return {
+        "as_of": "2026-08-18",
+        "fear_greed_line": "FEAR & GREED: 56 (greed)  |  1w -7  |  1m +19",
+        "alerts": alerts,
+        "suppressed": 2,
+        "breadth": {5: {"pct": 61.5, "positive": 16, "measured": 26},
+                    63: {"pct": 73.1, "positive": 19, "measured": 26}},
+        "pairs": [{"name": "SPY vs IVV+VOO", "short": 41.2, "long": -18.7},
+                  {"name": "QQQ vs QQQM", "short": -6.4, "long": 12.0}],
+        "factor_rotation": [{"ticker": "MTUM", "bps": 120.4}, {"ticker": "QUAL", "bps": -8.1},
+                            {"ticker": "VLUE", "bps": -30.2}, {"ticker": "USMV", "bps": 4.4}],
+        "quadrants": {"SMH": "sustained crowding", "MTUM": "crowded but stalling",
+                      "XLE": "neglected", "IGV": "fresh rotation"},
+        "divergence": {"MTUM": "distribution", "SMH": "confirmation"},
+        "warnings": ["LYTE: insufficient history (inception 2026-08-06) — raw flow only"],
+        "rows": [
+            {"ticker": "SMH", "tier": "trigger", "flow_short_usd": 1.1e9, "bps_short": 23.4,
+             "z_short": 1.9, "flow_long_usd": 4.12e9, "bps_long": 88.3, "z_long": 3.4,
+             "quadrant": "sustained crowding"},
+            {"ticker": "XLRE", "tier": "trigger", "flow_short_usd": 0.0, "bps_short": 0.0,
+             "z_short": None, "degraded_short": True, "flow_long_usd": -12e6,
+             "bps_long": -1.1, "z_long": None, "degraded_long": True, "quadrant": None},
+            {"ticker": "LYTE", "tier": "context", "flow_short_usd": 41e6, "bps_short": None,
+             "z_short": None, "degraded_short": True, "flow_long_usd": None,
+             "bps_long": None, "z_long": None, "degraded_long": True, "quadrant": None},
+        ],
+        "table_notes": ["DRAM and LYTE are synthetically backed — excluded from z-scores."],
+    }
+
+
+# ── formatting primitives ─────────────────────────────────────────────────────
+
+def test_missing_and_degraded_are_distinguishable():
+    check("missing USD renders '-'", rd.usd(None) == "-")
+    check("missing bps renders '-'", rd.bps(None) == "-")
+    check("degraded z renders 'n/a', never 0.0", rd.sigma(None, degraded=True) == "n/a")
+    check("real zero flow renders as +$0", rd.usd(0.0) == "+$0", f"got {rd.usd(0.0)}")
+    check("a real z still renders", rd.sigma(3.4) == "+3.4σ", f"got {rd.sigma(3.4)}")
+
+
+def test_usd_scaling():
+    check("billions", rd.usd(4.12e9) == "+$4.1B", f"got {rd.usd(4.12e9)}")
+    check("negative millions", rd.usd(-812e6) == "-$812.0M", f"got {rd.usd(-812e6)}")
+    check("trillions", rd.usd(1.7e12) == "+$1.7T", f"got {rd.usd(1.7e12)}")
+
+
+# ── Block A ───────────────────────────────────────────────────────────────────
+
+def test_block_a_prints_as_of_date():
+    a = rd.block_a(sample_report())
+    check("as-of date is printed, not assumed", "Flows as of 2026-08-18" in a)
+
+
+def test_block_a_discloses_suppression():
+    a = rd.block_a(sample_report())
+    check("cap suppression is disclosed", "2 further alert(s) suppressed" in a,
+          "silent cap!")
+
+
+def test_block_a_has_no_interpretation():
+    """Block A is facts. Interpretive vocabulary belongs in Block B."""
+    a = rd.block_a(sample_report()).lower()
+    for word in ("crowded", "reversal-prone", "distribution risk", "read as positioning"):
+        if word in a:
+            check("Block A carries no interpretation", False, f"found {word!r}")
+            return
+    check("Block A carries no interpretation", True)
+
+
+def test_block_a_no_alerts_says_so():
+    r = sample_report()
+    r["alerts"], r["suppressed"] = [], 0
+    check("empty alert list is stated explicitly", "ALERTS: none" in rd.block_a(r))
+
+
+def test_block_a_shows_breadth_and_pairs():
+    a = rd.block_a(sample_report())
+    check("breadth rendered", "Breadth 63d: 73%" in a, f"missing in:\n{a}")
+    check("sibling spread rendered", "SPY vs IVV+VOO" in a)
+    check("factor complex rendered", "MTUM" in a and "VLUE" in a)
+
+
+def test_block_a_surfaces_warnings():
+    check("warnings surfaced", "insufficient history" in rd.block_a(sample_report()))
+
+
+# ── Block B ───────────────────────────────────────────────────────────────────
+
+def test_block_b_is_separate_and_labelled():
+    b = rd.block_b(sample_report())
+    check("Block B has its own header", "CROWDING READ" in b)
+    check("quadrant names are used", "Sustained crowding" in b and "Crowded but stalling" in b)
+
+
+def test_block_b_makes_no_prediction():
+    """Until the validation gate confirms the sign, no directional claim may appear."""
+    b = rd.block_b(sample_report()).lower()
+    banned = ["will rise", "will fall", "expect a", "buy ", "sell ", "target price",
+              "should outperform", "predicts"]
+    found = [w for w in banned if w in b]
+    check("Block B contains no directional prediction", not found, f"found {found}")
+    check("positioning framing is stated", "positioning, not direction" in b)
+
+
+def test_block_b_flags_phase_2_as_unwired():
+    b = rd.block_b(sample_report())
+    check("look-through is declared not yet wired", "Phase 2" in b and "not wired" in b)
+
+
+def test_block_b_quiet_day():
+    r = sample_report()
+    r["alerts"], r["quadrants"] = [], {}
+    check("quiet day says so plainly", "Nothing at extreme positioning" in rd.block_b(r))
+
+
+# ── full table ────────────────────────────────────────────────────────────────
+
+def test_table_renders_all_rows():
+    t = rd.full_table(sample_report())
+    for tk in ("SMH", "XLRE", "LYTE"):
+        if tk not in t:
+            check("all rows rendered", False, f"{tk} missing")
+            return
+    check("all rows rendered", True)
+
+
+def test_table_explains_na():
+    t = rd.full_table(sample_report())
+    check("n/a is explained as 'not zero'", "not a reading of zero" in t)
+    check("degraded rows show n/a", "n/a" in t)
+
+
+def test_table_notes_surfaced():
+    check("table notes surfaced", "synthetically backed" in rd.full_table(sample_report()))
+
+
+def test_empty_table_is_explicit():
+    t = rd.full_table({"as_of": "2026-08-18", "rows": []})
+    check("empty table says why", "no rows" in t)
+
+
+# ── assembly ──────────────────────────────────────────────────────────────────
+
+def test_render_main_order():
+    m = rd.render_main(sample_report())
+    i_fg = m.index("FEAR & GREED")
+    i_a = m.index("ETF FLOWS & CROWDING")
+    i_b = m.index("CROWDING READ")
+    check("Fear & Greed sits above Block A", i_fg < i_a)
+    check("Block B follows Block A", i_a < i_b)
+    check("full table is NOT in the main section (it goes last in the email)",
+          "ETF FLOW DETAIL" not in m)
+
+
+def test_note_uses_h2_heading():
+    """A '#' first heading indexes to ZERO chunks in pg — see chunker-v3-awareness-gap."""
+    note = rd.render_note(sample_report())
+    first = note.lstrip().splitlines()[0]
+    check("note opens with '##'", first.startswith("## ") and not first.startswith("# "),
+          f"got {first!r}")
+
+
+def test_sample_output_is_printable():
+    print("\n" + "=" * 86)
+    print(rd.render_main(sample_report()))
+    print("=" * 86)
+    print(rd.render_table(sample_report()))
+    print("=" * 86)
+    check("sample rendered without error", True)
+
+
+def main():
+    tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
+    for fn in tests:
+        print(f"\n{fn.__name__}:")
+        fn()
+    print("\n" + "=" * 60)
+    if FAILURES:
+        print(f"FAILED ({len(FAILURES)}): {', '.join(FAILURES)}")
+        return 1
+    print(f"All checks passed ({len(tests)} tests)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
