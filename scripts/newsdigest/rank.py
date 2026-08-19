@@ -30,6 +30,7 @@ order and the caller renders a ⚠ banner — degraded, visible, never silent.
 """
 from __future__ import annotations
 
+import subprocess
 from dataclasses import dataclass
 
 from . import pre_filter
@@ -37,11 +38,17 @@ from .classify_llm import _run_claude, _extract_json_array, SessionLimitError
 
 DIGEST_LIMIT = 30        # operator decision 2026-08-19 (was uncapped, ~260/run)
 MAX_PER_TICKER = 2       # one event per name, plus one genuinely separate second story
-# Survivors per ranking call. Set ABOVE typical run volume (~260 survivors ≈ 25k prompt tokens) so
-# the normal case is ONE call with the WHOLE pool in view — which is what lets the model collapse
-# "same event, told five ways" across tickers. Sharding is a growth safety valve, not the design:
-# a run-off round loses exactly the global view that rule 3 (NOVELTY) depends on.
-SHARD_SIZE = 300
+# Survivors per ranking call in the SHARDED fallback. The normal path is one pooled call with the
+# WHOLE pool in view, which is what lets the model collapse "same event, told five ways" across
+# tickers — a run-off round loses exactly the global view rule 3 (NOVELTY) depends on. Sharding is
+# therefore a recovery step, not the design.
+SHARD_SIZE = 100
+
+# Rank gets its OWN timeout, well above classify's 300s. Measured 2026-08-19 on the first live
+# production run: one pooled call over 283 survivors (~19k prompt tokens, ~1k output) exceeded 300s
+# and fell back to deterministic order. That is a big single call by design — it replaces the 13-15
+# summarizer calls the cap removed — so it is budgeted like one, not like a classify batch.
+RANK_TIMEOUT_S = 900
 
 _CONF_RANK = {"high": 3, "medium": 2, "low": 1}
 _TIER_RANK = {"tier_1_bctk": 3, "tier_2_active_candidates": 2}
@@ -144,11 +151,11 @@ def _story_line(c, cls, tier_map: dict) -> str:
     line = (f"[cluster_id: {c.hash}] {who} ({tier}, conf={cls.confidence}, "
             f"{c.volume} outlet{'s' if c.volume != 1 else ''})")
     if cls.rationale:
-        line += f"\n    why-material: {cls.rationale}"
-    for h in heads[:4]:                       # 4 headlines is enough to judge; keeps the prompt lean
+        line += f"\n    why-material: {cls.rationale[:120]}"
+    for h in heads[:3]:                       # 3 headlines is enough to judge; keeps the prompt lean
         line += f"\n    - {h}"
-    if len(heads) > 4:
-        line += f"\n    - (+{len(heads) - 4} more headlines on the same story)"
+    if len(heads) > 3:
+        line += f"\n    - (+{len(heads) - 3} more headlines on the same story)"
     return line
 
 
@@ -158,9 +165,10 @@ def build_rank_prompt(survivors, tier_map: dict, limit: int) -> str:
     return INSTRUCTIONS.format(limit=limit) + "\nCANDIDATE STORIES:\n" + body + "\n"
 
 
-def _rank_once(survivors, tier_map, limit, repo_root) -> tuple[list, float]:
+def _rank_once(survivors, tier_map, limit, repo_root,
+               timeout: int = RANK_TIMEOUT_S) -> tuple[list, float]:
     """One ranking call. Returns (ordered [Selection], cost). Raises on failure."""
-    text, cost = _run_claude(build_rank_prompt(survivors, tier_map, limit), repo_root)
+    text, cost = _run_claude(build_rank_prompt(survivors, tier_map, limit), repo_root, timeout)
     parsed = _extract_json_array(text)
     if parsed is None:
         raise ValueError(f"unparseable ranking response: {text[:160]!r}")
@@ -203,38 +211,56 @@ def select_top(survivors, repo_root, limit: int = DIGEST_LIMIT, tier_map=None,
     """survivors: list of (cluster, Classification). Returns (selected, cost, note).
 
     `selected` is a ranked list of (cluster, Classification, reason) capped at `limit`.
-    `note` is None on a clean run, or a human-readable banner string when the ranking degraded to
-    the deterministic fallback — the caller MUST surface it (no silent degradation)."""
+    `note` is None on a clean run, else a human-readable banner the caller MUST surface.
+    `ranked` is False ONLY when no LLM ranking happened at all and the deterministic order was
+    used. The distinction matters for alerting: a SHARDED recovery still produced a real editorial
+    ranking (weaker cross-story dedup, but sound), whereas the deterministic order is the measured-
+    and-rejected volume proxy standing in for editorial judgement — that one is worth waking
+    someone for, the other is not."""
     tier_map = tier_map or {}
     if len(survivors) <= limit:
+        # Nothing to choose — everything fits. Not a degradation, so ranked=True.
         ordered = deterministic_order(survivors, tier_map)
-        return [(c, cls, "") for c, cls in ordered], 0.0, None
+        return [(c, cls, "") for c, cls in ordered], 0.0, None, True
 
     by_id = {c.hash: (c, cls) for c, cls in survivors}
-    cost, note = 0.0, None
+    cost, note, ranked = 0.0, None, True
+
+    def _sharded(pool):
+        """Recovery path: each shard nominates its top `limit`, then a run-off ranks the nominees
+        head-to-head. Bounded prompts, but it loses the cross-shard view that lets the model see
+        one event told five ways — hence recovery only, never the first choice."""
+        c_total, finalists = 0.0, []
+        shards = [pool[i:i + SHARD_SIZE] for i in range(0, len(pool), SHARD_SIZE)]
+        for i, shard in enumerate(shards):
+            s_sel, s_cost = _rank_once(shard, tier_map, limit, repo_root)
+            c_total += s_cost
+            finalists += [by_id[x.cluster_id] for x in s_sel[:limit]]
+            if logger:
+                logger.info("rank shard %d/%d: %d candidates → %d nominees",
+                            i + 1, len(shards), len(shard), min(len(s_sel), limit))
+        f_sel, f_cost = _rank_once(finalists, tier_map, limit, repo_root)
+        return f_sel, c_total + f_cost
+
     try:
-        shards = [survivors[i:i + SHARD_SIZE] for i in range(0, len(survivors), SHARD_SIZE)]
-        if len(shards) == 1:
+        try:
             sels, cost = _rank_once(survivors, tier_map, limit, repo_root)
-        else:
-            # Run-off: each shard nominates its own top `limit`, then one final call ranks the
-            # nominees head-to-head. Keeps every call's prompt bounded as volume grows.
-            finalists, order = [], []
-            for i, shard in enumerate(shards):
-                s_sel, s_cost = _rank_once(shard, tier_map, limit, repo_root)
-                cost += s_cost
-                for s in s_sel[:limit]:
-                    finalists.append(by_id[s.cluster_id])
-                    order.append(s)
-                if logger:
-                    logger.info("rank shard %d/%d: %d candidates → %d nominees",
-                                i + 1, len(shards), len(shard), min(len(s_sel), limit))
-            sels, f_cost = _rank_once(finalists, tier_map, limit, repo_root)
-            cost += f_cost
-        reasons = {s.cluster_id: s.reason for s in sels}
-        ordered_pairs = [by_id[s.cluster_id] for s in sels]
-        # anything the model omitted stays available for backfill, in deterministic order
-        chosen = {s.cluster_id for s in sels}
+        except subprocess.TimeoutExpired:
+            # A pooled timeout means the prompt was too big for one call, NOT that ranking is
+            # impossible — so shard and retry rather than dropping to the deterministic order.
+            # Same ladder as _classify_recursive: timeout → split → recurse. Going straight to
+            # the fallback here is what produced a deterministically-ordered digest on the first
+            # live run (2026-08-19 postmarket, 283 survivors, 300s timeout).
+            if logger:
+                logger.warning("pooled rank timed out at %ds over %d survivors — retrying sharded "
+                               "(%d/shard)", RANK_TIMEOUT_S, len(survivors), SHARD_SIZE)
+            sels, cost = _sharded(survivors)
+            note = (f"story ranking timed out on the full pool ({len(survivors)} stories); "
+                    f"recovered via sharded ranking — selection is sound but cross-story dedup "
+                    f"is weaker than usual")
+        reasons = {x.cluster_id: x.reason for x in sels}
+        ordered_pairs = [by_id[x.cluster_id] for x in sels]
+        chosen = {x.cluster_id for x in sels}
         ordered_pairs += [p for p in deterministic_order(survivors, tier_map)
                           if p[0].hash not in chosen]
     except SessionLimitError as e:
@@ -242,12 +268,12 @@ def select_top(survivors, repo_root, limit: int = DIGEST_LIMIT, tier_map=None,
                 f"deterministic order{'; ' + e.reset_hint if e.reset_hint else ''}")
         if logger:
             logger.error("rank ABORTED (429): %s — deterministic fallback", e)
-        ordered_pairs, reasons = deterministic_order(survivors, tier_map), {}
+        ordered_pairs, reasons, ranked = deterministic_order(survivors, tier_map), {}, False
     except Exception as e:  # noqa: BLE001 — ranking must never take the digest down
         note = f"story ranking failed ({type(e).__name__}) — fell back to deterministic order"
         if logger:
             logger.warning("rank failed: %s: %s — deterministic fallback", type(e).__name__, e)
-        ordered_pairs, reasons = deterministic_order(survivors, tier_map), {}
+        ordered_pairs, reasons, ranked = deterministic_order(survivors, tier_map), {}, False
 
     picked, n_capped = _apply_caps(ordered_pairs, limit, max_per_ticker)
     if logger:
@@ -257,5 +283,5 @@ def select_top(survivors, repo_root, limit: int = DIGEST_LIMIT, tier_map=None,
                         reasons.get(c.hash, "(deterministic)"))
         logger.info("rank: %d survivors → %d selected (limit=%d; %d dropped by the max-%d/ticker "
                     "cap)%s", len(survivors), len(picked), limit, n_capped, max_per_ticker,
-                    "" if note is None else " [FALLBACK]")
-    return [(c, cls, reasons.get(c.hash, "")) for c, cls in picked], cost, note
+                    "" if ranked else " [FALLBACK]")
+    return [(c, cls, reasons.get(c.hash, "")) for c, cls in picked], cost, note, ranked

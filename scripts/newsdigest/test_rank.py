@@ -87,8 +87,8 @@ def test_tier_then_confidence_ordering():
 
 def test_no_llm_call_when_under_limit():
     survivors = [mk(f"c{i}", f"T{i}", [f"Story {i}"]) for i in range(12)]
-    picked, cost, note = rank.select_top(survivors, repo_root=".", limit=30, tier_map=TIERS)
-    assert len(picked) == 12 and cost == 0.0 and note is None
+    picked, cost, note, ranked = rank.select_top(survivors, repo_root=".", limit=30, tier_map=TIERS)
+    assert len(picked) == 12 and cost == 0.0 and note is None and ranked
     print("  ✓ under the limit, selection is free (no claude -p call at all)")
 
 
@@ -98,10 +98,11 @@ def test_ranking_failure_falls_back_and_reports():
     orig = rank._rank_once
     rank._rank_once = lambda *a, **k: (_ for _ in ()).throw(RuntimeError("claude -p rc=1"))
     try:
-        picked, cost, note = rank.select_top(survivors, repo_root=".", limit=30, tier_map=TIERS)
+        picked, cost, note, ranked = rank.select_top(survivors, repo_root=".", limit=30, tier_map=TIERS)
     finally:
         rank._rank_once = orig
     assert note and "deterministic" in note, f"failure must be reported, got {note!r}"
+    assert not ranked, "a true fallback must report ranked=False so the caller alerts"
     assert len(picked) == 4, f"2 tickers x max 2 = 4 (hard cap holds in fallback too), got {len(picked)}"
     assert cost == 0.0
     print("  ✓ ranking failure → deterministic fallback + a banner the caller must render")
@@ -113,12 +114,48 @@ def test_session_limit_falls_back_with_reset_hint():
     orig = rank._rank_once
     rank._rank_once = lambda *a, **k: (_ for _ in ()).throw(SessionLimitError("resets at 3pm"))
     try:
-        picked, _cost, note = rank.select_top(survivors, repo_root=".", limit=30, tier_map=TIERS)
+        picked, _cost, note, ranked = rank.select_top(survivors, repo_root=".", limit=30, tier_map=TIERS)
     finally:
         rank._rank_once = orig
     assert "session limit" in note and "resets at 3pm" in note, note
     assert len(picked) == 30, "40 distinct tickers, so the cap does not bind here"
     print("  ✓ 429 session limit → fallback, reset hint surfaced in the banner")
+
+
+def test_pooled_timeout_shards_instead_of_giving_up():
+    """The 2026-08-19 postmarket regression: a pooled timeout dropped straight to deterministic
+    order. A timeout means the prompt was too big for ONE call, not that ranking is impossible."""
+    import subprocess
+    survivors = [mk(f"c{i}", f"T{i}", [f"Story {i}"]) for i in range(250)]
+    calls = {"n": 0}
+    orig = rank._rank_once
+
+    def flaky(pool, tier_map, limit, repo_root, timeout=None):
+        calls["n"] += 1
+        if calls["n"] == 1:                       # the pooled attempt times out
+            raise subprocess.TimeoutExpired("claude", 900)
+        return [rank.Selection(c.hash, "sharded") for c, _ in pool[:limit]], 0.05
+
+    rank._rank_once = flaky
+    try:
+        picked, cost, note, ranked = rank.select_top(survivors, repo_root=".", limit=30, tier_map=TIERS)
+    finally:
+        rank._rank_once = orig
+    assert calls["n"] > 1, "a pooled timeout must trigger the sharded retry, not give up"
+    assert len(picked) == 30, f"sharded recovery must still fill the digest, got {len(picked)}"
+    assert note and "timed out" in note, f"recovery must be reported, got {note!r}"
+    assert "deterministic" not in note, "sharded recovery is NOT the deterministic fallback"
+    assert ranked, "sharded recovery DID rank — it must not trip the fail-loud alert"
+    assert cost > 0, "sharded calls cost money; cost must be reported"
+    print(f"  ✓ pooled timeout → sharded retry ({calls['n']} calls), digest filled, recovery reported")
+
+
+def test_rank_timeout_is_longer_than_classify():
+    from newsdigest.classify_llm import CLAUDE_TIMEOUT_S
+    assert rank.RANK_TIMEOUT_S > CLAUDE_TIMEOUT_S, (
+        "the pooled rank call is one big call replacing 13-15 summarizer calls; it must not "
+        "inherit a per-classify-batch timeout")
+    print(f"  ✓ rank timeout {rank.RANK_TIMEOUT_S}s > classify {CLAUDE_TIMEOUT_S}s")
 
 
 def test_prompt_carries_the_ranking_rules():
@@ -135,6 +172,8 @@ if __name__ == "__main__":
                test_tier_then_confidence_ordering, test_no_llm_call_when_under_limit,
                test_ranking_failure_falls_back_and_reports,
                test_session_limit_falls_back_with_reset_hint,
+               test_pooled_timeout_shards_instead_of_giving_up,
+               test_rank_timeout_is_longer_than_classify,
                test_prompt_carries_the_ranking_rules):
         fn()
     print("\nALL PASS — selection is capped, per-ticker bounded, sell-side last, fail-visible.")

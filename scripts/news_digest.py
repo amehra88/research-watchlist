@@ -633,7 +633,7 @@ def main():
     # (~260 items, ~$3.2/run) and is now the single largest saving in the pipeline. It also
     # applies the max-N-per-ticker rule that stops one event (SK Hynix's buyback: 26 of 262
     # items on 2026-08-19) from occupying the whole brief.
-    selected, r_cost, rank_note = rank.select_top(
+    selected, r_cost, rank_note, ranked_ok = rank.select_top(
         survivors_cc, REPO_ROOT, limit=rank.DIGEST_LIMIT, tier_map=ticker_tiers, logger=logger)
     if rank_note:
         banners.append(rank_note)
@@ -724,16 +724,18 @@ def main():
     # Guardrail against silent under-reporting (2026-07-08 classify drop / 2026-07-21 summarize
     # drop). NOTE: this only alerts if the invocation is wrapped by alert_on_failure.sh (see
     # run_daily.sh); a bare `... --brief || true` would swallow it.
-    # `rank_note` joins this set as of the 2026-08-19 story cap. Before the cap, ordering was
+    # A FAILED ranking joins this set as of the 2026-08-19 story cap — but only a true fallback
+    # (`ranked_ok` False), not a sharded recovery, which still produced real editorial ranking and
+    # only warrants the banner. Before the cap, ordering was
     # cosmetic — every survivor was rendered anyway, so a bad sort cost nothing. Now the ranking
     # DECIDES which 30 of ~260 the operator ever sees, so falling back to the deterministic order
     # is a degraded product, not a degraded nicety. In --brief mode there is no email at all, so
     # the banner alone would be near-invisible; the non-zero exit is what reaches the operator.
-    if unclassified or unsummarized or rank_note:
+    if unclassified or unsummarized or not ranked_ok:
         logger.error("run INCOMPLETE: %d unclassified + %d unsummarized cluster(s)%s (processing "
                      "failure, not below-bar drops) — exiting non-zero to trigger alerting",
                      len(unclassified), len(unsummarized),
-                     "; ranking degraded to deterministic order" if rank_note else "")
+                     "" if ranked_ok else "; ranking degraded to deterministic order")
         sys.exit(1)
 
 
