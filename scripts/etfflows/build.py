@@ -80,7 +80,9 @@ def ticker_metrics(state: dict, ticker: str, as_of: str) -> dict:
     can build both the table row and the trigger Reading without recomputing.
     """
     dates, flows = store.series_for(state, "flows", ticker)
-    _, navs = store.series_for(state, "prices", ticker)
+    # NAVs are looked up BY DATE, never positionally: the price series can have a different
+    # length and different holidays than the flow series, so zipping the two by index would
+    # quietly pair a flow with the wrong day's NAV and corrupt every divergence reading.
     nav_by_date = dict(zip(*store.series_for(state, "prices", ticker)))
     anchors = store.month_end_aum(state, ticker)
 

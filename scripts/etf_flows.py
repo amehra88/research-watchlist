@@ -72,12 +72,19 @@ def do_fetch(args) -> int:
     uni = build.load_universe(UNIVERSE)
     tickers = uni.tickers
     end = args.end or date.today().isoformat()
-    start = args.start or (date.fromisoformat(end) - timedelta(days=args.lookback)).isoformat()
 
     runner = factset_flows.make_runner(REPO_ROOT)
     total_failed: set[str] = set()
 
     for series in ("flows", "prices", "aum"):
+        # AUM NEEDS ITS OWN, WIDER WINDOW. Anchors exist only on month-end dates, so a 10-day
+        # lookback returns zero rows on the ~19 trading days a month that are not near a month
+        # boundary — a wasted `claude -p` call — and worse, a new month's anchor is missed
+        # entirely unless a fetch happens to straddle it. A missing anchor silently degrades
+        # the flow/AUM denominator for every subsequent day, so this window must always
+        # contain at least one month end.
+        lookback = args.aum_lookback if series == "aum" else args.lookback
+        start = args.start or (date.fromisoformat(end) - timedelta(days=lookback)).isoformat()
         calls = factset_flows.estimate_calls(len(tickers), start, end, series)
         log(f"{series}: {len(tickers)} tickers {start}..{end} (~{calls} calls)")
         if args.dry_run:
@@ -184,7 +191,11 @@ def do_report(args) -> int:
     os.makedirs(NOTES_DIR, exist_ok=True)
     main_path = os.path.join(LOG_DIR, f"report_etfflows_{as_of}.txt")
     table_path = os.path.join(LOG_DIR, f"report_etfflows_table_{as_of}.txt")
-    note_path = os.path.join(NOTES_DIR, f"{as_of}-flows.md")
+    # notes/ convention is {YYYYMMDD}-..., not the ISO form used everywhere else here.
+    # NOTE: notes/flows/ is a non-ticker directory, so indexing is subject to the open
+    # chunker gap (memory: chunker-v3-awareness-gap) — this file is written to disk, but
+    # do not assume it is searchable in pg until that is fixed.
+    note_path = os.path.join(NOTES_DIR, f"{as_of.replace('-', '')}-flows.md")
 
     with open(main_path, "w") as fh:
         fh.write(main)
@@ -252,6 +263,9 @@ def main() -> int:
     p.add_argument("--as-of", help="report for this flow date instead of the newest")
     p.add_argument("--lookback", type=int, default=10,
                    help="days of history for --fetch (default 10, covers a long weekend)")
+    p.add_argument("--aum-lookback", type=int, default=45,
+                   help="days of history for the AUM series (default 45 — must always span "
+                        "a month end, since anchors exist only on month-end dates)")
     args = p.parse_args()
 
     if args.backfill:
