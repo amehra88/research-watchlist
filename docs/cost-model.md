@@ -102,6 +102,20 @@ _Last updated: 2026-06-09. Update when costs change or new channels added._
 - Alternative: Self-hosted embedding model (free but slow); OpenAI text-embedding-3-large (~$0.13/M tokens, similar cost)
 - Reasoning: 3072-dim quality, ties to existing Gemini API key, integrated with embed.py
 
+**Decision: cap the news digest at 30 stories, selected BEFORE the summarizer (2026-08-19)**
+- Cost: ~45% off the news pipeline's claude -p spend (measured ~$5.6/run x 3 runs/day → ~$3.1/run)
+- Driver: the summarizer ran over EVERY survivor (~260 items/run, ~$3.2) — the single largest line
+  in the pipeline. A selection pass (`scripts/newsdigest/rank.py`, ~$0.07/run, one batched call over
+  headlines) now picks the top 30 first, so the summarizer runs over 30.
+- Alternative considered: cap at render time only — fixes the operator's readability complaint but
+  saves nothing, since the summarizer had already run.
+- Not saved: classify still runs over the full 300-cluster cap (~$2.5/run). Materiality cannot be
+  known without classifying, so this is the pipeline's irreducible floor as designed today. The one
+  remaining lever is the brief's verdict cache, measured at 0 hits/300 misses — see
+  `docs/superpowers/specs/2026-07-21-news-prefilter-dedup-design.md`.
+- Corpus is NOT reduced: stories below the cut are still filed to notes/news + pg as headline-only
+  notes (`summarized: false`), so RAG recall is unchanged at ~$0.
+
 **Decision: v3 ingest no daily email (2026-06-09)**
 - Cost: $0 saved (Brevo was free anyway)
 - Reasoning: Operator preference; query corpus via chunking/RAG instead
