@@ -7,6 +7,32 @@ Usage: diff_screens.py <prefix>      e.g. diff_screens.py edgar_ai_language_scre
 import json, sys, os, re, glob
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+REPO = os.path.dirname(os.path.dirname(HERE))
+
+
+def covered_tickers():
+    """Tickers already in watchlist.yaml, so known names don't read as discoveries."""
+    path = os.path.join(REPO, "config", "watchlist.yaml")
+    try:
+        import yaml
+    except ImportError:
+        return set()
+    try:
+        data = yaml.safe_load(open(path))
+    except Exception:
+        return set()
+    out = set()
+    for v in (data or {}).values():
+        if isinstance(v, list):
+            for e in v:
+                if isinstance(e, dict):
+                    for f in ("ticker", "id", "pvt_id"):
+                        if e.get(f):
+                            out.add(str(e[f]).upper())
+    return out
+
+
+COVERED = covered_tickers()
 
 
 def cik(filer):
@@ -21,10 +47,44 @@ def label(filer):
     return tk, nm
 
 
+def dedup(rows):
+    """One row per company. EDGAR repeats a filer across documents/tickers."""
+    seen, out = set(), []
+    for r in sorted(rows, key=lambda r: -r["score"]):
+        k = cik(r["filer"])
+        if k in seen:
+            continue
+        seen.add(k)
+        out.append(r)
+    return out
+
+
+def emit(rows):
+    print("| Score | Ticker | Name | Phrases | |")
+    print("|---|---|---|---|---|")
+    for r in rows:
+        tk, nm = label(r["filer"])
+        ph = "; ".join((r.get("phrases") or r.get("titles") or [])[:3])
+        mark = "*tracked*" if tk in COVERED else ""
+        print(f"| {r['score']} | {tk} | {nm[:44]} | {ph[:70]} | {mark} |")
+    print()
+
+
 def main(prefix):
     runs = sorted(glob.glob(os.path.join(HERE, f"{prefix}_*.json")))
     if len(runs) < 2:
-        print(f"## {prefix}\n\nOnly {len(runs)} run(s) on disk — nothing to diff yet.\n")
+        # First run: no baseline to diff against, so show the current top of the
+        # list instead of an empty report. Every subsequent run diffs properly.
+        print(f"## {prefix}")
+        if not runs:
+            print("\nNo runs on disk.\n")
+            return
+        raw = json.load(open(runs[-1]))
+        cur = dedup(raw)
+        print(f"\nFirst run (`{os.path.basename(runs[-1])}`) — no baseline yet, so this is the "
+              f"current standing list, not a diff. {len(cur)} companies "
+              f"({len(raw)} filing rows).\n")
+        emit(cur[:40])
         return
     prev, cur = runs[-2], runs[-1]
     P = {cik(r["filer"]): r for r in json.load(open(prev))}
@@ -43,13 +103,7 @@ def main(prefix):
 
     if new:
         print("### New entrants (the signal)\n")
-        print("| Score | Ticker | Name | Phrases |")
-        print("|---|---|---|---|")
-        for r in new[:40]:
-            tk, nm = label(r["filer"])
-            ph = "; ".join((r.get("phrases") or r.get("titles") or [])[:3])
-            print(f"| {r['score']} | {tk} | {nm[:44]} | {ph[:70]} |")
-        print()
+        emit(new[:40])
     if rose:
         print("### Increased conviction\n")
         for c, p in rose[:20]:

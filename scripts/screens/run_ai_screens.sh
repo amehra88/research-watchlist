@@ -39,6 +39,7 @@ python3 "$HERE/edgar_ai_officer_screen.py"
   echo
   echo "Interpret with \`skills/ai-application-layer-screen/SKILL.md\` — in particular, apply the"
   echo "size filter and check for phrase collisions before treating any row as a candidate."
+  echo "Rows marked *tracked* are already in \`config/watchlist.yaml\`."
   echo
   python3 "$HERE/diff_screens.py" edgar_ai_language_screen
   echo

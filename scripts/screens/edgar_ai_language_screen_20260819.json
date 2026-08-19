@@ -978,15 +978,6 @@
  {
   "score": 2,
   "n": 1,
-  "filer": "DarioHealth Corp.  (DRIO)  (CIK 0001533998)",
-  "sic": "3841",
-  "phrases": [
-   "proprietary datasets"
-  ]
- },
- {
-  "score": 2,
-  "n": 1,
   "filer": "Lyft, Inc.  (LYFT)  (CIK 0001759509)",
   "sic": "7389",
   "phrases": [
@@ -996,8 +987,8 @@
  {
   "score": 2,
   "n": 1,
-  "filer": "Ventas, Inc.  (VTR)  (CIK 0000740260)",
-  "sic": "6798",
+  "filer": "DarioHealth Corp.  (DRIO)  (CIK 0001533998)",
+  "sic": "3841",
   "phrases": [
    "proprietary datasets"
   ]
@@ -1007,6 +998,15 @@
   "n": 1,
   "filer": "Grindr Inc.  (GRND)  (CIK 0001820144)",
   "sic": "7370",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Ventas, Inc.  (VTR)  (CIK 0000740260)",
+  "sic": "6798",
   "phrases": [
    "proprietary datasets"
   ]

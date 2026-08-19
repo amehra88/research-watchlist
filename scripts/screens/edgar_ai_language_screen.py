@@ -4,7 +4,7 @@
 Rarity == precision. 'artificial intelligence' hits 4194 10-Ks (noise).
 'AI revenue' hits 5 (signal). We screen on the rare tail only.
 """
-import json, time, urllib.request, urllib.parse, gzip, collections, re, sys
+import json, time, urllib.request, urllib.parse, gzip, collections, re, sys, os, datetime
 
 UA = "Ashim Mehra ashimmehra@gmail.com"
 BASE = "https://efts.sec.gov/LATEST/search-index"
