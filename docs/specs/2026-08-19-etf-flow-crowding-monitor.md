@@ -1,6 +1,6 @@
 # ETF Flow & Crowding Monitor
 
-## Step 0 — Session persistence — DONE except the commit
+## Step 0 — Session persistence — COMPLETE
 
 Completed 2026-08-19:
 
@@ -12,16 +12,13 @@ Completed 2026-08-19:
       of every session in this project. **This is the mechanism that makes a future session pick the
       work up without being re-briefed.**
 
-**REMAINING — the only outstanding action:**
+- [x] Committed and pushed to `origin/main` (commit `88f5cf76`).
 
-- [ ] `git add docs/specs/2026-08-19-etf-flow-crowding-monitor.md && git commit && git push`
+Note for future sessions: `auto_sync.py` is `#PAUSED_FOR_BUILD` in crontab, so nothing pushes on its
+own — any later edits to this spec need a manual `git commit` + `git push`. The memory files live
+under `/root/.claude/` and are outside the repo, so they are never carried by these commits.
 
-`auto_sync.py` is `#PAUSED_FOR_BUILD` in crontab, so **nothing pushes on its own**. Until this runs,
-the spec exists only on the droplet's working tree — it survives the session but is not on GitHub and
-is not on the Mac. The memory files live under `/root/.claude/` and are outside the repo, so they are
-unaffected by the commit either way.
-
-Do this first in the next session if it has not been run.
+**Nothing outstanding in Step 0. Implementation starts at Phase 1 below.**
 
 ## Context
 
