@@ -303,3 +303,57 @@ thresholds are calibrated. Sequence: backfill → validate data → calibrate th
    an age note rather than failing the run.
 8. End-to-end: `run_daily.sh` on a test date → confirm section appears after ETF UPDATE, full table
    at end, and that a deliberately missing flows file still sends the email.
+
+---
+
+## Addendum — prior-art sweep findings (2026-08-19)
+
+Most of the open-source/vendor prior art solves a problem we do not have: deriving flows from
+shares-outstanding deltas because they lack a flows feed. We have FactSet. Their work is still
+useful as **independent validation**, and it surfaced one real landmine.
+
+### Split contamination — CHECKED, FactSet is clean
+
+XLK executed a **2:1 split on 2025-12-05**, inside our 3y backfill window. Naive `ΔSO × NAV` yields a
+spurious **+$47.6B** that day. **Verified FactSet's series directly: 2025-12-05 = −$145.5M**, in line
+with neighbours (12-04 −$116M, 12-08 −$110M, 12-09 −$177M). **No contamination — no split detector
+needed for the FactSet path.** Only required if we ever compute flows ourselves.
+
+### Validation gate #3 — UPGRADED (supersedes the `/root/ws` proxy)
+
+Two genuinely independent, free sources, both better than the `/root/ws` sign-check:
+
+1. **SSGA `navhist`** — `https://www.ssga.com/us/en/institutional/library-content/products/fund-data/etfs/us/navhist-us-en-{ticker}.xlsx`
+   Columns `Date | NAV | Shares Outstanding | Total Net Assets`, exact integers, **daily back to
+   2006**, T+1, no auth, not IP-blocked. Verified 200 for **SPY and every sector SPDR** — i.e. 12 of
+   our trigger tier. Compute `flow = ΔSO × NAV_{t−1}` and reconcile against FactSet.
+2. **SEC N-PORT** — `FUND_REPORTED_INFO` carries `SALES_FLOW_MON1/2/3` and
+   `REDEMPTION_FLOW_MON1/2/3`; net monthly flow = sales − redemptions. ~58-day lag, dollars only.
+   The only free *authoritative* flow number — use quarterly to catch drift.
+   Join gotcha: `company_tickers_mf.json` does **not** resolve SPY (it is a UIT); use
+   `data.sec.gov/submissions/CIK0000884394.json`.
+
+**Convention note:** ICI and the reconciled vendor data both use **beginning-of-period** NAV
+(`ΔSO × NAV_{t−1}`). This matches our "prior-period AUM as denominator" choice — keep them consistent.
+
+### Further support for demoting 1d
+
+Measured, not theoretical: ETF Global stamps `effective_date` D with the SO figure SSGA publishes on
+D+1. Two vendors both claiming "daily shares outstanding" differ by one business day. 5d/63d remain
+the defensible horizons.
+
+### Sources rejected (do not spend time re-evaluating)
+
+- **Yahoo / yfinance** — SPY `sharesOutstanding` off by **13.6%** vs SSGA; no historical SO series.
+- **Alpha Vantage** — no SO, no NAV, no flows.
+- **stockanalysis.com** — `sharesOut` is a formatted string ("1.06B") → ±$3.8B phantom SPY flow.
+- **TradingView scanner** — SO matches SSGA, but flows are null, values rounded to 100k shares, and
+  **their ToS bars automated collection / non-display algorithmic use**. Operator compliance call.
+- **OpenBB** — no flows or shares-outstanding function at all.
+- Paid options if ever needed: **Intrinio** `/etfs/{id}/nav_flows/historical` (cleanest), **Nasdaq
+  Data Link `ETFF`** (covers QQQ/SMH/IGV, 2017+). Pricing relayed, not independently verified.
+
+### Still uncovered
+
+Product benchmarking (ETFdb/VettaFi, Koyfin, YCharts, Morningstar, Lipper, ETFGI, Bloomberg ETF IQ)
+— worth a re-run purely to steal presentation conventions for Block A.
