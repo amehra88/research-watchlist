@@ -97,3 +97,10 @@ Untitled*.canvas
 Untitled*.base
 
 .obsidian/
+
+# ETF flow monitor derived caches (regenerated each run).
+# NOTE: state/etf_flows.jsonl is deliberately NOT ignored — it is the flow history itself
+# and costs ~95 `claude -p` calls to rebuild, so it is tracked as free disaster recovery.
+state/fear_greed.json
+state/etf_lookthrough.json
+state/etf_flows_triggers.json
