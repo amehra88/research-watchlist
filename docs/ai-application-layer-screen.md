@@ -807,19 +807,423 @@ where the two diverge.
 ⁶ losing to CRWD ⁷ best *structure* on the list ⁸ Thin on AI revenue, Strong on corpus
 ⁹ already T1; the template, not a new idea ¹⁰ most *verifiable* labor-substitution claim on the list
 
-**If you want only five names to carry the thesis:** IRTC (purest A, HeartFlow's structural twin),
-RELX (best unconverted corpus), DE (proves it extends outside tech), APP (already owned, wrong tier),
-CHRW (only name where the substitution is publicly auditable).
+### The four tests, and how they relate
+
+Across this memo we've now built four independent filters. They are ordered here by how hard each is
+to fake — which is the same as how much weight to give each:
+
+| # | Test | Source | Fakeable? |
+|---|---|---|---|
+| 1 | **Named product, priced, replacing something** (§8) | Product/pricing disclosure | Very hard — customers must pay |
+| 2 | **Quantified AI revenue / inference in COGS** (§6) | 10-K, 10-Q full text | Hard — audited |
+| 3 | **Senior AI officer named in a filing** (§7) | 8-K 5.02, DEF 14A | Moderate — real cost, but can be defensive |
+| 4 | **Delete-the-model reasoning** (§1, §4) | Analysis | N/A — judgment, not evidence |
+
+Use 4 to generate hypotheses, 1–3 to test them. A name passing three of four is a genuine
+application-layer company; a name passing only 4 is a story I told myself, which is why every entry
+in §4 carries its counter-argument.
+
+*The shortlist that used to sit here has moved to **§11** — it was written before the §6–§9 screens
+ran and no longer reflected the best names.*
 
 ---
 
-## 6. Suggested actions
+## 6. Casting a wider net — the EDGAR language screen
+
+*Added on your prompt: "cast a wider net than the companies under coverage — screen for words like
+LLM, multiple models, AI-based product innovation… or revenue from AI."*
+
+Sections 1–5 were bounded by what I could reason about. This section is bounded by nothing: it runs
+against **EDGAR full-text search across every US filer**, not the 159 tickers in `watchlist.yaml`.
+Script and dated output are saved at `scripts/screens/edgar_ai_language_screen.py` and
+`…_20260819.json` — re-runnable each quarter.
+
+### 6.1 The design principle: rarity *is* precision
+
+The obvious version of this screen fails. Here is the calibration run, 10-K filings, Jun 2025 –
+Aug 2026:
+
+| Phrase | 10-K hits | 10-Q hits | Verdict |
+|---|---|---|---|
+| "artificial intelligence" | **4,194** | 5,979 | Useless — ~60% of all filers |
+| "large language models" | 325 | — | Weak — vocabulary, not commitment |
+| "foundation models" | 66 | 71 | Weak |
+| "proprietary datasets" | 65 | 77 | Moderate |
+| "monetize AI" | 4 | 1 | Strong |
+| **"AI revenue"** | **5** | **13** | **Very strong** |
+| "revenue from AI" | 5 | 7 | Very strong |
+| "AI-driven revenue" | 0 | 3 | Very strong |
+| "inference costs" | 7 | — | Very strong |
+
+**This is the finding, and it validates your instinct precisely.** Roughly three in five public
+companies now say "artificial intelligence" in a 10-K, so the word carries no information. But
+almost none say **"AI revenue"** — about 0.3% of the filers who mention AI at all. The phrases worth
+screening on are the ones that are *expensive to say falsely*: quantified revenue, and **inference
+treated as cost of revenue**. A company that discusses inference in COGS is running models in
+production at a volume material enough for the auditors, which is a far harder claim to fake than
+"we are leveraging AI to transform." So I weighted phrases by disclosure cost — revenue and COGS
+language at 5, proprietary-model/data claims at 2–3, generic vocabulary at 1 — and scored filers on
+the sum of *distinct* phrases hit, not raw frequency.
+
+That directly implements §2's third disqualifier: don't ask whether a company *talks* about AI, ask
+whether it has **put a number next to it in an audited document.**
+
+### 6.2 What the screen caught, and one instructive failure
+
+213 filing rows (209 distinct CIKs) hit the high-precision phrase set; 192 were outside your
+coverage; 11 were already on the watchlist (a reassuring cross-check — ANET, CRWD, GWRE, HNGE, IOT, MDB, PINS, SHOP, WELL and others
+surfaced independently); 10 were excluded semis/hyperscalers.
+
+**The instructive false positive:** Mid-America Apartment (MAA), Camden Property Trust (CPT), Realty
+Income, Extra Space, and Public Storage all hit "AI revenue." They are not AI companies. Apartment
+REITs run **"AI revenue management"** pricing software — a phrase collision. Also filtered out:
+crypto miners repurposing sites into datacenters (MARA, CLSK, HUT, Mawson, Rackspace) which are
+infrastructure, not application layer; and a long tail of sub-$50m shells with "AI" in the name
+(Glidelogic, Z Squared, AIRWA, Appsoft, Safe Pro, Fusemachines). **A language screen without a size
+and business filter returns mostly garbage** — the filter is what makes it usable, and it is the
+part that cannot be automated away.
+
+### 6.3 New names the screen produced — ranked
+
+Market caps are latest reported quarter, USD millions, via FactSet. None of these are in T1–T4.
+
+**Genuinely new and defensible — worth real work:**
+
+| Name | Mkt cap | Phrase evidence | One-line defense |
+|---|---|---|---|
+| **ALGN** Align Technology | $12,016 (~2.8x sales) | "cost of AI" — **one weight-3 hit only** | Worth work, but **I initially overclaimed this and am correcting it.** The wrong version: "delete the model and you cannot manufacture the product." That is falsifiable and probably false — Align staged aligner series for two decades using CAD plus human treatment planners in offshore planning centers. The defensible version is archetype **B**: it owns an orthodontic outcomes dataset (millions of completed cases with before/after 3D geometry) that no competitor can assemble, and automating treatment planning attacks a large human labor line. That's a good idea; it is not proof of model-centrality, and the screen evidence here is thin — a single phrase. **Open diligence question: how much of treatment staging is a learned model today versus CAD with technician review?** Answer that before sizing anything. |
+| **PL** Planet Labs | $13,176 (~35x sales) | "our proprietary AI models"; proprietary datasets | Owns a daily-refreshed imagery record of the entire landmass — a *temporal* corpus that cannot be back-filled at any price, because yesterday is gone. The sellable product is inference over it (change detection, crop state, asset counting), not pixels. **Valuation flag:** $13.2bn against $94m of quarterly revenue is roughly 35x sales and represents a very large rerating from this name's history. The business logic is sound; the price may already hold all of it. Verify the multiple independently before acting. |
+| **DOCU** DocuSign | $8,879 | "AI infrastructure costs"; "inference costs"; proprietary datasets | Contrarian, and the phrase evidence is unusually strong — it discloses inference in its cost structure. Holds plausibly the largest corpus of executed agreements in existence, and is trying to convert a signature utility into agreement intelligence. If that conversion works it is a genuine B→A; if not, it's a melting seat business. Cheap enough that the option is not fully priced. |
+| **ADPT** Adaptive Biotech | $3,412 | proprietary datasets | Structurally identical to Natera: immune-receptor sequencing plus a classifier for minimal residual disease, compounding on a proprietary immune-repertoire database. Same loop, earlier and smaller. |
+| **INOD** Innodata | $2,598 | **"revenue from AI"**; foundation models | Sells engineered training and evaluation data to the frontier labs. Note the honest distinction: this is a **supplier to** the application layer, not a member of it — closer to picks-and-shovels. Its AI dependency is total; its margin quality is the open question, since the underlying work is expert human labor. |
+| **WLY** John Wiley | $2,081 | **"AI revenue"** | One of only five 10-K filers in fourteen months to use that phrase. Licenses its scholarly corpus to model developers and discloses the revenue. The RELX argument in miniature, with the advantage that the number is actually printed. Risk: content licensing may prove episodic rather than recurring. |
+| **NP** Neptune Insurance | $4,322 | proprietary datasets | Flood underwriting driven by a proprietary risk model rather than the federal rate tables — the pricing model *is* the company. What Lemonade claimed to be, in a line where the modeling edge is measurable. Recent listing, thin history. |
+| **KDK** Kodiak AI | $986 | LLM/foundation-model vocabulary | Driverless trucking — a second, more literal answer to your "trucking and shipping" prompt than CHRW. Same profile as Aurora: unambiguous AI centrality, unproven business. |
+| **EVLV** Evolv Technologies | $1,049 | "large language models"; proprietary datasets | AI weapons screening at venue entry — the model is the product, sold to the Axon-adjacent buyer. **Caveat: past accounting/disclosure problems.** Diligence governance before anything else. |
+| **WAY** Waystar | $3,940 | proprietary datasets | Healthcare claims and denial prediction on a large proprietary claims corpus; attacks the revenue-cycle labor line directly. |
+| **OPEN** Opendoor | $4,475 | "our proprietary AI models" | The home-pricing model literally is the business — buy wrong and you eat it. Maximum centrality, punishing economics. |
+| **RDVT** Red Violet | $899 | proprietary datasets | Identity-resolution graph; small, profitable, genuine data asset. |
+
+**Large-cap corpus plays the screen surfaced (already-known businesses, under-appreciated as AI assets):**
+MCO Moody's ($78,437, "AI monetization" — ratings and credit corpus), IQV IQVIA ($31,804 — health
+data at scale), PAYX Paychex ($34,486 — payroll data), FDS FactSet ($8,782, "AI monetization" —
+your own vendor, which is a nice sanity check on the method), CLVT Clarivate ($1,382 — a distressed
+version of the RELX argument).
+
+**Recent IPOs disclosing inference as a cost — the §2 test passing in real time:**
+FIG Figma ($9,598), TTAN ServiceTitan ($5,672), NAVN Navan ($4,417), NTSK Netskope ($4,020),
+NCNO nCino ($1,902). Whatever else is true, these companies are running models at material volume.
+
+**Too small to act on, noted for completeness:** CRNC Cerence ($512), GDYN Grid Dynamics ($461),
+ZIP ZipRecruiter ($308), VERI Veritone ($136), SSTI SoundThinking ($119), NRDY Nerdy ($116).
+
+### 6.4 The screen's unexpected bonus: it also finds the *disrupted*
+
+IBEX, TaskUs, Genpact, ExlService, Robert Half, and Accenture all scored — because they discuss AI
+heavily in **risk-factor** language rather than product language. That is §3's mirror risk showing up
+as a machine-readable signal. Worth formalizing: the same phrase set, partitioned by whether the
+language sits in Item 1 (Business) or Item 1A (Risk Factors), separates the companies selling AI
+from the companies being sold out by it. That's a clean next iteration of this screen.
+
+---
+
+## 7. Cross-check: senior AI hiring
+
+*Added on your prompt: "cross-check with hiring. Welltower has had jobs for AI but more importantly
+hired senior people into senior AI roles."*
+
+Your distinction is the right one and it is the whole design of this screen: **job postings are
+cheap, org charts are expensive.** Anyone can post twelve ML-engineer reqs. Creating a C-suite or
+EVP-level AI role, naming a person to it, and disclosing it to the SEC is a board-level capital
+allocation that survives a budget cycle. So I screened **officer titles** in 8-K Item 5.02 (officer
+appointments), DEF 14A proxies, and 10-K officer lists, Jan 2024 – Aug 2026. 122 filing rows matched,
+representing **115 distinct companies** (some file the same title across several documents).
+
+### 7.1 First, the honest limitation — your own example escapes it
+
+**Welltower does not appear in these results.** That is not evidence Welltower hasn't hired senior AI
+people; it is evidence of where the method is blind. SEC filings only name Section 16 officers and
+named executive officers. A company can hire a VP of AI or a Head of ML from a hyperscaler — a
+genuinely senior, genuinely expensive hire — and never file a word about it. So this screen has
+**high precision and poor recall**: everything it finds is real, and it misses most of what you
+actually want, including the case that prompted it.
+
+The complete version needs job-posting and professional-profile data (posting velocity by seniority,
+and inbound moves from frontier labs and hyperscalers), which SEC filings cannot see and this system
+does not currently ingest. That is a real gap and worth naming as a build decision rather than
+papering over. **Note also that WELL is already T1** — so the instinct that generated the example is
+already reflected in the portfolio; what's missing is the systematic version.
+
+### 7.2 What it did find — senior AI officers, ranked
+
+**Large-cap, non-tech, genuinely notable:**
+
+| Name | Title disclosed | Why it matters |
+|---|---|---|
+| **SPGI** S&P Global | Chief AI Officer (8-K) | Completes the professional-information set alongside RELX, TRI, MCO. Owns ratings, indices, and commodity price assessments — proprietary corpora with the same liability-grounding argument as legal research. Strong candidate; belongs in §4. |
+| **MA** Mastercard | Chief AI and Data Officer (proxy) | The transaction graph is arguably the most valuable proprietary behavioral dataset in finance, and fraud scoring on it is genuinely model-native and genuinely priced. Fails §1 centrality (the network survives without it) but the corpus is exceptional. |
+| **GEHC** GE HealthCare | Chief AI Officer (proxy) | Imaging AI at scale, with an installed base of scanners generating the data. Direct adjacency to HeartFlow and RadNet — the third leg of the medical-imaging AI thesis and the largest. Strong add. |
+| **QXO** QXO | Chief Artificial Intelligence Officer (8-K) | The most interesting *non-tech* hit. A building-products distribution roll-up that named a Chief AI Officer at founding — explicitly running an AI-transformation playbook on a low-tech industry. Archetype B in its purest, most aggressive form. Unproven, but exactly the shape you're screening for. |
+| **TW** Tradeweb | Head of AI (10-K, 8-K) | Electronic fixed-income trading; proprietary execution data. |
+| **EXPE** Expedia | Chief AI Officer (proxy) | Travel demand and pricing data. |
+| **RJF** Raymond James, **WFC** Wells Fargo, **BAM** Brookfield, **FNF** Fidelity National | CAIO / Head of AI | Financials committing at officer level. |
+
+**Healthcare diagnostics — the cluster the hiring screen independently confirms:**
+**WGS** GeneDx (Chief AI Officer — genomic interpretation for rare disease; the interpretation *is*
+the product), **CDNA** CareDx (Chief Data and AI Officer — transplant surveillance, structurally a
+Natera analogue), **HCAT** Health Catalyst, **UTHR** United Therapeutics, plus **RXRX** Recursion and
+**ABSI** Absci, which also hit the language screen.
+
+**Both signals — language *and* a senior AI officer.** This is the highest-conviction intersection
+the two screens produce, because it pairs an audited economic claim with a board-level org
+commitment: **FDS** FactSet, **RXRX** Recursion, **ABSI** Absci, **STGW** Stagwell, **AIOT**
+Powerfleet (fleet telematics — video-based driver-safety inference on a proprietary fleet corpus;
+small but a clean Samsara analogue). *Fusemachines and Mawson also intersect but are shells or
+crypto-infrastructure — excluded.*
+
+**Confirming your own instinct:** **TEAM Atlassian discloses a Head of AI** in both its 10-K and an
+8-K. Your "maybe TEAM now" is supported by the org-chart evidence, not just the product narrative.
+
+**And the mirror risk again, sharply:** **HSII** Heidrick & Struggles (executive search) and **EXLS**
+ExlService both appointed AI leadership. When the staffing and BPO industries hire Chief AI Officers,
+they are buying insurance against their own disruption — §3 showing up in the org chart.
+
+---
+
+## 8. The strongest test of all: name the product
+
+*Added on your prompt: "focus more on AI-powered products — AI DJ at Spotify, AI-generated police
+reports at Axon, AI-powered PT at Hinge."*
+
+This is the best filter of the four you've proposed, and it should probably be the primary one. A
+keyword can be written by an IR department. An officer title can be a defensive hire. **A shipped,
+named product that customers use and that would not exist without a model is the thing itself.**
+
+The test has three parts, and the third is where most candidates die:
+
+1. **Can you name it?** If the answer is "they're infusing AI across the portfolio," there is no
+   product.
+2. **Does the model do the work, or assist a human who does the work?** AI DJ *chooses and sequences
+   and voices*; a "smart playlist" filter does not.
+3. **Is it priced, or is it free retention bait?** This is §2's third disqualifier. A product given
+   away to defend a seat is a feature. A product with its own SKU, its own unit, or a measurable
+   attach rate is a business.
+
+### 8.1 Product inventory
+
+*Two caveats, and the second is the important one. **(a)** Product names are as of my knowledge
+(~May 2026) and are the claims most likely to have drifted — verify before citing; the mechanism
+descriptions are structural and hold regardless of renaming. **(b) The "priced separately" column is
+UNVERIFIED except for the reimbursed-healthcare rows.** Software vendors move products between
+bundled and separately-priced frequently, and I am asserting rather than sourcing those cells. Treat
+the software rows as hypotheses to check against pricing pages and disclosure. The healthcare rows
+are different in kind: a third-party payer set the price after auditing the clinical claim, which is
+externally verifiable and is why §8.2 rests its conclusion there.*
+
+| Company | Named product | What the model actually does | Priced separately? |
+|---|---|---|---|
+| Spotify (T1) | **AI DJ** | Selects, sequences, and voices a personalized radio stream — programming, not filtering | No — retention/engagement |
+| Axon (T1) | **Draft One** | Drafts a police report from body-camera audio; officer edits and signs | **Yes** — the model answer |
+| Hinge Health (T1) | Computer-vision exercise therapy | Tracks joint position through a camera and corrects form in place of a therapist | **Yes** — it *is* the service |
+| HeartFlow (T2) | **FFR<sub>CT</sub>** | Simulates coronary blood flow from a CT scan, replacing an invasive catheter procedure | **Yes** — per-analysis, reimbursed |
+| Shopify (T1) | **Sidekick** | Merchant copilot over store data | No — bundled |
+| Atlassian (T3) | **Rovo** | Search, agents, and chat over an org's own work artifacts | **Yes** |
+| **iRhythm** | **Zio** service | Classifies ~2 weeks of continuous ECG into an adjudicated arrhythmia report | **Yes** — reimbursed per report |
+| **Align** | **ClinCheck** / iTero | Turns a 3D oral scan into a staged tooth-movement plan that drives manufacturing | **Yes** — embedded in case price |
+| **Deere** | **See & Spray** | Classifies each plant as crop or weed in real time and fires the nozzle | **Yes** — premium + outcome-priced |
+| **Natera** | **Signatera** | Detects parts-per-million tumor DNA against a personalized variant panel | **Yes** — reimbursed |
+| **Guardant** | **Shield** | Classifies cancer signal from a blood draw | **Yes** — reimbursed |
+| **RadNet** | **DeepHealth** | Reads mammography; sold to the patient as an enhanced screen | **Yes** — cash-pay upsell |
+| **Thomson Reuters** | **CoCounsel** | Drafts and researches law grounded in Westlaw with verifiable citations | **Yes** |
+| **RELX** | **Lexis+ AI / Protégé** | Same, on the LexisNexis corpus | **Yes** |
+| AppLovin (T3) | **Axon** engine | Predicts install/purchase probability at auction time | **Yes** — it *is* the revenue |
+| CrowdStrike (T1) | **Charlotte AI** | Triages alerts, compressing analyst labor | **Yes** |
+| **SentinelOne** | **Purple AI** | Same | **Yes** |
+| Palantir (T2) | **AIP** | Wires models into operational decision loops | **Yes** |
+| Duolingo (T3) | **Max** / video call | Generates lessons and conversational practice | **Yes** — premium tier |
+| **DocuSign** | **IAM** | Extracts obligations and risk from executed agreements | **Yes** |
+| **Waystar** | **AltitudeAI** | Predicts and prevents claim denials | **Yes** |
+| **Planet Labs** | Planetary Variables | Turns daily imagery into measured land/crop/asset state | **Yes** |
+| **Evolv** | **Evolv Express** | Discriminates weapons from benign metal at venue entry | **Yes** — it *is* the product |
+| **Tempus** | Lens / xT assays | Diagnostic classifiers + a queryable clinical-molecular library | **Yes** |
+| AppFolio (T3 cand.) | **Realm-X** | Handles leasing and maintenance conversations | **Yes** — add-on |
+| Robinhood (T3 cand.) | **Cortex** | Synthesizes market context per position | **Yes** — Gold tier |
+| **NICE** | CXone Mpower | Automates the contact-center interaction | **Yes** — and cannibalizes seats (§3) |
+| Salesforce | **Agentforce** | Task agents over customer-owned CRM data | Yes — *but* §1 data-ownership problem |
+
+### 8.2 What the product lens changes
+
+Reading down the "priced separately" column reorders the list. Three observations:
+
+- **The reimbursed-healthcare names pass all three parts cleanly, and this is the only conclusion the
+  table can currently carry.** Named product, model does the work, and independently priced by a
+  third-party payer who audited the clinical claim before agreeing to pay. That is the strongest form
+  of the test available anywhere, because the pricing decision was made by a skeptical outside party
+  rather than by the company's own pricing committee — and unlike the software rows, it is externally
+  verifiable. IRTC, NTRA, GH, RDNT, and HTFL clear it.
+- **Spotify and Shopify appear to monetize their AI through retention rather than price** — AI DJ and
+  Sidekick look like products given away to defend engagement. If that holds, the AI shows up as
+  churn reduction rather than a revenue line, which would independently confirm they sit in a
+  different bucket from HeartFlow and Hinge. Flagged as *likely* rather than established, per caveat
+  (b) above — it is worth ten minutes on their pricing disclosure to settle it, because it's a clean
+  test of the archetype split.
+- **The best single question to ask any candidate management team** falls straight out of this:
+  *"Name the AI product, tell me what it's priced at, and tell me what it replaced."* A company with
+  a real answer to all three gives it immediately. A company without one will describe a strategy.
+
+---
+
+## 9. Physical AI — yes, but it inverts the moat logic
+
+*Added on your prompt: "should we add physical AI as is the case with robotics?"*
+
+Yes — and it belongs as a distinct sub-archetype rather than as names sprinkled through §4, because
+**what makes a physical-AI company defensible is not what makes a software one defensible.** Getting
+that backwards is the main way this category is misjudged.
+
+### 9.1 The boundary: learned policy vs. classical automation
+
+Most of what is marketed as "robotics" fails the delete-the-model test — in the *opposite* direction
+from AI-washed software. Industrial robots have done precise, repeatable work for forty years using
+classical control theory, kinematics, and operations research. None of that is a learned model, and
+bolting a vision classifier onto a pick-and-place cell does not make the company AI-central.
+
+The line worth drawing: **does a learned policy replace a human sensorimotor skill that could not be
+programmed explicitly?** Recognizing an individual weed among crops, driving a highway, grasping
+arbitrary objects, reading a surgical field — these resisted explicit programming for decades
+precisely because the rules cannot be written down. That is physical AI. Palletizing along a fixed
+path is not.
+
+This is why §4 graded **SYM** and **CGNX** Thin — warehouse orchestration is substantially an
+optimization problem, and industrial machine vision is commoditizing from above — and why **DE**,
+**TSLA**, **AUR**, and **KDK** graded Strong on mechanism.
+
+### 9.2 First inversion: in the physical world, nobody has the data
+
+In software the moat question is *who owns the corpus*, and the answer varies enormously — which is
+why §1 makes data ownership the key discriminator. In the physical world, **everybody is data-poor.**
+There is no internet-scale corpus of robot manipulation or of driving in rare conditions. You cannot
+scrape it. It must be generated one physical interaction at a time, at real cost.
+
+So the durable asset is not the data — it is **the data-collection channel**: a deployed fleet,
+funded by someone else, generating labeled physical experience as a byproduct of paid work. That one
+criterion sorts the category:
+
+- **Tesla** — customers buy the fleet that collects the training data. Collection is revenue-positive.
+- **Deere** — machines already in the fields, sold at a profit, instrumented.
+- **Intuitive Surgical** — every procedure yields video paired with synchronized instrument telemetry,
+  across an installed base that took twenty years to place.
+- **Aurora / Kodiak** — must *pay* to run a fleet purely to collect, with no offsetting revenue until
+  autonomy works. Structurally the hardest position in the category.
+
+**That asymmetry, not model quality, is the thing to underwrite.** A company collecting at a profit
+can iterate indefinitely; one collecting at a loss is racing a cash clock.
+
+### 9.3 Second inversion: the constraint is validation, not capability
+
+In software, a model that is right 95% of the time often ships. In physical AI the binding constraint
+is proving safety to a regulator or a court — and that cost scales with **severity of the failure
+mode**, not with the difficulty of the task. Which is why surgical autonomy and driverless trucking
+have been "two years away" for a decade while agricultural spraying shipped and scaled: **a
+misclassified weed costs a few cents.**
+
+Rank physical-AI opportunities by consequence-of-error first and technical difficulty second. It is a
+better timeline predictor than any capability benchmark.
+
+### 9.4 Candidates, regrouped
+
+**Already defended in §4:** DE (Strong — profitable collection channel, low consequence-of-error,
+shipping now), TSLA (Strong — the template), ISRG (corpus Strong / AI-revenue Thin), AUR and KDK
+(pure, but loss-funded collection), CGNX and SYM (Thin — largely classical).
+
+**Worth adding under this frame:**
+
+| Name | Physical-AI claim | Grade |
+|---|---|---|
+| **MBLY** Mobileye *(already T3)* | Perception stack across a very large deployed vehicle base — a collection channel funded by OEM customers, i.e. the profitable side of §9.2. Under-tiered for this thesis. | Moderate–Strong |
+| **AVAV** AeroVironment | Loitering munitions and small UAS with increasing onboard autonomy. The buyer is defense, where consequence-of-error is *accepted* rather than litigated — which materially changes the §9.3 timeline. | Moderate |
+| **PRCT** Procept BioRobotics | Robotic tissue resection executing a planned path autonomously rather than under direct manual control. Narrow indication, but genuinely a machine performing the intervention. | Moderate |
+| **EVLV** Evolv *(from §6)* | Discriminating weapons from benign metal in a live physical stream — perception where the explicit-rules approach demonstrably failed. Governance caveat stands. | Moderate |
+| **ZBRA** Zebra | Vision, scanning, warehouse workflow data at scale. Closer to classical than learned — add only if the AI attach becomes visible in pricing. | Thin |
+
+### 9.5 The honest conclusion: the best physical AI is private
+
+This is the category where the public market offers the worst menu. Public physical-AI is mostly
+either (a) pre-revenue pure plays racing a cash clock, or (b) industrial incumbents where the AI is a
+small attachment on a cyclical P&L. The companies actually building general manipulation policies and
+driverless fleets — the humanoid developers, the robot-foundation-model labs, the leading driverless
+operator, the defense-autonomy prime — are **all private.**
+
+That is not a reason to skip the category. It is a reason to route it through machinery you already
+have: **register the physical-AI privates as `.pvt` drivers** (`private_drivers` in
+`config/watchlist.yaml`, profiles at `notes/<pvt_id>/_profile.md`), exactly as you do for the model
+labs. They move public names — TSLA, ISRG, DE, and the T4 supply chain — long before any of them
+lists, and the SpaceX→SPCX migration is the proven path if one does.
+
+---
+
+## 10. Suggested actions
 
 1. **Add an `ai_application_layer` theme** to the master vocabulary in `config/watchlist.yaml`, with
    sub-tags `model_native` and `corpus_plus_leadership`, so the news classifier separates the
    archetypes instead of blurring them into the existing `ai_*` themes.
-2. **T2 adds, ranked by defense strength × business quality:** IRTC, RELX, DE, NTRA, TRI, VRSK,
-   CHRW, NU, TEM, CLBT, RDNT, KVYO, INTU.
+2. **T2 adds from §4, ranked by defense strength × business quality:** IRTC, RELX, DE, NTRA, TRI,
+   VRSK, CHRW, NU, TEM, CLBT, RDNT, KVYO, INTU.
+2b. **T2/T3 adds from the §6 screen (names I did not reach by reasoning):** ALGN and PL first — both
+   are archetype A with corpora that cannot be reconstructed, and neither shows up on conventional
+   AI screens. Then ADPT, DOCU, WLY, NP, WAY. T3 for KDK, EVLV, OPEN, RDVT, INOD.
+2c. **Re-run the screen quarterly** — `python3 scripts/screens/edgar_ai_language_screen.py` — and
+   diff against `edgar_ai_language_screen_20260819.json`. New filers crossing into the "AI revenue" /
+   "inference costs" tail are the leading indicator; that tail had roughly 30 members this cycle, so
+   additions are individually meaningful rather than lost in noise.
+2d. **Build the Item 1 vs Item 1A split** (§6.4) so the same screen separates AI sellers from AI
+   casualties.
+2e. **Adds from the §7 hiring screen:** SPGI and GEHC first (both are §4-quality names I did not reach
+   by reasoning — SPGI completes the professional-information set, GEHC is the largest medical-imaging
+   AI asset). Then MA, TW, WGS, CDNA, QXO (the non-tech wildcard), AIOT.
+2f. **Close the hiring blind spot (§7.1).** The SEC screen has high precision and poor recall — it
+   misses exactly the Welltower case that prompted it. A real hiring signal needs job-posting velocity
+   by seniority plus inbound moves from frontier labs and hyperscalers. That is a new ingest channel,
+   not a query; scope it before building it.
+2g. **Adopt the §8 product test as the primary filter.** For every candidate, record: product name,
+   what the model does, price/unit, and what it replaced. Names with no answer get demoted regardless
+   of how well they screen on language or hiring.
+2h. **Physical AI (§9):** add MBLY tier review (already T3, under-tiered), plus AVAV and PRCT to T3.
+   Register the physical-AI privates as `.pvt` drivers — humanoid developers, robot-foundation-model
+   labs, the leading driverless operator, the defense-autonomy prime. That is where the category
+   actually lives.
+
+## 11. The shortlist, after all four tests
+
+*This replaces the earlier five-name list, which was written before the §6–§9 screens existed.*
+
+**If you take only eight names forward:**
+
+| Name | Why it survives all the filtering |
+|---|---|
+| **IRTC** iRhythm | Purest archetype A — HeartFlow's structural twin. Labeled ECG corpus + FDA + a reimbursement code; the classifier *is* the report that gets paid for. |
+| **RELX** | Best unconverted corpus in the market. Owns the legal and scientific ground truth that generative AI makes *more* valuable, not less, because hallucination is disqualifying in both domains. |
+| **DE** Deere | Proves the thesis extends outside tech. Vision decides per plant, priced on outcome, on a data-collection channel competitors cannot buy. |
+| **APP** AppLovin *(T3 → promote)* | Already owned, wrong tier. The ranking model is the P&L. |
+| **CHRW** C.H. Robinson | The only name where the labor substitution is **publicly auditable** — shipments per employee is a disclosed metric. |
+| **SPGI** S&P Global *(§7)* | Named a Chief AI Officer; completes the professional-information set with RELX/TRI/MCO on proprietary, legally trainable corpora. |
+| **GEHC** GE HealthCare *(§7)* | The largest medical-imaging AI asset, with an installed base of scanners generating its own training data. Third leg of the imaging thesis alongside HTFL and RDNT. |
+| **PL** Planet Labs *(§6)* | A temporal Earth record that cannot be back-filled at any price. **Caveat: ~35x sales — the business logic may already be in the price.** |
+
+**Two names I flagged and then walked back, kept visible so the reasoning is auditable:** ALGN
+(overclaimed initially — the corpus argument holds, the model-centrality claim does not survive
+scrutiny; see §6.3) and ISRG (superb corpus, no AI revenue — own it for the robot, hold the corpus
+as a free option).
+
+## 12. Reusability — what was built, not just concluded
+
+- `scripts/screens/` — both scans, a diff that reports new entrants, a quarterly runner, and a README
+  covering the three traps in reading the output.
+- `skills/ai-application-layer-screen/SKILL.md` — the judgment layer: archetype split, four tests,
+  negative screen, and the required per-name defense format. Loads whenever the question "is this
+  really an AI company?" comes up, in this or any future session.
+- **The split is deliberate:** cron runs the scans because a skill cannot be scheduled; the skill
+  interprets them because a script cannot exercise judgment. Neither half is useful alone.
 3. **Tier review:** APP and FICO T3 → T2; TEAM T3 → T2 if buying archetype B. TSLA already T1 — no
    action, but worth re-tagging under the new theme since it is the pattern the rest are screened
    against.
