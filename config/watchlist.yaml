@@ -406,6 +406,19 @@ ingest_comparables:
     informs: [COHR, LITE]
     added_date: 2026-08-10
     notes: "Fabrinet (NYSE) — the contract manufacturer that actually builds much of the datacom transceiver volume for COHR, LITE and others. Absent from the watchlist entirely until now, which is a live hole: FN's filings disclose datacom transceiver volume, mix and customer-concentration detail that directly tests COHR's supply_tightness assumption from the outside. Not an investment candidate here — ingested as evidence."
+  - ticker: RKLB
+    informs: [SPCX]
+    added_date: 2026-08-19
+    notes: "Rocket Lab USA (NASDAQ: RKLB) — the principal listed pure-play competitor to SPCX in
+      launch, and a component supplier into the wider satellite build. Same shape as the AAOI case
+      below: added T3 the same day as a name to watch, which does NOT put it in the SEC universe
+      (sec_filings.load_universe reads T1 + T2 + ingest_comparables only), so its filings would
+      never have been ingested despite RKLB being an active EDGAR filer. This entry closes that
+      gap WITHOUT changing its tier — RKLB stays T3, a name to watch, not an investment candidate
+      promoted merely to get it ingested. Why the evidence matters: SPCX's thesis rests on launch
+      cadence and cost-per-kg, and RKLB's 10-K/10-Q disclose Electron/Neutron cadence, backlog and
+      Space Systems mix — the only external, filed check on how much of the launch market a
+      competitor is actually taking. Operator request 2026-08-19."
   - ticker: AAOI
     informs: [COHR, LITE]
     added_date: 2026-08-10
