@@ -276,15 +276,25 @@ def do_report(args) -> int:
     # calls in the 07:00 path. A cache from a different flow date is ignored rather than
     # rendered against today's alerts, which would attribute stale weights to a fresh move.
     cache = _load_json(LOOKTHROUGH_CACHE, {})
-    if report["alerts"] and cache.get("as_of") == as_of:
+    if not report["alerts"]:
+        report["lookthrough_note"] = "no alert today, nothing to decompose."
+    elif not cache:
+        report["lookthrough_note"] = ("not available — no cached holdings. Run --fetch "
+                                      "(which pre-fetches it) before --report.")
+    elif cache.get("as_of") != as_of:
+        report["lookthrough_note"] = (f"skipped — cached holdings are for "
+                                      f"{cache.get('as_of')}, not {as_of}.")
+        log(f"look-through cache is for {cache.get('as_of')}, not {as_of} — skipping")
+    else:
         report["lookthrough"] = lookthrough.analyse(
             report["alerts"], uni,
             lookthrough.parse_holdings(cache.get("holdings") or []),
             lookthrough.compute_adv(cache.get("adv") or []),
             lookthrough.bctk_holdings(WS_HOLDINGS_DB),
         )
-    elif report["alerts"] and cache:
-        log(f"look-through cache is for {cache.get('as_of')}, not {as_of} — skipping")
+        if not report["lookthrough"]:
+            report["lookthrough_note"] = ("no alerting ETF was eligible (synthetic funds are "
+                                          "never decomposed).")
 
     main = render.render_main(report)
     table = render.render_table(report)

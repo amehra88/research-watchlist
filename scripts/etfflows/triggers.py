@@ -171,14 +171,30 @@ def evaluate(readings: Sequence[Reading], state: dict, as_of: str,
 
     # Rank by severity, then deterministically so equal-severity output is stable run to run.
     candidates.sort(key=lambda a: (-a.severity, a.ticker, a.horizon))
-    fired, suppressed = candidates[:max_alerts], max(0, len(candidates) - max_alerts)
 
-    # Only alerts that actually FIRED disarm. A candidate dropped by the cap stays armed so
-    # it can surface tomorrow rather than being silently consumed.
-    for a in fired:
-        st = new_state[f"{a.ticker}:{a.horizon}"]
-        st["armed"] = False
-        st["last_fired"] = as_of
+    # ONE ALERT PER TICKER. The two horizons are NOT independent — the 5d window sits inside
+    # the 63d window — so a single sustained move makes each horizon "corroborate" the other
+    # and both fire at the 2-sigma bar, when neither would have cleared 3 sigma alone.
+    # Observed live 2026-08-19: MTUM fired at 5d (-2.8σ) and 63d (-2.0σ), each citing the
+    # other, for one episode. Keeping the most severe horizon reports the episode once and
+    # stops overlapping windows from quietly halving the threshold.
+    best_by_ticker: dict[str, Alert] = {}
+    for a in candidates:
+        if a.ticker not in best_by_ticker:
+            best_by_ticker[a.ticker] = a
+    collapsed = sorted(best_by_ticker.values(),
+                       key=lambda a: (-a.severity, a.ticker, a.horizon))
+
+    fired, suppressed = collapsed[:max_alerts], max(0, len(collapsed) - max_alerts)
+
+    # Disarm EVERY horizon of a ticker that fired, not just the reported one. They describe
+    # the same episode, so leaving the other armed would re-report it tomorrow.
+    fired_tickers = {a.ticker for a in fired}
+    for a in candidates:
+        if a.ticker in fired_tickers:
+            st = new_state[f"{a.ticker}:{a.horizon}"]
+            st["armed"] = False
+            st["last_fired"] = as_of
 
     return fired, new_state, suppressed
 

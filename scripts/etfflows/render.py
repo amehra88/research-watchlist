@@ -173,15 +173,18 @@ def block_b(report: dict) -> str:
     if labelled["neglected"]:
         out.append("Neglected (both horizons soft): " + ", ".join(labelled["neglected"]))
 
-    for a in alerts:
-        div = (report.get("divergence") or {}).get(a.ticker)
+    # Deduped by ticker: an ETF can appear in `alerts` more than once, and repeating the same
+    # divergence sentence per alert reads as two separate findings about one move.
+    for ticker in sorted({a.ticker for a in alerts}):
+        div = (report.get("divergence") or {}).get(ticker)
         if div == "accumulation":
-            out.append(f"  {a.ticker}: inflow against a falling tape — accumulation, not chase.")
+            out.append(f"  {ticker}: inflow against a falling tape — accumulation, not chase.")
         elif div == "distribution":
-            out.append(f"  {a.ticker}: outflow against a rising tape — distribution into strength.")
+            out.append(f"  {ticker}: outflow against a rising tape — distribution into strength.")
 
     out.append("")
-    out += _lookthrough_lines(report.get("lookthrough") or [])
+    out += _lookthrough_lines(report.get("lookthrough") or [],
+                              report.get("lookthrough_note", ""))
     out.append("")
     out.append("Read as POSITIONING, not direction: ETF flow is largely non-fundamental")
     out.append("demand and mean-reverts over multi-week horizons. Thresholds are provisional")
@@ -194,7 +197,7 @@ def _days(d: float | None) -> str:
     return "?" if d is None else f"{d:+.2f}d"
 
 
-def _lookthrough_lines(results) -> list[str]:
+def _lookthrough_lines(results, note: str = "") -> list[str]:
     """Phase 2 decomposition, rendered only for ETFs that actually alerted.
 
     Sized in DAYS OF ADV rather than dollars: "$881M of implied NVDA demand" is unreadable
@@ -202,7 +205,10 @@ def _lookthrough_lines(results) -> list[str]:
     unit is to stop a large dollar figure from implying a large effect.
     """
     if not results:
-        return ["Constituent look-through: no alerting ETF was eligible for decomposition."]
+        # "not available" and "nothing to decompose" are different facts. Reporting the
+        # second when the first is true would claim we looked and found nothing worth saying.
+        return [f"Constituent look-through: {note or 'no alerting ETF was eligible for '
+                                                    'decomposition.'}"]
 
     out: list[str] = ["WHAT THE CROWDED VEHICLE IS BUYING"]
     for r in results:

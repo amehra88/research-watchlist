@@ -62,10 +62,34 @@ def test_2sigma_alone_does_not_fire():
 def test_2sigma_with_other_horizon_fires():
     readings = [R("XLK", 5, 2.4), R("XLK", 63, 2.6)]
     alerts, _, _ = t.evaluate(readings, {}, "2026-08-19")
-    check("2 sigma corroborated by the other horizon fires", len(alerts) == 2, f"got {alerts}")
-    check("basis recorded as corroborated",
-          all(a.basis == "corroborated" for a in alerts))
-    check("corroboration text is populated", all(a.corroboration for a in alerts))
+    check("2 sigma corroborated by the other horizon fires", len(alerts) == 1, f"got {alerts}")
+    check("the more severe horizon is the one reported",
+          alerts[0].horizon == 63, f"got {alerts[0].horizon}")
+    check("basis recorded as corroborated", alerts[0].basis == "corroborated")
+    check("corroboration text is populated", bool(alerts[0].corroboration))
+
+
+def test_one_alert_per_ticker():
+    """The 5d window sits INSIDE the 63d window, so both horizons describe one episode.
+
+    Live 2026-08-19: MTUM fired at 5d (-2.8σ) and 63d (-2.0σ), each citing the other as
+    corroboration. Reporting it twice double-counts, and the mutual corroboration lets a
+    single move clear the 2σ bar when neither horizon would clear 3σ alone.
+    """
+    readings = [R("MTUM", 5, -2.8), R("MTUM", 63, -2.0)]
+    alerts, state, _ = t.evaluate(readings, {}, "2026-08-19")
+    check("one episode -> one alert", len(alerts) == 1, f"got {[a.horizon for a in alerts]}")
+    check("keeps the most severe horizon", alerts[0].horizon == 5, f"got {alerts[0].horizon}")
+    check("BOTH horizons disarm (same episode)",
+          state["MTUM:5"]["armed"] is False and state["MTUM:63"]["armed"] is False,
+          f"got {state['MTUM:5']}, {state['MTUM:63']}")
+
+
+def test_distinct_tickers_still_both_report():
+    readings = [R("SMH", 63, 3.4), R("MTUM", 5, -3.1)]
+    alerts, _, _ = t.evaluate(readings, {}, "2026-08-19")
+    check("collapsing is per-ticker, not global",
+          {a.ticker for a in alerts} == {"SMH", "MTUM"}, f"got {alerts}")
 
 
 def test_opposite_direction_is_not_corroboration():
@@ -154,12 +178,17 @@ def test_cooldown_blocks_immediate_refire():
           f"got {alerts}")
 
 
-def test_horizons_have_independent_state():
+def test_state_is_keyed_per_horizon():
+    """State stays per-(ticker, horizon) even though reporting collapses per ticker.
+
+    The horizons re-arm independently — a 5d impulse can calm while 63d positioning stays
+    elevated — so the bookkeeping must stay separate even when the OUTPUT is collapsed.
+    """
     state = {}
     alerts, state, _ = t.evaluate([R("XLK", 5, 3.5), R("XLK", 63, 3.5)], state, "2026-08-01")
-    check("both horizons fire independently", len(alerts) == 2, f"got {alerts}")
+    check("one alert reported for the ticker", len(alerts) == 1, f"got {alerts}")
     keys = sorted(k for k in state if k.startswith("XLK"))
-    check("state is keyed per (ticker, horizon)", keys == ["XLK:5", "XLK:63"], f"got {keys}")
+    check("state is still keyed per (ticker, horizon)", keys == ["XLK:5", "XLK:63"], f"got {keys}")
 
 
 def test_unknown_ticker_starts_armed():
