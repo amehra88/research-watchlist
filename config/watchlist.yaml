@@ -1487,6 +1487,22 @@ tier_3_watchlist:
   - ticker: MKSI
     themes: [foundry_capacity, semiconductor_cycle, lithography_roadmap]
     added_date: 2026-05-11
+  - ticker: MTRN
+    themes: [advanced_materials_ai_infra, aerospace_defense_aftermarket, space_economy]
+    added_date: 2026-08-19
+    notes: "Materion Corp (NYSE: MTRN) — advanced materials: beryllium and specialty alloys,
+      precision optics, thin-film deposition materials for semiconductors. Added T3 at operator
+      request 2026-08-19 as the second ENABLING-MATERIALS name into the space/launch build.
+      EVIDENCE (Q3 2025 earnings call, 29-Oct-2025, CEO Jugal Vijayvargiya): 'We have secured
+      meaningful wins with space propulsion applications... We have a number of products being
+      introduced at our LARGE SPACE CUSTOMER... Our sales in the space market have increased
+      fivefold in just three years.' CAVEAT: the large space customer is NOT NAMED in the
+      transcript; SpaceX is the operator's inference from context (260+ launches in 2024,
+      SpaceX-dominated). Treat the SPCX link as operator-asserted, not disclosed. Supply-chain
+      edge SPCX -> MTRN (kind: supplier) in /root/research/config/supply-chain-manual.yaml.
+      Note MTRN is dual-relevant to this watchlist: the deposition-materials business is a
+      semiconductor supply-chain read as well as a space one. Sibling names: CRS (T3, specialty
+      alloys), DPC (T1, Doncasters aero/IGT components)."
   - ticker: MSI
     themes: [surveillance_security_tech, ai_native_vertical, vertical_ai_applications]
     added_date: 2026-05-11

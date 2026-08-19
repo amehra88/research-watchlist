@@ -52,11 +52,11 @@ Beyond the FSI plugin templates above, this repo is also Ashim Mehra's working r
 
 ### Purpose and scope
 
-Watchlist: `config/watchlist.yaml` holds **156 distinct tickers** across four tiers (175 tier entries; 19 tickers appear in both T2 and T3, so the entry count exceeds the distinct count):
+Watchlist: `config/watchlist.yaml` holds **157 distinct tickers** across four tiers (176 tier entries; 19 tickers appear in both T2 and T3, so the entry count exceeds the distinct count):
 
 - **T1 `tier_1_bctk`** (43) — BCTK holdings. Carries the full scoring block (ai_positioning, competitive_advantage, potential_investor_interest).
 - **T2 `tier_2_active_candidates`** (41) — active candidates, same scoring block.
-- **T3 `tier_3_watchlist`** (91) — minimal entries (`ticker`, `themes`, `added_date`). A ticker-shaped slot for a name you might take a position in. Read by `scripts/cron_earnings_reviewer.py`.
+- **T3 `tier_3_watchlist`** (92) — minimal entries (`ticker`, `themes`, `added_date`). A ticker-shaped slot for a name you might take a position in. Read by `scripts/cron_earnings_reviewer.py`.
 - **T4 `tier_4_ecosystem`** (8) — **not a tier of conviction; a different kind of object.** Companies you will not own that move names you do (Chinese optical-transceiver makers vs COHR/LITE; BE's Indian/Taiwanese suppliers). Keyed by a dot-suffixed `id` (`innolight.cn`), never a ticker, so they cannot enter the `[A-Z]+` earnings pipeline. Every entry carries `relation` + `affects` and `edgar_coverage: false` — evidence accumulates *about* them via `v3_ingest/entities.py`, never *from* them. The block's own header comment explains why they must not be filed as T3.
 
 Plus 13 `private_drivers` (`.pvt` ids) for private companies driving public theses.
