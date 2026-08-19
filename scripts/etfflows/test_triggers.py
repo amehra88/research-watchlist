@@ -1,0 +1,223 @@
+"""
+Tests for triggers.py.
+
+What these protect — every one is a way the section quietly becomes unreadable:
+
+  • hysteresis: a 63d episode must fire ONCE, not every morning for three weeks (consecutive
+    63d windows share 62 of 63 days, so raw z-scores barely move),
+  • the alert cap never silently eats an alert — capped candidates stay armed for tomorrow,
+    and the suppressed count is returned,
+  • context-tier, synthetic and degraded readings can never fire,
+  • 2 sigma requires SAME-DIRECTION corroboration; the "crowded but stalling" pattern
+    (63d in, 5d out) is NOT corroboration.
+
+No pytest in this env — run directly:  python3 scripts/etfflows/test_triggers.py
+"""
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/..")
+from etfflows import ALERT_COOLDOWN_DAYS, MAX_ALERTS_PER_DAY  # noqa: E402
+from etfflows import triggers as t  # noqa: E402
+
+FAILURES = []
+
+
+def check(name, cond, detail=""):
+    if cond:
+        print(f"  ok   {name}")
+    else:
+        print(f"  FAIL {name} {detail}")
+        FAILURES.append(name)
+
+
+def R(ticker, horizon, z, **kw):
+    """Reading with sensible trigger-tier defaults."""
+    base = dict(ticker=ticker, horizon=horizon, z=z, percentile=99.0,
+                flow_usd=1e9, flow_bps=25.0, divergence=None, tier="trigger",
+                synthetic=False, min_history_ok=True, degraded=False, degrade_reason="")
+    base.update(kw)
+    return t.Reading(**base)
+
+
+# ── thresholds ────────────────────────────────────────────────────────────────
+
+def test_standalone_fires_at_3sigma():
+    alerts, _, _ = t.evaluate([R("XLK", 63, 3.4)], {}, "2026-08-19")
+    check("3.4 sigma fires standalone", len(alerts) == 1 and alerts[0].basis == "standalone",
+          f"got {alerts}")
+    check("direction is inflow for +z", alerts and alerts[0].direction == "inflow")
+
+
+def test_below_2sigma_never_fires():
+    alerts, _, _ = t.evaluate([R("XLK", 63, 1.9)], {}, "2026-08-19")
+    check("1.9 sigma is silent", alerts == [], f"got {alerts}")
+
+
+def test_2sigma_alone_does_not_fire():
+    alerts, _, _ = t.evaluate([R("XLK", 63, 2.4)], {}, "2026-08-19")
+    check("2.4 sigma with no corroboration is silent", alerts == [], f"got {alerts}")
+
+
+def test_2sigma_with_other_horizon_fires():
+    readings = [R("XLK", 5, 2.4), R("XLK", 63, 2.6)]
+    alerts, _, _ = t.evaluate(readings, {}, "2026-08-19")
+    check("2 sigma corroborated by the other horizon fires", len(alerts) == 2, f"got {alerts}")
+    check("basis recorded as corroborated",
+          all(a.basis == "corroborated" for a in alerts))
+    check("corroboration text is populated", all(a.corroboration for a in alerts))
+
+
+def test_opposite_direction_is_not_corroboration():
+    """63d inflow + 5d outflow is 'crowded but stalling' — interesting, but not confirmation."""
+    readings = [R("XLK", 5, -2.4), R("XLK", 63, 2.6)]
+    alerts, _, _ = t.evaluate(readings, {}, "2026-08-19")
+    check("opposite-direction horizons do not corroborate", alerts == [], f"got {alerts}")
+
+
+def test_divergence_corroborates():
+    a1, _, _ = t.evaluate([R("SMH", 5, 2.3, divergence="accumulation")], {}, "2026-08-19")
+    check("inflow + accumulation corroborates", len(a1) == 1, f"got {a1}")
+
+    a2, _, _ = t.evaluate([R("SMH", 5, -2.3, divergence="distribution")], {}, "2026-08-19")
+    check("outflow + distribution corroborates", len(a2) == 1, f"got {a2}")
+
+    a3, _, _ = t.evaluate([R("SMH", 5, 2.3, divergence="confirmation")], {}, "2026-08-19")
+    check("trend-following divergence does NOT corroborate", a3 == [], f"got {a3}")
+
+
+# ── eligibility gates ─────────────────────────────────────────────────────────
+
+def test_context_tier_never_fires():
+    alerts, _, _ = t.evaluate([R("VGT", 63, 9.0, tier="context")], {}, "2026-08-19")
+    check("context tier cannot alert even at 9 sigma", alerts == [], f"got {alerts}")
+
+
+def test_synthetic_never_fires():
+    alerts, _, _ = t.evaluate([R("DRAM", 63, 9.0, synthetic=True)], {}, "2026-08-19")
+    check("synthetic fund cannot alert", alerts == [], f"got {alerts}")
+
+
+def test_degraded_never_fires():
+    alerts, _, _ = t.evaluate(
+        [R("XLRE", 63, None, degraded=True, degrade_reason="mad_floor")], {}, "2026-08-19")
+    check("MAD-floor degraded reading cannot alert", alerts == [], f"got {alerts}")
+
+
+def test_insufficient_history_never_fires():
+    alerts, _, _ = t.evaluate([R("LYTE", 5, 5.0, min_history_ok=False)], {}, "2026-08-19")
+    check("insufficient history cannot alert", alerts == [], f"got {alerts}")
+
+
+# ── hysteresis: the expensive one ─────────────────────────────────────────────
+
+def test_episode_fires_once_not_every_day():
+    """THE headline test. A 63d episode decays slowly; without hysteresis this fires ~20x."""
+    state = {}
+    fired_days = []
+    # A realistic slow decay: consecutive 63d windows share 62 of 63 days.
+    path = [3.5, 3.45, 3.4, 3.38, 3.3, 3.25, 3.2, 3.1, 3.05, 3.0,
+            2.9, 2.8, 2.7, 2.6, 2.5, 2.4, 2.3, 2.2, 2.1, 2.0]
+    for i, z in enumerate(path):
+        day = f"2026-08-{i + 1:02d}"
+        alerts, state, _ = t.evaluate([R("XLK", 63, z)], state, day)
+        if alerts:
+            fired_days.append(day)
+    check("slow-decaying episode fires exactly once", len(fired_days) == 1,
+          f"fired on {fired_days}")
+    check("it fires on the first day", fired_days == ["2026-08-01"], f"got {fired_days}")
+
+
+def test_rearm_after_calming_allows_a_second_episode():
+    state = {}
+    fired = []
+    # spike, fall well below the re-arm band, spike again
+    path = [("2026-08-01", 3.5), ("2026-08-02", 0.2), ("2026-08-03", 0.1),
+            ("2026-09-01", 3.6)]
+    for day, z in path:
+        alerts, state, _ = t.evaluate([R("XLK", 63, z)], state, day)
+        if alerts:
+            fired.append(day)
+    check("a genuinely new episode fires again", fired == ["2026-08-01", "2026-09-01"],
+          f"got {fired}")
+
+
+def test_cooldown_blocks_immediate_refire():
+    """Even a full re-arm cannot bypass the cooldown window."""
+    state = {}
+    alerts, state, _ = t.evaluate([R("XLK", 5, 3.5)], state, "2026-08-01")
+    check("first fire lands", len(alerts) == 1)
+    # drop below re-arm (so armed flips True) then spike the very next day
+    _, state, _ = t.evaluate([R("XLK", 5, 0.0)], state, "2026-08-02")
+    alerts, state, _ = t.evaluate([R("XLK", 5, 4.0)], state, "2026-08-03")
+    check(f"cooldown ({ALERT_COOLDOWN_DAYS}d) blocks a 2-day-later refire", alerts == [],
+          f"got {alerts}")
+
+
+def test_horizons_have_independent_state():
+    state = {}
+    alerts, state, _ = t.evaluate([R("XLK", 5, 3.5), R("XLK", 63, 3.5)], state, "2026-08-01")
+    check("both horizons fire independently", len(alerts) == 2, f"got {alerts}")
+    keys = sorted(k for k in state if k.startswith("XLK"))
+    check("state is keyed per (ticker, horizon)", keys == ["XLK:5", "XLK:63"], f"got {keys}")
+
+
+def test_unknown_ticker_starts_armed():
+    alerts, _, _ = t.evaluate([R("NEWETF", 5, 3.2)], {}, "2026-08-19")
+    check("a ticker absent from state can fire immediately", len(alerts) == 1)
+
+
+# ── the cap ───────────────────────────────────────────────────────────────────
+
+def test_cap_truncates_by_severity_and_reports():
+    readings = [R(f"ET{i}", 63, 3.0 + i * 0.1) for i in range(MAX_ALERTS_PER_DAY + 3)]
+    alerts, _, suppressed = t.evaluate(readings, {}, "2026-08-19")
+    check("cap is enforced", len(alerts) == MAX_ALERTS_PER_DAY, f"got {len(alerts)}")
+    check("truncation is reported, never silent", suppressed == 3, f"got {suppressed}")
+    check("ranked by severity descending",
+          [a.severity for a in alerts] == sorted([a.severity for a in alerts], reverse=True))
+
+
+def test_capped_candidates_stay_armed_for_tomorrow():
+    """A capped alert must not be consumed — it should surface the next day."""
+    readings = [R(f"ET{i}", 63, 3.0 + i * 0.1) for i in range(MAX_ALERTS_PER_DAY + 1)]
+    alerts, state, suppressed = t.evaluate(readings, {}, "2026-08-19")
+    dropped = "ET0"  # lowest severity
+    check("lowest-severity name was the one dropped",
+          dropped not in [a.ticker for a in alerts] and suppressed == 1)
+    check("dropped candidate remains armed", state[f"{dropped}:63"]["armed"] is True,
+          f"got {state.get(f'{dropped}:63')}")
+    check("dropped candidate has no last_fired stamp",
+          state[f"{dropped}:63"]["last_fired"] is None)
+
+
+def test_ordering_is_deterministic():
+    readings = [R("BBB", 63, 3.0), R("AAA", 63, 3.0), R("CCC", 63, 3.0)]
+    a1, _, _ = t.evaluate(readings, {}, "2026-08-19")
+    a2, _, _ = t.evaluate(list(reversed(readings)), {}, "2026-08-19")
+    check("equal-severity output is stable run to run",
+          [a.ticker for a in a1] == [a.ticker for a in a2] == ["AAA", "BBB", "CCC"],
+          f"{[a.ticker for a in a1]} vs {[a.ticker for a in a2]}")
+
+
+def test_state_is_not_mutated_in_place():
+    state = {}
+    t.evaluate([R("XLK", 63, 3.5)], state, "2026-08-19")
+    check("caller's state dict is left untouched", state == {}, f"got {state}")
+
+
+def main():
+    tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
+    for fn in tests:
+        print(f"\n{fn.__name__}:")
+        fn()
+    print("\n" + "=" * 60)
+    if FAILURES:
+        print(f"FAILED ({len(FAILURES)}): {', '.join(FAILURES)}")
+        return 1
+    print(f"All checks passed ({len(tests)} tests)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
