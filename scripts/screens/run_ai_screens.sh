@@ -36,12 +36,15 @@ python3 "$HERE/edgar_mcp_screen.py"
   echo "# AI application-layer screen — $STAMP"
   echo
   echo "Automated quarterly run. **New entrants are the signal**: a filer newly using"
-  echo "quantified-AI-revenue or inference-in-COGS language, or newly naming a senior AI"
-  echo "officer, has crossed a threshold that is expensive to fake."
+  echo "quantified-AI-revenue or proprietary-data language, newly naming a senior AI"
+  echo "officer, or newly exposing its corpus via MCP has crossed a threshold that is"
+  echo "expensive to fake."
   echo
   echo "Interpret with \`skills/ai-application-layer-screen/SKILL.md\` — in particular, apply the"
   echo "size filter and check for phrase collisions before treating any row as a candidate."
   echo "Rows marked *tracked* are already in \`config/watchlist.yaml\`."
+  echo
+  python3 "$HERE/cross_signal.py"
   echo
   python3 "$HERE/diff_screens.py" edgar_ai_language_screen
   echo

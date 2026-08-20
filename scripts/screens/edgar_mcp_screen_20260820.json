@@ -1,0 +1,1310 @@
+[
+ {
+  "score": 22,
+  "n": 6,
+  "filer": "Morningstar, Inc.  (MORN)  (CIK 0001289419)",
+  "sic": "6282",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server",
+   "MCP servers",
+   "our MCP",
+   "AI-ready data",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 22,
+  "n": 5,
+  "filer": "JFrog Ltd  (FROG)  (CIK 0001800667)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server",
+   "MCP servers",
+   "our MCP",
+   "agent-ready"
+  ]
+ },
+ {
+  "score": 18,
+  "n": 5,
+  "filer": "Atlassian Corp  (TEAM)  (CIK 0001650372)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server",
+   "our MCP",
+   "agent-ready",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 15,
+  "n": 4,
+  "filer": "PagerDuty, Inc.  (PD)  (CIK 0001568100)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server",
+   "our MCP",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 15,
+  "n": 4,
+  "filer": "Figma, Inc.  (FIG)  (CIK 0001579878)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server",
+   "our MCP",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 15,
+  "n": 3,
+  "filer": "System1, Inc.  (SST, SSTPW)  (CIK 0001805833)",
+  "sic": "7370",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server",
+   "MCP servers"
+  ]
+ },
+ {
+  "score": 14,
+  "n": 3,
+  "filer": "Udemy, Inc.  (UDMY)  (CIK 0001607939)",
+  "sic": "8200",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server",
+   "our MCP"
+  ]
+ },
+ {
+  "score": 14,
+  "n": 3,
+  "filer": "VISA INC.  (V)  (CIK 0001403161)",
+  "sic": "7389",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server",
+   "our MCP"
+  ]
+ },
+ {
+  "score": 14,
+  "n": 3,
+  "filer": "Klaviyo, Inc.  (KVYO)  (CIK 0001835830)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server",
+   "our MCP"
+  ]
+ },
+ {
+  "score": 12,
+  "n": 3,
+  "filer": "FACTSET RESEARCH SYSTEMS INC  (FDS)  (CIK 0001013237)",
+  "sic": "7370",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server",
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 12,
+  "n": 3,
+  "filer": "NetApp, Inc.  (NTAP)  (CIK 0001002047)",
+  "sic": "3572",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server",
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 11,
+  "n": 4,
+  "filer": "Informatica Inc.  (INFA)  (CIK 0001868778)",
+  "sic": "7372",
+  "phrases": [
+   "MCP server",
+   "agent-ready",
+   "AI-ready data",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 11,
+  "n": 4,
+  "filer": "S&P Global Inc.  (SPGI)  (CIK 0000064040)",
+  "sic": "7320",
+  "phrases": [
+   "MCP servers",
+   "agent-ready",
+   "AI-ready data",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 11,
+  "n": 3,
+  "filer": "FIFTH THIRD BANCORP  (FITB, FITBI, FITBM, FITBO, FITBP)  (CIK 0000035527)",
+  "sic": "6022",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 11,
+  "n": 3,
+  "filer": "CrowdStrike Holdings, Inc.  (CRWD)  (CIK 0001535527)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP servers",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 11,
+  "n": 3,
+  "filer": "Inuvo, Inc.  (INUV)  (CIK 0000829323)",
+  "sic": "7310",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 3,
+  "filer": "Salesforce, Inc.  (CRM)  (CIK 0001108524)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "agent-ready",
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 3,
+  "filer": "TERADATA CORP /DE/  (TDC)  (CIK 0000816761)",
+  "sic": "7372",
+  "phrases": [
+   "MCP server",
+   "our MCP",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Amplitude, Inc.  (AMPL)  (CIK 0001866692)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "DOCUSIGN, INC.  (DOCU)  (CIK 0001261333)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "BOX INC  (BOX)  (CIK 0001372612)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Marqeta, Inc.  (MQ)  (CIK 0001522540)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP servers"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Autodesk, Inc.  (ADSK)  (CIK 0000769397)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP servers"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "FiscalNote Holdings, Inc.  (NOTE, NOTE-WT)  (CIK 0001823466)",
+  "sic": "7389",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Braze, Inc.  (BRZE)  (CIK 0001676238)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Criteo S.A.  (CRTO)  (CIK 0001576427)",
+  "sic": "7311",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "MARSH & MCLENNAN COMPANIES, INC.  (MRSH)  (CIK 0000062709)",
+  "sic": "6411",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP servers"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "DHI GROUP, INC.  (DHX)  (CIK 0001393883)",
+  "sic": "7389",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Snowflake Inc.  (SNOW)  (CIK 0001640147)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Pure Storage, Inc.  (PSTG)  (CIK 0001474432)",
+  "sic": "3572",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP servers"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Bakkt, Inc.  (BKKT, BKKT-WT)  (CIK 0001820302)",
+  "sic": "6199",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Fastly, Inc.  (FSLY)  (CIK 0001517413)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Silo Pharma, Inc.  (SILO)  (CIK 0001514183)",
+  "sic": "2834",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Everpure, Inc.  (PSTG)  (CIK 0001474432)",
+  "sic": "3572",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP servers"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Dynatrace, Inc.  (DT)  (CIK 0001773383)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "UPWORK, INC  (UPWK)  (CIK 0001627475)",
+  "sic": "7374",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "MongoDB, Inc.  (MDB)  (CIK 0001441816)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "N-able, Inc.  (NABL)  (CIK 0001834488)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP server"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Yext, Inc.  (YEXT)  (CIK 0001614178)",
+  "sic": "7374",
+  "phrases": [
+   "Model Context Protocol",
+   "MCP servers"
+  ]
+ },
+ {
+  "score": 9,
+  "n": 2,
+  "filer": "Bandwidth Inc.  (BAND)  (CIK 0001514416)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "our MCP"
+  ]
+ },
+ {
+  "score": 7,
+  "n": 2,
+  "filer": "SentinelOne, Inc.  (S)  (CIK 0001583708)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "Netskope Inc  (NTSK)  (CIK 0002063196)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "PubMatic, Inc.  (PUBM)  (CIK 0001422930)",
+  "sic": "7370",
+  "phrases": [
+   "Model Context Protocol",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "UiPath, Inc.  (PATH)  (CIK 0001734722)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Okta, Inc.  (OKTA)  (CIK 0001660134)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Intapp, Inc.  (INTA)  (CIK 0001565687)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Asana, Inc.  (ASAN)  (CIK 0001477720)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Confluent, Inc.  (CFLT)  (CIK 0001699838)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Commerce.com, Inc.  (BIGC)  (CIK 0001626450)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Bridgeline Digital, Inc.  (BLIN)  (CIK 0001378590)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Kodiak AI, Inc.  (KDK, KDKRW)  (CIK 0001853138)",
+  "sic": "7373",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Couchbase, Inc.  (BASE)  (CIK 0001845022)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "ACCESS Newswire Inc.  (ACCS)  (CIK 0000843006)",
+  "sic": "8742",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Cars.com Inc.  (CARS)  (CIK 0001683606)",
+  "sic": "7374",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "ZoomInfo Technologies Inc.  (GTM)  (CIK 0001794515)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "FiscalNote Holdings, Inc.  (NOTE, NOTEW)  (CIK 0001823466)",
+  "sic": "7389",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Rocket Companies, Inc.  (RKT)  (CIK 0001805284)",
+  "sic": "6162",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Sabre Corp  (SABR)  (CIK 0001597033)",
+  "sic": "7370",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Gemini Space Station, Inc.  (GEMI)  (CIK 0002055592)",
+  "sic": "6199",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Roblox Corp  (RBLX)  (CIK 0001315098)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Coursera, Inc.  (COUR)  (CIK 0001651562)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Block, Inc.  (XYZ, BSQKZ)  (CIK 0001512673)",
+  "sic": "7372",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "TransUnion  (TRU)  (CIK 0001552033)",
+  "sic": "7320",
+  "phrases": [
+   "Model Context Protocol"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Datadog, Inc.  (DDOG)  (CIK 0001561550)",
+  "sic": "7372",
+  "phrases": [
+   "MCP server"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Teads Holding Co.  (TEAD)  (CIK 0001454938)",
+  "sic": "7370",
+  "phrases": [
+   "MCP server"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "BOX INC  (BOX, BXCAP)  (CIK 0001372612)",
+  "sic": "7372",
+  "phrases": [
+   "MCP server"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "CLARIVATE PLC  (CLVT)  (CIK 0001764046)",
+  "sic": "7374",
+  "phrases": [
+   "MCP servers"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "CIMPRESS plc  (CMPR)  (CIK 0001262976)",
+  "sic": "2750",
+  "phrases": [
+   "our MCP"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 2,
+  "filer": "ServiceNow, Inc.  (NOW)  (CIK 0001373715)",
+  "sic": "7372",
+  "phrases": [
+   "AI-ready data",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 2,
+  "filer": "A10 Networks, Inc.  (ATEN)  (CIK 0001580808)",
+  "sic": "3576",
+  "phrases": [
+   "AI-ready data",
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Flywire Corp  (FLYW)  (CIK 0001580560)",
+  "sic": "7389",
+  "phrases": [
+   "agent-ready"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "CISCO SYSTEMS, INC.  (CSCO)  (CIK 0000858877)",
+  "sic": "3576",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Soluna Holdings, Inc  (SLNH, SLNHP)  (CIK 0000064463)",
+  "sic": "6199",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Planet Labs PBC  (PL, PL-WT)  (CIK 0001836833)",
+  "sic": "3663",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "AvePoint, Inc.  (AVPT)  (CIK 0001777921)",
+  "sic": "7372",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "BullFrog AI Holdings, Inc.  (BFRG, BFRGW)  (CIK 0001829247)",
+  "sic": "2834",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "PDF SOLUTIONS INC  (PDFS)  (CIK 0001120914)",
+  "sic": "7372",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "ExlService Holdings, Inc.  (EXLS)  (CIK 0001297989)",
+  "sic": "7389",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Phoenix Education Partners, Inc.  (PXED)  (CIK 0001600222)",
+  "sic": "8200",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Sprinklr, Inc.  (CXM)  (CIK 0001569345)",
+  "sic": "7372",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Z Squared Inc.  (ZSQR)  (CIK 0001759186)",
+  "sic": "6199",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Planet Labs PBC  (PL)  (CIK 0001836833)",
+  "sic": "3663",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Signing Day Sports, Inc.  (SGN)  (CIK 0001898474)",
+  "sic": "7374",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Digi Power X Inc.  (DGXX)  (CIK 0001854368)",
+  "sic": "6199",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "BlockchAIn Digital Infrastructure, Inc.  (AIB)  (CIK 0002070542)",
+  "sic": "6221",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "MVB FINANCIAL CORP  (MVBF)  (CIK 0001277902)",
+  "sic": "6022",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Workday, Inc.  (WDAY)  (CIK 0001327811)",
+  "sic": "7374",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Apex Treasury Corp  (APXT, APXTU, APXTW)  (CIK 0002079253)",
+  "sic": "6770",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Vertiv Holdings Co  (VRT)  (CIK 0001674101)",
+  "sic": "3679",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "NETSCOUT SYSTEMS INC  (NTCT)  (CIK 0001078075)",
+  "sic": "7373",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "PROGRESS SOFTWARE CORP /MA  (PRGS)  (CIK 0000876167)",
+  "sic": "7372",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Galaxy Digital Inc.  (GLXY)  (CIK 0001859392)",
+  "sic": "6211",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "BioNexus Gene Lab Corp  (BGLC)  (CIK 0001737523)",
+  "sic": "8071",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "D. Boral ARC Acquisition I Corp.  (BCAR, BCARU, BCARW)  (CIK 0002065779)",
+  "sic": "7372",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Core Scientific, Inc./tx  (CORZ, CORZR, CORZW, CORZZ)  (CIK 0001839341)",
+  "sic": "6199",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Natera, Inc.  (NTRA)  (CIK 0001604821)",
+  "sic": "8071",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "MARA Holdings, Inc.  (MARA)  (CIK 0001507605)",
+  "sic": "6199",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "EQUINIX INC  (EQIX)  (CIK 0001101239)",
+  "sic": "6798",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "INSIGHT ENTERPRISES INC  (NSIT)  (CIK 0000932696)",
+  "sic": "5961",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "RECURSION PHARMACEUTICALS, INC.  (RXRX)  (CIK 0001601830)",
+  "sic": "2836",
+  "phrases": [
+   "AI-ready data"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Vynleads, Inc.  (VYND)  (CIK 0001745078)",
+  "sic": "7200",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "ServiceTitan, Inc.  (TTAN)  (CIK 0001638826)",
+  "sic": "7372",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Elastic N.V.  (ESTC)  (CIK 0001707753)",
+  "sic": "7372",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "HACKETT GROUP, INC.  (HCKT)  (CIK 0001057379)",
+  "sic": "8742",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "INNODATA INC  (INOD)  (CIK 0000903651)",
+  "sic": "7374",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "CALIX, INC  (CALX)  (CIK 0001406666)",
+  "sic": "4899",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "LiveRamp Holdings, Inc.  (RAMP)  (CIK 0000733269)",
+  "sic": "7374",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "EXTREME NETWORKS INC  (EXTR)  (CIK 0001078271)",
+  "sic": "3576",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "OPEN TEXT CORP  (OTEX)  (CIK 0001002638)",
+  "sic": "7373",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "nCino, Inc.  (NCNO)  (CIK 0001902733)",
+  "sic": "7372",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "SS&C Technologies Holdings Inc  (SSNC)  (CIK 0001402436)",
+  "sic": "7372",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Clearwater Analytics Holdings, Inc.  (CWAN)  (CIK 0001866368)",
+  "sic": "7372",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Zscaler, Inc.  (ZS)  (CIK 0001713683)",
+  "sic": "7371",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "VEEA INC.  (VEEA, VEEAW)  (CIK 0001840317)",
+  "sic": "7373",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "MOODYS CORP /DE/  (MCO)  (CIK 0001059556)",
+  "sic": "7320",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "C3.ai, Inc.  (AI)  (CIK 0001577526)",
+  "sic": "7372",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "CoreWeave, Inc.  (CRWV)  (CIK 0001769628)",
+  "sic": "7372",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Groupon, Inc.  (GRPN)  (CIK 0001490281)",
+  "sic": "7311",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Circle Internet Group, Inc.  (CRCL)  (CIK 0001876042)",
+  "sic": "6199",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Snap Inc  (SNAP)  (CIK 0001564408)",
+  "sic": "7370",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Rackspace Technology, Inc.  (RXT)  (CIK 0001810019)",
+  "sic": "7370",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "PennyMac Financial Services, Inc.  (PFSI)  (CIK 0001745916)",
+  "sic": "6162",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "CXApp Inc.  (CXAI, CXAIW)  (CIK 0001820875)",
+  "sic": "7372",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Freshworks Inc.  (FRSH)  (CIK 0001544522)",
+  "sic": "7372",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Gloo Holdings, Inc.  (GLOO)  (CIK 0002069785)",
+  "sic": "7374",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "REDWOOD TRUST INC  (RWT, RWTN, RWTO, RWTP, RWTQ, RWT-PA)  (CIK 0000930236)",
+  "sic": "6798",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "NETSOL TECHNOLOGIES INC  (NTWK)  (CIK 0001039280)",
+  "sic": "7372",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Backblaze, Inc.  (BLZE)  (CIK 0001462056)",
+  "sic": "7372",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Expensify, Inc.  (EXFY)  (CIK 0001476840)",
+  "sic": "7372",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "EPAM Systems, Inc.  (EPAM)  (CIK 0001352010)",
+  "sic": "7371",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "NVIDIA CORP  (NVDA)  (CIK 0001045810)",
+  "sic": "3674",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Roadzen Inc.  (RDZN, RDZNW)  (CIK 0001868640)",
+  "sic": "6411",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Weave Communications, Inc.  (WEAV)  (CIK 0001609151)",
+  "sic": "7372",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "8X8 INC /DE/  (EGHT)  (CIK 0001023731)",
+  "sic": "7374",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "AMAZON COM INC  (AMZN)  (CIK 0001018724)",
+  "sic": "5961",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "ConnectOne Bancorp, Inc.  (CNOB, CNOBP)  (CIK 0000712771)",
+  "sic": "6022",
+  "phrases": [
+   "agentic workflows"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Claritev Corp  (CTEV)  (CIK 0001793229)",
+  "sic": "7389",
+  "phrases": [
+   "agentic workflows"
+  ]
+ }
+]

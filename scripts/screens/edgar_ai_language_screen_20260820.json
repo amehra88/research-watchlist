@@ -1,0 +1,1801 @@
+[
+ {
+  "score": 12,
+  "n": 3,
+  "filer": "Safe Pro Group Inc.  (SPAI)  (CIK 0002011208)",
+  "sic": "3842",
+  "phrases": [
+   "AI revenue",
+   "AI-driven revenue",
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 8,
+  "n": 2,
+  "filer": "ProCap Financial, Inc.  (BRR, BRRWW)  (CIK 0002076163)",
+  "sic": "6199",
+  "phrases": [
+   "revenue from AI",
+   "our proprietary AI models"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "NVIDIA CORP  (NVDA)  (CIK 0001045810)",
+  "sic": "3674",
+  "phrases": [
+   "AI revenue",
+   "foundation models"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "INNODATA INC  (INOD)  (CIK 0000903651)",
+  "sic": "7374",
+  "phrases": [
+   "revenue from AI",
+   "foundation models"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 3,
+  "filer": "RECURSION PHARMACEUTICALS, INC.  (RXRX)  (CIK 0001601830)",
+  "sic": "2836",
+  "phrases": [
+   "proprietary datasets",
+   "proprietary dataset",
+   "foundation models"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 2,
+  "filer": "CIENA CORP  (CIEN)  (CIK 0000936395)",
+  "sic": "3661",
+  "phrases": [
+   "monetize AI",
+   "foundation models"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 2,
+  "filer": "Navan, Inc.  (NAVN)  (CIK 0001639723)",
+  "sic": "7372",
+  "phrases": [
+   "our proprietary AI models",
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 2,
+  "filer": "Parabilis Medicines, Inc.  (PBLS)  (CIK 0001657677)",
+  "sic": "2834",
+  "phrases": [
+   "our proprietary AI models",
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "GRID DYNAMICS HOLDINGS, INC.  (GDYN)  (CIK 0001743725)",
+  "sic": "7372",
+  "phrases": [
+   "AI revenue"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "JOHN WILEY & SONS, INC.  (WLY, WLYB)  (CIK 0000107140)",
+  "sic": "2731",
+  "phrases": [
+   "AI revenue"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Hut 8 Corp.  (HUT)  (CIK 0001964789)",
+  "sic": "6199",
+  "phrases": [
+   "AI revenue"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Warburg Pincus Access Fund, L.P.  (CIK 0002082826)",
+  "sic": "6282",
+  "phrases": [
+   "AI revenue"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "IBEX Ltd  (IBEX)  (CIK 0001720420)",
+  "sic": "7374",
+  "phrases": [
+   "AI revenue"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Glidelogic Corp.  (GDLG)  (CIK 0001848672)",
+  "sic": "7371",
+  "phrases": [
+   "AI revenue"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "MID AMERICA APARTMENT COMMUNITIES INC.  (MAA, MAA-PI)  (CIK 0000912595)",
+  "sic": "6798",
+  "phrases": [
+   "AI revenue"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "CAMDEN PROPERTY TRUST  (CPT)  (CIK 0000906345)",
+  "sic": "6798",
+  "phrases": [
+   "AI revenue"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Rackspace Technology, Inc.  (RXT)  (CIK 0001810019)",
+  "sic": "7370",
+  "phrases": [
+   "AI revenue"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "CuriosityStream Inc.  (CURI)  (CIK 0001776909)",
+  "sic": "7812",
+  "phrases": [
+   "AI revenue"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "AIRWA INC.  (YYAI)  (CIK 0001674440)",
+  "sic": "7370",
+  "phrases": [
+   "AI revenue"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "SPACE EXPLORATION TECHNOLOGIES CORP  (SPCX)  (CIK 0001181412)",
+  "sic": "7370",
+  "phrases": [
+   "AI revenue"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Fusemachines Inc.  (FUSE, FUSEW)  (CIK 0002033383)",
+  "sic": "7373",
+  "phrases": [
+   "revenue from AI"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "AB INTERNATIONAL GROUP CORP.  (ABQQ)  (CIK 0001605331)",
+  "sic": "6794",
+  "phrases": [
+   "revenue from AI"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Next Technology Holding Inc.  (NXTT)  (CIK 0001784970)",
+  "sic": "7374",
+  "phrases": [
+   "revenue from AI"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Capstone Energy Plus, Inc.  (CGEH)  (CIK 0001009759)",
+  "sic": "3510",
+  "phrases": [
+   "revenue from AI"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Appsoft Technologies, Inc.  (ASFT)  (CIK 0001651992)",
+  "sic": "7372",
+  "phrases": [
+   "revenue from AI"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Stagwell Inc  (STGW)  (CIK 0000876883)",
+  "sic": "7311",
+  "phrases": [
+   "revenue from AI"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Z Squared Inc.  (ZSQR)  (CIK 0001759186)",
+  "sic": "6199",
+  "phrases": [
+   "revenue from AI"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "VistaOne, L.P.  (CIK 0002044820)",
+  "sic": "6282",
+  "phrases": [
+   "AI-driven revenue"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 2,
+  "filer": "Netskope Inc  (NTSK)  (CIK 0002063196)",
+  "sic": "7372",
+  "phrases": [
+   "our proprietary AI models",
+   "foundation models"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 2,
+  "filer": "Neptune Insurance Holdings Inc.  (NP)  (CIK 0002067129)",
+  "sic": "6411",
+  "phrases": [
+   "proprietary datasets",
+   "proprietary dataset"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 2,
+  "filer": "PAYCHEX INC  (PAYX)  (CIK 0000723531)",
+  "sic": "8700",
+  "phrases": [
+   "proprietary datasets",
+   "proprietary dataset"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "Proem Acquisition Corp. I  (PAAC, PAACU)  (CIK 0002087446)",
+  "sic": "6770",
+  "phrases": [
+   "AI monetization"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "FACTSET RESEARCH SYSTEMS INC  (FDS)  (CIK 0001013237)",
+  "sic": "7370",
+  "phrases": [
+   "AI monetization"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "Carlyle Group Inc.  (CG, CGABL)  (CIK 0001527166)",
+  "sic": "6282",
+  "phrases": [
+   "AI monetization"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "EPLUS INC  (PLUS)  (CIK 0001022408)",
+  "sic": "5045",
+  "phrases": [
+   "monetize AI"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "Fastly, Inc.  (FSLY)  (CIK 0001517413)",
+  "sic": "7372",
+  "phrases": [
+   "monetize AI"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "IAC Inc.  (IAC)  (CIK 0001800227)",
+  "sic": "7370",
+  "phrases": [
+   "monetize AI"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "Smartbird, Inc.  (BIRD)  (CIK 0001653909)",
+  "sic": "2300",
+  "phrases": [
+   "monetize AI"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 2,
+  "filer": "ADOBE INC.  (ADBE)  (CIK 0000796343)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets",
+   "foundation models"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 2,
+  "filer": "UL Solutions Inc.  (ULS)  (CIK 0001901440)",
+  "sic": "8734",
+  "phrases": [
+   "proprietary datasets",
+   "foundation models"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 2,
+  "filer": "Neumora Therapeutics, Inc.  (NMRA)  (CIK 0001885522)",
+  "sic": "2836",
+  "phrases": [
+   "proprietary datasets",
+   "foundation models"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 2,
+  "filer": "Figma, Inc.  (FIG)  (CIK 0001579878)",
+  "sic": "7372",
+  "phrases": [
+   "our own models",
+   "foundation models"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "REALTY INCOME CORP  (O)  (CIK 0000726728)",
+  "sic": "6798",
+  "phrases": [
+   "trained on proprietary"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Upstart Holdings, Inc.  (UPST)  (CIK 0001647639)",
+  "sic": "6199",
+  "phrases": [
+   "our proprietary AI models"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "IZEA Worldwide, Inc.  (IZEA)  (CIK 0001495231)",
+  "sic": "7310",
+  "phrases": [
+   "our proprietary AI models"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Gen Digital Inc.  (GEN, GENVR)  (CIK 0000849399)",
+  "sic": "7372",
+  "phrases": [
+   "our proprietary AI models"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "BlackSky Technology Inc.  (BKSY, BKSY-WT)  (CIK 0001753539)",
+  "sic": "3663",
+  "phrases": [
+   "our proprietary AI models"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Opendoor Technologies Inc.  (OPEN, OPENL, OPENW, OPENZ)  (CIK 0001801169)",
+  "sic": "6531",
+  "phrases": [
+   "our proprietary AI models"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Absci Corp  (ABSI)  (CIK 0001672688)",
+  "sic": "8731",
+  "phrases": [
+   "our proprietary AI models"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Generate Biomedicines, Inc.  (GENB)  (CIK 0002100782)",
+  "sic": "2834",
+  "phrases": [
+   "our proprietary AI models"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "CapForce Inc.  (CIK 0001293818)",
+  "sic": "8071",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Airship AI Holdings, Inc.  (AISP, AISPW)  (CIK 0001842566)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "BullFrog AI Holdings, Inc.  (BFRG, BFRGW)  (CIK 0001829247)",
+  "sic": "2834",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Immix Biopharma, Inc.  (IMMX)  (CIK 0001873835)",
+  "sic": "2834",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Waystar Holding Corp.  (WAY)  (CIK 0001990354)",
+  "sic": "7373",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Cadrenal Therapeutics, Inc.  (CVKD)  (CIK 0001937993)",
+  "sic": "2834",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Adaptive Biotechnologies Corp  (ADPT)  (CIK 0001478320)",
+  "sic": "2836",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "OneMeta Inc.  (ONEI)  (CIK 0001388295)",
+  "sic": "7374",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Mastech Digital, Inc.  (MHH)  (CIK 0001437226)",
+  "sic": "8742",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "CLARIVATE PLC  (CLVT)  (CIK 0001764046)",
+  "sic": "7374",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Red Violet, Inc.  (RDVT)  (CIK 0001720116)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Acrivon Therapeutics, Inc.  (ACRV)  (CIK 0001781174)",
+  "sic": "2834",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Sonos Inc  (SONO)  (CIK 0001314727)",
+  "sic": "3651",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Extra Space Storage Inc.  (EXR)  (CIK 0001289490)",
+  "sic": "6798",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Mawson Infrastructure Group Inc.  (MIGI)  (CIK 0001218683)",
+  "sic": "6199",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Nerdy Inc.  (NRDY)  (CIK 0001819404)",
+  "sic": "8200",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "DOCUSIGN, INC.  (DOCU)  (CIK 0001261333)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "PDF SOLUTIONS INC  (PDFS)  (CIK 0001120914)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Spire Global, Inc.  (SPIR)  (CIK 0001816017)",
+  "sic": "4899",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Strata Critical Medical, Inc.  (SRTA, SRTAW)  (CIK 0001779128)",
+  "sic": "8000",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "SHOPIFY INC.  (SHOP)  (CIK 0001594805)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Arista Networks, Inc.  (ANET)  (CIK 0001596532)",
+  "sic": "3576",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Palladyne AI Corp.  (PDYN, PDYNW)  (CIK 0001826681)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Freshworks Inc.  (FRSH)  (CIK 0001544522)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "SONIDA SENIOR LIVING, INC.  (SNDA)  (CIK 0001043000)",
+  "sic": "8050",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Sprout Social, Inc.  (SPT)  (CIK 0001517375)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Asana, Inc.  (ASAN)  (CIK 0001477720)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Thryv Holdings, Inc.  (THRY)  (CIK 0001556739)",
+  "sic": "7310",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Idea Acquisition Corp.  (IACO, IACOU)  (CIK 0002091176)",
+  "sic": "6770",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "InMed Pharmaceuticals Inc.  (INM)  (CIK 0001728328)",
+  "sic": "2834",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "nCino, Inc.  (NCNO)  (CIK 0001902733)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Guidewire Software, Inc.  (GWRE)  (CIK 0001528396)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "DOMO, INC.  (DOMO)  (CIK 0001505952)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "HUBSPOT INC  (HUBS)  (CIK 0001404655)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Clearwater Analytics Holdings, Inc.  (CWAN)  (CIK 0001866368)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Certara, Inc.  (CERT)  (CIK 0001827090)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "GoHealth, Inc.  (GOCO)  (CIK 0001808220)",
+  "sic": "6411",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "CCC Intelligent Solutions Holdings Inc.  (CCC)  (CIK 0001818201)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Getty Images Holdings, Inc.  (GETY)  (CIK 0001898496)",
+  "sic": "7389",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Alliance Laundry Holdings Inc.  (ALH)  (CIK 0001317685)",
+  "sic": "3580",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "CLOVER HEALTH INVESTMENTS, CORP. /DE  (CLOV)  (CIK 0001801170)",
+  "sic": "6324",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Lyft, Inc.  (LYFT)  (CIK 0001759509)",
+  "sic": "7389",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "DarioHealth Corp.  (DRIO)  (CIK 0001533998)",
+  "sic": "3841",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Ventas, Inc.  (VTR)  (CIK 0000740260)",
+  "sic": "6798",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Grindr Inc.  (GRND)  (CIK 0001820144)",
+  "sic": "7370",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Bumble Inc.  (BMBL)  (CIK 0001830043)",
+  "sic": "7370",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Uber Technologies, Inc  (UBER)  (CIK 0001543151)",
+  "sic": "7389",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "BioAge Labs, Inc.  (BIOA)  (CIK 0001709941)",
+  "sic": "2834",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Circle Internet Group, Inc.  (CRCL)  (CIK 0001876042)",
+  "sic": "6199",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "NIQ Global Intelligence plc  (NIQ)  (CIK 0002054696)",
+  "sic": "7370",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Immuneering Corp  (IMRX)  (CIK 0001790340)",
+  "sic": "2834",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "WELLTOWER INC.  (WELL)  (CIK 0000766704)",
+  "sic": "6798",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "KALA BIO, Inc.  (KALA)  (CIK 0001479419)",
+  "sic": "2834",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Triller Group Inc.  (CIK 0001769624)",
+  "sic": "6282",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Triller Group Inc.  (ILLR, ILLRW)  (CIK 0001769624)",
+  "sic": "6282",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "GOLDMAN SACHS GROUP INC  (GS, GSCE, GS-PA, GS-PC, GS-PD)  (CIK 0000886982)",
+  "sic": "6211",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "CapForce Inc.  (CFOR)  (CIK 0001293818)",
+  "sic": "8071",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Aether Holdings, Inc.  (ATHR)  (CIK 0002026353)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "CareTrust REIT, Inc.  (CTRE)  (CIK 0001590717)",
+  "sic": "6798",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Groupon, Inc.  (GRPN)  (CIK 0001490281)",
+  "sic": "7311",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Okta, Inc.  (OKTA)  (CIK 0001660134)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Salesforce, Inc.  (CRM)  (CIK 0001108524)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Neutron Holdings, Inc.  (LIME)  (CIK 0001699963)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Informatica Inc.  (INFA)  (CIK 0001868778)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary datasets"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "CHAMPIONS ONCOLOGY, INC.  (CSBR)  (CIK 0000771856)",
+  "sic": "2836",
+  "phrases": [
+   "proprietary dataset"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Angel Studios, Inc.  (ANGX)  (CIK 0001865200)",
+  "sic": "7812",
+  "phrases": [
+   "proprietary dataset"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Kyverna Therapeutics, Inc.  (KYTX)  (CIK 0001994702)",
+  "sic": "2836",
+  "phrases": [
+   "proprietary dataset"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Root, Inc.  (ROOT)  (CIK 0001788882)",
+  "sic": "6331",
+  "phrases": [
+   "proprietary dataset"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "CrowdStrike Holdings, Inc.  (CRWD)  (CIK 0001535527)",
+  "sic": "7372",
+  "phrases": [
+   "proprietary dataset"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Burford Capital Ltd  (BUR)  (CIK 0001714174)",
+  "sic": "6199",
+  "phrases": [
+   "proprietary dataset"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "OppFi Inc.  (OPFI, OPFI-WT)  (CIK 0001818502)",
+  "sic": "6199",
+  "phrases": [
+   "our machine learning models"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "FIRST ADVANTAGE CORP  (FA)  (CIK 0001210677)",
+  "sic": "7374",
+  "phrases": [
+   "our machine learning models"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "ENTRAVISION COMMUNICATIONS CORP  (EVC)  (CIK 0001109116)",
+  "sic": "4833",
+  "phrases": [
+   "our machine learning models"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "PINTEREST, INC.  (PINS)  (CIK 0001506293)",
+  "sic": "7370",
+  "phrases": [
+   "our machine learning models"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "PubMatic, Inc.  (PUBM)  (CIK 0001422930)",
+  "sic": "7370",
+  "phrases": [
+   "our machine learning models"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Brilliant Earth Group, Inc.  (BRLT)  (CIK 0001866757)",
+  "sic": "3910",
+  "phrases": [
+   "our machine learning models"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Payoneer Global Inc.  (PAYO)  (CIK 0001845815)",
+  "sic": "7389",
+  "phrases": [
+   "our machine learning models"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Korro Bio, Inc.  (KRRO)  (CIK 0001703647)",
+  "sic": "2834",
+  "phrases": [
+   "our machine learning models"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Robinhood Markets, Inc.  (HOOD)  (CIK 0001783879)",
+  "sic": "6211",
+  "phrases": [
+   "our machine learning models"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "Vaxart, Inc.  (VXRT)  (CIK 0000072444)",
+  "sic": "2836",
+  "phrases": [
+   "our machine learning models"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "GREENWAY TECHNOLOGIES, INC. & SUBSIDIARIES  (GWTI)  (CIK 0001572386)",
+  "sic": "2860",
+  "phrases": [
+   "our own models"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "SiriusPoint Ltd  (SPNT, SSPFF, SPNT-PB)  (CIK 0001576018)",
+  "sic": "6331",
+  "phrases": [
+   "our own models"
+  ]
+ },
+ {
+  "score": 2,
+  "n": 1,
+  "filer": "GREENWAY TECHNOLOGIES INC  (GWTI)  (CIK 0001572386)",
+  "sic": "2090",
+  "phrases": [
+   "our own models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Global AI, Inc.  (GLAI)  (CIK 0001473490)",
+  "sic": "5960",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Kinetic Seas Inc.  (KSEZ)  (CIK 0001945619)",
+  "sic": "6770",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Nexscient, Inc.  (NXNT)  (CIK 0001976663)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Seer, Inc.  (SEER)  (CIK 0001726445)",
+  "sic": "3826",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "C3.ai, Inc.  (AI)  (CIK 0001577526)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "MeiraGTx Holdings plc  (MGTX)  (CIK 0001735438)",
+  "sic": "2836",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Ambiq Micro, Inc.  (AMBQ)  (CIK 0001500412)",
+  "sic": "3674",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Rank One Computing Corp  (ROC)  (CIK 0002077709)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "MongoDB, Inc.  (MDB)  (CIK 0001441816)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Criteo S.A.  (CRTO)  (CIK 0001576427)",
+  "sic": "7311",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Bridgeline Digital, Inc.  (BLIN)  (CIK 0001378590)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Tempus AI, Inc.  (TEM)  (CIK 0001717115)",
+  "sic": "7370",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Knightscope, Inc.  (KSCP)  (CIK 0001600983)",
+  "sic": "3669",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "COGNIZANT TECHNOLOGY SOLUTIONS CORP  (CTSH)  (CIK 0001058290)",
+  "sic": "7371",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Alphabet Inc.  (GOOG, GOOGL)  (CIK 0001652044)",
+  "sic": "7370",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "MultiSensor AI Holdings, Inc.  (MSAI, MSAIW)  (CIK 0001863990)",
+  "sic": "3827",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "RICHTECH ROBOTICS INC.  (RR)  (CIK 0001963685)",
+  "sic": "3569",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "EXTREME NETWORKS INC  (EXTR)  (CIK 0001078271)",
+  "sic": "3576",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "XMax Inc.  (XWIN)  (CIK 0001473334)",
+  "sic": "2510",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Powerfleet, Inc.  (AIOT)  (CIK 0001774170)",
+  "sic": "3669",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "CEVA INC  (CEVA)  (CIK 0001173489)",
+  "sic": "7370",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "TTEC Holdings, Inc.  (TTEC)  (CIK 0001013880)",
+  "sic": "7363",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Zeta Global Holdings Corp.  (ZETA)  (CIK 0001851003)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "COSTAR GROUP, INC.  (CSGP)  (CIK 0001057352)",
+  "sic": "7389",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "PagerDuty, Inc.  (PD)  (CIK 0001568100)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "OmniAb, Inc.  (OABI, OABIW)  (CIK 0001846253)",
+  "sic": "8731",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "ZIPRECRUITER, INC.  (ZIP)  (CIK 0001617553)",
+  "sic": "7370",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "SentinelOne, Inc.  (S)  (CIK 0001583708)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "MNTN, Inc.  (MNTN)  (CIK 0001891027)",
+  "sic": "7310",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "DXC Technology Co  (DXC)  (CIK 0001688568)",
+  "sic": "7374",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Amplitude, Inc.  (AMPL)  (CIK 0001866692)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Expensify, Inc.  (EXFY)  (CIK 0001476840)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "TechnipFMC plc  (FTI)  (CIK 0001681459)",
+  "sic": "3533",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "ALKAMI TECHNOLOGY, INC.  (ALKT)  (CIK 0001529274)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "GigaCloud Technology Inc  (GCT)  (CIK 0001857816)",
+  "sic": "5961",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "IQVIA HOLDINGS INC.  (IQV)  (CIK 0001478242)",
+  "sic": "8731",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "EverCommerce Inc.  (EVCM)  (CIK 0001853145)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Braze, Inc.  (BRZE)  (CIK 0001676238)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "NEWS CORP  (NWS, NWSA, NWSLL)  (CIK 0001564708)",
+  "sic": "2711",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Meta Platforms, Inc.  (META)  (CIK 0001326801)",
+  "sic": "7370",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "TransUnion  (TRU)  (CIK 0001552033)",
+  "sic": "7320",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "SharonAI Holdings Inc.  (SHAZ)  (CIK 0002068385)",
+  "sic": "7374",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "LENSAR, Inc.  (LNSR)  (CIK 0001320350)",
+  "sic": "3841",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "SailPoint, Inc.  (SAIL)  (CIK 0002030781)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "WEX Inc.  (WEX)  (CIK 0001309108)",
+  "sic": "7389",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "DATASEA INC.  (DTSS)  (CIK 0001631282)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Genpact LTD  (G)  (CIK 0001398659)",
+  "sic": "8742",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Hinge Health, Inc.  (HNGE)  (CIK 0001673743)",
+  "sic": "7374",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "KALTURA INC  (KLTR)  (CIK 0001432133)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "WhiteFiber, Inc.  (WYFI)  (CIK 0002042022)",
+  "sic": "6199",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "INTUITIVE SURGICAL INC  (ISRG)  (CIK 0001035267)",
+  "sic": "3842",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Guardant Health, Inc.  (GH)  (CIK 0001576280)",
+  "sic": "8071",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Bit Digital, Inc  (BTBT)  (CIK 0001710350)",
+  "sic": "6199",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "GRAIL, Inc.  (GRAL)  (CIK 0001699031)",
+  "sic": "8071",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Roivant Sciences Ltd.  (ROIV)  (CIK 0001635088)",
+  "sic": "2834",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "VIDA Global Inc.  (VIDA)  (CIK 0001973062)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "HIVE Digital Technologies Ltd.  (HIVE)  (CIK 0001720424)",
+  "sic": "6199",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Dolby Laboratories, Inc.  (DLB)  (CIK 0001308547)",
+  "sic": "6794",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Xperi Inc.  (XPER)  (CIK 0001788999)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Via Transportation, Inc.  (VIA)  (CIK 0001603015)",
+  "sic": "7372",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "FuboTV Inc.  (FUBO)  (CIK 0001484769)",
+  "sic": "7812",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "fuboTV Inc. /FL  (FUBO)  (CIK 0001484769)",
+  "sic": "7812",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "YUM BRANDS INC  (YUM)  (CIK 0001041061)",
+  "sic": "5812",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Cerebras Systems Inc.  (CBRS)  (CIK 0002021728)",
+  "sic": "3674",
+  "phrases": [
+   "foundation models"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "X-Energy, Inc.  (XE)  (CIK 0002088896)",
+  "sic": "3443",
+  "phrases": [
+   "foundation models"
+  ]
+ }
+]
