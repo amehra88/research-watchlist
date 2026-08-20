@@ -287,6 +287,10 @@ def select_filings(filings: list[dict], *, backfill: bool, processed: set[str],
     event_forms = set(_CFG.get("forms", {}).get("event", []))
     event_cut = today - dt.timedelta(days=int(bf.get("event_days", 30)))
     periodic_cut = today - dt.timedelta(days=int(bf.get("periodic_days", 365)))
+    # Hard history floor, applied in BOTH modes. The backfill-only cut below never ran
+    # in daily mode, so every filing EDGAR returned — back to 2002 — stayed eligible and
+    # the per-form caps metered it out ~10/ticker/day forever.
+    history_floor = today - dt.timedelta(days=365 * int(_CFG.get("max_history_years", 3)))
     caps = {k: int(v) for k, v in (bf.get("max_per_form", {}) or {}).items()}
 
     kept: list[dict] = []
@@ -303,6 +307,8 @@ def select_filings(filings: list[dict], *, backfill: bool, processed: set[str],
         except ValueError:
             continue
         cut = event_cut if bf_form in event_forms else periodic_cut
+        if fdate < history_floor:
+            continue                      # older than max_history_years — never ingest
         if backfill and fdate < cut:
             continue
         kept.append(f)

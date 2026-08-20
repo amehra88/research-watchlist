@@ -23,6 +23,14 @@ forms:
 #   144/3/4/5 (insider transactions — InsiderScore handles), SC 13D/G (ownership).
 skip_forms: ["S-1", "DEF 14A", "144", "3", "4", "5", "SC 13D", "SC 13G"]
 
+# Hard history floor, applied in BOTH daily and backfill modes (operator, 2026-08-20:
+# "dont go back more than 3 years"). Before this, the date window was only applied when
+# backfill=True, so the DAILY run silently crawled two decades of back-history: on
+# 2026-08-20 it wrote 193 notes of which 95-99% were pre-2026 filings, and 3,714 of the
+# 4,348 remaining were foreign-issuer 6-K press releases going back to 2002 (~$472).
+# This does NOT delete anything already ingested — the existing deep history stays.
+max_history_years: 3
+
 backfill:
   event_days: 30
   periodic_days: 365
