@@ -1,0 +1,69 @@
+# GitHub orgs for the MCP-usage screen (scripts/screens/github_mcp_usage.py).
+#
+# WHY THIS FILE EXISTS: EDGAR language is a claim written for investors — and,
+# once a screen like ours is known, written FOR the screen. Public repo activity
+# is evidence produced for practitioners, who notice fakery. This maps a ticker
+# to the GitHub org where that evidence would live.
+#
+# CURATION STATUS: seeded 2026-08-20 from the top of the MCP filing screen.
+# Orgs marked `verified: false` are BEST GUESSES from company name and have not
+# been confirmed — a wrong org produces a false "no repo found", which the
+# script reports as weak evidence rather than a negative. Confirm before relying
+# on any absence.
+#
+# Absence is weak evidence; presence is strong. Use to CONFIRM, never to reject.
+
+orgs:
+  # --- top of the MCP filing screen ---
+  MORN: morningstar
+  FDS: factset
+  TEAM: atlassian
+  FIG: figma
+  KVYO: klaviyo
+  V: visa
+  SPGI: spglobal
+  DOCU: docusign
+  BOX: box
+  ADSK: autodesk
+  SNOW: snowflakedb
+  MDB: mongodb
+  CRWD: crowdstrike
+  CRM: salesforce
+  MQ: marqeta
+  INFA: informatica
+  NTAP: netapp
+  PD: pagerduty
+  AMPL: amplitude
+  BRZE: braze
+  DT: dynatrace
+  PSTG: purestorage
+  FSLY: fastly
+  TDC: teradata
+  UPWK: upwork
+  YEXT: yext
+  NABL: n-able
+  BAND: bandwidth
+  S: sentinelone
+  FROG: jfrog
+  OKTA: okta
+  ASAN: asana
+  WDAY: workday
+  TRU: transunion
+  CRTO: criteo
+  PUBM: pubmatic
+  BIGC: bigcommerce
+  ZS: zscaler
+  EPAM: epam
+  BLZE: backblaze
+
+  # --- names from the app-layer memo worth checking for MCP surface ---
+  SHOP: shopify
+  SPOT: spotify
+  NET: cloudflare
+  DDOG: datadog
+  PLTR: palantir
+  U: unity
+  RDDT: reddit
+  TWLO: twilio
+  ESTC: elastic
+  GTLB: gitlab

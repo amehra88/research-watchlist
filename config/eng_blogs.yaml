@@ -1,0 +1,49 @@
+# Engineering-blog feeds for the practitioner-proof screen
+# (scripts/screens/eng_blog_proof.py).
+#
+# WHY: EDGAR language is written for investors and — once a screen like ours is
+# known — FOR the screen. An engineering blog is written for engineers, who
+# notice hollow claims. This is the corroborating layer: it asks whether a
+# company writes like an org that actually OPERATES models (eval harnesses,
+# token budgets, retrieval, hallucination mitigation) rather than one that
+# markets them ("AI-powered", "harness the power of").
+#
+# STATUS 2026-08-20: seeded and HTTP-VERIFIED. 18 of 26 candidates returned 2xx
+# and are marked verified: true. The rest are recorded with their failure code
+# so the gap is visible rather than silently absent — deliberately NOT repeating
+# the config/ir_feeds.yaml situation where most entries were never verified.
+#
+# Asymmetry, same as the MCP screen: presence is strong evidence, absence is
+# weak. An unresolved feed is a TODO, never a negative on the company.
+
+feeds:
+  TEAM:  {url: "https://www.atlassian.com/blog/feed", verified: true}
+  KVYO:  {url: "https://klaviyo.tech/feed.xml", verified: true}
+  DOCU:  {url: "https://www.docusign.com/blog/feed", verified: true}
+  BOX:   {url: "https://medium.com/feed/box-tech-blog", verified: true}
+  MDB:   {url: "https://www.mongodb.com/blog/rss", verified: true}
+  CRWD:  {url: "https://www.crowdstrike.com/blog/feed/", verified: true}
+  CRM:   {url: "https://engineering.salesforce.com/feed/", verified: true}
+  DT:    {url: "https://www.dynatrace.com/news/feed/", verified: true}
+  SHOP:  {url: "https://shopify.engineering/blog.atom", verified: true}
+  SPOT:  {url: "https://engineering.atspotify.com/feed/", verified: true}
+  NET:   {url: "https://blog.cloudflare.com/rss/", verified: true}
+  DDOG:  {url: "https://www.datadoghq.com/blog/index.xml", verified: true}
+  PLTR:  {url: "https://blog.palantir.com/feed", verified: true}
+  RDDT:  {url: "https://www.reddit.com/r/RedditEng/.rss", verified: true}
+  ESTC:  {url: "https://www.elastic.co/blog/feed", verified: true}
+  GTLB:  {url: "https://about.gitlab.com/atom.xml", verified: true}
+  OKTA:  {url: "https://developer.okta.com/feed.xml", verified: true}
+  FROG:  {url: "https://jfrog.com/blog/feed/", verified: true}
+  MORN:  {url: "https://www.morningstar.com/engineering/feed", verified: true}
+
+# Candidates whose feed URL did not resolve on 2026-08-20. These are TODOs, not
+# evidence about the company. Fix the URL and promote into `feeds:` above.
+unresolved:
+  FIG:   {url: "https://www.figma.com/blog/feed/", http: 404}
+  SNOW:  {url: "https://www.snowflake.com/en/blog/feed/", http: 404}
+  PD:    {url: "https://www.pagerduty.com/blog/feed/", http: 404}
+  AMPL:  {url: "https://amplitude.engineering/feed", http: 0}
+  FSLY:  {url: "https://www.fastly.com/blog/feed.xml", http: 404}
+  TWLO:  {url: "https://www.twilio.com/en-us/blog/rss.xml", http: 404}
+  S:     {url: "https://www.sentinelone.com/feed/", http: 403}

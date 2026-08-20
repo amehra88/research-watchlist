@@ -1,0 +1,236 @@
+{
+ "rows": [
+  {
+   "ticker": "MDB",
+   "url": "https://www.mongodb.com/blog/rss",
+   "operator_terms": [
+    "distill",
+    "embedding model",
+    "fine-tun",
+    "guardrail",
+    "hallucinat",
+    "human-in-the-loop",
+    "inference latency",
+    "mcp server",
+    "model context protocol",
+    "rag",
+    "retrieval-augmented",
+    "tool calling",
+    "vector index"
+   ],
+   "marketing_terms": [
+    "ai-powered",
+    "cutting-edge",
+    "game-chang",
+    "revolutioniz",
+    "transforming the"
+   ],
+   "score": 13
+  },
+  {
+   "ticker": "GTLB",
+   "url": "https://about.gitlab.com/atom.xml",
+   "operator_terms": [
+    "distill",
+    "evaluation harness",
+    "guardrail",
+    "human-in-the-loop",
+    "mcp server",
+    "model context protocol",
+    "prompt injection"
+   ],
+   "marketing_terms": [],
+   "score": 7
+  },
+  {
+   "ticker": "NET",
+   "url": "https://blog.cloudflare.com/rss/",
+   "operator_terms": [
+    "context window",
+    "embedding model",
+    "guardrail",
+    "mcp server",
+    "model context protocol",
+    "prompt injection",
+    "tokens per"
+   ],
+   "marketing_terms": [
+    "ai-powered",
+    "cutting-edge"
+   ],
+   "score": 7
+  },
+  {
+   "ticker": "BOX",
+   "url": "https://medium.com/feed/box-tech-blog",
+   "operator_terms": [
+    "context window",
+    "fine-tun",
+    "hallucinat",
+    "human-in-the-loop",
+    "rag"
+   ],
+   "marketing_terms": [
+    "cutting-edge"
+   ],
+   "score": 5
+  },
+  {
+   "ticker": "CRM",
+   "url": "https://engineering.salesforce.com/feed/",
+   "operator_terms": [
+    "context window",
+    "evaluation harness",
+    "hallucinat",
+    "regression suite",
+    "tool calling"
+   ],
+   "marketing_terms": [
+    "ai-powered"
+   ],
+   "score": 5
+  },
+  {
+   "ticker": "DT",
+   "url": "https://www.dynatrace.com/news/feed/",
+   "operator_terms": [
+    "context window",
+    "guardrail",
+    "hallucinat",
+    "mcp server",
+    "model context protocol"
+   ],
+   "marketing_terms": [
+    "ai-powered"
+   ],
+   "score": 5
+  },
+  {
+   "ticker": "PLTR",
+   "url": "https://blog.palantir.com/feed",
+   "operator_terms": [
+    "distill",
+    "fine-tun",
+    "guardrail",
+    "retrieval-augmented"
+   ],
+   "marketing_terms": [
+    "game-chang"
+   ],
+   "score": 4
+  },
+  {
+   "ticker": "RDDT",
+   "url": "https://www.reddit.com/r/RedditEng/.rss",
+   "operator_terms": [
+    "distill",
+    "guardrail",
+    "hallucinat",
+    "human-in-the-loop"
+   ],
+   "marketing_terms": [
+    "ai-powered"
+   ],
+   "score": 4
+  },
+  {
+   "ticker": "DDOG",
+   "url": "https://www.datadoghq.com/blog/index.xml",
+   "operator_terms": [
+    "fine-tun",
+    "guardrail",
+    "mcp server"
+   ],
+   "marketing_terms": [
+    "ai-powered"
+   ],
+   "score": 3
+  },
+  {
+   "ticker": "FROG",
+   "url": "https://jfrog.com/blog/feed/",
+   "operator_terms": [
+    "context window",
+    "mcp server",
+    "tokens per"
+   ],
+   "marketing_terms": [
+    "ai-powered"
+   ],
+   "score": 3
+  },
+  {
+   "ticker": "OKTA",
+   "url": "https://developer.okta.com/feed.xml",
+   "operator_terms": [
+    "mcp server",
+    "model context protocol"
+   ],
+   "marketing_terms": [],
+   "score": 2
+  },
+  {
+   "ticker": "TEAM",
+   "url": "https://www.atlassian.com/blog/feed",
+   "operator_terms": [
+    "guardrail",
+    "mcp server"
+   ],
+   "marketing_terms": [
+    "ai-powered"
+   ],
+   "score": 2
+  },
+  {
+   "ticker": "CRWD",
+   "url": "https://www.crowdstrike.com/blog/feed/",
+   "operator_terms": [
+    "agent harness"
+   ],
+   "marketing_terms": [],
+   "score": 1
+  },
+  {
+   "ticker": "ESTC",
+   "url": "https://www.elastic.co/blog/feed",
+   "operator_terms": [
+    "retrieval-augmented"
+   ],
+   "marketing_terms": [],
+   "score": 1
+  },
+  {
+   "ticker": "DOCU",
+   "url": "https://www.docusign.com/blog/feed",
+   "operator_terms": [],
+   "marketing_terms": [
+    "transforming the"
+   ],
+   "score": 0
+  },
+  {
+   "ticker": "KVYO",
+   "url": "https://klaviyo.tech/feed.xml",
+   "operator_terms": [],
+   "marketing_terms": [],
+   "score": 0
+  },
+  {
+   "ticker": "SHOP",
+   "url": "https://shopify.engineering/blog.atom",
+   "operator_terms": [],
+   "marketing_terms": [],
+   "score": 0
+  },
+  {
+   "ticker": "SPOT",
+   "url": "https://engineering.atspotify.com/feed/",
+   "operator_terms": [],
+   "marketing_terms": [],
+   "score": 0
+  }
+ ],
+ "unresolved": [
+  "MORN (HTTP 202)"
+ ]
+}

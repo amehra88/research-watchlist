@@ -26,6 +26,13 @@ PHRASES = [
     ("proprietary dataset", 2),
     ("our machine learning models", 2),
     ("our own models", 2),
+    # LLM-specific vocabulary (operator 2026-08-20). Weighted BELOW revenue and
+    # data-ownership phrases on purpose: saying "large language model" is cheap.
+    # It earns its place by corroborating, not by carrying a name on its own.
+    ("we fine-tune", 3),
+    ("fine-tuned on our", 3),
+    ("our large language model", 3),
+    ("large language models", 1),
     ("foundation models", 1),
 ]
 FORMS = ["10-K", "10-Q"]
