@@ -409,16 +409,7 @@ ingest_comparables:
   - ticker: RKLB
     informs: [SPCX]
     added_date: 2026-08-19
-    notes: "Rocket Lab USA (NASDAQ: RKLB) — the principal listed pure-play competitor to SPCX in
-      launch, and a component supplier into the wider satellite build. Same shape as the AAOI case
-      below: added T3 the same day as a name to watch, which does NOT put it in the SEC universe
-      (sec_filings.load_universe reads T1 + T2 + ingest_comparables only), so its filings would
-      never have been ingested despite RKLB being an active EDGAR filer. This entry closes that
-      gap WITHOUT changing its tier — RKLB stays T3, a name to watch, not an investment candidate
-      promoted merely to get it ingested. Why the evidence matters: SPCX's thesis rests on launch
-      cadence and cost-per-kg, and RKLB's 10-K/10-Q disclose Electron/Neutron cadence, backlog and
-      Space Systems mix — the only external, filed check on how much of the launch market a
-      competitor is actually taking. Operator request 2026-08-19."
+    notes: "Rocket Lab USA (NASDAQ: RKLB) — the principal listed pure-play competitor to SPCX in launch, and a component supplier into the wider satellite build. Same shape as the AAOI case below: added T3 the same day as a name to watch, which does NOT put it in the SEC universe (sec_filings.load_universe reads T1 + T2 + ingest_comparables only), so its filings would never have been ingested despite RKLB being an active EDGAR filer. This entry closes that gap WITHOUT changing its tier — RKLB stays T3, a name to watch, not an investment candidate promoted merely to get it ingested. Why the evidence matters: SPCX's thesis rests on launch cadence and cost-per-kg, and RKLB's 10-K/10-Q disclose Electron/Neutron cadence, backlog and Space Systems mix — the only external, filed check on how much of the launch market a competitor is actually taking. Operator request 2026-08-19."
   - ticker: AAOI
     informs: [COHR, LITE]
     added_date: 2026-08-10
@@ -783,27 +774,7 @@ tier_1_bctk:
   - ticker: simaai.pvt
     themes: [silicon_architecture_competition, inference_compute_economics, chip_design_competition]
     added_date: 2026-08-19
-    notes: "SiMa.ai — PRIVATE BCTK holding, added at operator request 2026-08-19. Fabless edge-AI
-      silicon (MLSoC) for embedded / physical-AI inference at the edge rather than datacenter
-      training.
-
-      THIS IS THE FIRST .pvt ID IN A TIER BLOCK, and it is deliberate. The 14 private_drivers are
-      companies that MOVE holdings; this one IS a holding, so T1 (defined as 'BCTK holdings') would
-      be false if it were left out. It keeps the .pvt id rather than being given a pseudo-ticker,
-      because a private company has no symbol and inventing one would collide with the [A-Z]+
-      regexes that gate the earnings pipeline. Registered in private_drivers (the .pvt authority)
-      as simaai.pvt with bctk_holding: true.
-
-      CONSUMERS: sec_filings.py load_universe() and cron_earnings_reviewer.py both read T1 and
-      neither filtered non-ticker ids, so both would have queried EDGAR/transcripts for a private
-      company and produced flagged-and-skipped noise every run. A .pvt guard was added to each on
-      2026-08-19 (sec_filings.py already DOCUMENTED the exclusion at module level but did not
-      enforce it). news_digest.py is safe by construction — it intersects the universe with
-      ticker_identity, which has no .pvt entries.
-
-      Everything here is OPERATOR-ASSERTED: no public filings exist, so no claim in this entry is
-      verifiable against a primary document. Convert to a real ticker on any IPO, per the
-      spacex.pvt -> SPCX precedent (scripts/migrate_spacex_to_spcx.py)."
+    notes: "SiMa.ai — PRIVATE BCTK holding, added at operator request 2026-08-19. Fabless edge-AI silicon (MLSoC) for embedded / physical-AI inference at the edge rather than datacenter training.\nTHIS IS THE FIRST .pvt ID IN A TIER BLOCK, and it is deliberate. The 14 private_drivers are companies that MOVE holdings; this one IS a holding, so T1 (defined as 'BCTK holdings') would be false if it were left out. It keeps the .pvt id rather than being given a pseudo-ticker, because a private company has no symbol and inventing one would collide with the [A-Z]+ regexes that gate the earnings pipeline. Registered in private_drivers (the .pvt authority) as simaai.pvt with bctk_holding: true.\nCONSUMERS: sec_filings.py load_universe() and cron_earnings_reviewer.py both read T1 and neither filtered non-ticker ids, so both would have queried EDGAR/transcripts for a private company and produced flagged-and-skipped noise every run. A .pvt guard was added to each on 2026-08-19 (sec_filings.py already DOCUMENTED the exclusion at module level but did not enforce it). news_digest.py is safe by construction — it intersects the universe with ticker_identity, which has no .pvt entries.\nEverything here is OPERATOR-ASSERTED: no public filings exist, so no claim in this entry is verifiable against a primary document. Convert to a real ticker on any IPO, per the spacex.pvt -> SPCX precedent (scripts/migrate_spacex_to_spcx.py)."
   - ticker: ENTG
     themes: [foundry_capacity, semiconductor_cycle, advanced_materials_ai_infra, china_export_controls, lithography_roadmap, nand_demand_cycle]
     added_date: 2026-05-09
@@ -1475,13 +1446,7 @@ tier_3_watchlist:
   - ticker: CRS
     themes: [aerospace_defense_aftermarket, space_economy, space_supply_chain]
     added_date: 2026-08-19
-    notes: "Carpenter Technology Corp (NYSE: CRS) — specialty alloys and engineered
-      materials: high-temperature nickel/cobalt superalloys, titanium and ultra-high-strength
-      steels for aero-engine, space-launch and industrial applications. Added T3 at operator
-      request 2026-08-19 as an ENABLING-MATERIALS supplier into the space/launch build, i.e.
-      the read-through is upstream of SPCX rather than a launch-economics play. Supply-chain
-      edge SPCX -> CRS (kind: supplier) recorded in /root/research/config/supply-chain-manual.yaml.
-      Sits alongside DPC (Doncasters, T1) as the second aero/space component-materials name."
+    notes: "Carpenter Technology Corp (NYSE: CRS) — specialty alloys and engineered materials: high-temperature nickel/cobalt superalloys, titanium and ultra-high-strength steels for aero-engine, space-launch and industrial applications. Added T3 at operator request 2026-08-19 as an ENABLING-MATERIALS supplier into the space/launch build, i.e. the read-through is upstream of SPCX rather than a launch-economics play. Supply-chain edge SPCX -> CRS (kind: supplier) recorded in /root/research/config/supply-chain-manual.yaml. Sits alongside DPC (Doncasters, T1) as the second aero/space component-materials name."
   - ticker: CRUS
     themes: [handset_competition, semiconductor_cycle]
     added_date: 2026-05-11
@@ -1542,19 +1507,7 @@ tier_3_watchlist:
   - ticker: MTRN
     themes: [advanced_materials_ai_infra, aerospace_defense_aftermarket, space_economy, space_supply_chain]
     added_date: 2026-08-19
-    notes: "Materion Corp (NYSE: MTRN) — advanced materials: beryllium and specialty alloys,
-      precision optics, thin-film deposition materials for semiconductors. Added T3 at operator
-      request 2026-08-19 as the second ENABLING-MATERIALS name into the space/launch build.
-      EVIDENCE (Q3 2025 earnings call, 29-Oct-2025, CEO Jugal Vijayvargiya): 'We have secured
-      meaningful wins with space propulsion applications... We have a number of products being
-      introduced at our LARGE SPACE CUSTOMER... Our sales in the space market have increased
-      fivefold in just three years.' CAVEAT: the large space customer is NOT NAMED in the
-      transcript; SpaceX is the operator's inference from context (260+ launches in 2024,
-      SpaceX-dominated). Treat the SPCX link as operator-asserted, not disclosed. Supply-chain
-      edge SPCX -> MTRN (kind: supplier) in /root/research/config/supply-chain-manual.yaml.
-      Note MTRN is dual-relevant to this watchlist: the deposition-materials business is a
-      semiconductor supply-chain read as well as a space one. Sibling names: CRS (T3, specialty
-      alloys), DPC (T1, Doncasters aero/IGT components)."
+    notes: "Materion Corp (NYSE: MTRN) — advanced materials: beryllium and specialty alloys, precision optics, thin-film deposition materials for semiconductors. Added T3 at operator request 2026-08-19 as the second ENABLING-MATERIALS name into the space/launch build. EVIDENCE (Q3 2025 earnings call, 29-Oct-2025, CEO Jugal Vijayvargiya): 'We have secured meaningful wins with space propulsion applications... We have a number of products being introduced at our LARGE SPACE CUSTOMER... Our sales in the space market have increased fivefold in just three years.' CAVEAT: the large space customer is NOT NAMED in the transcript; SpaceX is the operator's inference from context (260+ launches in 2024, SpaceX-dominated). Treat the SPCX link as operator-asserted, not disclosed. Supply-chain edge SPCX -> MTRN (kind: supplier) in /root/research/config/supply-chain-manual.yaml. Note MTRN is dual-relevant to this watchlist: the deposition-materials business is a semiconductor supply-chain read as well as a space one. Sibling names: CRS (T3, specialty alloys), DPC (T1, Doncasters aero/IGT components)."
   - ticker: MSI
     themes: [surveillance_security_tech, ai_native_vertical, vertical_ai_applications]
     added_date: 2026-05-11
@@ -1594,16 +1547,7 @@ tier_3_watchlist:
   - ticker: RKLB
     themes: [space_economy, space_supply_chain]
     added_date: 2026-08-19
-    notes: "Rocket Lab USA (NASDAQ: RKLB) — small/medium-lift launch (Electron, Neutron) plus a
-      Space Systems segment selling spacecraft components (reaction wheels, solar arrays,
-      separation systems) to other satellite builders. Added T3 at operator request 2026-08-19 as
-      the principal listed pure-play COMPETITOR to SPCX in launch. Tagged space_supply_chain as
-      well as space_economy because Space Systems is genuinely build-side component supply, not
-      only launch economics. NOTE ON COVERAGE: T3 is read by cron_earnings_reviewer.py but is NOT
-      in the SEC-filings universe (sec_filings.py load_universe reads T1 + T2 +
-      ingest_comparables only), so RKLB 10-K/10-Q/8-K will NOT be ingested from this entry alone
-      despite RKLB being an active EDGAR filer — add it to ingest_comparables (informs: [SPCX])
-      if primary-filing evidence is wanted."
+    notes: "Rocket Lab USA (NASDAQ: RKLB) — small/medium-lift launch (Electron, Neutron) plus a Space Systems segment selling spacecraft components (reaction wheels, solar arrays, separation systems) to other satellite builders. Added T3 at operator request 2026-08-19 as the principal listed pure-play COMPETITOR to SPCX in launch. Tagged space_supply_chain as well as space_economy because Space Systems is genuinely build-side component supply, not only launch economics. NOTE ON COVERAGE: T3 is read by cron_earnings_reviewer.py but is NOT in the SEC-filings universe (sec_filings.py load_universe reads T1 + T2 + ingest_comparables only), so RKLB 10-K/10-Q/8-K will NOT be ingested from this entry alone despite RKLB being an active EDGAR filer — add it to ingest_comparables (informs: [SPCX]) if primary-filing evidence is wanted."
   - ticker: RKT
     themes: [search_disruption, agentic_commerce, ai_re_architected_incumbent]
     added_date: 2026-05-09
