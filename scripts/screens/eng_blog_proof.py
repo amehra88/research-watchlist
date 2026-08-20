@@ -108,7 +108,9 @@ def main():
         nbytes = len(body)
         op = sorted({x.strip() for x in OPERATOR if x in text})
         mk = sorted({x.strip() for x in MARKETING if x in text})
-        thin = nbytes < MIN_FEED_BYTES and not op
+        # Thin is thin regardless of hits: a 5KB feed that happens to contain one
+        # operator term is still an unreliable sample, just noisier.
+        thin = nbytes < MIN_FEED_BYTES
         rows.append({"ticker": ticker, "url": url, "feed_bytes": nbytes,
                      "operator_terms": op, "marketing_terms": mk,
                      "score": len(op), "insufficient_sample": thin})
@@ -139,8 +141,8 @@ def main():
                 r["score"], r["ticker"], len(r["marketing_terms"]), ev))
         print()
     if thin:
-        print("_Insufficient sample — feed carries headlines only, so a zero here says")
-        print("nothing about the company: "
+        print("_Insufficient sample — feed carries headlines, not article bodies, so the")
+        print("count says little either way: "
               + ", ".join("%s (%dKB)" % (r["ticker"], r["feed_bytes"] // 1024) for r in thin)
               + ". Fix by fetching full post bodies._\n")
     if unresolved:

@@ -1,11 +1,12 @@
 # AI application-layer screen — 2026-08-20
 
-Automated quarterly run over **every US filer** via EDGAR full-text search — not just the
-159 tickers in `config/watchlist.yaml`. Rows marked *tracked* are already on the watchlist.
+Five scans over **every US filer** (EDGAR full-text) plus two corroboration layers.
+Rows marked *tracked* are already in `config/watchlist.yaml`.
 
-Interpret with `skills/ai-application-layer-screen/SKILL.md`: apply a size filter and check
-for phrase collisions before treating any row as a candidate. The screens deliberately do not
-filter — that judgment step is the point.
+**Read the corroboration layers against the filing screens.** EDGAR language is a *claim*,
+written for investors and — once a screen like this is known — for the screen. GitHub
+traction and engineering-blog register are artifacts made for practitioners, who notice
+hollow claims. Where the two disagree, believe the practitioners.
 
 ## Cross-signal — companies clearing more than one screen
 
@@ -69,30 +70,6 @@ thresholds is a costly, consistent public bet. **Read this section first.**
 | 2 | BFRG | BullFrog AI Holdings, Inc. | revenue/data language (2); MCP / agent-addressable (2) |  |
 
 
-> **Note on the language-screen diff below.** Cost-side phrases ("inference costs", "cost of
-> AI") were removed from the screen this run. The 15 "dropped" names are a **methodology
-> change, not a signal** — they qualified only on cost language. Worth knowing which ones:
-> ALGN and TTAN were riding on it, which further weakens the ALGN case. Real quarter-over-
-> quarter diffs begin with the 2026-11-01 run.
-
-## edgar_ai_language_screen
-
-`edgar_ai_language_screen_20260819.json` → `edgar_ai_language_screen_20260820.json`
-
-209 → 194 filers | **0 new** | 0 increased | 15 dropped
-
-### Dropped (15)
-
-AGYS, ALGN, DOCS, IOT, LSCC, LVO, MOVE, MRVL, MSFT, PODC, POWI, SES, TDC, TTAN, VERI
-
-
-## edgar_ai_officer_screen
-
-`edgar_ai_officer_screen_20260819.json` → `edgar_ai_officer_screen_20260820.json`
-
-115 → 115 filers | **0 new** | 0 increased | 0 dropped
-
-
 ## edgar_mcp_screen
 
 First run (`edgar_mcp_screen_20260820.json`) — no baseline yet, so this is the current standing list, not a diff. 133 companies (137 filing rows).
@@ -139,4 +116,78 @@ First run (`edgar_mcp_screen_20260820.json`) — no baseline yet, so this is the
 | 10 | YEXT | Yext, Inc. | Model Context Protocol; MCP servers |  |
 | 9 | BAND | Bandwidth Inc. | Model Context Protocol; our MCP |  |
 | 7 | S | SentinelOne, Inc. | Model Context Protocol; AI-ready data |  |
+
+
+## MCP usage — public GitHub traction
+
+Filing language is a *claim*; a used, maintained public repo is *evidence*.
+Traction 0-10 = use (stars) + forks + recency + breadth, with a cap at 4.0
+below 25 stars so activity alone cannot manufacture a score.
+
+| Traction | Ticker | Repos | Stars | Forks | Days since push | Top repo |
+|---|---|---|---|---|---|---|
+| 10.0 | CRWD | 5 | 248 | 85 | 1 | CrowdStrike/falcon-mcp |
+| 10.0 | ESTC | 5 | 765 | 180 | 0 | elastic/mcp-server-elasticsearch |
+| 10.0 | NET | 4 | 5742 | 702 | 0 | cloudflare/mcp-server-cloudflare |
+| 10.0 | TEAM | 3 | 1038 | 132 | 2 | atlassian/atlassian-mcp-server |
+| 9.6 | FROG | 2 | 133 | 32 | 3 | jfrog/mcp-jfrog |
+| 9.4 | TDC | 4 | 57 | 59 | 0 | Teradata/teradata-mcp-server |
+| 9.4 | AMPL | 3 | 85 | 15 | 0 | amplitude/mcp-server-guide |
+| 9.3 | FIG | 1 | 1910 | 175 | 0 | figma/mcp-server-guide |
+| 8.9 | PD | 2 | 76 | 41 | 36 | PagerDuty/pagerduty-mcp-server |
+| 8.7 | NTAP | 4 | 35 | 22 | 0 | NetApp/ontap-mcp |
+| 8.7 | OKTA | 1 | 55 | 56 | 10 | okta/okta-mcp-server |
+| 8.4 | ZS | 1 | 46 | 27 | 1 | zscaler/zscaler-mcp-server |
+| 8.3 | FSLY | 3 | 39 | 9 | 2 | fastly/mcp |
+| 6.4 | SHOP | 2 | 35 | 6 | 135 | Shopify/dev-mcp-gemini-cli |
+| 5.4 | CRTO | 1 | 34 | 8 | 401 | criteo/openapi-to-mcp |
+| 4.0 | RDDT *low adoption* | 1 | 15 | 10 | 1 | reddit/devvit-mcp |
+| 4.0 | WDAY *low adoption* | 1 | 9 | 7 | 1 | Workday/ai-conversation-bridge |
+| 4.0 | EPAM *low adoption* | 3 | 10 | 0 | 1 | epam/TimeBase-MCP |
+| 4.0 | PLTR *low adoption* | 1 | 12 | 12 | 36 | palantir/palantir-mcp |
+| 4.0 | PUBM *low adoption* | 1 | 7 | 3 | 21 | PubMatic/pubmatic-mcp-server |
+| 4.0 | MORN *low adoption* | 1 | 21 | 4 | 338 | Morningstar/morningstar-mcp-server |
+| 4.0 | BOX *low adoption* | 1 | 6 | 8 | 334 | box/mcp-server-box-remote |
+| 3.7 | BAND *low adoption* | 1 | 1 | 2 | 30 | Bandwidth/mcp-server |
+| 3.0 | ADSK *low adoption* | 1 | 2 | 0 | 35 | Autodesk/claude-browser-test-skills |
+| 2.6 | MQ *low adoption* | 1 | 3 | 0 | 115 | marqeta/marqeta-mcp |
+| 2.2 | MDB *low adoption* | 1 | 1 | 1 | 143 | mongodb/tines-claude |
+| 1.5 | DOCU *low adoption* | 1 | 0 | 1 | 134 | docusign/mcp-agent-foundry-procurement-python |
+| 1.4 | KVYO *low adoption* | 2 | 0 | 0 | 338 | klaviyo/gh-mcp2 |
+
+_No public MCP repo under the configured org. **Weak evidence only** — FDS is the proof:
+FactSet demonstrably runs an MCP server (it serves this system), it is simply not public
+GitHub. Absence here means 'not found', never 'not doing it':_ ASAN, BIGC, BLZE, BRZE, CRM, DDOG, DT, FDS, GTLB, NABL, PSTG, S, SNOW, SPGI, SPOT, TWLO, U, UPWK, V, YEXT
+
+
+## Practitioner proof — engineering-blog register
+
+A filing sentence is written for investors and, increasingly, for screens.
+An engineering post is written for engineers. **Operator terms** (eval harness,
+token budget, retrieval, hallucination mitigation) are problems you only have
+once models are actually in production. **Marketing terms** score nothing.
+
+| Operator terms | Ticker | Marketing terms | Evidence |
+|---|---|---|---|
+| 13 | MDB | 5 | distill, embedding model, fine-tun, guardrail, hallucinat, human-in-the-loop |
+| 7 | GTLB | 0 | distill, evaluation harness, guardrail, human-in-the-loop, mcp server, model context protocol |
+| 7 | NET | 2 | context window, embedding model, guardrail, mcp server, model context protocol, prompt injection |
+| 5 | BOX | 1 | context window, fine-tun, hallucinat, human-in-the-loop, rag |
+| 5 | CRM | 1 | context window, evaluation harness, hallucinat, regression suite, tool calling |
+| 5 | DT | 1 | context window, guardrail, hallucinat, mcp server, model context protocol |
+| 4 | PLTR | 1 | distill, fine-tun, guardrail, retrieval-augmented |
+| 4 | RDDT | 1 | distill, guardrail, hallucinat, human-in-the-loop |
+| 3 | DDOG | 1 | fine-tun, guardrail, mcp server |
+| 3 | FROG | 1 | context window, mcp server, tokens per |
+| 2 | OKTA | 0 | mcp server, model context protocol |
+| 2 | TEAM | 1 | guardrail, mcp server |
+| 1 | ESTC | 0 | retrieval-augmented |
+| 0 | DOCU | 1 | — |
+| 0 | KVYO | 0 | — |
+| 0 | SHOP | 0 | — |
+
+_Insufficient sample — feed carries headlines, not article bodies, so the
+count says little either way: CRWD (5KB), SPOT (6KB). Fix by fetching full post bodies._
+
+_Unresolved feeds (NOT a negative — the feed URL needs fixing): MORN (HTTP 202)_
 

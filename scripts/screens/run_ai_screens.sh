@@ -5,6 +5,8 @@
 #                      (quantified AI revenue, inference in COGS, proprietary training data)
 #   officer screen  -> companies that NAMED a senior AI officer in an 8-K/proxy
 #   mcp screen      -> companies making their corpus agent-addressable (MCP servers)
+#   github usage    -> whether that MCP server is actually USED and maintained
+#   eng blog proof  -> whether they write in the operator register, not marketing
 #
 # Both write dated JSON next to this script, then diff against the previous run.
 # The report is written to docs/ so it syncs to Obsidian with everything else.
@@ -32,6 +34,12 @@ python3 "$HERE/edgar_ai_language_screen.py"
 python3 "$HERE/edgar_ai_officer_screen.py"
 python3 "$HERE/edgar_mcp_screen.py"
 
+# Corroboration layer. EDGAR language is a CLAIM written for investors and,
+# once a screen like this is known, for the screen itself. These two look at
+# artifacts produced for a practitioner audience, where fakery gets noticed.
+python3 "$HERE/github_mcp_usage.py" > "$HERE/.gh_usage.md" 2>/dev/null || true
+python3 "$HERE/eng_blog_proof.py"   > "$HERE/.blog_proof.md" 2>/dev/null || true
+
 {
   echo "# AI application-layer screen — $STAMP"
   echo
@@ -51,12 +59,17 @@ python3 "$HERE/edgar_mcp_screen.py"
   python3 "$HERE/diff_screens.py" edgar_ai_officer_screen
   echo
   python3 "$HERE/diff_screens.py" edgar_mcp_screen
+  echo
+  cat "$HERE/.gh_usage.md" 2>/dev/null
+  echo
+  cat "$HERE/.blog_proof.md" 2>/dev/null
 } > "$REPORT"
 
 echo "[ai-screens] wrote $REPORT" >&2
 
 # Keep the repo from accumulating unbounded run artifacts: retain the last 8 runs each.
-for p in edgar_ai_language_screen edgar_ai_officer_screen edgar_mcp_screen; do
+for p in edgar_ai_language_screen edgar_ai_officer_screen edgar_mcp_screen \
+         github_mcp_usage eng_blog_proof; do
   ls -1t "$HERE/${p}"_*.json 2>/dev/null | tail -n +9 | xargs -r rm --
 done
 
