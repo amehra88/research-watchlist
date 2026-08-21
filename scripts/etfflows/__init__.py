@@ -66,32 +66,41 @@ MAX_ALERTS_PER_DAY = 6   # ranked by severity; truncation is REPORTED, never sil
 # ("top X% of this ETF's own history for this horizon") and is self-calibrating.
 USE_PERCENTILE_GATE = True
 
-# CALIBRATED 2026-08-21 against 3 years of real FactSet history: 20 trigger-tier ETFs,
+# CALIBRATED 2026-08-21 on the FULL trigger tier: 32 ETFs, 3 years of real FactSet history,
 # 653 evaluable days, replayed through the shipped triggers.evaluate().
 #
-#   pctile   episodes   per week    5d   63d
-#    99.00        239       1.83   155    84
-#    99.50        169       1.29   103    66     <- chosen
-#    99.80        140       1.07    79    61
-#    99.90        134       1.03    74    60
+#   pctile   episodes   per week    5d    63d
+#    98.00        539       4.13   383    156
+#    99.00        372       2.85   243    129
+#    99.50        258       1.98   156    102     <- chosen
+#    99.70        220       1.68   130     90
+#    99.90        194       1.49   108     86
 #
-# WHY 99.5 AND NOT THE ROW CLOSEST TO 1.0/WEEK: the baseline is ~600 observations, so the
-# finest percentile the data can actually resolve is ~1/600 = 0.17%. A 99.8 or 99.9 gate is
-# finer than that — it pins the threshold to a single observation and is noise, not
-# precision. 99.5 is the top ~3 of 600, which the data supports.
+# THE HONEST CONCLUSION: ~2/week is the FLOOR for a 32-name trigger tier, not a knob that was
+# left untuned. The a-priori "~1/week" target in the spec was set before anyone had data, and
+# it is not reachable without either shrinking the universe or using a threshold finer than
+# the data can resolve. Both levers were measured, and neither works:
 #
-# The curve is also nearly flat above 99.5 (169 -> 134 episodes across a 0.4pp move), because
-# the binding constraint is hysteresis, not the threshold: once a ticker fires it is locked
-# out until it re-arms. Chasing the last 0.3/week by tightening the gate buys almost nothing
-# and costs resolution.
+#   1. TIGHTENING THE PERCENTILE. The curve is nearly flat above 99.5 (258 -> 194 episodes
+#      across a 0.4pp move). Worse, the baseline is ~600 observations, so the finest
+#      percentile the data resolves is ~1/600 = 0.17%: a 99.8 or 99.9 gate pins the threshold
+#      to a single observation. That is noise dressed as precision, and it buys 0.5/week.
 #
-# EXPECT ~2/WEEK IN PRODUCTION: this was measured on 20 trigger names and the tier now holds
-# 32, so scale by ~1.6. RE-RUN calibrate.py once the remaining 12 are backfilled.
+#   2. LENGTHENING THE COOLDOWN. Measured at 99.5, sweeping ALERT_COOLDOWN_DAYS 5 -> 30:
+#           5d cooldown  1.98/week      21d  1.72/week
+#          10d           1.85/week      30d  1.68/week
+#      Six times the cooldown buys 0.3/week. It barely moves because the alerts are mostly
+#      DIFFERENT tickers, not one ticker repeating — which is exactly what the per-ticker
+#      collapse and re-arm band were built to guarantee. The cooldown stays at 5: raising it
+#      delays legitimate second episodes and buys nothing.
 #
-# The percentile gate also keeps BOTH horizons alive (103 x 5d, 66 x 63d). The sigma gate did
-# not — at its best setting it fired 119 x 5d against 9 x 63d, which would have made a
-# "crowding monitor" into a short-term flow monitor, since accumulated 63d positioning is the
-# half that actually measures crowding.
+# So 99.5 stands as the finest resolvable gate, ~2/week (about one alert every 2.5 trading
+# days), and the daily cap of 6 is never binding at that rate.
+#
+# The percentile gate also keeps BOTH horizons alive (156 x 5d, 102 x 63d). The sigma gate
+# did not — at its own best setting it fired 119 x 5d against 9 x 63d, which would have made
+# a "crowding monitor" into a short-term flow monitor, since accumulated 63d positioning is
+# the half that actually measures crowding.
 GATE_PERCENTILE = 99.5
 
 # Alert hysteresis. A 63d rolling sum on day t and t+1 shares 62 of 63 days, so z-scores are

@@ -197,6 +197,35 @@ def main() -> int:
     print("-" * 62)
     print(f"closest to 1/week: GATE_PERCENTILE={best_p[0]} -> {best_p[2]:.2f}/week")
 
+    # COOLDOWN SWEEP. The percentile and the cooldown answer different questions, and
+    # conflating them is how you end up with an unresolvable threshold:
+    #   percentile = "what counts as an extreme reading" — bounded by baseline resolution
+    #                (~600 obs, so anything finer than ~0.17% is noise, not precision)
+    #   cooldown   = "how often are we willing to hear about the SAME fund" — a preference,
+    #                with no resolution limit at all
+    # Above 99.5 the percentile curve is nearly flat because hysteresis, not the gate, is
+    # binding. So the honest way to reach the alert budget is the cooldown.
+    print("\nCOOLDOWN at the chosen percentile (99.5)")
+    print("=" * 62)
+    print(f"{'cooldown':>10} {'episodes':>9} {'per week':>9} {'5d':>6} {'63d':>6}")
+    print("-" * 62)
+    saved_cd = tg.ALERT_COOLDOWN_DAYS
+    cd_results = []
+    try:
+        for cd in (5, 10, 15, 21, 30):
+            tg.ALERT_COOLDOWN_DAYS = cd
+            f_cd, n_days = replay(dates, per, uni, 3.0, 2.0, args.max_alerts, pctile_gate=99.5)
+            weeks = max(1e-9, n_days / TRADING_DAYS_PER_WEEK)
+            hz = Counter(a.horizon for _, a in f_cd)
+            cd_results.append((cd, len(f_cd), len(f_cd) / weeks))
+            print(f"{cd:>10} {len(f_cd):>9} {len(f_cd) / weeks:>9.2f} "
+                  f"{hz.get(SHORT_HORIZON, 0):>6} {hz.get(LONG_HORIZON, 0):>6}")
+    finally:
+        tg.ALERT_COOLDOWN_DAYS = saved_cd
+    best_cd = min(cd_results, key=lambda r: abs(r[2] - 1.0))
+    print("-" * 62)
+    print(f"closest to 1/week: ALERT_COOLDOWN_DAYS={best_cd[0]} -> {best_cd[2]:.2f}/week")
+
     fired, _ = replay(dates, per, uni, best[0], best[1], args.max_alerts)
     by_ticker = Counter(a.ticker for _, a in fired)
     by_horizon = Counter(a.horizon for _, a in fired)
