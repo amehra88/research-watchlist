@@ -56,7 +56,7 @@ J = {
  "TSLA": (4,2,3,False,"fleet collects training data at a profit; FSD is the premium"),
  "PL": (3,2,2,False,"DOWNGRADED: much of revenue is imagery ACCESS, not inference. ~35x sales"),
  "CLBT": (3,2,2,False,"extraction is engineering; the paid job is AI triage"),
- "MBLY": (3,2,3,False,"perception across an OEM-funded fleet"),
+ "MBLY": (2,2,3,False,"COMPETITION: fleet thesis needs design wins to compound; LTM +5%, GM at series low"),
  "RELX": (3,3,2,True,"owns the legal/scientific ground truth; sells the answer"),
  "TRI": (3,3,2,True,"same as RELX, narrower"),
  "SPGI": (3,2,2,True,"ratings/index corpus + CAIO + MCP surface"),

@@ -374,23 +374,6 @@
   "contradiction": ""
  },
  {
-  "ticker": "MBLY",
-  "score": 72.7,
-  "momentum": "LTM +5.0%, GM 42.9% = series LOW. Competition confirmed",
-  "lab_risk": 0,
-  "ml": 3,
-  "credibility": "",
-  "flywheel": "",
-  "churn": "",
-  "thesis": 72.7,
-  "corroboration": 0.0,
-  "centrality": 3,
-  "product": 2,
-  "basis": "perception across an OEM-funded fleet",
-  "evidence": "not developer-facing",
-  "contradiction": ""
- },
- {
   "ticker": "RELX",
   "score": 67.3,
   "momentum": "",
@@ -489,6 +472,23 @@
   "centrality": 3,
   "product": 2,
   "basis": "DOWNGRADED: much of revenue is imagery ACCESS, not inference. ~35x sales",
+  "evidence": "not developer-facing",
+  "contradiction": ""
+ },
+ {
+  "ticker": "MBLY",
+  "score": 63.6,
+  "momentum": "LTM +5.0%, GM 42.9% = series LOW. Competition confirmed",
+  "lab_risk": 0,
+  "ml": 3,
+  "credibility": "",
+  "flywheel": "",
+  "churn": "",
+  "thesis": 63.6,
+  "corroboration": 0.0,
+  "centrality": 2,
+  "product": 2,
+  "basis": "COMPETITION: fleet thesis needs design wins to compound; LTM +5%, GM at series low",
   "evidence": "not developer-facing",
   "contradiction": ""
  },

@@ -1210,15 +1210,33 @@ tier_2_active_candidates:
   - ticker: DASH
     themes: [agentic_commerce, ai_re_architected_incumbent, ad_market_strength, autonomous_vehicle_competition, platform_take_rate, local_commerce_delivery]
     added_date: 2026-05-11
+  - ticker: DE
+    themes: [ai_native_vertical, ai_re_architected_incumbent]
+    added_date: 2026-08-20
+    ai_positioning:
+      score: "4"
+      notes: "Deere - See & Spray CV decides per plant, priced on herbicide saved; training data from a customer-funded machine fleet. Proves the thesis outside tech. Rank #8."
   - ticker: DOCN
     themes: [ai_infrastructure_capex, ai_infrastructure_software, inference_compute_economics, data_center_deployment_constraints, enterprise_ai_adoption]
     added_date: 2026-05-11
+  - ticker: GH
+    themes: [ai_native_vertical, enterprise_ai_adoption]
+    added_date: 2026-08-20
+    ai_positioning:
+      score: "4"
+      notes: "Guardant Health - tumor-naive MRD + screening require learned classifiers over methylation and fragmentomics. Delete the model and you have a blood draw. Rank #2 on ai-forward screen."
   - ticker: GLW
     themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, hyperscaler_revenue_concentration, solar_supply_chain]
     added_date: 2026-05-11
   - ticker: INTC
     themes: [silicon_architecture_competition, foundry_capacity, ai_infrastructure_capex, lithography_roadmap, inference_compute_economics, pc_demand, hyperscaler_revenue_concentration]
     added_date: 2026-05-09
+  - ticker: IRTC
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20
+    ai_positioning:
+      score: "4"
+      notes: "iRhythm - closest structural twin to HTFL. Classifier reads ~14d continuous ECG; FDA clearance + CPT code + a decade of labelled recordings. Rank #3."
   - ticker: MRVL
     themes: [silicon_architecture_competition, ai_infrastructure_capex, networking_competitive_landscape, hyperscaler_revenue_concentration, ai_compute_topology, inference_compute_economics]
     added_date: 2026-05-09
@@ -1257,6 +1275,12 @@ tier_2_active_candidates:
   - ticker: RDDT
     themes: [ad_market_strength, search_disruption, ai_re_architected_incumbent]
     added_date: 2026-05-09
+  - ticker: RDNT
+    themes: [ai_native_vertical, ai_re_architected_incumbent]
+    added_date: 2026-08-20
+    ai_positioning:
+      score: "4"
+      notes: "RadNet - owns the scanners, the images AND the outcomes that label them; DeepHealth sold as cash-pay upsell. Vertically integrated data/model/distribution. Rank #5."
   - ticker: ROKU
     themes: [ad_market_strength, ai_re_architected_incumbent]
     added_date: 2026-05-09
@@ -1342,6 +1366,12 @@ tier_2_active_candidates:
     themes: []
     added_date: 2026-06-24
     scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: UPST
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20
+    ai_positioning:
+      score: "4"
+      notes: "Upstart - the credit decision IS the model, trained on outcomes for borrowers a bureau cutoff would reject. Funding-fragile. Rank #9."
   - ticker: WMT
     themes: []
     added_date: 2026-06-24
@@ -1416,6 +1446,9 @@ tier_3_watchlist:
   - ticker: ADI
     themes: [automotive_semiconductor_demand, semiconductor_cycle, data_center_deployment_constraints, ai_infrastructure_capex, china_us_tensions]
     added_date: 2026-05-11
+  - ticker: ADPT
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Adaptive Biotech - clonoSEQ MRD; real ML (TCR-antigen map) not yet in revenue
   - ticker: AEIS
     themes: [foundry_capacity, semiconductor_cycle, data_center_deployment_constraints]
     added_date: 2026-05-11
@@ -1428,6 +1461,9 @@ tier_3_watchlist:
   - ticker: APP
     themes: [ad_market_strength, ai_re_architected_incumbent, vertical_ai_applications]
     added_date: 2026-05-09
+  - ticker: AUR
+    themes: [ai_native_vertical, autonomous_vehicle_competition]
+    added_date: 2026-08-20  # Aurora - driving policy is the entire product; loss-funded data collection
   - ticker: BABA
     themes: [china_ai_infrastructure_demand, ad_market_strength, agentic_commerce, ai_re_architected_incumbent, china_us_tensions, frontier_model_competition]
     added_date: 2026-05-09
@@ -1437,6 +1473,12 @@ tier_3_watchlist:
   - ticker: CEG
     themes: [nuclear_energy_buildout, data_center_deployment_constraints, ai_infrastructure_capex]
     added_date: 2026-05-09
+  - ticker: CHRW
+    themes: [ai_re_architected_incumbent]
+    added_date: 2026-08-20  # C.H. Robinson - only name where labour substitution is publicly auditable (shipments/employee)
+  - ticker: CLBT
+    themes: [ai_re_architected_incumbent]
+    added_date: 2026-08-20  # Cellebrite - extraction is engineering, the paid job is AI triage; Axon-shaped gov moat
   - ticker: CLS
     themes: [ai_infrastructure_capex, hyperscaler_revenue_concentration, ai_compute_topology, data_center_deployment_constraints]
     added_date: 2026-05-10
@@ -1468,6 +1510,15 @@ tier_3_watchlist:
   - ticker: EQIX
     themes: [data_center_deployment_constraints, ai_infrastructure_capex, hyperscaler_revenue_concentration]
     added_date: 2026-05-11
+  - ticker: ESTC
+    themes: [ai_infrastructure_software]
+    added_date: 2026-08-20  # Elastic - retrieval/vector infrastructure under RAG apps; 765-star MCP server
+  - ticker: EVLV
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Evolv - weapons vs benign in a live physical stream. CAVEAT: FTC settlement re efficacy claims
+  - ticker: FDS
+    themes: [ai_re_architected_incumbent, ai_agent_monetization]
+    added_date: 2026-08-20  # FactSet - clears all three EDGAR screens; corpus going agent-addressable via MCP
   - ticker: FFIV
     themes: [networking_competitive_landscape, cybersecurity_competitive_landscape, enterprise_ai_adoption]
     added_date: 2026-05-11
@@ -1477,6 +1528,9 @@ tier_3_watchlist:
   - ticker: FROG
     themes: [enterprise_ai_adoption, ai_infrastructure_software, cybersecurity_competitive_landscape]
     added_date: 2026-05-09
+  - ticker: GEHC
+    themes: [ai_re_architected_incumbent]
+    added_date: 2026-08-20  # GE HealthCare - DL reconstruction inside the scanner; zero lab-encroachment risk; named CAIO
   - ticker: HPE
     themes: [ai_infrastructure_capex, networking_competitive_landscape, enterprise_ai_adoption, data_center_deployment_constraints, hyperscaler_revenue_concentration]
     added_date: 2026-05-11
@@ -1486,6 +1540,12 @@ tier_3_watchlist:
   - ticker: IBM
     themes: [enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization, ai_infrastructure_software]
     added_date: 2026-05-11
+  - ticker: ISRG
+    themes: [ai_re_architected_incumbent]
+    added_date: 2026-08-20  # Intuitive Surgical - best unconverted corpus in med-tech; no AI revenue yet, hold as free option
+  - ticker: KDK
+    themes: [ai_native_vertical, autonomous_vehicle_competition]
+    added_date: 2026-08-20  # Kodiak AI - driverless trucking; same shape as AUR
   - ticker: KLAC
     themes: [foundry_capacity, semiconductor_cycle, china_export_controls, lithography_roadmap, nand_demand_cycle]
     added_date: 2026-05-09
@@ -1520,9 +1580,15 @@ tier_3_watchlist:
   - ticker: NFLX
     themes: [ad_market_strength, ai_generated_content, vertical_ai_applications]
     added_date: 2026-05-09
+  - ticker: NP
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Neptune Insurance - flood underwriting model IS the company; modelling edge measurable in loss ratios
   - ticker: NTES
     themes: [ai_generated_content, china_us_tensions, vertical_ai_applications]
     added_date: 2026-05-11
+  - ticker: NTRA
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Natera - Signatera MRD. NOTE: tumor-informed = statistics not learned models; ML content thinner than label implies
   - ticker: NVMI
     themes: [foundry_capacity, semiconductor_cycle, lithography_roadmap]
     added_date: 2026-05-09
@@ -1532,6 +1598,9 @@ tier_3_watchlist:
   - ticker: ONTO
     themes: [foundry_capacity, semiconductor_cycle, lithography_roadmap]
     added_date: 2026-05-11
+  - ticker: OPEN
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Opendoor - AVM is the business, but revenue -44% from peak. A rates trade, not an AI trade
   - ticker: PANW
     themes: [cybersecurity_competitive_landscape, enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization]
     added_date: 2026-05-09
@@ -1541,9 +1610,18 @@ tier_3_watchlist:
   - ticker: PINS
     themes: [ad_market_strength, search_disruption, agentic_commerce, ai_re_architected_incumbent]
     added_date: 2026-05-09
+  - ticker: PL
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Planet Labs - temporal Earth corpus cannot be back-filled, but much of revenue is imagery ACCESS not inference; ~35x sales
   - ticker: QCOM
     themes: [handset_competition, silicon_architecture_competition, china_us_tensions, automotive_semiconductor_demand, ai_infrastructure_capex]
     added_date: 2026-05-11
+  - ticker: RBLX
+    themes: [ai_native_vertical, ai_generated_content]
+    added_date: 2026-08-20  # Roblox - safety classification is a licence to operate, not a feature
+  - ticker: RELX
+    themes: [ai_re_architected_incumbent]
+    added_date: 2026-08-20  # RELX - owns legal/scientific ground truth generative systems must be grounded in. LAB-ENCROACHMENT RISK 3/3
   - ticker: RKLB
     themes: [space_economy, space_supply_chain]
     added_date: 2026-08-19
@@ -1554,6 +1632,9 @@ tier_3_watchlist:
   - ticker: RMBS
     themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, chip_design_competition]
     added_date: 2026-05-11
+  - ticker: RXRX
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Recursion - purest archetype A on the list; clinical output unproven
   - ticker: SE
     themes: [agentic_commerce, ai_generated_content, platform_take_rate, local_commerce_delivery]
     added_date: 2026-05-11
@@ -1572,6 +1653,9 @@ tier_3_watchlist:
   - ticker: SOLS
     themes: [advanced_materials_ai_infra, semiconductor_cycle, ai_infrastructure_capex, thermal_management_cooling, nuclear_energy_buildout]
     added_date: 2026-05-11
+  - ticker: SPGI
+    themes: [ai_re_architected_incumbent]
+    added_date: 2026-08-20  # S&P Global - CAIO + MCP surface, but flagged claims>traction; own the index business not the AI narrative
   - ticker: SWKS
     themes: [handset_competition, semiconductor_cycle, china_us_tensions]
     added_date: 2026-05-11
@@ -1581,9 +1665,15 @@ tier_3_watchlist:
   - ticker: TEAM
     themes: [enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization]
     added_date: 2026-05-11
+  - ticker: TEM
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Tempus - clinical-molecular join. DILIGENCE: what share of revenue is data licensing vs lab reimbursement
   - ticker: TER
     themes: [foundry_capacity, semiconductor_cycle, ai_infrastructure_capex, humanoid_robotics_competition]
     added_date: 2026-05-09
+  - ticker: TRI
+    themes: [ai_re_architected_incumbent]
+    added_date: 2026-08-20  # Thomson Reuters - CoCounsel on Westlaw; same liability-grounding thesis as RELX, narrower. LAB RISK 3/3
   - ticker: TSEM
     themes: [foundry_capacity, semiconductor_cycle, china_us_tensions]
     added_date: 2026-05-11
