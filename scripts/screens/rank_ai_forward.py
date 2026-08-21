@@ -94,6 +94,14 @@ J = {
  "TOST": (1,1,1,False,"payments company with an analytics layer"),
  "IQV": (2,1,1,False,"health data at scale"),
  "MCO": (2,1,1,True,"ratings corpus; CAIO"),
+ "CNH": (3,2,3,False,"Deere's direct competitor in autonomous ag; same CV-per-plant class of product, smaller data fleet ($13.9bn)"),
+ "APTV": (2,2,3,False,"ADAS perception + compute for OEMs; sensor fusion is the product, but it is a supplier not an owner ($14.7bn)"),
+ "AVAV": (3,2,3,False,"loitering munitions and UAS autonomy; the defense buyer ACCEPTS consequence-of-error, which resets the §9.3 timeline ($9.9bn)"),
+ "ZBRA": (2,2,2,False,"machine vision and scanning across warehouse/retail; closer to classical than learned ($12.7bn)"),
+ "ONDS": (3,2,3,False,"drone + autonomous rail/defense systems; small but genuinely autonomy-first ($4.4bn)"),
+ "OUST": (2,2,2,False,"lidar plus perception software; a component into other people's autonomy stacks ($4.3bn)"),
+ "HII": (1,1,2,False,"shipbuilder adding unmanned maritime; AI is a rounding error on a defense prime ($11.0bn)"),
+ "SERV": (5,1,3,False,"sidewalk delivery robots -- pure autonomy, no other product, sub-scale ($569m)"),
  "IOT":  (4,3,3,False,"AI dash cams: on-device CV makes the safety determination; fleet is customer-funded"),
  "MA": (2,1,2,False,"transaction graph fraud scoring; network survives without it"),
 }
@@ -147,7 +155,7 @@ LAB_RISK = {
  "MORN":2,"FDS":2,"SPGI":2,"WLY":2,"TEAM":2,"INTU":2,"CHRW":2,"WAY":2,
  "FIG":2,"KVYO":2,"MCO":2,"IQV":1,"MDB":1,"ESTC":1,"NET":1,"PLTR":1,"APP":1,
  "UPST":1,"NU":1,"NP":1,"OPEN":1,"VRSK":1,"SPOT":1,"RBLX":1,"CLBT":1,"TEM":1,
- "QXO":1,"TYL":1,"TOST":1,"SYM":1,"CGNX":1,"MBLY":0,"AXON":0,"FICO":0,"EVLV":0,
+ "QXO":1,"TYL":1,"TOST":1,"SYM":1,"CGNX":1,"MBLY":0,"CNH":0,"APTV":0,"AVAV":0,"ZBRA":1,"ONDS":0,"OUST":0,"HII":0,"SERV":0,"AXON":0,"FICO":0,"EVLV":0,
  "IRTC":0,"HTFL":0,"GH":0,"NTRA":0,"ADPT":0,"RDNT":0,"GEHC":0,"ISRG":0,
  "DE":0,"TSLA":0,"AUR":0,"KDK":0,"RXRX":0,"PL":0,"HNGE":0,"V":0,"MA":0,"SHOP":1,
 }
@@ -290,6 +298,10 @@ def main():
                      "evidence": "; ".join(notes) or ("developer-facing, no data collected" if dev else "not developer-facing"),
                      "contradiction": contra})
     rows.sort(key=lambda r: (-r["score"], -r["centrality"]))
+    # Operator 2026-08-20: cap at 50. The tail below this was names where the
+    # honest verdict was already "AI is not load-bearing here" -- carrying them
+    # implied a candidacy the write-ups themselves denied.
+    rows = rows[:50]
 
     print("| # | Ticker | Score | Cen | Prod | ML | Evidence | Why |")
     print("|---|---|---|---|---|---|---|---|")
