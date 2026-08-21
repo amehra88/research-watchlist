@@ -110,14 +110,70 @@ def test_block_a_has_no_interpretation():
 def test_block_a_no_alerts_says_so():
     r = sample_report()
     r["alerts"], r["suppressed"] = [], 0
-    check("empty alert list is stated explicitly", "ALERTS: none" in rd.block_a(r))
+    check("empty alert list is stated explicitly",
+          "UNUSUAL FLOWS: none today" in rd.block_a(r))
 
 
 def test_block_a_shows_breadth_and_pairs():
     a = rd.block_a(sample_report())
-    check("breadth rendered", "Breadth 63d: 73%" in a, f"missing in:\n{a}")
+    check("risk appetite rendered", "Risk appetite (63d): 73%" in a, f"missing in:\n{a}")
     check("sibling spread rendered", "SPY vs IVV+VOO" in a)
-    check("factor complex rendered", "MTUM" in a and "VLUE" in a)
+    check("factor block rendered", "FACTOR FLOWS" in a and "MTUM" in a)
+
+
+# ── readability (the whole point of the redesign) ─────────────────────────────
+
+def test_flows_are_expressed_as_percent_of_fund():
+    """'-797.1bp' is jargon; '-8.0% of the fund' is the same number without a decoder ring."""
+    check("bps converts to percent of fund", rd.pct_aum(-797.1) == "-8.0%",
+          rd.pct_aum(-797.1))
+    check("positive keeps its sign", rd.pct_aum(463.9) == "+4.6%", rd.pct_aum(463.9))
+    check("missing stays '-'", rd.pct_aum(None) == "-")
+
+    a = rd.block_a(sample_report())
+    check("Block A speaks in % of fund", "% of the fund" in a, f"missing in:\n{a}")
+
+
+def test_rarity_is_plain_english():
+    """MTUM printed -2.0σ at the 0.0th percentile — the sigma actively understates it."""
+    check("0th percentile is 'most extreme on record'",
+          rd.rarity(0.0) == "most extreme on record", rd.rarity(0.0))
+    check("99.99th is also most extreme", rd.rarity(99.99) == "most extreme on record")
+    check("top half-percent", rd.rarity(99.6) == "top 0.5% of its history", rd.rarity(99.6))
+    check("ordinary readings just state the percentile",
+          rd.rarity(60.0) == "60th percentile", rd.rarity(60.0))
+    check("missing percentile says nothing", rd.rarity(None) == "")
+
+
+def test_alert_verb_carries_the_sign_not_the_number():
+    """'lost +$1.9B' reads as a contradiction."""
+    check("magnitude is unsigned", rd.usd_mag(-1.9e9) == "$1.9B", rd.usd_mag(-1.9e9))
+    check("inflow magnitude too", rd.usd_mag(4.12e9) == "$4.1B", rd.usd_mag(4.12e9))
+    a = rd.block_a(sample_report())
+    check("no 'lost +$' contradiction in output", "lost +$" not in a, f"in:\n{a}")
+
+
+def test_sector_block_is_a_ranked_rotation_map():
+    r = sample_report()
+    r["sector_rotation"] = [
+        {"ticker": "XLE", "short_bps": 250.0, "bps": 900.0},
+        {"ticker": "XLK", "short_bps": -40.0, "bps": -5.0},
+        {"ticker": "XLRE", "short_bps": -170.0, "bps": -600.0},
+    ]
+    a = rd.block_a(r)
+    check("sector block present", "SECTOR FLOWS" in a)
+    check("tickers get plain names", "XLE Energy" in a and "XLK Tech" in a, f"in:\n{a}")
+    check("both horizons shown", "past week" in a and "past quarter" in a)
+    check("money-in ranks above money-out",
+          a.index("XLE Energy") < a.index("XLRE Real Estate"), f"in:\n{a}")
+    check("values as % of fund", "+9.0%" in a and "-6.0%" in a, f"in:\n{a}")
+
+
+def test_rotation_block_omitted_when_empty():
+    r = sample_report()
+    r["sector_rotation"] = [{"ticker": "XLE", "short_bps": None, "bps": None}]
+    check("all-missing sector block is omitted, not printed empty",
+          "SECTOR FLOWS" not in rd.block_a(r))
 
 
 def test_block_a_surfaces_warnings():

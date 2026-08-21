@@ -49,6 +49,62 @@ def bps(v: float | None) -> str:
     return "-" if v is None else f"{v:+.1f}"
 
 
+def usd_mag(v: float | None) -> str:
+    """Unsigned magnitude, for sentences where a verb already carries the direction.
+
+    "lost +$1.9B" reads as a contradiction; the sign belongs to the verb, not the number.
+    """
+    return "-" if v is None else usd(abs(v)).lstrip("+")
+
+
+def pct_aum(v: float | None) -> str:
+    """Flow as a PERCENT OF THE FUND, from a bps figure.
+
+    This is the single biggest readability win in the whole report. "-797.1bp" is jargon that
+    the reader has to convert; "-8.0% of fund" says the thing directly — this ETF shrank by
+    eight percent. Same number, no translation step.
+    """
+    return "-" if v is None else f"{v / 100.0:+.1f}%"
+
+
+def rarity(percentile: float | None) -> str:
+    """Plain-English rarity instead of a sigma the reader has to calibrate.
+
+    A worked example of why: MTUM printed -2.0σ, which sounds mild, at the 0.0th percentile —
+    the most extreme 63-day outflow in its entire history. The sigma actively misleads here
+    because MAD-scaled sigma understates rarity when the tails are heavy. The percentile does
+    not, so say what it means.
+    """
+    if percentile is None:
+        return ""
+    extreme = min(percentile, 100.0 - percentile)
+    if extreme <= 0.1:
+        return "most extreme on record"
+    if extreme <= 0.5:
+        return "top 0.5% of its history"
+    if extreme <= 1.0:
+        return "top 1% of its history"
+    if extreme <= 5.0:
+        return "top 5% of its history"
+    return f"{percentile:.0f}th percentile"
+
+
+# Plain names, so a reader does not have to know every ticker by heart.
+LABELS = {
+    "XLK": "Tech", "XLC": "Comms", "XLF": "Financials", "XLE": "Energy",
+    "XLV": "Health Care", "XLY": "Cons Disc", "XLP": "Staples", "XLI": "Industrials",
+    "XLU": "Utilities", "XLB": "Materials", "XLRE": "Real Estate",
+    "MTUM": "Momentum", "QUAL": "Quality", "VLUE": "Value (MSCI)", "USMV": "Min Vol",
+    "IWF": "Growth (R1000)", "IWD": "Value (R1000)", "VUG": "Growth (CRSP)",
+    "VTV": "Value (CRSP)", "SCHD": "Dividend", "COWZ": "Free Cash Flow",
+    "SPLV": "Low Vol", "IJR": "Small Cap",
+}
+
+
+def label(ticker: str) -> str:
+    return LABELS.get(ticker, ticker)
+
+
 def sigma(z: float | None, degraded: bool = False) -> str:
     """Sigma label, or an explicit refusal.
 
@@ -70,6 +126,26 @@ def _rule(ch: str = "─") -> str:
     return ch * WIDTH
 
 
+def _rotation_block(title: str, rows) -> list[str]:
+    """A ranked in/out list — a rotation map, not an alphabetical dump.
+
+    Sorted by the quarter-horizon reading with money-in at the top and money-out at the
+    bottom, so the shape of the rotation is visible without reading any individual number.
+    Both horizons are shown because the pair IS the crowding signal: a name high on the
+    quarter but negative on the week is a position that is on but no longer being added to.
+    """
+    usable = [r for r in rows if r.get("bps") is not None]
+    if not usable:
+        return []
+    out = ["", f"{title} (% of each fund's assets)",
+           f"  {'':<22}{'past week':>11}{'past quarter':>15}"]
+    for r in usable:
+        name = label(r["ticker"])
+        tag = f"{r['ticker']} {name}" if name != r["ticker"] else r["ticker"]
+        out.append(f"  {tag:<22}{pct_aum(r.get('short_bps')):>11}{pct_aum(r['bps']):>15}")
+    return out
+
+
 # ── Block A: facts ────────────────────────────────────────────────────────────
 
 def block_a(report: dict) -> str:
@@ -85,20 +161,26 @@ def block_a(report: dict) -> str:
 
     alerts = report.get("alerts") or []
     if alerts:
-        out.append(f"ALERTS ({len(alerts)}):")
+        out.append(f"UNUSUAL FLOWS ({len(alerts)}):")
         for a in alerts:
-            corro = f" — {a.corroboration}" if getattr(a, "corroboration", "") else ""
-            out.append(
-                f"  {a.ticker:<5} {a.horizon:>2}d  {a.direction:<7} "
-                f"{usd(a.flow_usd):>10}  {bps(a.flow_bps):>7}bp  "
-                f"{sigma(a.z):>6}  {pct(a.percentile):>5}pctile  [{a.basis}]{corro}"
-            )
+            # One sentence per alert, in the order a person would say it out loud:
+            # which fund, which way, how much, how big relative to the fund, how rare.
+            name = label(a.ticker)
+            named = f"{a.ticker} ({name})" if name != a.ticker else a.ticker
+            verb = "took in" if a.direction == "inflow" else "lost"
+            rare = rarity(a.percentile)
+            out.append(f"  {named} {verb} {usd_mag(a.flow_usd)} "
+                       f"over {a.horizon} trading days")
+            out.append(f"      = {pct_aum(a.flow_bps)} of the fund"
+                       + (f" — {rare}" if rare else ""))
+            if getattr(a, "corroboration", ""):
+                out.append(f"      {a.corroboration}")
         suppressed = report.get("suppressed", 0)
         if suppressed:
             # Repo convention: no silent caps.
             out.append(f"  ... {suppressed} further alert(s) suppressed by the daily cap.")
     else:
-        out.append("ALERTS: none — no trigger-tier ETF cleared the threshold.")
+        out.append("UNUSUAL FLOWS: none today — nothing outside its normal range.")
 
     out.append("")
 
@@ -106,8 +188,8 @@ def block_a(report: dict) -> str:
     for h in (SHORT_HORIZON, LONG_HORIZON):
         b = br.get(h)
         if b and b.get("pct") is not None:
-            out.append(f"Breadth {h:>2}d: {b['pct']:.0f}% of trigger tier with net inflow "
-                       f"({b['positive']}/{b['measured']} measured)")
+            out.append(f"Risk appetite ({h}d): {b['pct']:.0f}% of the core ETFs took in money "
+                       f"({b['positive']} of {b['measured']})")
 
     pairs = report.get("pairs") or []
     if pairs:
@@ -117,11 +199,8 @@ def block_a(report: dict) -> str:
             out.append(f"  {p['name']:<18} {SHORT_HORIZON}d {bps(p.get('short')):>7}bp   "
                        f"{LONG_HORIZON}d {bps(p.get('long')):>7}bp")
 
-    factor = report.get("factor_rotation") or []
-    if factor:
-        out.append("")
-        out.append(f"Factor complex ({LONG_HORIZON}d, bps of AUM):")
-        out.append("  " + "   ".join(f"{f['ticker']} {bps(f['bps'])}" for f in factor))
+    out += _rotation_block("SECTOR FLOWS", report.get("sector_rotation") or [])
+    out += _rotation_block("FACTOR FLOWS", report.get("factor_rotation") or [])
 
     warnings = report.get("warnings") or []
     if warnings:
@@ -256,10 +335,10 @@ def full_table(report: dict) -> str:
     out = ["ETF FLOW DETAIL — full universe",
            f"Flows as of {report.get('as_of') or 'unknown'}",
            _rule()]
-    hdr = (f"{'ETF':<6}{'tier':<9}{SHORT_HORIZON}d flow    "
-           f"{SHORT_HORIZON}d bp   {SHORT_HORIZON}d z   "
-           f"{LONG_HORIZON}d flow   {LONG_HORIZON}d bp  {LONG_HORIZON}d z  quadrant")
-    out.append(hdr)
+    out.append(f"{'':<6}{'':<9}{'---- past week ----':>29}{'---- past quarter ----':>31}")
+    out.append(f"{'ETF':<6}{'tier':<9}{'flow':>11}{'% of fund':>11}{'rarity':>7}"
+               f"{'flow':>12}{'% of fund':>12}{'rarity':>7}  positioning")
+    out.append(_rule("·"))
     out.append(_rule("·"))
 
     if not rows:
@@ -270,13 +349,13 @@ def full_table(report: dict) -> str:
         out.append(
             f"{r.get('ticker', '?'):<6}"
             f"{r.get('tier', '')[:8]:<9}"
-            f"{usd(r.get('flow_short_usd')):>10}  "
-            f"{bps(r.get('bps_short')):>7}  "
-            f"{sigma(r.get('z_short'), r.get('degraded_short', False)):>6}  "
-            f"{usd(r.get('flow_long_usd')):>10}  "
-            f"{bps(r.get('bps_long')):>7}  "
-            f"{sigma(r.get('z_long'), r.get('degraded_long', False)):>6}  "
-            f"{r.get('quadrant') or '-'}"
+            f"{usd(r.get('flow_short_usd')):>11}"
+            f"{pct_aum(r.get('bps_short')):>11}"
+            f"{sigma(r.get('z_short'), r.get('degraded_short', False)):>7}"
+            f"{usd(r.get('flow_long_usd')):>12}"
+            f"{pct_aum(r.get('bps_long')):>12}"
+            f"{sigma(r.get('z_long'), r.get('degraded_long', False)):>7}"
+            f"  {r.get('quadrant') or '-'}"
         )
 
     notes = report.get("table_notes") or []

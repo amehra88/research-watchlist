@@ -78,6 +78,15 @@ class Universe:
     def min_history_ok(self, t: str) -> bool:
         return bool(self.overrides.get(t, {}).get("min_history_ok", True))
 
+    def sleeve_tickers(self, tier: str, sleeve: str) -> list[str]:
+        s = ((self.raw.get("tiers", {}).get(tier, {}).get("sleeves", {}).get(sleeve)) or {})
+        # Filtered through self.tier so a restricted view does not report names it no longer
+        # carries data for.
+        return [t for t in (s.get("tickers") or []) if t in self.tier]
+
+    def sector_tickers(self) -> list[str]:
+        return self.sleeve_tickers("trigger", "sectors")
+
     def factor_tickers(self) -> list[str]:
         sleeve = ((self.raw.get("tiers", {}).get("trigger", {}).get("sleeves", {})
                    .get("factor")) or {})
@@ -228,9 +237,20 @@ def build_report(state: dict, uni: Universe, as_of: str,
             entry[key] = m.pair_spread(lb, ab)
         pairs.append(entry)
 
-    factor = [{"ticker": t, "bps": _bps_of(per_ticker, t, LONG_HORIZON)}
-              for t in uni.factor_tickers()
-              if per_ticker.get(t, {}).get("has_data")]
+    def _sleeve_rows(tickers):
+        """Both horizons per name, sorted by the long-horizon reading.
+
+        Sorted so the block reads as a ROTATION MAP — what money left at the top, what it
+        went into at the bottom — rather than an alphabetical list the reader has to scan.
+        """
+        rows = [{"ticker": t,
+                 "short_bps": _bps_of(per_ticker, t, SHORT_HORIZON),
+                 "bps": _bps_of(per_ticker, t, LONG_HORIZON)}
+                for t in tickers if per_ticker.get(t, {}).get("has_data")]
+        return sorted(rows, key=lambda r: (r["bps"] is None, -(r["bps"] or 0.0)))
+
+    factor = _sleeve_rows(uni.factor_tickers())
+    sectors = _sleeve_rows(uni.sector_tickers())
 
     report = {
         "as_of": as_of,
@@ -240,6 +260,7 @@ def build_report(state: dict, uni: Universe, as_of: str,
         "breadth": breadth,
         "pairs": pairs,
         "factor_rotation": factor,
+        "sector_rotation": sectors,
         "quadrants": quadrants,
         "divergence": divergences,
         "rows": sorted(rows, key=lambda r: (r["tier"] != "trigger", r["ticker"])),

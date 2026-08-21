@@ -39,7 +39,18 @@ tiers:
         tickers: [SMH, SOXX, IGV]
       factor:
         label: "Factor"
-        tickers: [MTUM, QUAL, VLUE, USMV, IWF, IWD]
+        # Style/factor complex. AUM figures are share-class, verified against FactSet
+        # 2026-07-31 — the two Vanguard style funds are far larger than the Russell pair
+        # and were the biggest gap in the original list.
+        #   MTUM momentum | QUAL quality | VLUE value (MSCI) | USMV min-vol
+        #   IWF/IWD  Russell 1000 growth/value
+        #   VUG $219.5B / VTV $187.7B  CRSP growth/value — the largest style ETFs anywhere,
+        #     and a sibling pair against IWF/IWD (same factor, different index) which
+        #     separates real style allocation from index-vehicle mechanics.
+        #   SCHD $104.2B  dividend — the destination money rotates INTO when tech de-rates,
+        #     and the single largest factor sleeve the original universe did not cover.
+        #   COWZ $18.7B  free cash flow — a genuinely crowded factor in its own right.
+        tickers: [MTUM, QUAL, VLUE, USMV, IWF, IWD, VUG, VTV, SCHD, COWZ]
 
   context:
     baseline_years: 1
@@ -48,7 +59,12 @@ tiers:
         label: "Tech / thematic"
         # VGT/IYW/IGM are ~90% the same exposure as XLK. Letting them alert
         # independently would triple-count a single move. Context only.
-        tickers: [VGT, IYW, IGM, CIBR, SKYY, FDN, AIQ, BOTZ, MAGS, XLG, XSD, PSI, SPLV, PDP]
+        # IJR ($109.6B) is the size factor's large cousin to IWM; kept in CONTEXT rather than
+        # trigger because IWM already carries small-cap in the core sleeve and a tech book's
+        # exposure to pure size is second-order. SPLV ($7.2B) stays context for the same
+        # reason — USMV ($25B+) is the min-vol name that matters.
+        tickers: [VGT, IYW, IGM, CIBR, SKYY, FDN, AIQ, BOTZ, MAGS, XLG, XSD, PSI, SPLV, PDP,
+                  IJR]
       synthetic_new:
         label: "Synthetic / new issues"
         tickers: [DRAM, LYTE]
