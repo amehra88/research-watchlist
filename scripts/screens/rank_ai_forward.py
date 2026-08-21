@@ -95,6 +95,7 @@ J = {
  "TOST": (1,1,1,False,"payments company with an analytics layer"),
  "IQV": (2,1,1,False,"health data at scale"),
  "MCO": (2,1,1,True,"ratings corpus; CAIO"),
+ "IOT":  (4,3,3,False,"AI dash cams: on-device CV makes the safety determination; fleet is customer-funded"),
  "MA": (2,1,2,False,"transaction graph fraud scoring; network survives without it"),
 }
 

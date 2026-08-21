@@ -85,6 +85,23 @@
   "contradiction": ""
  },
  {
+  "ticker": "IOT",
+  "score": 91.4,
+  "momentum": "+30.5% YoY, GM ~75.4%; 7 straight sequential gains",
+  "lab_risk": 1,
+  "ml": 3,
+  "credibility": "",
+  "flywheel": "",
+  "churn": "",
+  "thesis": 90.9,
+  "corroboration": 0.0,
+  "centrality": 4,
+  "product": 3,
+  "basis": "AI dash cams: on-device CV makes the safety determination; fleet is customer-funded",
+  "evidence": "not developer-facing",
+  "contradiction": ""
+ },
+ {
   "ticker": "HTFL",
   "score": 90.9,
   "momentum": "",
