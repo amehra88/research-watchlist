@@ -157,12 +157,16 @@ def build_report(state: dict, uni: Universe, as_of: str,
     warnings: list[str] = []
     quadrants: dict[str, str] = {}
     divergences: dict[str, str] = {}
+    # Collapsed rather than one line per ticker: a partial fetch can leave 27 names without
+    # data, and 27 identical warning lines would bury the actual content of the email. Still
+    # reported in full — the names are listed, just on one line.
+    no_data: list[str] = []
 
     for t in uni.tickers:
         tm = ticker_metrics(state, t, as_of)
         per_ticker[t] = tm
         if not tm["has_data"]:
-            warnings.append(f"{t}: no flow data for {as_of}")
+            no_data.append(t)
             continue
 
         short = tm["horizons"][SHORT_HORIZON]
@@ -197,6 +201,10 @@ def build_report(state: dict, uni: Universe, as_of: str,
                 synthetic=uni.synthetic(t), min_history_ok=uni.min_history_ok(t),
                 degraded=hh["degraded"], degrade_reason=hh["degrade_reason"],
             ))
+
+    if no_data:
+        warnings.append(f"no flow data for {as_of} ({len(no_data)} of {len(uni.tickers)} "
+                        f"tickers): {', '.join(sorted(no_data))}")
 
     alerts, new_state, suppressed = tg.evaluate(readings, trigger_state, as_of)
 

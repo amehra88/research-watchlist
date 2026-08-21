@@ -220,8 +220,15 @@ def test_missing_ticker_does_not_crash_build():
                                        uni, "2026-08-18", {})
         check("empty state builds an empty report rather than raising",
               report["rows"] == [] and report["alerts"] == [])
-        check("every missing ticker is warned about", len(report["warnings"]) >= 6,
-              f"got {report['warnings']}")
+        # One collapsed line, not one per ticker — a partial fetch can leave dozens of names
+        # without data and that many warning lines would bury the email's actual content.
+        # Every name must still appear IN that line: collapsed, not truncated.
+        check("missing tickers collapse to a single warning line",
+              len(report["warnings"]) == 1, f"got {report['warnings']}")
+        w = report["warnings"][0]
+        check("the collapsed line names every missing ticker",
+              all(t in w for t in ("SPY", "IVV", "SMH", "XLRE", "MTUM", "LYTE")), f"got {w}")
+        check("the collapsed line gives the count", "6 of 6" in w, f"got {w}")
         check("empty report still renders", "ETF FLOWS" in render.render_main(report))
 
 
