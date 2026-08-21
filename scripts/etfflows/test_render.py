@@ -169,6 +169,25 @@ def test_sector_block_is_a_ranked_rotation_map():
     check("values as % of fund", "+9.0%" in a and "-6.0%" in a, f"in:\n{a}")
 
 
+def test_competitor_block_leads_and_names_our_fund():
+    """The only place the digest says whether OUR fund is gaining or losing assets."""
+    r = sample_report()
+    r["competitor_rotation"] = [
+        {"ticker": "BCTK", "short_bps": -50.0, "bps": 3010.0},
+        {"ticker": "JTEK", "short_bps": 60.0, "bps": 1460.0},
+        {"ticker": "BAI", "short_bps": 190.0, "bps": -380.0},
+    ]
+    r["sector_rotation"] = [{"ticker": "XLE", "short_bps": 10.0, "bps": 900.0}]
+    a = rd.block_a(r)
+    check("competitor block present", "FUND FLOWS — us vs competitors" in a, f"in:\n{a}")
+    check("our fund is labelled as ours", "BCTK ours" in a, f"in:\n{a}")
+    check("competitors are named, not just tickers", "JTEK JPMorgan Tech" in a)
+    check("it leads the three rotation blocks",
+          a.index("FUND FLOWS") < a.index("SECTOR FLOWS") < a.index("FACTOR FLOWS"),
+          "competitor block should come first")
+    check("percent-of-fund used", "+30.1%" in a and "-3.8%" in a, f"in:\n{a}")
+
+
 def test_rotation_block_omitted_when_empty():
     r = sample_report()
     r["sector_rotation"] = [{"ticker": "XLE", "short_bps": None, "bps": None}]

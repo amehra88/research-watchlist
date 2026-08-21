@@ -87,6 +87,9 @@ class Universe:
     def sector_tickers(self) -> list[str]:
         return self.sleeve_tickers("trigger", "sectors")
 
+    def competitor_tickers(self) -> list[str]:
+        return self.sleeve_tickers("context", "competitors")
+
     def factor_tickers(self) -> list[str]:
         sleeve = ((self.raw.get("tiers", {}).get("trigger", {}).get("sleeves", {})
                    .get("factor")) or {})
@@ -261,6 +264,7 @@ def build_report(state: dict, uni: Universe, as_of: str,
         "pairs": pairs,
         "factor_rotation": factor,
         "sector_rotation": sectors,
+        "competitor_rotation": _sleeve_rows(uni.competitor_tickers()),
         "quadrants": quadrants,
         "divergence": divergences,
         "rows": sorted(rows, key=lambda r: (r["tier"] != "trigger", r["ticker"])),

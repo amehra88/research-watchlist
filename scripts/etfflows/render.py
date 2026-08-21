@@ -98,6 +98,7 @@ LABELS = {
     "IWF": "Growth (R1000)", "IWD": "Value (R1000)", "VUG": "Growth (CRSP)",
     "VTV": "Value (CRSP)", "SCHD": "Dividend", "COWZ": "Free Cash Flow",
     "SPLV": "Low Vol", "IJR": "Small Cap",
+    "BCTK": "ours", "JTEK": "JPMorgan Tech", "BAI": "iShares AI",
 }
 
 
@@ -203,6 +204,11 @@ def block_a(report: dict) -> str:
             out.append(f"  {p['name']:<18} week {pct_aum(p.get('short')):>8}   "
                        f"quarter {pct_aum(p.get('long')):>8}")
 
+    # Competitor sleeve first of the three: it is the only place in the whole digest that
+    # says whether OUR fund is winning or losing assets. The ETF UPDATE section above shows
+    # what competitors HOLD; this shows whether money is arriving. Different question.
+    out += _rotation_block("FUND FLOWS — us vs competitors",
+                           report.get("competitor_rotation") or [])
     out += _rotation_block("SECTOR FLOWS", report.get("sector_rotation") or [])
     out += _rotation_block("FACTOR FLOWS", report.get("factor_rotation") or [])
 
