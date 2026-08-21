@@ -40,62 +40,68 @@ J = {
  "IRTC": (5,3,3,False,"classifier reads 14 days of ECG; FDA + CPT code; no model, no report"),
  "UPST": (5,2,3,False,"the credit decision IS the model"),
  "RXRX": (5,1,3,False,"company is a model; output unproven"),
- "AUR":  (5,1,False,"driving policy is the entire product; pre-revenue"),
- "KDK":  (5,1,False,"driverless trucking; same shape as AUR"),
+ "AUR": (5,1,3,False,"driving policy is the entire product; pre-revenue"),
+ "KDK": (5,1,3,False,"driverless trucking; same shape as AUR"),
  "HNGE": (5,3,3,False,"CV motion tracking replaces the therapist's labor"),
  "NTRA": (5,3,1,False,"tumor-informed: tracks known variants. Statistics, not learned models"),
- "GH":   (5,3,False,"blood-based classifier; weaker business than NTRA"),
- "APP":  (5,3,False,"auction-time ranking model IS the P&L"),
+ "GH": (5,3,3,False,"tumor-naive + screening REQUIRE learned classifiers (methylation, fragmentomics)"),
+ "APP": (5,3,3,False,"auction-time ranking model IS the P&L"),
  "FICO": (3,3,1,False,"score is a REGULATED logistic scorecard, not modern ML; contradicts UPST"),
  "EVLV": (4,3,3,False,"model-native, but FTC settlement over detection-efficacy claims"),
- "TEM":  (4,2,False,"clinical-molecular linkage; licensing mix is the diligence question"),
+ "TEM": (4,2,2,False,"clinical-molecular linkage; licensing mix is the diligence question"),
  "ADPT": (4,3,1,False,"clonoSEQ counts a known clone; the real ML (TCR-antigen map) is unproven"),
  "RDNT": (4,3,3,False,"owns the scans AND the distribution; AI upsell is cash-pay"),
  "AXON": (4,3,3,False,"system of record converting to model-native product"),
- "DE":   (4,3,False,"See & Spray decides per plant, priced on outcome"),
+ "DE": (4,3,3,False,"See & Spray decides per plant, priced on outcome"),
  "TSLA": (4,2,3,False,"fleet collects training data at a profit; FSD is the premium"),
- "PL":   (4,2,False,"temporal Earth corpus; product is inference over it. ~35x sales"),
+ "PL": (4,2,2,False,"temporal Earth corpus; product is inference over it. ~35x sales"),
  "CLBT": (3,2,2,False,"extraction is engineering; the paid job is AI triage"),
  "MBLY": (3,2,3,False,"perception across an OEM-funded fleet"),
- "RELX": (3,3,True, "owns the legal/scientific ground truth; sells the answer"),
- "TRI":  (3,3,True, "same as RELX, narrower"),
- "SPGI": (3,2,True, "ratings/index corpus + CAIO + MCP surface"),
+ "RELX": (3,3,2,True,"owns the legal/scientific ground truth; sells the answer"),
+ "TRI": (3,3,2,True,"same as RELX, narrower"),
+ "SPGI": (3,2,2,True,"ratings/index corpus + CAIO + MCP surface"),
  "GEHC": (3,2,3,False,"largest imaging-AI installed base"),
  "ISRG": (3,1,2,False,"best unconverted corpus in med-tech; no AI revenue yet"),
  "CHRW": (3,2,2,False,"substitution is publicly auditable via shipments/employee"),
- "PLTR": (3,3,True, "AIP wires models into operational decisions"),
- "CRWD": (3,3,True, "Charlotte AI compresses analyst labor"),
- "NET":  (3,2,True, "inference at the edge; deepest MCP traction of any filer"),
- "MDB":  (3,2,True, "vector search; strongest operator-register blog by far"),
- "INOD": (3,2,True, "sells training data to the labs; supplier TO the app layer"),
- "WLY":  (3,2,False,"licenses its corpus and prints the AI revenue number"),
- "TEAM": (2,3,True, "huge work corpus + Rovo + Head of AI + 1,038-star MCP server"),
- "SHOP": (2,2,True, "merchant data + AI-forward CEO; monetized via retention"),
- "FDS":  (2,2,True, "financial corpus going agent-addressable; CAIO; 3/3 screens"),
- "MORN": (2,2,True, "same move as FDS; filing claim not matched by repo traction"),
+ "PLTR": (3,3,2,True,"AIP wires models into operational decisions"),
+ "CRWD": (3,3,3,True,"Charlotte AI compresses analyst labor"),
+ "NET": (3,2,3,True,"inference at the edge; deepest MCP traction of any filer"),
+ "MDB": (3,2,2,True,"vector search; strongest operator-register blog by far"),
+ "INOD": (3,2,1,True,"sells training data to the labs; supplier TO the app layer"),
+ "WLY": (3,2,1,False,"licenses its corpus and prints the AI revenue number"),
+ "TEAM": (2,3,2,True,"huge work corpus + Rovo + Head of AI + 1,038-star MCP server"),
+ "SHOP": (2,2,2,True,"merchant data + AI-forward CEO; monetized via retention"),
+ "FDS": (2,2,2,True,"financial corpus going agent-addressable; CAIO; 3/3 screens"),
+ "MORN": (2,2,1,True,"same move as FDS; filing claim not matched by repo traction"),
  "INTU": (2,2,2,False,"owns returns and ledgers; attacks the services line"),
- "NU":   (2,2,False,"behavioral underwriting where no bureau file exists"),
- "V":    (2,2,True, "transaction graph; agentic commerce surface"),
- "KVYO": (2,2,True, "cross-merchant behavioral prediction; thin repo traction"),
- "DOCU": (2,2,True, "largest executed-agreement corpus; near-zero repo traction"),
- "WAY":  (2,2,False,"denial prediction on a proprietary claims corpus"),
+ "NU": (2,2,2,False,"behavioral underwriting where no bureau file exists"),
+ "V": (2,2,2,True,"transaction graph; agentic commerce surface"),
+ "KVYO": (2,2,2,True,"cross-merchant behavioral prediction; thin repo traction"),
+ "DOCU": (2,2,2,True,"largest executed-agreement corpus; near-zero repo traction"),
+ "WAY": (2,2,2,False,"denial prediction on a proprietary claims corpus"),
  "VRSK": (2,2,2,False,"pooled claims monopoly; imagery is the genuinely new part"),
- "SPOT": (2,2,True, "AI DJ programs the stream; retention not revenue"),
- "ESTC": (2,2,True, "retrieval/vector infrastructure; 765-star MCP server"),
- "FIG":  (2,2,True, "1,910-star MCP server; design corpus"),
- "S":    (2,2,True, "AI-native detection; losing to CRWD"),
+ "SPOT": (2,2,3,True,"AI DJ programs the stream; retention not revenue"),
+ "ESTC": (2,2,2,True,"retrieval/vector infrastructure; 765-star MCP server"),
+ "FIG": (2,2,2,True,"1,910-star MCP server; design corpus"),
+ "S": (2,2,3,True,"AI-native detection; losing to CRWD"),
  "RBLX": (2,2,3,False,"safety ML is a licence to operate; generative creation"),
  "OPEN": (3,2,2,False,"the pricing model IS the business"),
- "NP":   (3,2,False,"flood underwriting model is the company"),
- "QXO":  (2,1,False,"named a CAIO at founding; AI-transformation playbook, unproven"),
+ "NP": (3,2,2,False,"flood underwriting model is the company"),
+ "QXO": (2,1,1,False,"named a CAIO at founding; AI-transformation playbook, unproven"),
  "CGNX": (2,2,2,False,"deep-learning inspection; commoditizing from above"),
- "SYM":  (1,1,False,"largely optimization and controls, not learned policy"),
- "TYL":  (1,1,False,"records company; watch-for-conversion only"),
+ "SYM": (1,1,1,False,"largely optimization and controls, not learned policy"),
+ "TYL": (1,1,1,False,"records company; watch-for-conversion only"),
  "ALGN": (2,2,1,False,"orthodontic outcomes corpus; centrality claim walked back"),
  "TOST": (1,1,1,False,"payments company with an analytics layer"),
- "IQV":  (2,1,False,"health data at scale"),
- "MCO":  (2,1,True, "ratings corpus; CAIO"),
- "MA":   (2,1,False,"transaction graph fraud scoring; network survives without it"),
+ "IQV": (2,1,1,False,"health data at scale"),
+ "MCO": (2,1,1,True,"ratings corpus; CAIO"),
+ "MA": (2,1,2,False,"transaction graph fraud scoring; network survives without it"),
+}
+
+
+# (multiplier, reason). Efficacy contested by a regulator or independent testing.
+CREDIBILITY = {
+    "EVLV": (0.85, "FTC settlement re detection-efficacy claims; independent tests missed knives"),
 }
 
 
@@ -128,10 +134,21 @@ def main():
         blog = {}
 
     rows = []
-    for tk, (cen, prod, dev, basis) in J.items():
-        # THESIS SCORE ranks the list: how central is the model, and is there a
-        # named product doing the work at a price. Nothing else moves the order.
-        thesis = 100.0 * (cen + prod) / 8.0
+    for tk, (cen, prod, ml, dev, basis) in J.items():
+        # THESIS SCORE ranks the list: centrality x named-priced product x whether
+        # the algorithm is actually LEARNED.
+        #
+        # ml_content added 2026-08-20 after the operator challenged FICO and NTRA.
+        # Both were scoring 100 on centrality alone. But FICO's score is a regulated
+        # logistic scorecard -- explainability rules under ECOA/Reg B actively CAP
+        # its sophistication -- and Natera's Signatera tracks known variants with
+        # Bayesian error models. "An algorithm is the product" is NOT the same claim
+        # as "modern machine learning is the product", and collapsing the two is
+        # exactly how a pretender reaches the top of an AI ranking.
+        #
+        # The tell this axis encodes: if regulation requires you to explain every
+        # decision, you cannot deploy a model complex enough to be interesting.
+        thesis = 100.0 * (cen + prod + ml) / 11.0
 
         # CORROBORATION is reported separately and adjusts only modestly (+/-8).
         # Earlier version folded evidence into the denominator, which PENALISED
@@ -158,20 +175,29 @@ def main():
            (gh.get(tk) or 0) < 4 and (blog.get(tk) or 0) < 2:
             contra = "claims > traction"
 
-        rows.append({"ticker": tk, "score": round(thesis + corrob, 1),
+        # CREDIBILITY DISCOUNT: architecture can be genuinely model-native while the
+        # evidence that it WORKS is contested. Different failure mode from AI-washing
+        # and it needs its own penalty, not a lower centrality score.
+        cred = CREDIBILITY.get(tk)
+        mult = cred[0] if cred else 1.0
+
+        rows.append({"ticker": tk, "score": round((thesis + corrob) * mult, 1),
+                     "ml": ml, "credibility": (cred[1] if cred else ""),
                      "thesis": round(thesis, 1), "corroboration": corrob,
                      "centrality": cen, "product": prod, "basis": basis,
                      "evidence": "; ".join(notes) or ("developer-facing, no data collected" if dev else "not developer-facing"),
                      "contradiction": contra})
     rows.sort(key=lambda r: (-r["score"], -r["centrality"]))
 
-    print("| # | Ticker | Score | Thesis | Corrob | Cen | Prod | Evidence | Why |")
-    print("|---|---|---|---|---|---|---|---|---|")
+    print("| # | Ticker | Score | Cen | Prod | ML | Evidence | Why |")
+    print("|---|---|---|---|---|---|---|---|")
     for i, r in enumerate(rows, 1):
-        flag = "  **" + r["contradiction"] + "**" if r["contradiction"] else ""
-        print("| %d | %s | %s | %s | +%s | %d/5 | %d/3 | %s%s | %s |" % (
-            i, r["ticker"], r["score"], r["thesis"], r["corroboration"],
-            r["centrality"], r["product"], r["evidence"], flag, r["basis"]))
+        flag = "  !! " + r["contradiction"] if r["contradiction"] else ""
+        if r["credibility"]:
+            flag += "  !! credibility discount"
+        print("| %d | %s | %s | %d/5 | %d/3 | %d/3 | %s%s | %s |" % (
+            i, r["ticker"], r["score"], r["centrality"], r["product"], r["ml"],
+            r["evidence"], flag, r["basis"]))
     json.dump(rows, open(os.path.join(HERE, "ai_forward_ranking.json"), "w"), indent=1)
 
 
