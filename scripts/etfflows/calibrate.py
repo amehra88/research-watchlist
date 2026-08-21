@@ -157,7 +157,9 @@ def main() -> int:
     # corroborated == standalone disables the lower tier entirely (the elif can never fire),
     # so those rows measure a SINGLE-THRESHOLD design against the two-tier one.
     for standalone in (3.0, 4.0, 5.0, 6.0, 7.0, 8.0):
-        for corroborated in (2.0, 3.0, 4.0, standalone):
+        # sorted(set(...)) so `standalone` appearing in the fixed list does not print the
+        # single-threshold row twice.
+        for corroborated in sorted({2.0, 3.0, 4.0, standalone}):
             if corroborated > standalone:
                 continue
             fired, n_days = replay(dates, per, uni, standalone, corroborated, args.max_alerts)
