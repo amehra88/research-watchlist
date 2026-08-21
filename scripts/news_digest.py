@@ -29,7 +29,13 @@ Modes:
   --dry-run                    print to stdout; no email, no ledger write, no pg filing.
   --no-factset                 Google-only (skip the FactSet channel).
 
-Story cap (operator, 2026-08-19): the digest carries at most rank.DIGEST_LIMIT stories, max
+DELIVERY (operator, 2026-08-21): this digest is a STANDALONE EMAIL. It used to ALSO appear as the
+NEWS FLOW section of the 07:00 Daily Digest, which delivered the same stories twice each morning;
+combine_and_send.py dropped that section and run_daily.sh no longer waits for report_news_{date}.txt
+(still written, as a gitignored audit artifact). On weekends run_daily.sh invokes --premarket, since
+the 06:45 cron is Mon-Fri and the weekend run IS the standalone email.
+
+Story cap (operator, 2026-08-19; tightened to 20 on 2026-08-21): at most rank.DIGEST_LIMIT stories, max
 rank.MAX_PER_TICKER per ticker, with sell-side rating actions ranked last and admitted only when
 they state a non-valuation rationale. Selection sits BEFORE the summarizer, so it cuts the largest
 cost line (~$3.2/run over ~260 items) rather than merely shortening the email. Everything that

@@ -36,7 +36,7 @@ from dataclasses import dataclass
 from . import pre_filter
 from .classify_llm import _run_claude, _extract_json_array, SessionLimitError
 
-DIGEST_LIMIT = 30        # operator decision 2026-08-19 (was uncapped, ~260/run)
+DIGEST_LIMIT = 20        # operator 2026-08-21 (30 was still too many; was uncapped ~260/run)
 MAX_PER_TICKER = 2       # one event per name, plus one genuinely separate second story
 # Survivors per ranking call in the SHARDED fallback. The normal path is one pooled call with the
 # WHOLE pool in view, which is what lets the model collapse "same event, told five ways" across
@@ -90,7 +90,20 @@ RANKING RULES, in priority order:
    itself (a demand check, a channel datapoint, a fundamental thesis change). Never include a
    rating story whose only content is the rating or the target.
 
-Do not pad. If fewer than {limit} stories genuinely deserve a slot, return fewer.
+THE BAR. {limit} slots is deliberately fewer than the number of stories that will look
+plausible. Before giving a story a slot, ask: COULD A PM ACT ON THIS OR CHANGE A VIEW TODAY?
+If the honest answer is "it is interesting but nothing changes", it does not earn a slot.
+
+DISQUALIFIED unless the story is genuinely exceptional — these fill slots without informing:
+  • earnings PREVIEWS, "what to watch", "3 things to know", countdown pieces;
+  • price action with no stated cause ("shares fell 4%"), 52-week-high/low notes, technical levels;
+  • opinion, valuation debates, bull-vs-bear framing, "is X a buy";
+  • listicles, screener output, "best stocks for", comparisons of two tickers;
+  • a company merely APPEARING in a market wrap or an index move;
+  • recycled coverage of something already widely known for more than a day.
+
+Do not pad. Returning 12 excellent stories is BETTER than 20 padded ones — if fewer than {limit}
+clear the bar, return fewer. Prefer BREADTH across the portfolio over several angles on one event.
 
 OUTPUT: ONLY a JSON array (no prose, no markdown, no code fences), best first:
 [{{"cluster_id": str, "reason": str}}]
