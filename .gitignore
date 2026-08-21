@@ -98,9 +98,14 @@ Untitled*.base
 
 .obsidian/
 
-# ETF flow monitor derived caches (regenerated each run).
-# NOTE: state/etf_flows.jsonl is deliberately NOT ignored — it is the flow history itself
-# and costs ~95 `claude -p` calls to rebuild, so it is tracked as free disaster recovery.
+# ETF flow monitor state. All ignored, including the flow ledger itself.
+#
+# The ledger was briefly going to be tracked, on the reasoning that it costs ~114 `claude -p`
+# calls to rebuild. Measured, that is the wrong trade: it is 5.4MB at 34.9k rows and is
+# REWRITTEN daily by --fetch, so git would store a fresh full blob every day — roughly 2GB a
+# year, pushed to GitHub every 15 minutes by auto_sync. A one-off rebuild is much cheaper
+# than that, and `--backfill` prints its own cost plan before running.
+state/etf_flows.jsonl
 state/fear_greed.json
 state/etf_lookthrough.json
 state/etf_flows_triggers.json
