@@ -164,6 +164,15 @@ def test_block_b_renders_lookthrough():
     print("\n" + b)
 
 
+def test_tiny_days_of_adv_do_not_read_as_zero():
+    """Mega-cap decompositions land here constantly; '-0.00d' looks like an exact zero."""
+    check("tiny positive shows <0.01d", rd._days(0.004) == "<0.01d", rd._days(0.004))
+    check("tiny negative shows >-0.01d", rd._days(-0.004) == ">-0.01d", rd._days(-0.004))
+    check("a real zero still shows +0.00d", rd._days(0.0) == "+0.00d", rd._days(0.0))
+    check("normal magnitudes unchanged", rd._days(0.04) == "+0.04d", rd._days(0.04))
+    check("unknown liquidity is '?', never 0", rd._days(None) == "?")
+
+
 def test_block_b_lookthrough_absent_is_explicit():
     r = sample_report()
     r["lookthrough"] = []

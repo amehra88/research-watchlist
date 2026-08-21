@@ -193,8 +193,18 @@ def block_b(report: dict) -> str:
 
 
 def _days(d: float | None) -> str:
-    """Days of ADV. '?' when the name's liquidity is unknown — never silently 0."""
-    return "?" if d is None else f"{d:+.2f}d"
+    """Days of ADV. '?' when the name's liquidity is unknown — never silently 0.
+
+    Sub-0.01 magnitudes print as '<0.01d' rather than '+0.00d'. Real mega-cap decompositions
+    land there constantly (a 3σ $4.1B SMH inflow is 0.04 days of NVDA volume), and '-0.00d'
+    reads as an exact zero when the true statement is "far too small to matter" — which is
+    itself the finding, and deserves to be legible rather than look like a rounding artifact.
+    """
+    if d is None:
+        return "?"
+    if d != 0 and abs(d) < 0.01:
+        return f"<0.01d" if d > 0 else f">-0.01d"
+    return f"{d:+.2f}d"
 
 
 def _lookthrough_lines(results, note: str = "") -> list[str]:
