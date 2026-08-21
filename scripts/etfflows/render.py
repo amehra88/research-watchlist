@@ -191,13 +191,17 @@ def block_a(report: dict) -> str:
             out.append(f"Risk appetite ({h}d): {b['pct']:.0f}% of the core ETFs took in money "
                        f"({b['positive']} of {b['measured']})")
 
-    pairs = report.get("pairs") or []
+    pairs = [p for p in (report.get("pairs") or [])
+             if p.get("short") is not None or p.get("long") is not None]
     if pairs:
         out.append("")
-        out.append("Sibling spreads (trading vehicle vs allocation):")
+        # Named for what it tells you, not for the arithmetic. SPY absorbs hedging and
+        # trading demand that IVV/VOO do not, so a big gap is a trading event while the two
+        # moving together is a real allocation shift.
+        out.append("Trading vehicle vs real allocation (gap in % of fund):")
         for p in pairs:
-            out.append(f"  {p['name']:<18} {SHORT_HORIZON}d {bps(p.get('short')):>7}bp   "
-                       f"{LONG_HORIZON}d {bps(p.get('long')):>7}bp")
+            out.append(f"  {p['name']:<18} week {pct_aum(p.get('short')):>8}   "
+                       f"quarter {pct_aum(p.get('long')):>8}")
 
     out += _rotation_block("SECTOR FLOWS", report.get("sector_rotation") or [])
     out += _rotation_block("FACTOR FLOWS", report.get("factor_rotation") or [])

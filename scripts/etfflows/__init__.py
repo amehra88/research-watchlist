@@ -65,7 +65,34 @@ MAX_ALERTS_PER_DAY = 6   # ranked by severity; truncation is REPORTED, never sil
 # standalone value barely mattered. A percentile gate says the same thing for every fund
 # ("top X% of this ETF's own history for this horizon") and is self-calibrating.
 USE_PERCENTILE_GATE = True
-GATE_PERCENTILE = 99.5   # calibrated; see scripts/etfflows/calibrate.py
+
+# CALIBRATED 2026-08-21 against 3 years of real FactSet history: 20 trigger-tier ETFs,
+# 653 evaluable days, replayed through the shipped triggers.evaluate().
+#
+#   pctile   episodes   per week    5d   63d
+#    99.00        239       1.83   155    84
+#    99.50        169       1.29   103    66     <- chosen
+#    99.80        140       1.07    79    61
+#    99.90        134       1.03    74    60
+#
+# WHY 99.5 AND NOT THE ROW CLOSEST TO 1.0/WEEK: the baseline is ~600 observations, so the
+# finest percentile the data can actually resolve is ~1/600 = 0.17%. A 99.8 or 99.9 gate is
+# finer than that — it pins the threshold to a single observation and is noise, not
+# precision. 99.5 is the top ~3 of 600, which the data supports.
+#
+# The curve is also nearly flat above 99.5 (169 -> 134 episodes across a 0.4pp move), because
+# the binding constraint is hysteresis, not the threshold: once a ticker fires it is locked
+# out until it re-arms. Chasing the last 0.3/week by tightening the gate buys almost nothing
+# and costs resolution.
+#
+# EXPECT ~2/WEEK IN PRODUCTION: this was measured on 20 trigger names and the tier now holds
+# 32, so scale by ~1.6. RE-RUN calibrate.py once the remaining 12 are backfilled.
+#
+# The percentile gate also keeps BOTH horizons alive (103 x 5d, 66 x 63d). The sigma gate did
+# not — at its best setting it fired 119 x 5d against 9 x 63d, which would have made a
+# "crowding monitor" into a short-term flow monitor, since accumulated 63d positioning is the
+# half that actually measures crowding.
+GATE_PERCENTILE = 99.5
 
 # Alert hysteresis. A 63d rolling sum on day t and t+1 shares 62 of 63 days, so z-scores are
 # near-identical day over day and one crowding episode would re-fire for weeks, permanently

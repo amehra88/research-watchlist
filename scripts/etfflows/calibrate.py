@@ -179,14 +179,20 @@ def main() -> int:
     # underlying distribution is this heavy-tailed.
     print("\nPERCENTILE GATE (distribution-free, no corroboration tier)")
     print("=" * 62)
-    print(f"{'pctile':>10} {'episodes':>9} {'per week':>9}")
+    print(f"{'pctile':>10} {'episodes':>9} {'per week':>9} {'5d':>6} {'63d':>6}")
     print("-" * 62)
     pct_results = []
-    for gate in (99.0, 99.3, 99.5, 99.7, 99.8, 99.9):
+    for gate in (98.0, 99.0, 99.3, 99.5, 99.7, 99.8, 99.9):
         fired_p, n_days = replay(dates, per, uni, 3.0, 2.0, args.max_alerts, pctile_gate=gate)
         weeks = max(1e-9, n_days / TRADING_DAYS_PER_WEEK)
+        # Split by horizon: the two are NOT interchangeable. A 63d rolling sum is far more
+        # autocorrelated than a 5d one, so the same percentile produces wildly different
+        # alert rates, and hysteresis then locks the slow series out for long stretches.
+        # If 63d never fires, this is a short-term flow monitor wearing a crowding label.
+        hz = Counter(a.horizon for _, a in fired_p)
         pct_results.append((gate, len(fired_p), len(fired_p) / weeks))
-        print(f"{gate:>10.2f} {len(fired_p):>9} {len(fired_p) / weeks:>9.2f}")
+        print(f"{gate:>10.2f} {len(fired_p):>9} {len(fired_p) / weeks:>9.2f} "
+              f"{hz.get(SHORT_HORIZON, 0):>6} {hz.get(LONG_HORIZON, 0):>6}")
     best_p = min(pct_results, key=lambda r: abs(r[2] - 1.0))
     print("-" * 62)
     print(f"closest to 1/week: GATE_PERCENTILE={best_p[0]} -> {best_p[2]:.2f}/week")
