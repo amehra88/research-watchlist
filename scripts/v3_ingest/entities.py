@@ -49,7 +49,7 @@ STATE = REPO_ROOT / "state" / "v3_ingest" / "entities.json"
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "chunking"))
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "v3_ingest"))
 
-from sec_filings import is_auth_failure, log, run_claude  # noqa: E402
+from sec_filings import is_fatal_run_failure, log, run_claude  # noqa: E402
 
 CONTENT_CAP = 14_000        # chars of chunk text sent to the extractor
 
@@ -297,8 +297,9 @@ def main() -> int:
         except Exception as e:  # noqa: BLE001
             failed += 1
             log(f"  [{i}/{len(rows)}] FAILED {row['chunk_id'][:50]}: {type(e).__name__}: {e}")
-            if is_auth_failure(e):
-                log("  auth failure — aborting run rather than burning the whole batch")
+            if is_fatal_run_failure(e):
+                log("  fatal (auth or usage limit) — aborting run rather than burning the "
+                    "whole batch; re-run later to resume from the checkpoint")
                 break
             continue
 

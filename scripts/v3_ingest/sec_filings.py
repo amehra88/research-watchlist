@@ -114,7 +114,7 @@ def run_claude(prompt: str) -> tuple[str, float]:
     if result.returncode != 0:
         # Auth/usage errors land on STDOUT (stderr is usually empty) — log both.
         raise RuntimeError(f"claude -p rc={result.returncode} "
-                           f"stderr={result.stderr[:200]!r} stdout={result.stdout[:300]!r}")
+                           f"stderr={result.stderr[:200]!r} stdout={result.stdout[:800]!r}")
     env = json.loads(result.stdout)
     if env.get("is_error"):
         raise RuntimeError(f"claude -p is_error: {str(env.get('result'))[:200]}")
@@ -612,6 +612,26 @@ THEME_RETRY_SLEEP_S = 5
 
 def is_auth_failure(exc: Exception) -> bool:
     return bool(_AUTH_FAIL_RE.search(str(exc)))
+
+
+# A usage/rate limit fails EVERY subsequent call until the window resets. On 2026-08-20 an
+# entity run did 19 successful calls, hit the limit at 19:13, then retried 288 more times
+# over 53 minutes — all failing, all pointless — and still logged DONE. Treat it like an
+# auth failure: abort the run, do not grind.
+_LIMIT_RE = re.compile(
+    r"usage limit|rate limit|rate_limit|quota|too many requests|429|"
+    r"limit reached|overloaded",
+    re.IGNORECASE,
+)
+
+
+def is_rate_limited(exc: Exception) -> bool:
+    return bool(_LIMIT_RE.search(str(exc)))
+
+
+def is_fatal_run_failure(exc: Exception) -> bool:
+    """Errors where continuing the batch cannot succeed: bad auth, or a usage limit."""
+    return is_auth_failure(exc) or is_rate_limited(exc)
 
 
 def extract_themes_with_retry(body_md: str, ticker: str, valid_themes: set[str],
