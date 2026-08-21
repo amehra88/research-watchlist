@@ -83,7 +83,6 @@ J = {
  "SPOT": (2,2,3,True,"AI DJ programs the stream; retention not revenue"),
  "ESTC": (2,2,2,True,"retrieval/vector infrastructure; 765-star MCP server"),
  "FIG": (2,2,2,True,"1,910-star MCP server; design corpus"),
- "S": (2,1,3,True,"CONFIRMED LOSING: CRWD 5x larger AND faster; S margin -350bps vs CRWD +150bps"),
  "RBLX": (2,2,3,False,"safety ML is a licence to operate; generative creation"),
  "OPEN": (3,2,2,False,"AVM works (GM 7.2->9.7%) but revenue -44% from peak; a rates trade, not an AI trade"),
  "NP": (3,2,2,False,"flood underwriting model is the company"),
@@ -145,7 +144,7 @@ LEADERSHIP_CHURN = {
 # 0 = structurally protected, 3 = a lab could ship this
 LAB_RISK = {
  "RELX":3,"TRI":3,"DOCU":3,"INOD":3,
- "MORN":2,"FDS":2,"SPGI":2,"WLY":2,"TEAM":2,"INTU":2,"CHRW":2,"WAY":2,"S":2,
+ "MORN":2,"FDS":2,"SPGI":2,"WLY":2,"TEAM":2,"INTU":2,"CHRW":2,"WAY":2,
  "FIG":2,"KVYO":2,"MCO":2,"IQV":1,"MDB":1,"ESTC":1,"NET":1,"PLTR":1,"APP":1,
  "UPST":1,"NU":1,"NP":1,"OPEN":1,"VRSK":1,"SPOT":1,"RBLX":1,"CLBT":1,"TEM":1,
  "QXO":1,"TYL":1,"TOST":1,"SYM":1,"CGNX":1,"MBLY":0,"AXON":0,"FICO":0,"EVLV":0,
@@ -171,7 +170,6 @@ MOMENTUM = {
  "NET":  (35.9, -600, 2, "+36% but GM 77.8->71.8%; growth is not the question, cost is"),
  "CRWD": (25.6, +150, 3, "+25.6% at 5x S's size AND margin expanding"),
  "MDB":  (25.2, +150, 3, "+25.2% with GM 70.6->72.2%"),
- "S":    (20.8, -350, 1, "slower than a competitor 5x its size, margin -350bps"),
  "OPEN": (-44.0, +250, 0, "revenue -44% from peak; margin up only because it stopped buying"),
  "MBLY": (5.0, -240, 0, "LTM +5.0%, GM 42.9% = series LOW. Competition confirmed"),
 }
@@ -260,9 +258,24 @@ def main():
         flywheel = 3.0 if tk in LABEL_FLYWHEEL else 0.0
         lab = -1.8 * LAB_RISK.get(tk, 1)
         mom = MOMENTUM.get(tk)
-        # centred on 1.5 so a measured-but-mediocre name is penalised and an
-        # unmeasured name is neutral -- never punish a company for missing data
-        momentum = (mom[2] - 1.5) * 1.5 if mom else 0.0
+        # MOMENTUM IS REPORTED, NOT SCORED (reverted 2026-08-20 after the operator
+        # asked, honestly, whether it was relevant. It was not).
+        #
+        # Empirically it barely moved anything: max 4 places, only 2 of 61 names
+        # moved more than 3, most moves were +/-1 displacement from other names.
+        #
+        # Conceptually it was worse than useless -- it was WRONG. This ranking
+        # answers "how AI-forward is this company". Momentum answers "is this
+        # business winning". Those are different questions, and the scorecard's
+        # own stated rule is to grade centrality and business quality SEPARATELY
+        # because they diverge. Folding momentum in violated that rule, partially
+        # double-counted (if the AI works, growth follows), and penalised exactly
+        # the pre-revenue names -- AUR, KDK, RXRX -- whose entire thesis is
+        # forward-looking. A backward-looking axis cannot judge those.
+        #
+        # The value of the MBLY exercise was the EVIDENCE, not the axis. So the
+        # evidence stays visible on every row and the reader weights it.
+        momentum = 0.0
         churn = -2.0 if tk in LEADERSHIP_CHURN else 0.0
 
         rows.append({"ticker": tk,

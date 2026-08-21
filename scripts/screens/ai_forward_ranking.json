@@ -85,23 +85,6 @@
   "contradiction": ""
  },
  {
-  "ticker": "IOT",
-  "score": 91.4,
-  "momentum": "+30.5% YoY, GM ~75.4%; 7 straight sequential gains",
-  "lab_risk": 1,
-  "ml": 3,
-  "credibility": "",
-  "flywheel": "",
-  "churn": "",
-  "thesis": 90.9,
-  "corroboration": 0.0,
-  "centrality": 4,
-  "product": 3,
-  "basis": "AI dash cams: on-device CV makes the safety determination; fleet is customer-funded",
-  "evidence": "not developer-facing",
-  "contradiction": ""
- },
- {
   "ticker": "HTFL",
   "score": 90.9,
   "momentum": "",
@@ -170,20 +153,20 @@
   "contradiction": ""
  },
  {
-  "ticker": "CRWD",
-  "score": 86.6,
-  "momentum": "+25.6% at 5x S's size AND margin expanding",
+  "ticker": "IOT",
+  "score": 89.1,
+  "momentum": "+30.5% YoY, GM ~75.4%; 7 straight sequential gains",
   "lab_risk": 1,
   "ml": 3,
   "credibility": "",
-  "flywheel": "OverWatch/Falcon Complete analysts label every investigated intrusion",
-  "churn": "CTO departed 2026 -- watch whether the detection-engineering bench holds",
-  "thesis": 81.8,
-  "corroboration": 3.3,
-  "centrality": 3,
+  "flywheel": "",
+  "churn": "",
+  "thesis": 90.9,
+  "corroboration": 0.0,
+  "centrality": 4,
   "product": 3,
-  "basis": "services drag sits in COGS at ~75% GM and margin STILL expands -- flywheel pays for itself",
-  "evidence": "filing-lang 2; gh-traction 10.0; blog-operator 0",
+  "basis": "AI dash cams: on-device CV makes the safety determination; fleet is customer-funded",
+  "evidence": "not developer-facing",
   "contradiction": ""
  },
  {
@@ -218,6 +201,23 @@
   "product": 3,
   "basis": "ontology is the scarce asset LLMs need to ACT; very few have solved it",
   "evidence": "gh-traction 4.0; blog-operator 4",
+  "contradiction": ""
+ },
+ {
+  "ticker": "CRWD",
+  "score": 84.3,
+  "momentum": "+25.6% at 5x S's size AND margin expanding",
+  "lab_risk": 1,
+  "ml": 3,
+  "credibility": "",
+  "flywheel": "OverWatch/Falcon Complete analysts label every investigated intrusion",
+  "churn": "CTO departed 2026 -- watch whether the detection-engineering bench holds",
+  "thesis": 81.8,
+  "corroboration": 3.3,
+  "centrality": 3,
+  "product": 3,
+  "basis": "services drag sits in COGS at ~75% GM and margin STILL expands -- flywheel pays for itself",
+  "evidence": "filing-lang 2; gh-traction 10.0; blog-operator 0",
   "contradiction": ""
  },
  {
@@ -307,7 +307,7 @@
  },
  {
   "ticker": "NET",
-  "score": 76.7,
+  "score": 75.9,
   "momentum": "+36% but GM 77.8->71.8%; growth is not the question, cost is",
   "lab_risk": 1,
   "ml": 3,
@@ -375,7 +375,7 @@
  },
  {
   "ticker": "MBLY",
-  "score": 70.5,
+  "score": 72.7,
   "momentum": "LTM +5.0%, GM 42.9% = series LOW. Competition confirmed",
   "lab_risk": 0,
   "ml": 3,
@@ -388,23 +388,6 @@
   "product": 2,
   "basis": "perception across an OEM-funded fleet",
   "evidence": "not developer-facing",
-  "contradiction": ""
- },
- {
-  "ticker": "MDB",
-  "score": 67.7,
-  "momentum": "+25.2% with GM 70.6->72.2%",
-  "lab_risk": 1,
-  "ml": 2,
-  "credibility": "",
-  "flywheel": "",
-  "churn": "",
-  "thesis": 63.6,
-  "corroboration": 3.6,
-  "centrality": 3,
-  "product": 2,
-  "basis": "vector search; strongest operator-register blog by far",
-  "evidence": "filing-lang 1; gh-traction 2.2; blog-operator 13",
   "contradiction": ""
  },
  {
@@ -439,6 +422,23 @@
   "product": 3,
   "basis": "same as RELX, narrower",
   "evidence": "developer-facing, no data collected",
+  "contradiction": ""
+ },
+ {
+  "ticker": "MDB",
+  "score": 65.4,
+  "momentum": "+25.2% with GM 70.6->72.2%",
+  "lab_risk": 1,
+  "ml": 2,
+  "credibility": "",
+  "flywheel": "",
+  "churn": "",
+  "thesis": 63.6,
+  "corroboration": 3.6,
+  "centrality": 3,
+  "product": 2,
+  "basis": "vector search; strongest operator-register blog by far",
+  "evidence": "filing-lang 1; gh-traction 2.2; blog-operator 13",
   "contradiction": ""
  },
  {
@@ -510,6 +510,23 @@
   "contradiction": ""
  },
  {
+  "ticker": "OPEN",
+  "score": 63.0,
+  "momentum": "revenue -44% from peak; margin up only because it stopped buying",
+  "lab_risk": 1,
+  "ml": 2,
+  "credibility": "",
+  "flywheel": "",
+  "churn": "",
+  "thesis": 63.6,
+  "corroboration": 1.2,
+  "centrality": 3,
+  "product": 2,
+  "basis": "AVM works (GM 7.2->9.7%) but revenue -44% from peak; a rates trade, not an AI trade",
+  "evidence": "filing-lang 3",
+  "contradiction": ""
+ },
+ {
   "ticker": "SPGI",
   "score": 62.5,
   "momentum": "",
@@ -575,23 +592,6 @@
   "product": 2,
   "basis": "safety ML is a licence to operate; generative creation",
   "evidence": "not developer-facing",
-  "contradiction": ""
- },
- {
-  "ticker": "OPEN",
-  "score": 60.8,
-  "momentum": "revenue -44% from peak; margin up only because it stopped buying",
-  "lab_risk": 1,
-  "ml": 2,
-  "credibility": "",
-  "flywheel": "",
-  "churn": "",
-  "thesis": 63.6,
-  "corroboration": 1.2,
-  "centrality": 3,
-  "product": 2,
-  "basis": "AVM works (GM 7.2->9.7%) but revenue -44% from peak; a rates trade, not an AI trade",
-  "evidence": "filing-lang 3",
   "contradiction": ""
  },
  {
@@ -847,23 +847,6 @@
   "product": 2,
   "basis": "owns returns and ledgers; attacks the services line",
   "evidence": "not developer-facing",
-  "contradiction": ""
- },
- {
-  "ticker": "S",
-  "score": 50.6,
-  "momentum": "slower than a competitor 5x its size, margin -350bps",
-  "lab_risk": 2,
-  "ml": 3,
-  "credibility": "",
-  "flywheel": "",
-  "churn": "",
-  "thesis": 54.5,
-  "corroboration": 0.4,
-  "centrality": 2,
-  "product": 1,
-  "basis": "CONFIRMED LOSING: CRWD 5x larger AND faster; S margin -350bps vs CRWD +150bps",
-  "evidence": "filing-lang 1; gh-traction 0.0",
   "contradiction": ""
  },
  {
