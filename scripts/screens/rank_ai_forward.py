@@ -123,6 +123,35 @@ LEADERSHIP_CHURN = {
     "CRWD": "CTO departed 2026 -- watch whether the detection-engineering bench holds",
 }
 
+# LAB ENCROACHMENT RISK (operator 2026-08-20: "I don't trust Claude not to compete
+# with them in time"). The deepest risk to this entire thesis. Frontier labs are
+# moving up the stack, and an application-layer company whose only asset is a
+# licensed corpus plus a good prompt is a feature waiting to be shipped.
+#
+# The test is NOT capability -- assume the labs can do the reasoning. The test is:
+# WHAT DOES THIS COMPANY HAVE THAT A LAB CANNOT ACQUIRE BY WRITING A CHECK OR
+# SHIPPING A FEATURE?
+#
+#   Cannot be bought: FDA clearance and reimbursement codes (labs will not run
+#   clinical trials); physical data-collection fleets; a regulated balance sheet;
+#   government procurement and evidentiary standards; distribution to buyers who
+#   will never touch a chat box.
+#
+#   Can be taken: anything that is text-in / text-out over a corpus the lab can
+#   license on the same terms you did. Legal research, contract review, financial
+#   summarisation, generic enterprise search.
+#
+# 0 = structurally protected, 3 = a lab could ship this
+LAB_RISK = {
+ "RELX":3,"TRI":3,"DOCU":3,"INOD":3,
+ "MORN":2,"FDS":2,"SPGI":2,"WLY":2,"TEAM":2,"INTU":2,"CHRW":2,"WAY":2,"S":2,
+ "FIG":2,"KVYO":2,"MCO":2,"IQV":1,"MDB":1,"ESTC":1,"NET":1,"PLTR":1,"APP":1,
+ "UPST":1,"NU":1,"NP":1,"OPEN":1,"VRSK":1,"SPOT":1,"RBLX":1,"CLBT":1,"TEM":1,
+ "QXO":1,"TYL":1,"TOST":1,"SYM":1,"CGNX":1,"MBLY":0,"AXON":0,"FICO":0,"EVLV":0,
+ "IRTC":0,"HTFL":0,"GH":0,"NTRA":0,"ADPT":0,"RDNT":0,"GEHC":0,"ISRG":0,
+ "DE":0,"TSLA":0,"AUR":0,"KDK":0,"RXRX":0,"PL":0,"HNGE":0,"V":0,"MA":0,"SHOP":1,
+}
+
 # (multiplier, reason). Efficacy contested by a regulator or independent testing.
 CREDIBILITY = {
     "EVLV": (0.85, "FTC settlement re detection-efficacy claims; independent tests missed knives"),
@@ -205,10 +234,12 @@ def main():
         cred = CREDIBILITY.get(tk)
         mult = cred[0] if cred else 1.0
         flywheel = 3.0 if tk in LABEL_FLYWHEEL else 0.0
+        lab = -1.8 * LAB_RISK.get(tk, 1)
         churn = -2.0 if tk in LEADERSHIP_CHURN else 0.0
 
         rows.append({"ticker": tk,
-                     "score": round((thesis + corrob + flywheel + churn) * mult, 1),
+                     "score": round((thesis + corrob + flywheel + churn + lab) * mult, 1),
+                     "lab_risk": LAB_RISK.get(tk, 1),
                      "ml": ml, "credibility": (cred[1] if cred else ""),
                      "flywheel": LABEL_FLYWHEEL.get(tk, ""),
                      "churn": LEADERSHIP_CHURN.get(tk, ""),
@@ -228,6 +259,8 @@ def main():
             flag += "  +label flywheel"
         if r["churn"]:
             flag += "  !! leadership churn"
+        if r["lab_risk"] >= 2:
+            flag += "  !! lab-encroachment %d/3" % r["lab_risk"]
         print("| %d | %s | %s | %d/5 | %d/3 | %d/3 | %s%s | %s |" % (
             i, r["ticker"], r["score"], r["centrality"], r["product"], r["ml"],
             r["evidence"], flag, r["basis"]))
