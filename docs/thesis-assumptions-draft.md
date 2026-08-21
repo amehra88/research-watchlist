@@ -119,6 +119,46 @@ problems disclosed; Chinese vendors competing on assembly/price rather than comp
   at Sugar Land, Texas via proprietary MBE + MOCVD, and treats that as a competitive claim.
   That is the benchmark a Chinese vendor would have to meet.
 
+### `chinese_laser_capability` — OPERATOR POSITION, 2026-08-21
+**Status: OPEN QUESTION, monitored — not resolved in either direction.** Operator: *"its an
+open question that we need to continue to monitor, set against limited insider selling at LITE
+and COHR, and a very robust demand environment and commentary from their most recent earnings
+calls."*
+
+So the Chinese threat is live and unresolved, but weighed against three counterweights. Two of
+the three were VERIFIED with data on 2026-08-21 rather than accepted on assertion:
+
+**1. Limited insider selling — VERIFIED (InsiderScore, 6 months to 2026-08-21).**
+Gross figures look heavy: LITE 32 sells / 0 buys / -$46.7M, COHR 21 sells / 0 buys / -$7.0M.
+But excluding 10b5-1 plan sales, DISCRETIONARY selling is small:
+  LITE  2 sales,  8,454 sh,  $7.5M   (~84% of the gross was scheduled 10b5-1)
+  COHR  1 sale,   3,911 sh,  $0.94M  (~87% scheduled; ONE discretionary sale in six months)
+The operator's read is correct and the gross number is the misleading one. **The 10b5-1 split
+is the analytically load-bearing distinction — always exclude plan sales before reading insider
+behaviour as signal.**
+
+**2. Robust demand — VERIFIED from the companies' own filings.**
+COHR 2026-08-14: *"We continue to experience continued strong demand in our Datacenter and
+Communications markets... increasing investments by hyperscale and other cloud providers in AI
+datacenter infrastructures have significantly boosted demand for our datacenter transceivers"*;
+elevated ZR/ZR+ demand; actively investing in manufacturing capacity.
+LITE 2026-08-17: *"AI/ML has caused a dramatic surge in the growing demands on data networking
+in cloud data centers."*
+
+**3. Recent earnings-call commentary** — same source as (2); both reported within the fortnight.
+
+**How to hold this:** Chinese capacity/quality evidence does NOT by itself move the theses. It
+is weighed against insider behaviour and the demand environment. A downgrade wants Chinese
+progress AND at least one counterweight breaking — discretionary insider selling picking up,
+or demand commentary softening. Track the counterweights as first-class signals, not as
+background.
+
+**Counter-nuance found while verifying:** LITE's own risk factors list *"higher tariffs and
+other trade restrictions between the U.S. and other countries, including China and Thailand"*
+as a risk TO LITE. Its manufacturing footprint is in Asia, so a trade-restriction regime is
+not purely a shelter — it is partly an exposure. This cuts against reading `policy_shelter` as
+one-directionally favourable even if it does arrive.
+
 ### `policy_shelter` — WATCH ITEM, NOT AN ASSUMPTION (revised 2026-08-21)
 **Operator, 2026-08-21:** *"partially right as its still debated and the policy has not come
 out yet and is unlikely in the next 12 months."*
