@@ -61,42 +61,57 @@ customer moving volume to a Chinese supplier.
 Post-II-VI/Finisar balance-sheet leverage is a watch-item"*.
 **Challenged by:** leverage flat or rising; refinancing at worse terms; FCF miss.
 
-### `policy_shelter` — ANSWERED BY OPERATOR 2026-08-10
-**Statement:** Chinese optical vendors compete on product and cost, but US policy limits their
-ability to sell China-manufactured product into US datacenters, so their capacity and price
-position does not translate into share against COHR/LITE in the accounts that matter.
-**Derived from:** operator, 2026-08-10 — *"i think cohr and lite do have competition but not
-clear that us govt will let them keep competing with products made in china."* This resolves
-the earlier [GAP]: the theses were not silent on Chinese competition through oversight, they
-rested on an unstated policy premise.
-**Challenged by:** evidence that Chinese vendors already supply US hyperscalers directly;
-absence of any optical-specific restriction (Section 889 / FCC Covered List / ICTS reach
-transceivers?); Chinese vendors manufacturing outside China (Thailand, Malaysia, Vietnam) to
-sidestep origin rules; hyperscalers qualifying them for non-US regions and then extending.
-**Confirmed by:** an optical-specific rule or procurement restriction; hyperscalers stating a
-non-China sourcing requirement; Chinese vendor disclosure of a US revenue ceiling.
+### `chinese_laser_capability` — THE CRUX (operator, 2026-08-21)
+**Statement:** Chinese optical vendors cannot yet manufacture high-quality lasers (InP/EML)
+at high yield, and that manufacturing gap — not policy — is what limits their share gain
+against COHR and LITE.
+**Derived from:** operator, 2026-08-21 — *"The real thing we should continue to monitor is
+whether the chinese companies can garner more marketshare and manufacture high quality lasers
+with high yields and high quality. that's the real concern."*
+**SHARED WITH LITE.** This is the same question underneath COHR's `vertical_integration_moat`
+and LITE's `eml_laser_supply_position`: COHR's moat IS in-house InP laser manufacture, and
+LITE's position IS being the merchant laser supplier. Chinese laser parity erodes both at
+once. Track it as ONE assumption, not two — a single piece of evidence moves both names.
+**Challenged by:** a Chinese vendor disclosing in-house laser/EML chip production at scale;
+published or implied yield improvement; a Chinese module maker shifting from imported to
+domestic laser chips; hyperscaler qualification of a Chinese-laser-based module; share gain
+at 800G/1.6T sustained with margin (price-cutting alone is not capability).
+**Confirmed by:** continued external chip sourcing by Chinese module makers; yield or quality
+problems disclosed; Chinese vendors competing on assembly/price rather than component tech.
 
-**EVIDENCE STATUS: essentially none in the corpus (measured 2026-08-10).** A tight probe for a
-restriction verb near transceiver/optical/photonic returned 25 documents whose top hits are
-FALSE POSITIVES (AAOI capex commentary). 136 documents mention Section 889 / Covered List /
-Entity List and 1,102 mention tariffs, but these are overwhelmingly generic SEC risk-factor
-boilerplate, not optical-specific rules. **This assumption is currently unfalsifiable from
-what we hold** — that is a coverage gap to close, not a reason for confidence.
+**EVIDENCE STATUS: one real data point FOR the assumption, and a coverage gap.**
+- **FOR:** Innolight's FY2025 annual report describes its key raw materials as externally
+  sourced optical components and IC chips, with NO in-house chip or laser claim
+  (`高速光模块产品所需原材料主要包括光器件、集成电路芯片以及结构件等`). The largest Chinese
+  transceiver maker is a module assembler that BUYS its lasers — which is exactly the gap
+  this assumption asserts, and is also a point in favour of COHR's moat.
+- **AGAINST / unresolved:** Innolight's 1.6T runs a dual EML + silicon-photonics platform,
+  and SiPh is offered as an EML alternative at 800G. Silicon photonics is a route AROUND the
+  InP laser bottleneck, not through it — capability parity may not be required.
+- **GAP:** the corpus holds nothing on Chinese laser yield or quality. Every "yield" hit is
+  Samsung/Micron memory. **Accelink (002281-CN) is the name to watch** — unlike Innolight it
+  has in-house chip capability, so its filings are where domestic laser capability would show
+  up first. The CNINFO channel covers it.
+- **Mirror evidence already held:** AAOI states it manufactures ALL laser chips exclusively
+  at Sugar Land, Texas via proprietary MBE + MOCVD, and treats that as a competitive claim.
+  That is the benchmark a Chinese vendor would have to meet.
 
-**One counter-data-point already in hand.** Innolight's own FY2025 annual report (CNINFO,
-extracted 2026-08-10) states it has *"long-term stable partnerships with globally leading
-cloud data center customers"* via *"primarily a direct sales model"* (`与全球领先的云数据中心客户
-…形成了长期稳定的合作关系；以直接销售模式为主`). If those customers include US hyperscalers,
-they are already inside the accounts the shelter is assumed to protect. Worth resolving
-directly — Innolight's filings disclose customer concentration and geographic revenue split.
+### `policy_shelter` — WATCH ITEM, NOT AN ASSUMPTION (revised 2026-08-21)
+**Operator, 2026-08-21:** *"partially right as its still debated and the policy has not come
+out yet and is unlikely in the next 12 months."*
 
-**SECOND-ORDER POINT the assumption should not obscure:** a policy shelter is not the same as
-a COHR/LITE win. It walls off *China-manufactured* product, which equally advantages AAOI
-(US), Fabrinet (Thailand) and any non-China supply. AAOI's own filings show capex "materially
-higher" through at least end-2027 expanding 400G/800G/1.6T capacity — inside the shelter. So
-the shelter, if real, redirects competition rather than removing it, and COHR/LITE's
-`supply_tightness` could still erode from non-China capacity. Test the shelter and the
-tightness assumption separately.
+So this is explicitly **NOT load-bearing**. It is a low-probability, non-near-term option on
+the upside, and the theses must stand without it. Recorded here so that (a) nobody later
+mistakes it for a supporting pillar, and (b) if a rule does emerge it is already framed.
+
+**Would become relevant if:** an optical-specific restriction is actually proposed (Section
+889 / FCC Covered List / ICTS reaching transceivers); a hyperscaler states a non-China
+sourcing requirement.
+**Horizon:** unlikely before 2027-08. Re-examine then, or on a concrete rulemaking signal.
+**Note if it ever does land:** it walls off *China-manufactured* product, which equally
+advantages AAOI (US) and Fabrinet (Thailand). AAOI's filings show capex materially higher
+through end-2027 expanding 400G/800G/1.6T capacity inside that shelter. It would redirect
+competition, not remove it.
 
 ---
 
@@ -141,8 +156,11 @@ temper"*.
 Cloud Light integration"*.
 **Challenged by:** integration problems; Cloud Light customer losses.
 
-### **[GAP] — same omission as COHR**
-No assumption covers Chinese competition.
+### `chinese_laser_capability` — SHARED WITH COHR
+See the COHR section. LITE's exposure is the direct one: it IS the merchant EML/InP supplier,
+so Chinese laser parity attacks its position without needing to beat COHR on modules. The
+silicon-photonics route matters even more here — SiPh at 800G/1.6T reduces EML content per
+module regardless of who makes the laser.
 
 ---
 
@@ -168,8 +186,9 @@ to `challenged`, but a human decides. Nothing auto-downgrades a thesis.
 
 ## What I need from you
 
-1. **The [GAP] on Chinese competition** — deliberate judgement or omission? Everything
-   downstream depends on this.
+1. ~~The [GAP] on Chinese competition~~ **ANSWERED 2026-08-21.** Not policy — manufacturing.
+   The crux is whether Chinese vendors reach high-yield, high-quality laser production. Now
+   captured as `chinese_laser_capability`, shared across COHR and LITE.
 2. **Whether these restatements are faithful.** I derived them from your notes; if any
    misrepresents what you actually believe, it will generate wrong signals forever.
 3. **The COHR/LITE tension** — should COHR's vertical integration be an explicit bear
