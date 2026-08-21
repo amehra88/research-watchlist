@@ -476,6 +476,31 @@ def note_path(c, date_str):
     return os.path.join(NOTES_NEWS_DIR, f"{date_str}-{_slug(c.headline)}-{c.hash[:8]}.md")
 
 
+def judged_item_hashes(clusters, classifications) -> set:
+    """Item hashes belonging to clusters that actually received a classifier verdict.
+
+    This is the ledger's write scope. The ledger suppresses an item from the NEXT run's pool, so
+    marking something the pipeline never judged loses it outright — it reaches neither the digest
+    nor notes/news + pg. On 2026-08-21 the 06:45 run 429'd on its first classify call and, writing
+    `kept` unconditionally, marked 558 stories surfaced while delivering zero; recovery meant
+    hand-deleting them before a re-run would show anything.
+
+    Verdict-scoped, not delivery-scoped, is the right line: a story classified and filed as a
+    headline-only note WAS processed even though the cap kept it out of the email. Items left
+    unclassified — by a 429, by the MAX_CLUSTERS backstop, or by a batch that never returned —
+    stay unmarked and get another chance."""
+    return {it["_h"] for c in clusters if c.hash in classifications for it in c.items}
+
+
+def should_send_email(survivors, unclassified, unsummarized, ranked_ok) -> bool:
+    """An empty digest is worth sending only when emptiness is a FINDING, never when it is a
+    FAILURE. 'Nothing cleared the bar today' is information; a 0-story digest carrying only
+    warning banners is noise stacked on the alert the non-zero exit already sends (2026-08-21)."""
+    if survivors:
+        return True
+    return not (unclassified or unsummarized or not ranked_ok)
+
+
 def file_notes(summarized, unsummarized, date_str):
     """Write + ingest one note per survivor. Returns (n_written, n_ingested, n_headline_only).
 
@@ -694,15 +719,25 @@ def main():
             logger.warning("could not write report_news: %s", e)
 
     # ── ledger write: premarket/postmarket only (brief is read-only; dry-run never writes) ──
+    # Scope is verdict-based — see judged_item_hashes(). Boilerplate dropped by pre_filter stays
+    # unmarked too; re-dropping it next run is free (deterministic regex, never reaches the LLM).
     if not args.dry_run and mode in ("premarket", "postmarket"):
+        judged = judged_item_hashes(clusters, classifications)
         for it in kept:
             h = it["_h"]
+            if h not in judged:
+                continue
             if h not in seen:
                 seen[h] = {"first_surfaced_ts": now, "tickers": [it["ticker"]]}
             elif it["ticker"] not in seen[h]["tickers"]:
                 seen[h]["tickers"].append(it["ticker"])
-        rewrite_ledger(seen)
-        logger.info("ledger updated: %d entries", len(seen))
+        if judged:
+            rewrite_ledger(seen)
+            logger.info("ledger updated: %d entries (%d of %d kept item(s) had a verdict)",
+                        len(seen), len(judged), len(kept))
+        else:
+            logger.error("ledger NOT written: 0 clusters classified this run — marking items "
+                         "surfaced would drop them from the next run's pool entirely")
 
     logger.info("run done: mode=%s stories=%d/%d survivors unclassified=%d google_down=%s "
                 "factset_down=%s suppressed=%d cost=$%.4f (classify=$%.4f rank=$%.4f "
@@ -714,11 +749,17 @@ def main():
     if args.dry_run:
         print(section)
     elif mode in ("premarket", "postmarket"):
-        label = "Pre-market" if mode == "premarket" else "Post-market"
-        subject = f"{label} news digest — {date_str}"
-        from newsdigest.email_send import send
-        status = send(subject, section)
-        logger.info("email sent (status %s)", status)
+        if not should_send_email(survivors, unclassified, unsummarized, ranked_ok):
+            logger.error("email SUPPRESSED: 0 stories and the run failed (unclassified=%d "
+                         "unsummarized=%d ranked_ok=%s) — an empty digest would add nothing to the "
+                         "failure alert; artifact saved at %s",
+                         len(unclassified), len(unsummarized), ranked_ok, artifact)
+        else:
+            label = "Pre-market" if mode == "premarket" else "Post-market"
+            subject = f"{label} news digest — {date_str}"
+            from newsdigest.email_send import send
+            status = send(subject, section)
+            logger.info("email sent (status %s)", status)
     else:  # brief — no email; report_news already written
         logger.info("brief mode: no email; report_news is the deliverable")
 
