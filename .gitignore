@@ -59,6 +59,12 @@ state/news_verdict_cache_*.json
 logs/news_digest_*.txt
 # v3 news-flow brief section for combine_and_send (ephemeral daily)
 logs/report_news_*.txt
+# ETF flow monitor's two digest sections — same class of artifact as report_news above:
+# regenerated every morning by `etf_flows.py --report`, consumed once by the email, and
+# reproducible from state/etf_flows.jsonl. auto_sync had started committing one pair per
+# day. The markdown note under notes/flows/ IS tracked — that is research content, one file
+# per flow date, and belongs in the vault.
+logs/report_etfflows_*.txt
 
 # Chunk store — embeddings + caches + DERIVED metrics are regenerable; ignore the
 # dir's contents but TRACK state/chunk_store/factset_raw/ (Store B source-of-truth:
