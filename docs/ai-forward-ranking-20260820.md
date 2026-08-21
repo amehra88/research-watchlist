@@ -141,66 +141,66 @@ Digital forensics for law enforcement: extracts and analyses data from seized de
 
 User-generated 3D gaming platform. Real-time safety classification across voice and text involving minors is a licence to operate rather than a feature, and generative creation tools lower the skill floor for the creator base that supplies all its content.
 
-**35. S** — 60.4  ·  centrality 2/5, product 2/3  ·  _filing-lang 1; gh-traction 0.0_
-
-Endpoint security. Behavioural detection and autonomous alert triage attack the security-analyst labour line, which is the right thesis — but it competes head-on with CrowdStrike and is losing.
-
-**36. CHRW** — 60.0  ·  centrality 3/5, product 2/3  ·  _not developer-facing_
+**35. CHRW** — 60.0  ·  centrality 3/5, product 2/3  ·  _not developer-facing_
 
 Freight brokerage matching shippers' loads to carriers' trucks. It now parses quote requests, prices lanes and matches carriers automatically — and uniquely on this list, the labour substitution is publicly auditable through disclosed shipments-per-employee.
 
 
 ## Tier 4 — AI real but not load-bearing
 
-**37. ISRG** — 57.9  ·  centrality 3/5, product 1/3  ·  _filing-lang 1_
+**36. ISRG** — 57.9  ·  centrality 3/5, product 1/3  ·  _filing-lang 1_
 
 Makes the da Vinci surgical robots. It owns the largest surgical video corpus paired with synchronised instrument telemetry — the best unconverted dataset in med-tech — with no meaningful AI revenue yet; own it for the robot and hold the corpus as a free option.
 
-**38. SHOP** — 56.8 **[BCTK]**  ·  centrality 2/5, product 2/3  ·  _filing-lang 2; AI officer 4; gh-traction 6.4; blog-operator 0_
+**37. SHOP** — 56.8 **[BCTK]**  ·  centrality 2/5, product 2/3  ·  _filing-lang 2; AI officer 4; gh-traction 6.4; blog-operator 0_
 
-**39. ESTC** — 55.6  ·  centrality 2/5, product 2/3  ·  _gh-traction 10.0; blog-operator 1_
+**38. ESTC** — 55.6  ·  centrality 2/5, product 2/3  ·  _gh-traction 10.0; blog-operator 1_
 
 Search and observability, built on Elasticsearch with vector search. It is retrieval infrastructure sitting underneath RAG applications, with a 765-star MCP server confirming a real developer surface.
 
-**40. FDS** — 55.1  ·  centrality 2/5, product 2/3  ·  _filing-lang 4; AI officer 8; gh-traction 0.0_ · ⚠ claims > traction
+**39. FDS** — 55.1  ·  centrality 2/5, product 2/3  ·  _filing-lang 4; AI officer 8; gh-traction 0.0_ · ⚠ claims > traction
 
 Financial data and analytics for institutional investors. It has a Chief AI Officer and is exposing its corpus through MCP so agents can query it directly; it clears all three filing screens, and its claims-exceed-traction flag is a false positive — the MCP server is real, just not on public GitHub.
 
-**41. FIG** — 54.7  ·  centrality 2/5, product 2/3  ·  _filing-lang 3; gh-traction 9.3_
+**40. FIG** — 54.7  ·  centrality 2/5, product 2/3  ·  _filing-lang 3; gh-traction 9.3_
 
 Collaborative interface design software. It holds design files as structured data rather than pixels, which is exactly what makes generative design and its 1,910-star MCP server function.
 
-**42. V** — 54.5  ·  centrality 2/5, product 2/3  ·  _gh-traction 0.0_
+**41. V** — 54.5  ·  centrality 2/5, product 2/3  ·  _gh-traction 0.0_
 
 Global payment network. The transaction graph is among the most valuable proprietary behavioural datasets in finance and it is building an agentic-commerce surface — but the network survives entirely untouched without any model, so centrality is limited.
 
-**43. WLY** — 53.9  ·  centrality 3/5, product 2/3  ·  _filing-lang 5; AI officer 3_
+**42. WLY** — 53.9  ·  centrality 3/5, product 2/3  ·  _filing-lang 5; AI officer 3_
 
 Academic and professional publishing. It licenses its scholarly corpus to model developers and is one of only five 10-K filers in fourteen months to use the phrase 'AI revenue' — a rare case of a company printing the number rather than gesturing at it.
 
-**44. NU** — 52.7  ·  centrality 2/5, product 2/3  ·  _not developer-facing_
+**43. NU** — 52.7  ·  centrality 2/5, product 2/3  ·  _not developer-facing_
 
 Latin American digital bank serving roughly 100m+ customers on an in-house core stack. It underwrites customers who have no bureau file using first-party behavioural data, so in a thin-file market it effectively *is* the bureau; operating expense per active customer is the falsifiable test.
 
-**45. WAY** — 52.7  ·  centrality 2/5, product 2/3  ·  _filing-lang 2; AI officer 3_
+**44. WAY** — 52.7  ·  centrality 2/5, product 2/3  ·  _filing-lang 2; AI officer 3_
 
 Healthcare payments and revenue-cycle software for providers. It predicts and prevents claim denials on a large proprietary claims corpus, attacking an administrative labour line rather than selling another seat.
 
-**46. VRSK** — 52.7  ·  centrality 2/5, product 2/3  ·  _not developer-facing_
+**45. VRSK** — 52.7  ·  centrality 2/5, product 2/3  ·  _not developer-facing_
 
 Insurance data and analytics. Its pooled claims data, contributed by competing carriers over decades, is a natural monopoly no entrant can recreate; the genuinely new part is computer vision on aerial property imagery replacing physical field inspection.
 
-**47. CGNX** — 52.7  ·  centrality 2/5, product 2/3  ·  _not developer-facing_
+**46. CGNX** — 52.7  ·  centrality 2/5, product 2/3  ·  _not developer-facing_
 
 Industrial machine vision for manufacturing inspection. Deep learning opened inspection tasks classical vision could never handle, but that capability is commoditising from above and the durable moat is optics and channel rather than data.
 
-**48. INOD** — 51.6  ·  centrality 3/5, product 2/3  ·  _filing-lang 6_ · ⚠ claims > traction
+**47. INOD** — 51.6  ·  centrality 3/5, product 2/3  ·  _filing-lang 6_ · ⚠ claims > traction
 
 Sells engineered training and evaluation data to frontier model developers. Be precise about what this is: a *supplier to* the application layer rather than a member of it, and since the underlying work is expert human labour, margin quality is the open question.
 
-**49. KVYO** — 51.3  ·  centrality 2/5, product 2/3  ·  _gh-traction 1.4; blog-operator 0_
+**48. KVYO** — 51.3  ·  centrality 2/5, product 2/3  ·  _gh-traction 1.4; blog-operator 0_
 
 Marketing automation for e-commerce, sitting directly above Shopify. It predicts per-shopper churn, next order date and lifetime value across many merchants, an aggregation no single store could achieve — though its repo traction is thin and it carries platform dependency.
+
+**49. S** — 51.3  ·  centrality 2/5, product 1/3  ·  _filing-lang 1; gh-traction 0.0_
+
+Endpoint security. Behavioural detection and autonomous alert triage attack the security-analyst labour line, which is the right thesis — but it competes head-on with CrowdStrike and is losing.
 
 **50. INTU** — 50.9  ·  centrality 2/5, product 2/3  ·  _not developer-facing_
 

@@ -187,7 +187,7 @@
   "corroboration": 3.3,
   "centrality": 3,
   "product": 3,
-  "basis": "detection ML + Charlotte; OverWatch analysts label every intrusion",
+  "basis": "services drag sits in COGS at ~75% GM and margin STILL expands -- flywheel pays for itself",
   "evidence": "filing-lang 2; gh-traction 10.0; blog-operator 0",
   "contradiction": ""
  },
@@ -475,7 +475,7 @@
   "corroboration": 1.2,
   "centrality": 3,
   "product": 2,
-  "basis": "the pricing model IS the business",
+  "basis": "AVM works (GM 7.2->9.7%) but revenue -44% from peak; a rates trade, not an AI trade",
   "evidence": "filing-lang 3",
   "contradiction": ""
  },
@@ -541,22 +541,6 @@
   "product": 2,
   "basis": "safety ML is a licence to operate; generative creation",
   "evidence": "not developer-facing",
-  "contradiction": ""
- },
- {
-  "ticker": "S",
-  "score": 60.4,
-  "lab_risk": 2,
-  "ml": 3,
-  "credibility": "",
-  "flywheel": "",
-  "churn": "",
-  "thesis": 63.6,
-  "corroboration": 0.4,
-  "centrality": 2,
-  "product": 2,
-  "basis": "AI-native detection; losing to CRWD",
-  "evidence": "filing-lang 1; gh-traction 0.0",
   "contradiction": ""
  },
  {
@@ -781,6 +765,22 @@
   "product": 2,
   "basis": "cross-merchant behavioral prediction; thin repo traction",
   "evidence": "gh-traction 1.4; blog-operator 0",
+  "contradiction": ""
+ },
+ {
+  "ticker": "S",
+  "score": 51.3,
+  "lab_risk": 2,
+  "ml": 3,
+  "credibility": "",
+  "flywheel": "",
+  "churn": "",
+  "thesis": 54.5,
+  "corroboration": 0.4,
+  "centrality": 2,
+  "product": 1,
+  "basis": "CONFIRMED LOSING: CRWD 5x larger AND faster; S margin -350bps vs CRWD +150bps",
+  "evidence": "filing-lang 1; gh-traction 0.0",
   "contradiction": ""
  },
  {
