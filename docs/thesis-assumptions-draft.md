@@ -48,12 +48,17 @@ one the 2026-07-30 Innolight Hong Kong listing (~$6.8-7B raised) bears on most d
 pluggable transceivers; slower 1.6T adoption than planned.
 **Confirmed by:** hyperscaler capex guides up; 1.6T design wins.
 
-### `customer_concentration_tolerable`
-**Statement:** Datacom customer concentration is a known risk but not thesis-breaking.
+### `customer_concentration_not_worsening`  *(CORRECTED 2026-08-21)*
+**Statement:** Datacom customer concentration exists and is already reflected in the
+distribution score of 4; the assumption is that it does not deteriorate from there.
 **Derived from:** `competitive_advantage.distribution: 4` — *"some customer concentration in
 datacom"*.
 **Challenged by:** a top customer qualifying a second source; concentration rising; a named
 customer moving volume to a Chinese supplier.
+**Correction note:** originally written as `customer_concentration_tolerable` — *"a known risk
+but not thesis-breaking"*. That was an over-read: the operator's note records concentration as
+a CAVEAT on the score, not a judgement that it is tolerable. The claim now asserts only what
+the score itself implies.
 
 ### `deleveraging_on_track`
 **Statement:** Post-II-VI/Finisar leverage continues to come down.
@@ -130,13 +135,18 @@ capability at 800G+; customers vertically integrating laser supply in-house (not
 are in partial conflict — COHR integrating laser supply in-house is bearish for LITE. Your
 notes score both at 4 without acknowledging the tension.
 
-### `component_not_systems_position`
-**Statement:** Being a component supplier rather than a systems vendor caps innovation
-scoring but is a stable position.
+### `component_tier_is_why_innovation_is_3`  *(CORRECTED 2026-08-21)*
+**Statement:** LITE sits at the component tier rather than the systems tier, and that — not a
+technology deficiency — is why innovation scores 3 rather than 4. The assumption is about the
+REASON for the score, and that the reason still holds.
 **Derived from:** `competitive_advantage.innovation_rate: 3` — *"strong laser/EML technology
 but more component than systems"*.
 **Challenged by:** margin compression at the component layer; module makers integrating
-backwards.
+backwards; LITE moving up-stack into systems (which would invalidate the rationale rather
+than the score).
+**Correction note:** originally written as *"caps innovation scoring but is a stable
+position"*. "Stable" appears nowhere in the operator's note — it converted a scoring rationale
+into a claim about durability that was never made.
 
 ### `datacom_recovery`
 **Statement:** The AI datacom cycle recovery continues, offsetting legacy weakness.
@@ -144,11 +154,17 @@ backwards.
 transceiver/EML demand"*.
 **Challenged by:** datacom order pauses; recovery stalling before telecom drag abates.
 
-### `telecom_drag_contained`
-**Statement:** Legacy telecom weakness is contained and does not offset datacom gains.
-**Derived from:** `potential_investor_interest: 4` — *"legacy-telecom-segment weakness ...
-temper"*.
+### `telecom_drag_no_worse`  *(CORRECTED 2026-08-21)*
+**Statement:** Legacy telecom weakness is ALREADY subtracting from the score — it is one of
+the two named reasons investor interest is capped at 4 rather than 5. The assumption is that
+it does not get worse, not that it is held at bay.
+**Derived from:** `potential_investor_interest: 4` — *"legacy-telecom-segment weakness and
+customer concentration temper"*.
 **Challenged by:** telecom declining faster than datacom grows; segment write-downs.
+**Correction note:** originally written as `telecom_drag_contained` — *"contained and does not
+offset datacom gains"*. That inverted the sense. "Tempers" means the drag is already being
+applied to the score; "contained" implied it was being kept from applying. Opposite readings,
+and they would have produced opposite signals from identical evidence.
 
 ### `cloud_light_integration`
 **Statement:** The Cloud Light acquisition integrates and contributes to the datacom ramp.
@@ -189,7 +205,11 @@ to `challenged`, but a human decides. Nothing auto-downgrades a thesis.
 1. ~~The [GAP] on Chinese competition~~ **ANSWERED 2026-08-21.** Not policy — manufacturing.
    The crux is whether Chinese vendors reach high-yield, high-quality laser production. Now
    captured as `chinese_laser_capability`, shared across COHR and LITE.
-2. **Whether these restatements are faithful.** I derived them from your notes; if any
-   misrepresents what you actually believe, it will generate wrong signals forever.
+2. ~~Whether these restatements are faithful.~~ **PARTLY RESOLVED 2026-08-21.** Three were
+   over-reads and have been corrected in place, each with a correction note: the two
+   concentration/telecom ones asserted judgements the notes never made, and
+   `telecom_drag_contained` actually INVERTED the sense of "tempers". Correction principle
+   applied throughout: claim only what the score itself implies, add no judgement. The
+   remaining eight still want a sanity check.
 3. **The COHR/LITE tension** — should COHR's vertical integration be an explicit bear
    input to LITE's thesis?
