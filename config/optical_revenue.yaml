@@ -51,8 +51,21 @@ companies:
     # A datacom/telecom split for LITE can only come from transcript commentary.
     # (Validation: disclosed FY26 total $3,014mn equals the sum of the four FactSet
     #  quarters below, so the quarterly series is sound.)
+    # Filings give NO market split (single segment since Q1 FY2026; ASC 606 disaggregation
+    # is Components/Systems only). Transcripts give a number but it should NOT be applied
+    # naively — checked 2026-08-21:
+    #   Analyst, Q4 FY2025 call: LITE's own OFC investor-briefing slide showed telecom and
+    #   datacom EACH at ~45% at a >$500mn/qtr revenue level.
+    #   BUT Wupen Yuen, LITE President of Cloud and Networking, same call: "the demand is
+    #   really mostly coming from the hyperscalers on the cloud. So even though the customers
+    #   are traditional telecom customers, but the source of demand really is on the cloud."
+    # So LITE's "telecom" bucket is substantially AI/cloud demand routed through telecom
+    # customers. Stripping it out as non-datacom would OVERSTATE the correction and understate
+    # LITE's AI exposure. Left unadjusted deliberately.
     purity: null
-    purity_status: not_disclosed
+    purity_status: disclosed_but_misleading
+    purity_note: "~45% datacom per OFC slide, but management states telecom demand is
+                  largely cloud-sourced; a naive split misrepresents the business"
     factset_id: LITE-US
     quarters: {2024-03-31: 366.5, 2024-06-30: 308.3, 2024-09-30: 336.9, 2024-12-31: 402.2,
                2025-03-31: 425.2, 2025-06-30: 480.7, 2025-09-30: 533.8, 2025-12-31: 665.5,
@@ -61,7 +74,14 @@ companies:
     name: Applied Optoelectronics
     bloc: US
     role: module_maker
-    purity: null        # datacom + CATV/broadband
+    # Disclosed on every earnings call. Q2 2025: "54% of revenue was from CATV products, 44%
+    # was from data center products, with the remaining 2% from FTTH, Telecom and other"
+    # (datacenter revenue $44.8mn). By May 2026 management: "Data center surpassed our cable
+    # TV business for the first time in a while." So purity runs ~44% and rising through 50%.
+    # Quarter-by-quarter figures are extractable from the calls; only these anchors recorded.
+    purity_anchors: {2025-06-30: 0.44, 2026-03-31: 0.50}
+    purity_status: disclosed_in_transcripts
+    purity_source: "AAOI Q2 2025 and Q1/Q2 2026 earnings calls (FactSet CallStreet)"
     factset_id: AAOI-US
     quarters: {2024-03-31: 40.7, 2024-06-30: 43.3, 2024-09-30: 65.2, 2024-12-31: 100.3,
                2025-03-31: 99.9, 2025-06-30: 103.0, 2025-09-30: 118.6, 2025-12-31: 134.3,
