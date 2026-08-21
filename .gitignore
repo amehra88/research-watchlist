@@ -81,6 +81,15 @@ state/transcripts/exchanges.jsonl
 state/transcripts/_progress.json
 state/transcripts/raw/
 
+# Evidence side (P3b) and the shared topic vocabulary (P2). Same reasoning as
+# above: bulk regenerable output, rebuilt by mdna_evidence.py / topic_map.py.
+# _candidates.json is the operator review queue — regenerated every run, so it
+# is working state rather than a record. auto_sync.py commits anything left
+# untracked here every 15 minutes, which is why these need to be listed before
+# either script is run for real.
+state/evidence/
+state/topics/
+
 # Obsidian per-device workspace state (don't sync between devices)
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
