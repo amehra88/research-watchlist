@@ -200,6 +200,16 @@ trusting the match. Two are names on this list, and both are true positives:
 - **ESTC** — CPO Ken Exner resigned June 2026, disclosed in the same 8-K as a restructuring
   plan. **#44 → #49.**
 
+Those two are the *complete* intersection: I checked all 27 departure companies against all 77
+names, not just the ones I expected. And the penalty is deliberately **flat** (−2.0 for both) —
+the churn axis has no severity tiers, so a co-founder leaving a pre-revenue autonomy company
+and a CPO leaving Elastic get the same four-place move. The qualitative note is carrying weight
+the score cannot. Don't read "#14 → #18" as the measure of the AUR event.
+
+One incidental find: **SOUN** (SoundHound AI) appears in the departures output and is *not* on
+the 77-name list at all. The negative screen surfaced a positive-screen candidate. It probably
+fails on scale, but that is the wider-net direction and worth a look.
+
 **Correction to my own diagnosis, which matters more than the fix.** I wrote above that the
 CrowdStrike miss was a phrase-matching failure. I checked, and it wasn't. CrowdStrike filed
 five Item 5.02 8-Ks in this window and **not one of them mentions "Chief Technology Officer"** —

@@ -1,5 +1,8 @@
-import json, sys, yaml
-sys.path.insert(0,'/root/research-watchlist/scripts/screens')
+import json, sys, os, datetime, yaml
+# Resolve alongside THIS file, not the absolute path to main. The hardcoded
+# /root/research-watchlist/scripts/screens meant a run from a worktree silently
+# imported main's company_notes and rendered stale write-ups over fresh scores.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from company_notes import NOTES
 w=yaml.safe_load(open('config/watchlist.yaml'))
 B={e['ticker'].upper() for e in w['tier_1_bctk'] if isinstance(e,dict) and e.get('ticker')}
@@ -45,5 +48,11 @@ L.append("- **⚠ claims > traction** marks names loud in filings and silent whe
 L.append("  would notice. For FDS this is a known false positive — its MCP server is real but not")
 L.append("  on public GitHub. For MORN it is not: 21 stars, 338 days since last push.")
 L.append("- Regenerate: `python3 scripts/screens/rank_ai_forward.py`\n")
-open('docs/ai-forward-ranking-20260820.md','w').write("\n".join(L))
-print("wrote docs/ai-forward-ranking-20260820.md")
+# Date-stamped like every other artifact in scripts/screens/. This was hardcoded to
+# 20260820 and silently overwrote that day's snapshot when re-run on the 21st -- the
+# method depends on dated snapshots staying comparable, so a fixed filename quietly
+# destroys the thing diff_screens.py exists to read.
+STAMP = os.environ.get("SCREEN_STAMP") or datetime.date.today().strftime("%Y%m%d")
+out = 'docs/ai-forward-ranking-%s.md' % STAMP
+open(out, 'w').write("\n".join(L))
+print("wrote %s" % out)
