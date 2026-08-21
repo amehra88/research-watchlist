@@ -54,11 +54,25 @@ STANDALONE_SIGMA = 3.0   # fires on its own
 CORROBORATED_SIGMA = 2.0 # fires only with corroboration (other horizon elevated, or divergence)
 MAX_ALERTS_PER_DAY = 6   # ranked by severity; truncation is REPORTED, never silent
 
+# GATE CHOICE. When True, a reading qualifies on its EMPIRICAL PERCENTILE rather than on a
+# robust-z threshold, and the corroboration tier is bypassed entirely.
+#
+# Why this exists: daily ETF flows are so fat-tailed that MAD-scaled sigma is not comparable
+# across funds or interpretable on its own — a real -7σ print is unremarkable. Calibration on
+# backfilled history also showed the two-tier design was not doing what it looked like:
+# essentially all corroborated alerts qualified via flow-vs-price divergence, which is close
+# to a coin flip, so the effective threshold was the LOWER number almost all the time and the
+# standalone value barely mattered. A percentile gate says the same thing for every fund
+# ("top X% of this ETF's own history for this horizon") and is self-calibrating.
+USE_PERCENTILE_GATE = True
+GATE_PERCENTILE = 99.5   # calibrated; see scripts/etfflows/calibrate.py
+
 # Alert hysteresis. A 63d rolling sum on day t and t+1 shares 62 of 63 days, so z-scores are
 # near-identical day over day and one crowding episode would re-fire for weeks, permanently
 # occupying the daily cap. Once a (ticker, horizon) fires it will not fire again until it has
 # first fallen back below RE_ARM_SIGMA. Calibration counts EPISODES, not alert-days.
 RE_ARM_SIGMA = 1.5
+RE_ARM_PERCENTILE = 90.0   # percentile-gate equivalent: re-arm once back inside 10th-90th
 ALERT_COOLDOWN_DAYS = 5
 
 # ── FactSet transport (mirrors scripts/newsdigest/factset_news.py) ────────────
@@ -75,7 +89,8 @@ __all__ = [
     "SHORT_HORIZON", "LONG_HORIZON", "HORIZONS", "EVENT_FLAG_HORIZON",
     "MAD_TO_SIGMA", "MAD_FLOOR_BPS", "MIN_BASELINE_OBS", "MIN_WINDOW_COVERAGE",
     "STANDALONE_SIGMA", "CORROBORATED_SIGMA", "MAX_ALERTS_PER_DAY",
-    "RE_ARM_SIGMA", "ALERT_COOLDOWN_DAYS",
+    "RE_ARM_SIGMA", "RE_ARM_PERCENTILE", "ALERT_COOLDOWN_DAYS",
+    "USE_PERCENTILE_GATE", "GATE_PERCENTILE",
     "FACTSET_CHUNK_SIZE", "FACTSET_RESULT_LIMIT", "FACTSET_TIMEOUT_SECONDS",
     "FEAR_GREED_URL", "FEAR_GREED_MAX_AGE_HOURS",
 ]

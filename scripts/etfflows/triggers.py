@@ -30,9 +30,12 @@ from typing import NamedTuple, Sequence
 from . import (
     ALERT_COOLDOWN_DAYS,
     CORROBORATED_SIGMA,
+    GATE_PERCENTILE,
     MAX_ALERTS_PER_DAY,
+    RE_ARM_PERCENTILE,
     RE_ARM_SIGMA,
     STANDALONE_SIGMA,
+    USE_PERCENTILE_GATE,
 )
 
 
@@ -143,7 +146,15 @@ def evaluate(readings: Sequence[Reading], state: dict, as_of: str,
         mag = abs(r.z)
 
         # Re-arm first, so a name that has calmed down can fire again on its next episode.
-        if not st["armed"] and mag < RE_ARM_SIGMA:
+        # The re-arm test uses the same statistic as the gate — mixing a percentile gate with
+        # a sigma re-arm would let a name re-arm while still extreme on the measure that
+        # actually fires it.
+        if USE_PERCENTILE_GATE:
+            p = r.percentile
+            calmed = p is not None and (100.0 - RE_ARM_PERCENTILE) < p < RE_ARM_PERCENTILE
+        else:
+            calmed = mag < RE_ARM_SIGMA
+        if not st["armed"] and calmed:
             st["armed"] = True
 
         if not st["armed"]:
@@ -152,7 +163,16 @@ def evaluate(readings: Sequence[Reading], state: dict, as_of: str,
             continue
 
         basis, corro = "", ""
-        if mag >= STANDALONE_SIGMA:
+        if USE_PERCENTILE_GATE:
+            # Distribution-free gate: "this is in the top X% of THIS ETF's own history for
+            # THIS horizon". Robust-z thresholds are hard to reason about here because daily
+            # flows are extremely fat-tailed once scaled by MAD — a genuine -7σ print is
+            # ordinary — so a sigma number that sounds strict is not, and differs per ETF.
+            # A percentile means the same thing for every fund.
+            p = r.percentile
+            if p is not None and (p >= GATE_PERCENTILE or p <= 100.0 - GATE_PERCENTILE):
+                basis = "standalone"
+        elif mag >= STANDALONE_SIGMA:
             basis = "standalone"
         elif mag >= CORROBORATED_SIGMA:
             corro = _corroboration(r, by_ticker)

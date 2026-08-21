@@ -22,6 +22,27 @@ from etfflows import triggers as t  # noqa: E402
 
 FAILURES = []
 
+# Most tests here exercise the SIGMA gate and the gate-independent machinery (eligibility,
+# hysteresis, the cap, per-ticker collapse). The shipped default is the percentile gate, so
+# the mode is pinned explicitly rather than inherited — a test that silently follows the
+# default would change meaning the next time the default moves.
+t.USE_PERCENTILE_GATE = False
+
+
+class pctile_gate:
+    """Context manager: run a block under the percentile gate, then restore."""
+
+    def __init__(self, gate=99.5):
+        self.gate = gate
+
+    def __enter__(self):
+        self.saved = (t.USE_PERCENTILE_GATE, t.GATE_PERCENTILE)
+        t.USE_PERCENTILE_GATE, t.GATE_PERCENTILE = True, self.gate
+
+    def __exit__(self, *exc):
+        t.USE_PERCENTILE_GATE, t.GATE_PERCENTILE = self.saved
+        return False
+
 
 def check(name, cond, detail=""):
     if cond:
@@ -233,6 +254,76 @@ def test_state_is_not_mutated_in_place():
     state = {}
     t.evaluate([R("XLK", 63, 3.5)], state, "2026-08-19")
     check("caller's state dict is left untouched", state == {}, f"got {state}")
+
+
+# ── the percentile gate (the shipped default) ─────────────────────────────────
+
+def test_percentile_gate_fires_in_the_tail():
+    with pctile_gate(99.5):
+        alerts, _, _ = t.evaluate([R("SMH", 63, 4.2, percentile=99.7)], {}, "2026-08-19")
+        check("99.7th pctile clears a 99.5 gate", len(alerts) == 1, f"got {alerts}")
+        alerts, _, _ = t.evaluate([R("SMH", 63, 4.2, percentile=99.2)], {}, "2026-08-19")
+        check("99.2nd pctile does not", alerts == [], f"got {alerts}")
+
+
+def test_percentile_gate_is_two_sided():
+    """An extreme OUTFLOW sits at the bottom of the distribution, not the top."""
+    with pctile_gate(99.5):
+        alerts, _, _ = t.evaluate([R("MTUM", 5, -4.0, percentile=0.2)], {}, "2026-08-19")
+        check("0.2nd pctile fires as an outflow", len(alerts) == 1, f"got {alerts}")
+        check("direction taken from the sign", alerts[0].direction == "outflow")
+        alerts, _, _ = t.evaluate([R("MTUM", 5, -1.0, percentile=40.0)], {}, "2026-08-19")
+        check("mid-distribution is silent", alerts == [], f"got {alerts}")
+
+
+def test_percentile_gate_ignores_sigma_magnitude():
+    """The whole point: a big MAD-scaled sigma is NOT rare when the tails are heavy.
+
+    A -7σ print was observed in real backfilled data. Under the sigma gate that fires
+    trivially; under the percentile gate it fires only if it is genuinely in the tail of
+    that fund's own history.
+    """
+    with pctile_gate(99.5):
+        alerts, _, _ = t.evaluate([R("SMH", 5, -7.2, percentile=1.0)], {}, "2026-08-19")
+        check("-7.2σ at the 1st pctile does NOT fire", alerts == [], f"got {alerts}")
+
+
+def test_percentile_gate_bypasses_corroboration():
+    """No two-tier logic under the percentile gate — everything is 'standalone'."""
+    with pctile_gate(99.5):
+        alerts, _, _ = t.evaluate(
+            [R("XLK", 5, 2.1, percentile=99.9, divergence="accumulation")], {}, "2026-08-19")
+        check("qualifies on percentile alone", len(alerts) == 1, f"got {alerts}")
+        check("basis is standalone", alerts[0].basis == "standalone")
+        check("no corroboration text", alerts[0].corroboration == "")
+
+
+def test_percentile_gate_rearms_on_percentile():
+    """Re-arm must use the same statistic as the gate, or a name re-arms while still extreme."""
+    with pctile_gate(99.5):
+        state = {}
+        alerts, state, _ = t.evaluate([R("XLK", 5, 4.0, percentile=99.9)], state, "2026-08-01")
+        check("fires once", len(alerts) == 1)
+        # still extreme on percentile -> must NOT re-arm
+        _, state, _ = t.evaluate([R("XLK", 5, 4.0, percentile=99.8)], state, "2026-08-02")
+        check("stays disarmed while still in the tail", state["XLK:5"]["armed"] is False,
+              f"got {state['XLK:5']}")
+        # back to mid-distribution -> re-arms
+        _, state, _ = t.evaluate([R("XLK", 5, 0.1, percentile=55.0)], state, "2026-08-03")
+        check("re-arms once back inside the band", state["XLK:5"]["armed"] is True,
+              f"got {state['XLK:5']}")
+
+
+def test_percentile_gate_still_respects_eligibility():
+    with pctile_gate(99.5):
+        for label, z, kw in (("context tier", 5.0, {"tier": "context"}),
+                             ("synthetic", 5.0, {"synthetic": True}),
+                             ("no history", 5.0, {"min_history_ok": False}),
+                             ("degraded", None, {"degraded": True})):
+            alerts, _, _ = t.evaluate([R("X", 63, z, percentile=99.99, **kw)], {},
+                                      "2026-08-19")
+            check(f"{label} cannot fire under the percentile gate", alerts == [],
+                  f"got {alerts}")
 
 
 def main():
