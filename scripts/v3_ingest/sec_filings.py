@@ -624,9 +624,23 @@ _LIMIT_RE = re.compile(
     re.IGNORECASE,
 )
 
+# The wording-based check above is NOT sufficient. On 2026-08-21 a run burned through 37
+# CNINFO filings and 43 entity chunks against a limit whose error carried NO such wording:
+#   {"is_error":true,"terminal_reason":"api_error","duration_api_ms":0,
+#    "usage":{"input_tokens":0,...},"total_cost_usd":0}
+# The reliable SIGNATURE is a terminal api_error where the request never reached the API —
+# zero duration and zero tokens. That means retrying cannot succeed, whatever the wording.
+_API_ERROR_SIGNATURE = re.compile(
+    r'"terminal_reason"\s*:\s*"api_error"', re.IGNORECASE)
+_ZERO_API = re.compile(r'"duration_api_ms"\s*:\s*0\b')
+
 
 def is_rate_limited(exc: Exception) -> bool:
-    return bool(_LIMIT_RE.search(str(exc)))
+    s = str(exc)
+    if _LIMIT_RE.search(s):
+        return True
+    # terminal api_error that never reached the API — retrying is futile
+    return bool(_API_ERROR_SIGNATURE.search(s) and _ZERO_API.search(s))
 
 
 def is_fatal_run_failure(exc: Exception) -> bool:

@@ -115,6 +115,29 @@ problems disclosed; Chinese vendors competing on assembly/price rather than comp
   Samsung/Micron memory. **Accelink (002281-CN) is the name to watch** — unlike Innolight it
   has in-house chip capability, so its filings are where domestic laser capability would show
   up first. The CNINFO channel covers it.
+- **RESOLVED-ISH 2026-08-21 — Accelink's own filings, and the answer is TWO-SIDED.** The
+  CNINFO channel ingested Accelink's 2025 and 2026 annual reports (70 extracted claims).
+  Accelink is the Chinese name with in-house chip capability, so this is the direct test.
+  * **CHALLENGES the assumption:** Accelink claims *"full vertical integration from chip to
+    component to module"* with laser chip types **FP, DFB, EML, VCSEL** plus PD/APD detectors
+    and a SiP platform (`拥有多种类型激光器芯片（FP、DFB、EML、VCSEL 等）、探测器芯片（PD、APD）
+    以及 SiP 芯片平台`). EML in-house is exactly the capability the assumption says is absent.
+    The blanket form of "Chinese vendors cannot make high-quality lasers" does not survive.
+  * **SUPPORTS the narrower form:** the same filings disclose that *"core raw materials and key
+    components, including HIGH-END optical chip materials and specialty components, partially
+    rely on external supply, with high market concentration"* (`核心原材料、关键零部件（如高端
+    光芯片相关材料、特种元器件等）部分依赖外部供应`), and that the plan is to *"improve the
+    optical chip process platform, increase iteration efficiency, and FILL GAPS in key product
+    series to support high-end business"* (`补齐重点产品系列`). "Fill gaps in key product
+    series" is Accelink saying, in its own words, that the high-end series is incomplete.
+  * **Bearing on assembly-vs-capability:** Accelink flags `低价竞争` — LOW-PRICE COMPETITION —
+    as an industry risk alongside peer capacity expansion, which is at least consistent with
+    share being contested on price as well as on technology.
+  **How to hold it:** the assumption should be narrowed from "cannot manufacture high-quality
+  lasers" to "has not yet closed the HIGH-END gap and still depends on external supply for
+  high-end optical chip materials." That version is both supported by the evidence and still
+  testable — watch for Accelink dropping the external-dependence language or declaring the
+  product-series gaps filled.
 - **Mirror evidence already held:** AAOI states it manufactures ALL laser chips exclusively
   at Sugar Land, Texas via proprietary MBE + MOCVD, and treats that as a competitive claim.
   That is the benchmark a Chinese vendor would have to meet.
