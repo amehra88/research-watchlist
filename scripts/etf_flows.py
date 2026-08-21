@@ -309,8 +309,14 @@ def do_report(args) -> int:
 
     os.makedirs(LOG_DIR, exist_ok=True)
     os.makedirs(NOTES_DIR, exist_ok=True)
-    main_path = os.path.join(LOG_DIR, f"report_etfflows_{as_of}.txt")
-    table_path = os.path.join(LOG_DIR, f"report_etfflows_table_{as_of}.txt")
+
+    # NAMED BY THE RUN DATE, NOT THE FLOW DATE. combine_and_send.py formats every path with
+    # date.today(), so a file named for the flow date (T-1, because FactSet flows lag a day)
+    # would never be found and the section would silently never appear. The flow date is not
+    # lost -- it is printed inside the report, which is what the spec actually requires.
+    run_date = args.run_date or date.today().isoformat()
+    main_path = os.path.join(LOG_DIR, f"report_etfflows_{run_date}.txt")
+    table_path = os.path.join(LOG_DIR, f"report_etfflows_table_{run_date}.txt")
     # notes/ convention is {YYYYMMDD}-..., not the ISO form used everywhere else here.
     # NOTE: notes/flows/ is a non-ticker directory, so indexing is subject to the open
     # chunker gap (memory: chunker-v3-awareness-gap) — this file is written to disk, but
@@ -388,6 +394,8 @@ def main() -> int:
                                     "the production history)")
     p.add_argument("--no-lookthrough", action="store_true",
                    help="skip the Phase 2 pre-fetch during --fetch")
+    p.add_argument("--run-date", help="date to NAME the report files with (default today); "
+                                      "the digest looks them up by today's date")
     p.add_argument("--lookback", type=int, default=10,
                    help="days of history for --fetch (default 10, covers a long weekend)")
     p.add_argument("--aum-lookback", type=int, default=45,
