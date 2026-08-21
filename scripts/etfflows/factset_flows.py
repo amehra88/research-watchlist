@@ -108,10 +108,18 @@ def _prompt(ids, data_type: str, start: str, end: str, limit: int,
 # The MCP layer spills an oversized tool result to disk and hands the model a pointer instead.
 # Verified 2026-08-19: "Error: result (75,593 characters across 3,510 lines) exceeds maximum
 # allowed tokens. Output has been saved to /root/.claude/projects/.../tool-results/....txt"
-# Anchored on the .txt extension, NOT on the next whitespace: the message renders the path
-# immediately followed by a sentence-ending period ("...1787179767087.txt.\nFormat: ..."),
-# so a whitespace-terminated match captures that trailing dot and the open() fails.
-_SPILL_RE = re.compile(r"saved to (/\S+\.txt)")
+# TWO SPILL FORMATS EXIST, from different layers, and both must be handled:
+#
+#   MCP layer:      "Error: result (75,593 characters ...) exceeds maximum allowed tokens.
+#                    Output has been saved to /root/.claude/.../....txt.\nFormat: ..."
+#   harness layer:  "<persisted-output>\nOutput too large (43KB). Full output saved to:
+#                    /root/.claude/.../ba10tnm9b.txt\n\nPreview (first 2KB): [ ..."
+#
+# Note the COLON in the second ("saved to:"), which an over-tight pattern misses — that cost
+# a whole XLV/XLY backfill. Anchored on the .txt extension rather than on the next
+# whitespace, because the first format puts a sentence-ending period right after the path.
+# Extensions differ too: the MCP-layer spill writes .txt, the harness-layer one writes .json.
+_SPILL_RE = re.compile(r"saved to:?\s+(/\S+\.(?:txt|json))")
 
 
 def _tool_result_blocks(stdout: str) -> list[str]:
@@ -139,24 +147,59 @@ def _tool_result_blocks(stdout: str) -> list[str]:
     return out
 
 
-def resolve_payload(text: str) -> dict | None:
-    """One tool_result payload -> the parsed FactSet response, following a spill if needed."""
+def _unwrap(obj):
+    """Peel a content-block wrapper, if present.
+
+    The harness-layer spill stores the tool result as the raw CONTENT BLOCK list —
+    [{"type": "text", "text": "{\\"data\\": [...]}"}] — so the FactSet JSON arrives as a
+    STRING nested one level down, not as the top-level object. Unwrap once, then parse.
+    """
+    if (isinstance(obj, list) and obj
+            and all(isinstance(b, dict) and isinstance(b.get("text"), str) for b in obj)):
+        try:
+            return json.loads("".join(b["text"] for b in obj))
+        except json.JSONDecodeError:
+            return None
+    return obj
+
+
+def rows_of(obj) -> list | None:
+    """Pull the row list out of any payload shape we have actually observed.
+
+    Three exist, and guessing wrong looks exactly like an ETF with no data:
+      {"data": [...]}                                  raw FactSet response
+      [ ...rows... ]                                   bare array
+      [{"type":"text","text":"{\\"data\\":[...]}"}]     content-block wrapper (spilled)
+    """
+    obj = _unwrap(obj)
+    if isinstance(obj, dict) and isinstance(obj.get("data"), list):
+        return obj["data"]
+    if isinstance(obj, list):
+        return obj
+    return None
+
+
+def resolve_payload(text: str):
+    """One tool_result payload -> parsed FactSet response, following a spill if needed.
+
+    A spilled payload is checked FIRST. Both spill formats inline a truncated preview of the
+    JSON, and that preview parses far enough to look like data while silently holding only
+    the first ~2KB of rows. Reading the file is the only complete answer.
+    """
     text = (text or "").strip()
     if not text:
         return None
-    try:
-        obj = json.loads(text)
-        return obj if isinstance(obj, dict) else None
-    except json.JSONDecodeError:
-        pass
+
     m = _SPILL_RE.search(text)
-    if not m:
-        return None
+    if m:
+        try:
+            with open(m.group(1)) as fh:
+                return json.load(fh)
+        except (OSError, json.JSONDecodeError):
+            return None
     try:
-        with open(m.group(1)) as fh:
-            obj = json.load(fh)
-        return obj if isinstance(obj, dict) else None
-    except (OSError, json.JSONDecodeError):
+        return json.loads(text)
+    except json.JSONDecodeError:
         return None
 
 
@@ -193,9 +236,9 @@ def make_runner(repo_root, timeout: int = FACTSET_TIMEOUT_SECONDS):
             raise ValueError("no tool_result in transcript: "
                              f"{(result.stdout or '').strip()[-200:]}")
         for text in reversed(blocks):
-            obj = resolve_payload(text)
-            if obj is not None and isinstance(obj.get("data"), list):
-                return [r for r in obj["data"] if isinstance(r, dict)]
+            rows = rows_of(resolve_payload(text))
+            if rows is not None:
+                return [r for r in rows if isinstance(r, dict)]
         raise ValueError(f"tool_result unusable: {blocks[-1][:200]}")
     return run
 

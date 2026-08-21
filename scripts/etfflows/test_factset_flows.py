@@ -255,6 +255,70 @@ def test_spilled_result_is_followed_to_disk():
               obj["data"][0]["fundFlows"] == -1865645765.4)
 
 
+def test_second_spill_format_persisted_output():
+    """The harness-layer spill, which cost a whole XLV/XLY backfill.
+
+    Two things differ from the MCP-layer format and BOTH broke the parser:
+      1. "Full output saved to:" has a COLON before the path,
+      2. it inlines a TRUNCATED 2KB preview of the JSON that looks parseable but holds only
+         the first few rows — so the preview must never be preferred over the file.
+    """
+    with tempfile.TemporaryDirectory() as d:
+        spill = os.path.join(d, "ba10tnm9b.txt")
+        full = [{"requestId": "XLV", "date": f"2026-01-{i:02d}", "fundFlows": float(i)}
+                for i in range(1, 21)]
+        with open(spill, "w") as fh:
+            json.dump(full, fh)
+        msg = ("<persisted-output>\nOutput too large (43KB). Full output saved to: "
+               f"{spill}\n\nPreview (first 2KB):\n[\n  {{\n    \"requestId\": \"XLV\",\n")
+        rows = ff.rows_of(ff.resolve_payload(msg))
+        check("colon-form spill path is followed", rows is not None, "regex missed 'saved to:'")
+        check("the FULL file is used, not the 2KB preview",
+              rows is not None and len(rows) == 20, f"got {len(rows) if rows else 0} rows")
+
+
+def test_content_block_wrapper_is_unwrapped():
+    """The harness spill stores the CONTENT BLOCK list, not the response.
+
+    The FactSet JSON arrives as a string nested inside {"type":"text","text": ...}. Verbatim
+    shape from the XLV/XLY failure on 2026-08-21.
+    """
+    inner = json.dumps({"data": [{"requestId": "XLV", "date": "2026-01-02",
+                                  "fundFlows": -15478206.7}]})
+    wrapped = [{"type": "text", "text": inner}]
+    rows = ff.rows_of(wrapped)
+    check("content-block wrapper unwrapped", rows is not None and len(rows) == 1,
+          f"got {rows}")
+    check("values survive the unwrap",
+          rows and rows[0]["fundFlows"] == -15478206.7, f"got {rows}")
+
+
+def test_spill_path_may_be_json_not_txt():
+    """The two spill layers use different extensions; anchoring on .txt missed .json."""
+    with tempfile.TemporaryDirectory() as d:
+        spill = os.path.join(d, "toolu_01LKpA8s1jAYBjr9beCsRBpM.json")
+        inner = json.dumps({"data": [{"requestId": "XLY", "date": "2026-01-02",
+                                      "fundFlows": 1.0}]})
+        with open(spill, "w") as fh:
+            json.dump([{"type": "text", "text": inner}], fh)
+        msg = ("<persisted-output>\nOutput too large (57.1KB). Full output saved to: "
+               f"{spill}\n\nPreview (first 2KB):\n[\n  {{\n    \"type\": \"text\",\n")
+        rows = ff.rows_of(ff.resolve_payload(msg))
+        check(".json spill path is followed", rows is not None, "regex only matched .txt")
+        check("nested payload parsed end to end",
+              rows and rows[0]["requestId"] == "XLY", f"got {rows}")
+
+
+def test_bare_array_payload_is_accepted():
+    """A spilled file can hold a bare JSON array rather than {"data": [...]}."""
+    check("array payload yields rows",
+          ff.rows_of([{"requestId": "SPY"}]) == [{"requestId": "SPY"}])
+    check("dict payload yields rows",
+          ff.rows_of({"data": [{"requestId": "SPY"}]}) == [{"requestId": "SPY"}])
+    check("neither shape -> None (a failure, never [])", ff.rows_of({"nope": 1}) is None)
+    check("None -> None", ff.rows_of(None) is None)
+
+
 def test_missing_spill_file_is_a_failure_not_empty():
     obj = ff.resolve_payload("Output has been saved to /nonexistent/nope.txt")
     check("unreadable spill -> None (a failure), never []", obj is None)

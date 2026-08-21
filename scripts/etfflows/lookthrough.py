@@ -37,7 +37,7 @@ import sqlite3
 import subprocess
 from typing import NamedTuple, Sequence
 
-from .factset_flows import _claude_env, _tool_result_blocks, resolve_payload, MODEL
+from .factset_flows import _claude_env, _tool_result_blocks, resolve_payload, rows_of, MODEL
 
 _OWNERSHIP_TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_Ownership"
 _PRICES_TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_GlobalPrices"
@@ -93,9 +93,9 @@ def _run(cmd_prompt: str, tool: str, repo_root, timeout: int):
     if not blocks:
         raise ValueError(f"no tool_result: {(result.stdout or '').strip()[-200:]}")
     for text in reversed(blocks):
-        obj = resolve_payload(text)
-        if obj is not None and isinstance(obj.get("data"), list):
-            return [r for r in obj["data"] if isinstance(r, dict)]
+        rows = rows_of(resolve_payload(text))
+        if rows is not None:
+            return [r for r in rows if isinstance(r, dict)]
     raise ValueError(f"tool_result unusable: {blocks[-1][:200]}")
 
 
