@@ -1,0 +1,57 @@
+MARKET RISK
+  Fear & Greed    55  (greed)   1w -9   1m +12
+  VIX           15.1  (low, 12th pctile of the past year)
+                      under 12 very low · 16-20 normal · over 25 high · over 30 stress
+
+ETF FLOWS & CROWDING
+Flows as of 2026-08-20  (FactSet, net creations/redemptions, T+1)
+──────────────────────────────────────────────────────────────────────────────────────
+UNUSUAL FLOWS: none today — nothing outside its normal range.
+
+Risk appetite (5d): 47% of the core ETFs took in money (15 of 32)
+Risk appetite (63d): 59% of the core ETFs took in money (19 of 32)
+
+Trading vehicle vs real allocation (gap in % of fund):
+  SPY vs IVV+VOO     week    +1.4%   quarter    +0.0%
+  QQQ vs QQQM        week    -0.4%   quarter   -10.4%
+
+SECTOR FLOWS (% of each fund's assets)
+                          past week   past quarter
+  XLB Materials               +0.0%         +15.4%
+  XLI Industrials             -1.1%          +6.9%
+  XLRE Real Estate            -1.8%          +5.2%
+  XLY Cons Disc               -0.6%          +3.1%
+  XLU Utilities               -0.8%          +2.4%
+  XLF Financials              -3.1%          +1.5%
+  XLV Health Care             -0.3%          +1.3%
+  XLK Tech                    -0.0%          -0.1%
+  XLP Staples                 +0.7%          -1.2%
+  XLE Energy                  +0.2%          -4.4%
+  XLC Comms                   -0.2%          -7.0%
+
+FACTOR FLOWS (% of each fund's assets)
+                          past week   past quarter
+  SCHD Dividend               +0.8%         +10.3%
+  IWD Value (R1000)           -0.3%          +2.8%
+  VTV Value (CRSP)            -0.2%          +1.1%
+  USMV Min Vol                -0.4%          -0.1%
+  VUG Growth (CRSP)           +0.0%          -0.5%
+  IWF Growth (R1000)          +0.0%          -0.9%
+  COWZ Free Cash Flow         -0.1%          -1.9%
+  MTUM Momentum               -0.7%          -8.3%
+  QUAL Quality                +0.0%         -12.2%
+  VLUE Value (MSCI)           -0.2%         -38.5%
+
+  ! no flow data for 2026-08-20 (20 of 52 tickers): AIQ, BAI, BCTK, BOTZ, CIBR, DRAM, FDN, IGM, IJR, IYW, JTEK, LYTE, MAGS, PDP, PSI, SKYY, SPLV, VGT, XLG, XSD
+
+CROWDING READ
+──────────────────────────────────────────────────────────────────────────────────────
+Sustained crowding (63d and 5d both elevated): SCHD, SOXX, SPY
+  Accumulated positioning with money still arriving — the most
+  reversal-prone cell in the 2x2.
+
+Constituent look-through: no alert today, nothing to decompose.
+
+Read as POSITIONING, not direction: ETF flow is largely non-fundamental
+demand and mean-reverts over multi-week horizons. Thresholds are provisional
+pending calibration against backfilled history.
