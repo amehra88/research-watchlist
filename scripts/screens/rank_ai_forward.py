@@ -24,7 +24,7 @@ DIMENSIONS
   practitioner 0-3 GitHub MCP traction + eng-blog operator register
                    (developer-surface firms only)
 """
-import json, os, glob, re, sys
+import json, os, glob, re, sys, collections
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
@@ -187,6 +187,74 @@ CREDIBILITY = {
     "EVLV": (0.85, "FTC settlement re detection-efficacy claims; independent tests missed knives"),
 }
 
+# ---------------------------------------------------------------------------
+# DISCRIMINATION FLOOR (added 2026-08-21, reviewing tiers 4 and 5)
+#
+# Below ~60 the score stops carrying information. FIVE names tie at exactly
+# 52.7 -- NU, WAY, VRSK, CGNX, ZBRA -- with identical judgment vectors
+# (centrality 2/5, product 2/3, ml_content 2/3). That is not a ranking, it is
+# a bucket wearing a rank number. The axes are small integers, so the bottom
+# of the list collapses into a handful of repeated combinations and any order
+# within them is an artifact of the tie-break, not a view.
+#
+# Reporting "#51 vs #54" there is false precision. Worse, a score of 52.7
+# implies "about half as good as HNGE", which misreads what these names ARE:
+# they are not weak versions of tier 1, they are DIFFERENT OBJECTS that fail
+# the thesis for four distinct and non-comparable reasons. A watch-list name
+# waiting on a priced product and a company whose product is classical
+# optimisation are not 1.8 points apart -- one converts, the other never will.
+#
+# So below the floor we stop ranking and start CLASSIFYING. The reason code is
+# the output; the score is retained only to order the display.
+DISCRIMINATION_FLOOR = 60.0
+
+DQ = {
+    # Owns genuine ground truth, has not converted it to a model-native product
+    # sold at a price. These are WATCH names -- the trigger is a priced product,
+    # and it is the one group that can graduate to tier 1.
+    "ISRG": ("corpus-unconverted", "best unconverted corpus in med-tech; trigger = a reimbursed AI SKU"),
+    "VRSK": ("corpus-unconverted", "pooled claims monopoly; CV on aerial imagery is the convertible part"),
+    "INTU": ("corpus-unconverted", "owns returns and ledgers outright; agents attack the accountant fee pool"),
+    "DOCU": ("corpus-unconverted", "largest executed-agreement corpus; conversion is a hypothesis"),
+    "MCO":  ("corpus-unconverted", "ratings corpus excellent; AI not yet doing commercial work"),
+    "TYL":  ("corpus-unconverted", "civic records corpus; watch-for-conversion only"),
+    "V":    ("corpus-unconverted", "transaction graph; network survives untouched without any model"),
+
+    # The filing says one thing and the practitioner evidence says another.
+    # This is the cross-signal layer paying for itself -- these are the names
+    # the screens CAUGHT rather than found.
+    "MORN": ("claims>traction", "topped MCP filing screen; 21-star repo, 338 days since push"),
+    "KVYO": ("claims>traction", "cross-merchant prediction is real; repo traction thin"),
+    "FDS":  ("claims>traction", "FALSE POSITIVE -- MCP server is real, just not public GitHub"),
+
+    # An algorithm is the product, but it is not modern learned ML. The
+    # ml_content axis exists for exactly this group. They do not convert.
+    "CGNX": ("classical-not-learned", "deep-learning inspection real but commoditising from above"),
+    "ZBRA": ("classical-not-learned", "machine vision and scanning; closer to classical than learned"),
+    "SYM":  ("classical-not-learned", "orchestration is optimisation and control, not learned policy"),
+    "ALGN": ("classical-not-learned", "human planners staged aligners for two decades; labour-cost story"),
+    "MA":   ("classical-not-learned", "fraud scoring on a great graph; network is not an AI business"),
+    "TOST": ("classical-not-learned", "economics are payment spread; AI is analytics"),
+
+    # Sells INTO someone else's stack. A different trade entirely: correlates
+    # with frontier-lab capex and app-layer build cycles, not with app-layer
+    # adoption. Right or wrong for other reasons -- but not this thesis.
+    "INOD": ("supplier-not-member", "sells training data TO the labs; the picks-and-shovels trade"),
+    "OUST": ("supplier-not-member", "lidar + perception into other people's autonomy stacks"),
+
+    # AI is real but immaterial to the P&L, or the company is too small for the
+    # AI to matter to the outcome.
+    "IQV":  ("immaterial-to-pandl", "AI layer real but small inside a services-driven P&L"),
+    "HII":  ("immaterial-to-pandl", "unmanned maritime is a rounding error on a defense prime"),
+    "WLY":  ("immaterial-to-pandl", "prints the AI revenue number, but revenue is flat; option not business"),
+    "QXO":  ("unproven-playbook", "CAIO at founding, AI-transformation playbook, nothing shipped yet"),
+    "NU":   ("thesis-adjacent", "behavioural underwriting genuinely load-bearing; more fintech than AI trade"),
+    "WAY":  ("thesis-adjacent", "denial prediction on a real claims corpus; narrow surface"),
+    "SHOP": ("thesis-adjacent", "merchant data + AI-forward CEO; monetised via retention, not a priced model"),
+    "ESTC": ("thesis-adjacent", "retrieval infrastructure UNDER the app layer; real developer surface"),
+    "FIG":  ("thesis-adjacent", "design corpus as structured data; 1,910-star MCP server"),
+}
+
 
 def load_latest(prefix):
     runs = sorted(glob.glob(os.path.join(HERE, prefix + "_*.json")))
@@ -298,14 +366,24 @@ def main():
                      "evidence": "; ".join(notes) or ("developer-facing, no data collected" if dev else "not developer-facing"),
                      "contradiction": contra})
     rows.sort(key=lambda r: (-r["score"], -r["centrality"]))
+    for r in rows:
+        dq = DQ.get(r["ticker"])
+        r["disqualifier"] = dq[0] if dq else ""
+        r["disqualifier_note"] = dq[1] if dq else ""
+
     # Operator 2026-08-20: cap at 50. The tail below this was names where the
     # honest verdict was already "AI is not load-bearing here" -- carrying them
     # implied a candidacy the write-ups themselves denied.
-    rows = rows[:50]
+    #
+    # 2026-08-21: the cap is a REPORT boundary, not a deletion. Everything below
+    # the discrimination floor is still emitted, classified rather than ranked
+    # (see DQ above), so a name can be argued back up without re-running anything.
+    ranked = rows[:50]
+    below = [r for r in rows if r["score"] < DISCRIMINATION_FLOOR]
 
     print("| # | Ticker | Score | Cen | Prod | ML | Evidence | Why |")
     print("|---|---|---|---|---|---|---|---|")
-    for i, r in enumerate(rows, 1):
+    for i, r in enumerate(ranked, 1):
         flag = "  !! " + r["contradiction"] if r["contradiction"] else ""
         if r["credibility"]:
             flag += "  !! credibility discount"
@@ -320,7 +398,29 @@ def main():
         print("| %d | %s | %s | %d/5 | %d/3 | %d/3 | %s%s | %s |" % (
             i, r["ticker"], r["score"], r["centrality"], r["product"], r["ml"],
             r["evidence"], flag, r["basis"]))
-    json.dump(rows, open(os.path.join(HERE, "ai_forward_ranking.json"), "w"), indent=1)
+    # Below the floor: classify, do not rank. Grouped by reason, because the
+    # reason is the finding -- these names fail the thesis in four different
+    # and non-comparable ways, and the group determines what to DO with them
+    # (watch with a trigger / avoid / never converts / different trade).
+    if below:
+        groups = collections.OrderedDict()
+        for r in below:
+            groups.setdefault(r["disqualifier"] or "unclassified", []).append(r)
+        print("\n\n### Below the discrimination floor (score < %.0f) — classified, not ranked\n"
+              % DISCRIMINATION_FLOOR)
+        print("_%d names. Five tie at 52.7 with identical vectors; ordering here is a"
+              " tie-break artifact, not a view. The reason code is the output._\n" % len(below))
+        for g, rs in sorted(groups.items()):
+            print("**%s**" % g)
+            for r in rs:
+                print("- %s (%s) — %s" % (r["ticker"], r["score"], r["disqualifier_note"]))
+            print()
+
+    # ai_forward_ranking.json stays the CAPPED 50 -- make_ranking_report.py renders
+    # whatever is in it, so dumping the full list here would silently un-cap the
+    # report. The classified tail goes to its own file instead.
+    json.dump(ranked, open(os.path.join(HERE, "ai_forward_ranking.json"), "w"), indent=1)
+    json.dump(below, open(os.path.join(HERE, "ai_forward_below_floor.json"), "w"), indent=1)
 
 
 if __name__ == "__main__":

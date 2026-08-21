@@ -14,7 +14,9 @@
   "product": 3,
   "basis": "CV motion tracking replaces the therapist's labor",
   "evidence": "filing-lang 1",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "GH",
@@ -31,7 +33,9 @@
   "product": 3,
   "basis": "tumor-naive + screening REQUIRE learned classifiers (methylation, fragmentomics)",
   "evidence": "filing-lang 1",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "IRTC",
@@ -48,7 +52,9 @@
   "product": 3,
   "basis": "classifier reads 14 days of ECG; FDA + CPT code; no model, no report",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "APP",
@@ -65,7 +71,9 @@
   "product": 3,
   "basis": "auction-time ranking model IS the P&L",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "RDNT",
@@ -82,7 +90,9 @@
   "product": 3,
   "basis": "owns the scans AND the distribution; AI upsell is cash-pay",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "HTFL",
@@ -99,7 +109,9 @@
   "product": 3,
   "basis": "FFR-CT is an inference on a CT scan; reimbursed per analysis",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "AXON",
@@ -116,7 +128,9 @@
   "product": 3,
   "basis": "system of record converting to model-native product",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "DE",
@@ -133,7 +147,9 @@
   "product": 3,
   "basis": "See & Spray decides per plant, priced on outcome",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "UPST",
@@ -150,7 +166,9 @@
   "product": 2,
   "basis": "the credit decision IS the model",
   "evidence": "filing-lang 3",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "IOT",
@@ -167,7 +185,9 @@
   "product": 3,
   "basis": "AI dash cams: on-device CV makes the safety determination; fleet is customer-funded",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "RXRX",
@@ -184,7 +204,9 @@
   "product": 1,
   "basis": "company is a model; output unproven",
   "evidence": "filing-lang 5; AI officer 8",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "PLTR",
@@ -201,7 +223,9 @@
   "product": 3,
   "basis": "ontology is the scarce asset LLMs need to ACT; very few have solved it",
   "evidence": "gh-traction 4.0; blog-operator 4",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "CRWD",
@@ -218,7 +242,9 @@
   "product": 3,
   "basis": "services drag sits in COGS at ~75% GM and margin STILL expands -- flywheel pays for itself",
   "evidence": "filing-lang 2; gh-traction 10.0; blog-operator 0",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "AUR",
@@ -235,7 +261,9 @@
   "product": 1,
   "basis": "driving policy is the entire product; pre-revenue",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "KDK",
@@ -252,7 +280,9 @@
   "product": 1,
   "basis": "driverless trucking; same shape as AUR",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "NTRA",
@@ -269,7 +299,9 @@
   "product": 3,
   "basis": "tumor-informed: tracks known variants. Statistics, not learned models",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "SERV",
@@ -286,7 +318,9 @@
   "product": 1,
   "basis": "sidewalk delivery robots -- pure autonomy, no other product, sub-scale ($569m)",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "TSLA",
@@ -303,7 +337,9 @@
   "product": 2,
   "basis": "fleet collects training data at a profit; FSD is the premium",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "EVLV",
@@ -320,7 +356,9 @@
   "product": 3,
   "basis": "model-native, but FTC settlement over detection-efficacy claims",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "NET",
@@ -337,7 +375,9 @@
   "product": 2,
   "basis": "inference at the edge; deepest MCP traction of any filer",
   "evidence": "gh-traction 10.0; blog-operator 7",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "GEHC",
@@ -354,7 +394,9 @@
   "product": 2,
   "basis": "largest imaging-AI installed base",
   "evidence": "AI officer 8",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "TEM",
@@ -371,7 +413,9 @@
   "product": 2,
   "basis": "clinical-molecular linkage; licensing mix is the diligence question",
   "evidence": "filing-lang 1",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "ADPT",
@@ -388,7 +432,9 @@
   "product": 3,
   "basis": "clonoSEQ counts a known clone; the real ML (TCR-antigen map) is unproven",
   "evidence": "filing-lang 2",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "CNH",
@@ -405,7 +451,9 @@
   "product": 2,
   "basis": "Deere's direct competitor in autonomous ag; same CV-per-plant class of product, smaller data fleet ($13.9bn)",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "AVAV",
@@ -422,7 +470,9 @@
   "product": 2,
   "basis": "loitering munitions and UAS autonomy; the defense buyer ACCEPTS consequence-of-error, which resets the \u00a79.3 timeline ($9.9bn)",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "ONDS",
@@ -439,7 +489,9 @@
   "product": 2,
   "basis": "drone + autonomous rail/defense systems; small but genuinely autonomy-first ($4.4bn)",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "RELX",
@@ -456,7 +508,9 @@
   "product": 3,
   "basis": "owns the legal/scientific ground truth; sells the answer",
   "evidence": "developer-facing, no data collected",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "TRI",
@@ -473,7 +527,9 @@
   "product": 3,
   "basis": "same as RELX, narrower",
   "evidence": "developer-facing, no data collected",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "MDB",
@@ -490,7 +546,9 @@
   "product": 2,
   "basis": "vector search; strongest operator-register blog by far",
   "evidence": "filing-lang 1; gh-traction 2.2; blog-operator 13",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "TEAM",
@@ -507,7 +565,9 @@
   "product": 3,
   "basis": "huge work corpus + Rovo + Head of AI + 1,038-star MCP server",
   "evidence": "AI officer 7; gh-traction 10.0; blog-operator 2",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "FICO",
@@ -524,7 +584,9 @@
   "product": 3,
   "basis": "score is a REGULATED logistic scorecard, not modern ML; contradicts UPST",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "PL",
@@ -541,7 +603,9 @@
   "product": 2,
   "basis": "DOWNGRADED: much of revenue is imagery ACCESS, not inference. ~35x sales",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "MBLY",
@@ -558,7 +622,9 @@
   "product": 2,
   "basis": "COMPETITION: fleet thesis needs design wins to compound; LTM +5%, GM at series low",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "APTV",
@@ -575,7 +641,9 @@
   "product": 2,
   "basis": "ADAS perception + compute for OEMs; sensor fusion is the product, but it is a supplier not an owner ($14.7bn)",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "NP",
@@ -592,7 +660,9 @@
   "product": 2,
   "basis": "flood underwriting model is the company",
   "evidence": "filing-lang 4",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "OPEN",
@@ -609,7 +679,9 @@
   "product": 2,
   "basis": "AVM works (GM 7.2->9.7%) but revenue -44% from peak; a rates trade, not an AI trade",
   "evidence": "filing-lang 3",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "SPGI",
@@ -626,7 +698,9 @@
   "product": 2,
   "basis": "ratings/index corpus + CAIO + MCP surface",
   "evidence": "AI officer 12; gh-traction 0.0",
-  "contradiction": "claims > traction"
+  "contradiction": "claims > traction",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "CLBT",
@@ -643,7 +717,9 @@
   "product": 2,
   "basis": "extraction is engineering; the paid job is AI triage",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "SPOT",
@@ -660,7 +736,9 @@
   "product": 2,
   "basis": "AI DJ programs the stream; retention not revenue",
   "evidence": "gh-traction 0.0; blog-operator 0",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "RBLX",
@@ -677,7 +755,9 @@
   "product": 2,
   "basis": "safety ML is a licence to operate; generative creation",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "CHRW",
@@ -694,7 +774,9 @@
   "product": 2,
   "basis": "substitution is publicly auditable via shipments/employee",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "",
+  "disqualifier_note": ""
  },
  {
   "ticker": "ISRG",
@@ -711,7 +793,9 @@
   "product": 1,
   "basis": "best unconverted corpus in med-tech; no AI revenue yet",
   "evidence": "filing-lang 1",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "corpus-unconverted",
+  "disqualifier_note": "best unconverted corpus in med-tech; trigger = a reimbursed AI SKU"
  },
  {
   "ticker": "SHOP",
@@ -728,7 +812,9 @@
   "product": 2,
   "basis": "merchant data + AI-forward CEO; monetized via retention",
   "evidence": "filing-lang 2; AI officer 4; gh-traction 6.4; blog-operator 0",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "thesis-adjacent",
+  "disqualifier_note": "merchant data + AI-forward CEO; monetised via retention, not a priced model"
  },
  {
   "ticker": "ESTC",
@@ -745,7 +831,9 @@
   "product": 2,
   "basis": "retrieval/vector infrastructure; 765-star MCP server",
   "evidence": "gh-traction 10.0; blog-operator 1",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "thesis-adjacent",
+  "disqualifier_note": "retrieval infrastructure UNDER the app layer; real developer surface"
  },
  {
   "ticker": "FDS",
@@ -762,7 +850,9 @@
   "product": 2,
   "basis": "financial corpus going agent-addressable; CAIO; 3/3 screens",
   "evidence": "filing-lang 4; AI officer 8; gh-traction 0.0",
-  "contradiction": "claims > traction"
+  "contradiction": "claims > traction",
+  "disqualifier": "claims>traction",
+  "disqualifier_note": "FALSE POSITIVE -- MCP server is real, just not public GitHub"
  },
  {
   "ticker": "FIG",
@@ -779,7 +869,9 @@
   "product": 2,
   "basis": "1,910-star MCP server; design corpus",
   "evidence": "filing-lang 3; gh-traction 9.3",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "thesis-adjacent",
+  "disqualifier_note": "design corpus as structured data; 1,910-star MCP server"
  },
  {
   "ticker": "V",
@@ -796,7 +888,9 @@
   "product": 2,
   "basis": "transaction graph; agentic commerce surface",
   "evidence": "gh-traction 0.0",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "corpus-unconverted",
+  "disqualifier_note": "transaction graph; network survives untouched without any model"
  },
  {
   "ticker": "OUST",
@@ -813,7 +907,9 @@
   "product": 2,
   "basis": "lidar plus perception software; a component into other people's autonomy stacks ($4.3bn)",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "supplier-not-member",
+  "disqualifier_note": "lidar + perception into other people's autonomy stacks"
  },
  {
   "ticker": "WLY",
@@ -830,7 +926,9 @@
   "product": 2,
   "basis": "licenses its corpus and prints the AI revenue number",
   "evidence": "filing-lang 5; AI officer 3",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "immaterial-to-pandl",
+  "disqualifier_note": "prints the AI revenue number, but revenue is flat; option not business"
  },
  {
   "ticker": "NU",
@@ -847,6 +945,8 @@
   "product": 2,
   "basis": "behavioral underwriting where no bureau file exists",
   "evidence": "not developer-facing",
-  "contradiction": ""
+  "contradiction": "",
+  "disqualifier": "thesis-adjacent",
+  "disqualifier_note": "behavioural underwriting genuinely load-bearing; more fintech than AI trade"
  }
 ]
