@@ -19,8 +19,11 @@ part the entity/claim extraction can actually match against.
 ## COHR — Coherent (T1, scored 2026-06-02)
 
 ### `vertical_integration_moat`
-**Statement:** In-house indium-phosphide laser → transceiver vertical integration is a
-durable cost/supply advantage competitors cannot easily replicate.
+**Statement:** COHR is vertically integrated from in-house indium-phosphide lasers through to
+transceivers, and that integration is why innovation scores 4.  *(CORRECTED 2026-08-21 —
+originally added "durable" and "competitors cannot easily replicate". The note establishes
+that COHR IS integrated; it does not claim the advantage is durable or hard to replicate.
+That distinction is load-bearing now that `chinese_laser_capability` is the crux.)*
 **Derived from:** `competitive_advantage.innovation_rate: 4` — *"vertically integrated optics
 (indium-phosphide lasers -> transceivers), datacom transceiver ramp"*.
 **Challenged by:** a competitor demonstrating in-house InP/EML chip capability at comparable
@@ -29,10 +32,19 @@ Accelink or similar shipping integrated chip-to-module at 800G+.
 **Confirmed by:** competitors publicly constrained by third-party laser supply; COHR gross
 margin holding while merchant module prices fall.
 
-### `supply_tightness`
-**Statement:** Datacom transceiver supply remains tight, supporting price and share.
+### `supply_was_tight_at_scoring`  *(CORRECTED 2026-08-21)*
+**Statement:** Datacom transceiver supply was tight as at 2026-06-02, and the distribution
+score of 4 was set under those conditions. The assumption is that those conditions still hold
+— not that tightness is a durable property of the market.
 **Derived from:** `competitive_advantage.distribution: 4` — *"broad datacom customer base
-across hyperscalers amid transceiver supply tightness"*.
+across hyperscalers **amid** transceiver supply tightness"*.
+**Correction note:** originally *"supply REMAINS tight, SUPPORTING price and share"*. Two
+additions: "remains" projected a point-in-time observation forward, and "supporting price and
+share" added a causal mechanism the note never states. "Amid" describes the backdrop the score
+was set against. This matters for how evidence reads: as originally written, Chinese capacity
+growth "challenges the thesis"; as the operator actually wrote it, the same evidence says
+"the conditions behind a June score have changed" — which is a re-score trigger, not a
+falsification.
 **Challenged by:** capacity additions at 800G/1.6T from Innolight/Eoptolink; a large capital
 raise funding competitor capacity; transceiver ASP declines; hyperscalers publicly
 dual-sourcing on price.
@@ -60,11 +72,17 @@ but not thesis-breaking"*. That was an over-read: the operator's note records co
 a CAVEAT on the score, not a judgement that it is tolerable. The claim now asserts only what
 the score itself implies.
 
-### `deleveraging_on_track`
-**Statement:** Post-II-VI/Finisar leverage continues to come down.
+### `leverage_is_a_watch_item`  *(CORRECTED 2026-08-21)*
+**Statement:** Post-II-VI/Finisar balance-sheet leverage is a monitored risk, explicitly
+flagged as a watch-item within an investor-interest score of 4. The assumption is that it does
+not worsen — NOT that deleveraging is progressing.
 **Derived from:** `potential_investor_interest: 4` — *"turnaround/deleveraging story ...
-Post-II-VI/Finisar balance-sheet leverage is a watch-item"*.
+Post-II-VI/Finisar balance-sheet leverage is a **watch-item**"*.
 **Challenged by:** leverage flat or rising; refinancing at worse terms; FCF miss.
+**Correction note:** originally *"leverage continues to come down"*. Same failure as the
+telecom inversion: a watch-item is a risk under observation, and I converted it into an
+assertion that progress is being made. The note calls deleveraging a "story" (the narrative)
+and the leverage itself a "watch-item" (the risk).
 
 ### `chinese_laser_capability` — THE CRUX (operator, 2026-08-21)
 **Statement:** Chinese optical vendors cannot yet manufacture high-quality lasers (InP/EML)
@@ -149,7 +167,11 @@ position"*. "Stable" appears nowhere in the operator's note — it converted a s
 into a claim about durability that was never made.
 
 ### `datacom_recovery`
-**Statement:** The AI datacom cycle recovery continues, offsetting legacy weakness.
+**Statement:** The AI datacom cycle recovery is underway and is one of the named positives
+behind an investor-interest score of 4.  *(CORRECTED 2026-08-21 — originally "continues,
+OFFSETTING legacy weakness". The note lists datacom recovery as a positive and telecom
+weakness as a separate temper; it never claims one offsets the other. They are independent
+factors and should be tracked as such.)*
 **Derived from:** `potential_investor_interest: 4` — *"AI datacom-cycle recovery and
 transceiver/EML demand"*.
 **Challenged by:** datacom order pauses; recovery stalling before telecom drag abates.
@@ -166,11 +188,15 @@ offset datacom gains"*. That inverted the sense. "Tempers" means the drag is alr
 applied to the score; "contained" implied it was being kept from applying. Opposite readings,
 and they would have produced opposite signals from identical evidence.
 
-### `cloud_light_integration`
-**Statement:** The Cloud Light acquisition integrates and contributes to the datacom ramp.
-**Derived from:** `competitive_advantage.innovation_rate` — *"3+ on the AI datacom ramp and
-Cloud Light integration"*.
+### `cloud_light_is_an_upgrade_condition`  *(CORRECTED 2026-08-21)*
+**Statement:** Cloud Light integration is one of the two conditions that would take LITE's
+innovation score from 3 to 3+. It is a potential upside trigger, NOT an established fact.
+**Derived from:** `competitive_advantage.innovation_rate: 3` — *"**3+** on the AI datacom ramp
+and Cloud Light integration"*.
+**Would upgrade the score if:** integration completes and contributes measurably to datacom.
 **Challenged by:** integration problems; Cloud Light customer losses.
+**Correction note:** originally *"integrates and contributes to the datacom ramp"*, stated as
+fact. The "3+" notation marks a conditional upgrade path, not something already achieved.
 
 ### `chinese_laser_capability` — SHARED WITH COHR
 See the COHR section. LITE's exposure is the direct one: it IS the merchant EML/InP supplier,
@@ -209,7 +235,12 @@ to `challenged`, but a human decides. Nothing auto-downgrades a thesis.
    over-reads and have been corrected in place, each with a correction note: the two
    concentration/telecom ones asserted judgements the notes never made, and
    `telecom_drag_contained` actually INVERTED the sense of "tempers". Correction principle
-   applied throughout: claim only what the score itself implies, add no judgement. The
-   remaining eight still want a sanity check.
+   applied throughout: claim only what the score itself implies, add no judgement.
+   **2026-08-21, second pass:** the remaining set was reviewed and five more were corrected
+   (`supply_tightness`, `deleveraging_on_track`, `vertical_integration_moat`,
+   `datacom_recovery`, `cloud_light_integration`). EIGHT of eleven needed correction, all
+   failing the same way — hedges, observations and watch-items hardened into forward-looking
+   assertions. Only `datacom_ramp_continues` and `eml_laser_supply_position` survived the
+   review unchanged.
 3. **The COHR/LITE tension** — should COHR's vertical integration be an explicit bear
    input to LITE's thesis?
