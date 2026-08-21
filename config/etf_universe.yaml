@@ -1,0 +1,96 @@
+# ETF Flow & Crowding Monitor — universe definition
+# Spec: docs/specs/2026-08-19-etf-flow-crowding-monitor.md
+#
+# TWO TIERS WITH DIFFERENT PRIVILEGES. The reason to tier is statistical, not data cost:
+# 28 trigger-eligible ETFs x 2 horizons ~= 56 tests/day. At 2 sigma that is ~2 false alerts
+# PER DAY by chance alone. Only the trigger tier may fire an alert.
+#
+# Flags per ETF (see `overrides`):
+#   synthetic       : swap/forward backed -> creations do NOT buy underlying shares.
+#                     Excluded from z-scores AND from Phase 2 look-through.
+#   min_history_ok  : has enough history for a stable baseline; false -> raw flow only.
+
+meta:
+  version: 1
+  updated: "2026-08-19"
+
+# Sibling pairs. SPY is a trading/hedging vehicle with +/-$8B daily swings on mechanics,
+# so SPY-vs-(IVV+VOO) divergence separates trading flow from real allocation. Same for QQQ/QQQM.
+pairs:
+  - name: "SPY vs IVV+VOO"
+    lead: SPY
+    against: [IVV, VOO]
+  - name: "QQQ vs QQQM"
+    lead: QQQ
+    against: [QQQM]
+
+tiers:
+  trigger:
+    baseline_years: 3
+    sleeves:
+      core_index:
+        label: "Core index + siblings"
+        tickers: [SPY, IVV, VOO, QQQ, QQQM, IWM, DIA, RSP]
+      sectors:
+        label: "Sectors (SPDR)"
+        tickers: [XLK, XLC, XLF, XLE, XLV, XLY, XLP, XLI, XLU, XLB, XLRE]
+      semis_software:
+        label: "Semis + software"
+        tickers: [SMH, SOXX, IGV]
+      factor:
+        label: "Factor"
+        # Style/factor complex. AUM figures are share-class, verified against FactSet
+        # 2026-07-31 — the two Vanguard style funds are far larger than the Russell pair
+        # and were the biggest gap in the original list.
+        #   MTUM momentum | QUAL quality | VLUE value (MSCI) | USMV min-vol
+        #   IWF/IWD  Russell 1000 growth/value
+        #   VUG $219.5B / VTV $187.7B  CRSP growth/value — the largest style ETFs anywhere,
+        #     and a sibling pair against IWF/IWD (same factor, different index) which
+        #     separates real style allocation from index-vehicle mechanics.
+        #   SCHD $104.2B  dividend — the destination money rotates INTO when tech de-rates,
+        #     and the single largest factor sleeve the original universe did not cover.
+        #   COWZ $18.7B  free cash flow — a genuinely crowded factor in its own right.
+        tickers: [MTUM, QUAL, VLUE, USMV, IWF, IWD, VUG, VTV, SCHD, COWZ]
+
+  context:
+    baseline_years: 1
+    sleeves:
+      tech_thematic:
+        label: "Tech / thematic"
+        # VGT/IYW/IGM are ~90% the same exposure as XLK. Letting them alert
+        # independently would triple-count a single move. Context only.
+        # IJR ($109.6B) is the size factor's large cousin to IWM; kept in CONTEXT rather than
+        # trigger because IWM already carries small-cap in the core sleeve and a tech book's
+        # exposure to pure size is second-order. SPLV ($7.2B) stays context for the same
+        # reason — USMV ($25B+) is the min-vol name that matters.
+        tickers: [VGT, IYW, IGM, CIBR, SKYY, FDN, AIQ, BOTZ, MAGS, XLG, XSD, PSI, SPLV, PDP,
+                  IJR]
+      synthetic_new:
+        label: "Synthetic / new issues"
+        tickers: [DRAM, LYTE]
+      competitors:
+        label: "Competitor sleeve"
+        # Operator decision: JTEK + BAI (next largest excluding SEMI) + BCTK itself.
+        tickers: [JTEK, BAI, BCTK]
+
+# Per-ETF overrides. Anything not listed inherits: synthetic=false, min_history_ok=true.
+overrides:
+  DRAM:
+    synthetic: true
+    min_history_ok: false
+    # Inception 2026-04-02 (~95 trading days). Clears the raw 63d WINDOW but gives no usable
+    # 3y BASELINE -- a 63d z-score would be computed against ~1 non-overlapping observation.
+    # Raw flow and flow/AUM only, flagged "insufficient history". Do not "fix" this.
+    note: "Roundhill Memory ETF, inception 2026-04-02, actively managed + synthetically backed"
+  LYTE:
+    synthetic: true
+    min_history_ok: false
+    note: "Roundhill Photonics & Optics, inception 2026-08-06 (~10 trading days). No baseline."
+
+# Excluded by rule -- recorded so nobody re-adds them without reading why.
+excluded:
+  SEMI: "AUM $37.6M -- too small (operator explicitly excluded)"
+  SIZE: "AUM $429M -- below $2B trigger-tier floor"
+  SPHB: "AUM $976M -- below $2B trigger-tier floor"
+  SOXL: "Leveraged -- distorts AUM math and flow/AUM normalisation"
+  LITE: "NOT AN ETF. Lumentum Holdings, ~$78B equity. The intended ticker was LYTE."

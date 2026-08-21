@@ -357,3 +357,62 @@ the defensible horizons.
 
 Product benchmarking (ETFdb/VettaFi, Koyfin, YCharts, Morningstar, Lipper, ETFGI, Bloomberg ETF IQ)
 — worth a re-run purely to steal presentation conventions for Block A.
+
+---
+
+# Deployment notes (added 2026-08-21, after Phase 1+2 were built)
+
+## What is wired, and what still gates it
+
+`/root/daily` commit `5974b5a` already adds both sections and the render step:
+
+- `combine_and_send.py` — `ETF FLOWS & CROWDING` after ETF UPDATE, `ETF FLOW DETAIL` last.
+- `run_daily.sh` — a `--report` step before the combine. **Zero `claude -p` calls.**
+
+Both degrade to an absent section, so **nothing appears in the email until
+`worktree-etf-flows-phase1` is merged to main** — `scripts/etf_flows.py` does not exist on
+main yet. That merge is the operator's call; this session could not push.
+
+## The fetch cron (install AFTER the merge)
+
+    30 5 * * 1-5 /root/bin/alert_on_failure.sh etf_flows_fetch \
+        /root/research-watchlist/scripts/etf_flows.py --fetch
+
+05:30 ET is verified, not assumed: on 2026-08-21 at 05:05 ET the 2026-08-20 flow was already
+present in FactSet, so T-1 data is available well before the job runs.
+
+**Do not move fetching into 06:45-08:15.** `run_daily.sh` records why: on 2026-08-13 two
+`claude -p`-heavy jobs inside one rolling 5h window exhausted the subscription and the news
+digest shipped 40 of 256 stories. Steady-state `--fetch` is ~15 calls (3 series x 5 id-chunks)
+plus a look-through pull only when something alerted.
+
+## Corrections to the body of this spec
+
+The sections above were written before the system was built. Where they disagree with this,
+this wins:
+
+1. **Backfill is ~114 calls, not ~52.** The 52 figure counted flows only; price and AUM
+   history cost extra. `--backfill` prints its full plan and exits 2 without `--yes`.
+
+2. **The transport does NOT ask the model to echo rows.** Measured: 500 rows echo-verbatim
+   took 590s and came back truncated and unparseable, because a large MCP result never
+   reaches the model at all — it spills to a file and the model gets a pointer. The runner
+   now reads `tool_result` out of `--output-format stream-json` (18s, byte-exact) and follows
+   the spill path when present.
+
+3. **The gate is EMPIRICAL PERCENTILE, not robust-z.** Calibration showed the two-tier sigma
+   design was decorative: raising standalone from 3.0 sigma to 8.0 sigma barely changed the
+   count, because almost every corroborated alert qualified on flow-vs-price divergence —
+   close to a coin flip — so the effective threshold was always the lower number. Separately,
+   MAD-scaled sigma is not interpretable for these flows: a genuine **-7.2 sigma** print
+   occurs in ordinary data. A percentile means the same thing for every fund. The sigma path
+   is retained behind `USE_PERCENTILE_GATE` and still tested, so the choice is reversible.
+
+4. **One alert per ticker per episode.** The 5d window sits INSIDE the 63d window, so the two
+   horizons are not independent evidence; letting each corroborate the other let one episode
+   clear the 2 sigma bar twice. Reporting keeps the most severe horizon and disarms both.
+
+5. **Report files are named by RUN date, not flow date.** `combine_and_send.py` formats paths
+   with `date.today()`; naming by the flow date (T-1) meant the digest looked for a file that
+   did not exist and the section would have silently never appeared. The flow date is printed
+   inside the report instead.
