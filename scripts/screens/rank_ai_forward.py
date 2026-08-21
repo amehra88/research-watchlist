@@ -54,7 +54,7 @@ J = {
  "AXON": (4,3,3,False,"system of record converting to model-native product"),
  "DE": (4,3,3,False,"See & Spray decides per plant, priced on outcome"),
  "TSLA": (4,2,3,False,"fleet collects training data at a profit; FSD is the premium"),
- "PL": (4,2,2,False,"temporal Earth corpus; product is inference over it. ~35x sales"),
+ "PL": (3,2,2,False,"DOWNGRADED: much of revenue is imagery ACCESS, not inference. ~35x sales"),
  "CLBT": (3,2,2,False,"extraction is engineering; the paid job is AI triage"),
  "MBLY": (3,2,3,False,"perception across an OEM-funded fleet"),
  "RELX": (3,3,2,True,"owns the legal/scientific ground truth; sells the answer"),
@@ -63,8 +63,8 @@ J = {
  "GEHC": (3,2,3,False,"largest imaging-AI installed base"),
  "ISRG": (3,1,2,False,"best unconverted corpus in med-tech; no AI revenue yet"),
  "CHRW": (3,2,2,False,"substitution is publicly auditable via shipments/employee"),
- "PLTR": (3,3,2,True,"AIP wires models into operational decisions"),
- "CRWD": (3,3,3,True,"Charlotte AI compresses analyst labor"),
+ "PLTR": (4,3,2,True,"ontology is the scarce asset LLMs need to ACT; very few have solved it"),
+ "CRWD": (3,3,3,True,"detection ML + Charlotte; OverWatch analysts label every intrusion"),
  "NET": (3,2,3,True,"inference at the edge; deepest MCP traction of any filer"),
  "MDB": (3,2,2,True,"vector search; strongest operator-register blog by far"),
  "INOD": (3,2,1,True,"sells training data to the labs; supplier TO the app layer"),
@@ -98,6 +98,30 @@ J = {
  "MA": (2,1,2,False,"transaction graph fraud scoring; network survives without it"),
 }
 
+
+# LABEL FLYWHEEL (operator insight 2026-08-20, from CrowdStrike): a services arm
+# staffed by experts is a LABELLING OPERATION. Every intrusion OverWatch hunts,
+# every scan a RadNet radiologist reads, every case a forward-deployed engineer
+# works becomes labelled training data a pure-software competitor cannot buy.
+# This is the cheapest durable data moat in the market and nothing else on the
+# scorecard was capturing it -- the corpus looks identical from outside, but one
+# is annotated by domain experts at the company's own expense and the other is not.
+LABEL_FLYWHEEL = {
+    "CRWD": "OverWatch/Falcon Complete analysts label every investigated intrusion",
+    "RDNT": "owns the radiologists whose reads label the images",
+    "TEM":  "clinical abstraction staff structure the notes behind the corpus",
+    "PLTR": "forward-deployed engineers encode each customer's ontology by hand",
+    "ISRG": "case review annotates surgical video against outcomes",
+    "IQV":  "clinical operations staff curate the trial data",
+}
+
+# LEADERSHIP CHURN: technical leadership is one of the operator's three original
+# criteria, so senior technical departure is a genuine negative -- and the officer
+# screen only sees APPOINTMENTS, which biases it optimistic. Tracked by hand until
+# the 8-K departure screen backfills it.
+LEADERSHIP_CHURN = {
+    "CRWD": "CTO departed 2026 -- watch whether the detection-engineering bench holds",
+}
 
 # (multiplier, reason). Efficacy contested by a regulator or independent testing.
 CREDIBILITY = {
@@ -180,9 +204,14 @@ def main():
         # and it needs its own penalty, not a lower centrality score.
         cred = CREDIBILITY.get(tk)
         mult = cred[0] if cred else 1.0
+        flywheel = 3.0 if tk in LABEL_FLYWHEEL else 0.0
+        churn = -2.0 if tk in LEADERSHIP_CHURN else 0.0
 
-        rows.append({"ticker": tk, "score": round((thesis + corrob) * mult, 1),
+        rows.append({"ticker": tk,
+                     "score": round((thesis + corrob + flywheel + churn) * mult, 1),
                      "ml": ml, "credibility": (cred[1] if cred else ""),
+                     "flywheel": LABEL_FLYWHEEL.get(tk, ""),
+                     "churn": LEADERSHIP_CHURN.get(tk, ""),
                      "thesis": round(thesis, 1), "corroboration": corrob,
                      "centrality": cen, "product": prod, "basis": basis,
                      "evidence": "; ".join(notes) or ("developer-facing, no data collected" if dev else "not developer-facing"),
@@ -195,6 +224,10 @@ def main():
         flag = "  !! " + r["contradiction"] if r["contradiction"] else ""
         if r["credibility"]:
             flag += "  !! credibility discount"
+        if r["flywheel"]:
+            flag += "  +label flywheel"
+        if r["churn"]:
+            flag += "  !! leadership churn"
         print("| %d | %s | %s | %d/5 | %d/3 | %d/3 | %s%s | %s |" % (
             i, r["ticker"], r["score"], r["centrality"], r["product"], r["ml"],
             r["evidence"], flag, r["basis"]))
