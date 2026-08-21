@@ -2,6 +2,7 @@
  {
   "ticker": "HNGE",
   "score": 100.4,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 3,
   "credibility": "",
@@ -18,6 +19,7 @@
  {
   "ticker": "GH",
   "score": 100.4,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 3,
   "credibility": "",
@@ -34,6 +36,7 @@
  {
   "ticker": "IRTC",
   "score": 100.0,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 3,
   "credibility": "",
@@ -50,6 +53,7 @@
  {
   "ticker": "APP",
   "score": 98.2,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 3,
   "credibility": "",
@@ -66,6 +70,7 @@
  {
   "ticker": "RDNT",
   "score": 93.9,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 3,
   "credibility": "",
@@ -82,6 +87,7 @@
  {
   "ticker": "HTFL",
   "score": 90.9,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 2,
   "credibility": "",
@@ -98,6 +104,7 @@
  {
   "ticker": "AXON",
   "score": 90.9,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 3,
   "credibility": "",
@@ -114,6 +121,7 @@
  {
   "ticker": "DE",
   "score": 90.9,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 3,
   "credibility": "",
@@ -130,6 +138,7 @@
  {
   "ticker": "UPST",
   "score": 90.3,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 3,
   "credibility": "",
@@ -144,8 +153,26 @@
   "contradiction": ""
  },
  {
+  "ticker": "CRWD",
+  "score": 86.6,
+  "momentum": "+25.6% at 5x S's size AND margin expanding",
+  "lab_risk": 1,
+  "ml": 3,
+  "credibility": "",
+  "flywheel": "OverWatch/Falcon Complete analysts label every investigated intrusion",
+  "churn": "CTO departed 2026 -- watch whether the detection-engineering bench holds",
+  "thesis": 81.8,
+  "corroboration": 3.3,
+  "centrality": 3,
+  "product": 3,
+  "basis": "services drag sits in COGS at ~75% GM and margin STILL expands -- flywheel pays for itself",
+  "evidence": "filing-lang 2; gh-traction 10.0; blog-operator 0",
+  "contradiction": ""
+ },
+ {
   "ticker": "RXRX",
   "score": 86.4,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 3,
   "credibility": "",
@@ -162,6 +189,7 @@
  {
   "ticker": "PLTR",
   "score": 85.7,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 2,
   "credibility": "",
@@ -176,24 +204,9 @@
   "contradiction": ""
  },
  {
-  "ticker": "CRWD",
-  "score": 84.3,
-  "lab_risk": 1,
-  "ml": 3,
-  "credibility": "",
-  "flywheel": "OverWatch/Falcon Complete analysts label every investigated intrusion",
-  "churn": "CTO departed 2026 -- watch whether the detection-engineering bench holds",
-  "thesis": 81.8,
-  "corroboration": 3.3,
-  "centrality": 3,
-  "product": 3,
-  "basis": "services drag sits in COGS at ~75% GM and margin STILL expands -- flywheel pays for itself",
-  "evidence": "filing-lang 2; gh-traction 10.0; blog-operator 0",
-  "contradiction": ""
- },
- {
   "ticker": "AUR",
   "score": 81.8,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 3,
   "credibility": "",
@@ -210,6 +223,7 @@
  {
   "ticker": "KDK",
   "score": 81.8,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 3,
   "credibility": "",
@@ -226,6 +240,7 @@
  {
   "ticker": "NTRA",
   "score": 81.8,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 1,
   "credibility": "",
@@ -242,6 +257,7 @@
  {
   "ticker": "TSLA",
   "score": 81.8,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 3,
   "credibility": "",
@@ -258,6 +274,7 @@
  {
   "ticker": "EVLV",
   "score": 77.3,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 3,
   "credibility": "FTC settlement re detection-efficacy claims; independent tests missed knives",
@@ -273,7 +290,8 @@
  },
  {
   "ticker": "NET",
-  "score": 75.9,
+  "score": 76.7,
+  "momentum": "+36% but GM 77.8->71.8%; growth is not the question, cost is",
   "lab_risk": 1,
   "ml": 3,
   "credibility": "",
@@ -290,6 +308,7 @@
  {
   "ticker": "GEHC",
   "score": 75.2,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 3,
   "credibility": "",
@@ -306,6 +325,7 @@
  {
   "ticker": "TEM",
   "score": 74.3,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 2,
   "credibility": "",
@@ -322,6 +342,7 @@
  {
   "ticker": "ADPT",
   "score": 73.5,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 1,
   "credibility": "",
@@ -337,7 +358,8 @@
  },
  {
   "ticker": "MBLY",
-  "score": 72.7,
+  "score": 70.5,
+  "momentum": "LTM +5.0%, GM 42.9% = series LOW. Competition confirmed",
   "lab_risk": 0,
   "ml": 3,
   "credibility": "",
@@ -352,8 +374,26 @@
   "contradiction": ""
  },
  {
+  "ticker": "MDB",
+  "score": 67.7,
+  "momentum": "+25.2% with GM 70.6->72.2%",
+  "lab_risk": 1,
+  "ml": 2,
+  "credibility": "",
+  "flywheel": "",
+  "churn": "",
+  "thesis": 63.6,
+  "corroboration": 3.6,
+  "centrality": 3,
+  "product": 2,
+  "basis": "vector search; strongest operator-register blog by far",
+  "evidence": "filing-lang 1; gh-traction 2.2; blog-operator 13",
+  "contradiction": ""
+ },
+ {
   "ticker": "RELX",
   "score": 67.3,
+  "momentum": "",
   "lab_risk": 3,
   "ml": 2,
   "credibility": "",
@@ -370,6 +410,7 @@
  {
   "ticker": "TRI",
   "score": 67.3,
+  "momentum": "",
   "lab_risk": 3,
   "ml": 2,
   "credibility": "",
@@ -384,24 +425,9 @@
   "contradiction": ""
  },
  {
-  "ticker": "MDB",
-  "score": 65.4,
-  "lab_risk": 1,
-  "ml": 2,
-  "credibility": "",
-  "flywheel": "",
-  "churn": "",
-  "thesis": 63.6,
-  "corroboration": 3.6,
-  "centrality": 3,
-  "product": 2,
-  "basis": "vector search; strongest operator-register blog by far",
-  "evidence": "filing-lang 1; gh-traction 2.2; blog-operator 13",
-  "contradiction": ""
- },
- {
   "ticker": "TEAM",
   "score": 65.4,
+  "momentum": "",
   "lab_risk": 2,
   "ml": 2,
   "credibility": "",
@@ -418,6 +444,7 @@
  {
   "ticker": "FICO",
   "score": 63.6,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 1,
   "credibility": "",
@@ -434,6 +461,7 @@
  {
   "ticker": "PL",
   "score": 63.6,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 2,
   "credibility": "",
@@ -450,6 +478,7 @@
  {
   "ticker": "NP",
   "score": 63.5,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 2,
   "credibility": "",
@@ -464,24 +493,9 @@
   "contradiction": ""
  },
  {
-  "ticker": "OPEN",
-  "score": 63.0,
-  "lab_risk": 1,
-  "ml": 2,
-  "credibility": "",
-  "flywheel": "",
-  "churn": "",
-  "thesis": 63.6,
-  "corroboration": 1.2,
-  "centrality": 3,
-  "product": 2,
-  "basis": "AVM works (GM 7.2->9.7%) but revenue -44% from peak; a rates trade, not an AI trade",
-  "evidence": "filing-lang 3",
-  "contradiction": ""
- },
- {
   "ticker": "SPGI",
   "score": 62.5,
+  "momentum": "",
   "lab_risk": 2,
   "ml": 2,
   "credibility": "",
@@ -498,6 +512,7 @@
  {
   "ticker": "CLBT",
   "score": 61.8,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 2,
   "credibility": "",
@@ -514,6 +529,7 @@
  {
   "ticker": "SPOT",
   "score": 61.8,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 3,
   "credibility": "",
@@ -530,6 +546,7 @@
  {
   "ticker": "RBLX",
   "score": 61.8,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 3,
   "credibility": "",
@@ -544,8 +561,26 @@
   "contradiction": ""
  },
  {
+  "ticker": "OPEN",
+  "score": 60.8,
+  "momentum": "revenue -44% from peak; margin up only because it stopped buying",
+  "lab_risk": 1,
+  "ml": 2,
+  "credibility": "",
+  "flywheel": "",
+  "churn": "",
+  "thesis": 63.6,
+  "corroboration": 1.2,
+  "centrality": 3,
+  "product": 2,
+  "basis": "AVM works (GM 7.2->9.7%) but revenue -44% from peak; a rates trade, not an AI trade",
+  "evidence": "filing-lang 3",
+  "contradiction": ""
+ },
+ {
   "ticker": "CHRW",
   "score": 60.0,
+  "momentum": "",
   "lab_risk": 2,
   "ml": 2,
   "credibility": "",
@@ -562,6 +597,7 @@
  {
   "ticker": "ISRG",
   "score": 57.9,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 2,
   "credibility": "",
@@ -578,6 +614,7 @@
  {
   "ticker": "SHOP",
   "score": 56.8,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 2,
   "credibility": "",
@@ -594,6 +631,7 @@
  {
   "ticker": "ESTC",
   "score": 55.6,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 2,
   "credibility": "",
@@ -610,6 +648,7 @@
  {
   "ticker": "FDS",
   "score": 55.1,
+  "momentum": "",
   "lab_risk": 2,
   "ml": 2,
   "credibility": "",
@@ -626,6 +665,7 @@
  {
   "ticker": "FIG",
   "score": 54.7,
+  "momentum": "",
   "lab_risk": 2,
   "ml": 2,
   "credibility": "",
@@ -642,6 +682,7 @@
  {
   "ticker": "V",
   "score": 54.5,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 2,
   "credibility": "",
@@ -658,6 +699,7 @@
  {
   "ticker": "WLY",
   "score": 53.9,
+  "momentum": "",
   "lab_risk": 2,
   "ml": 1,
   "credibility": "",
@@ -674,6 +716,7 @@
  {
   "ticker": "NU",
   "score": 52.7,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 2,
   "credibility": "",
@@ -690,6 +733,7 @@
  {
   "ticker": "WAY",
   "score": 52.7,
+  "momentum": "",
   "lab_risk": 2,
   "ml": 2,
   "credibility": "",
@@ -706,6 +750,7 @@
  {
   "ticker": "VRSK",
   "score": 52.7,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 2,
   "credibility": "",
@@ -722,6 +767,7 @@
  {
   "ticker": "CGNX",
   "score": 52.7,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 2,
   "credibility": "",
@@ -738,6 +784,7 @@
  {
   "ticker": "INOD",
   "score": 51.6,
+  "momentum": "",
   "lab_risk": 3,
   "ml": 1,
   "credibility": "",
@@ -754,6 +801,7 @@
  {
   "ticker": "KVYO",
   "score": 51.3,
+  "momentum": "",
   "lab_risk": 2,
   "ml": 2,
   "credibility": "",
@@ -768,24 +816,9 @@
   "contradiction": ""
  },
  {
-  "ticker": "S",
-  "score": 51.3,
-  "lab_risk": 2,
-  "ml": 3,
-  "credibility": "",
-  "flywheel": "",
-  "churn": "",
-  "thesis": 54.5,
-  "corroboration": 0.4,
-  "centrality": 2,
-  "product": 1,
-  "basis": "CONFIRMED LOSING: CRWD 5x larger AND faster; S margin -350bps vs CRWD +150bps",
-  "evidence": "filing-lang 1; gh-traction 0.0",
-  "contradiction": ""
- },
- {
   "ticker": "INTU",
   "score": 50.9,
+  "momentum": "",
   "lab_risk": 2,
   "ml": 2,
   "credibility": "",
@@ -800,8 +833,26 @@
   "contradiction": ""
  },
  {
+  "ticker": "S",
+  "score": 50.6,
+  "momentum": "slower than a competitor 5x its size, margin -350bps",
+  "lab_risk": 2,
+  "ml": 3,
+  "credibility": "",
+  "flywheel": "",
+  "churn": "",
+  "thesis": 54.5,
+  "corroboration": 0.4,
+  "centrality": 2,
+  "product": 1,
+  "basis": "CONFIRMED LOSING: CRWD 5x larger AND faster; S margin -350bps vs CRWD +150bps",
+  "evidence": "filing-lang 1; gh-traction 0.0",
+  "contradiction": ""
+ },
+ {
   "ticker": "DOCU",
   "score": 50.4,
+  "momentum": "",
   "lab_risk": 3,
   "ml": 2,
   "credibility": "",
@@ -818,6 +869,7 @@
  {
   "ticker": "MA",
   "score": 47.1,
+  "momentum": "",
   "lab_risk": 0,
   "ml": 2,
   "credibility": "",
@@ -834,6 +886,7 @@
  {
   "ticker": "MORN",
   "score": 44.1,
+  "momentum": "",
   "lab_risk": 2,
   "ml": 1,
   "credibility": "",
@@ -850,6 +903,7 @@
  {
   "ticker": "ALGN",
   "score": 43.7,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 1,
   "credibility": "",
@@ -866,6 +920,7 @@
  {
   "ticker": "IQV",
   "score": 38.0,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 1,
   "credibility": "",
@@ -882,6 +937,7 @@
  {
   "ticker": "QXO",
   "score": 37.1,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 1,
   "credibility": "",
@@ -898,6 +954,7 @@
  {
   "ticker": "MCO",
   "score": 32.8,
+  "momentum": "",
   "lab_risk": 2,
   "ml": 1,
   "credibility": "",
@@ -914,6 +971,7 @@
  {
   "ticker": "SYM",
   "score": 25.5,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 1,
   "credibility": "",
@@ -930,6 +988,7 @@
  {
   "ticker": "TYL",
   "score": 25.5,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 1,
   "credibility": "",
@@ -946,6 +1005,7 @@
  {
   "ticker": "TOST",
   "score": 25.5,
+  "momentum": "",
   "lab_risk": 1,
   "ml": 1,
   "credibility": "",

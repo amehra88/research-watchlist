@@ -43,18 +43,18 @@ Agricultural and construction equipment. See & Spray runs real-time computer vis
 
 AI lending platform originating consumer loans through bank partners using its own underwriting model. The product IS the credit decision, trained on repayment outcomes including borrowers a bureau cutoff would have rejected — counterfactual data no traditional lender ever observes.
 
-**10. RXRX** — 86.4  ·  centrality 5/5, product 1/3  ·  _filing-lang 5; AI officer 8_
+**10. CRWD** — 86.6 **[BCTK]**  ·  centrality 3/5, product 3/3  ·  _filing-lang 2; gh-traction 10.0; blog-operator 0_
+
+**11. RXRX** — 86.4  ·  centrality 5/5, product 1/3  ·  _filing-lang 5; AI officer 8_
 
 AI drug discovery: runs industrial-scale automated cell-biology experiments and maps microscopy images into a space where similarity implies shared biological mechanism. The purest archetype A on the list — remove the model and there is no company — but clinical output remains unproven.
 
-**11. PLTR** — 85.7  ·  centrality 4/5, product 3/3  ·  _gh-traction 4.0; blog-operator 4_
+**12. PLTR** — 85.7  ·  centrality 4/5, product 3/3  ·  _gh-traction 4.0; blog-operator 4_
 
 Data integration and decision software for governments and large enterprises; AIP wires models into operational workflows. It sells the decision loop rather than a database, and the ontology layer is what makes models actionable on messy institutional data.
 
 
 ## Tier 2 — model-native, weaker proof
-
-**12. CRWD** — 84.3 **[BCTK]**  ·  centrality 3/5, product 3/3  ·  _filing-lang 2; gh-traction 10.0; blog-operator 0_
 
 **13. AUR** — 81.8  ·  centrality 5/5, product 1/3  ·  _not developer-facing_
 
@@ -74,7 +74,7 @@ Molecular diagnostics; Signatera sequences a patient's tumor to build a personal
 
 AI weapons screening at venue entrances — stadiums, schools, hospitals — letting people walk through without emptying their pockets. Discriminating a firearm from a laptop in a live physical stream is precisely what explicit rules failed at, so the model is the product. Caveat: past accounting and disclosure problems.
 
-**18. NET** — 75.9 **[BCTK]**  ·  centrality 3/5, product 2/3  ·  _gh-traction 10.0; blog-operator 7_
+**18. NET** — 76.7 **[BCTK]**  ·  centrality 3/5, product 2/3  ·  _gh-traction 10.0; blog-operator 7_
 
 **19. GEHC** — 75.2  ·  centrality 3/5, product 2/3  ·  _AI officer 8_
 
@@ -88,24 +88,24 @@ Precision medicine: sequences tumors and links results to longitudinal clinical 
 
 Immune medicine: sequences T- and B-cell receptors, and clonoSEQ tracks minimal residual disease in blood cancers. Structurally identical to Natera — a classifier over a proprietary immune-repertoire database, with FDA clearance and reimbursement gating any entrant.
 
-**22. MBLY** — 72.7  ·  centrality 3/5, product 2/3  ·  _not developer-facing_
+**22. MBLY** — 70.5  ·  centrality 3/5, product 2/3  ·  _not developer-facing_
 
 Supplies ADAS and autonomous driving systems to automakers. The perception stack is the product, and its training data arrives from a deployed vehicle fleet that OEM customers paid for — the profitable side of the data-collection channel.
 
 
 ## Tier 3 — strong corpus, real overlay
 
-**23. RELX** — 67.3  ·  centrality 3/5, product 3/3  ·  _developer-facing, no data collected_
+**23. MDB** — 67.7  ·  centrality 3/5, product 2/3  ·  _filing-lang 1; gh-traction 2.2; blog-operator 13_
+
+General-purpose document database with integrated vector search. It is substrate for retrieval-augmented applications, and its engineering writing scores the highest operator-register of anything screened — it writes like an organisation actually running models in production.
+
+**24. RELX** — 67.3  ·  centrality 3/5, product 3/3  ·  _developer-facing, no data collected_
 
 LexisNexis legal research, Elsevier scientific publishing, and risk/identity analytics. It owns the ground truth generative systems must be grounded in — editorially maintained case-law citation treatment and the scientific literature — and sells the answer rather than the search box.
 
-**24. TRI** — 67.3  ·  centrality 3/5, product 3/3  ·  _developer-facing, no data collected_
+**25. TRI** — 67.3  ·  centrality 3/5, product 3/3  ·  _developer-facing, no data collected_
 
 Legal, tax and news information; CoCounsel does research and drafting grounded in the Westlaw corpus. Same liability-grounding argument as RELX: a lawyer cannot file a brief citing a case that may not exist, and the verification layer is proprietary.
-
-**25. MDB** — 65.4  ·  centrality 3/5, product 2/3  ·  _filing-lang 1; gh-traction 2.2; blog-operator 13_
-
-General-purpose document database with integrated vector search. It is substrate for retrieval-augmented applications, and its engineering writing scores the highest operator-register of anything screened — it writes like an organisation actually running models in production.
 
 **26. TEAM** — 65.4  ·  centrality 2/5, product 3/3  ·  _AI officer 7; gh-traction 10.0; blog-operator 2_
 
@@ -123,23 +123,23 @@ Operates the largest fleet of Earth-imaging satellites, photographing the entire
 
 Private flood insurance underwritten on its own risk model rather than federal rate tables. The pricing model is the company — what Lemonade claimed to be, in a line where the modelling edge is directly measurable in loss ratios.
 
-**30. OPEN** — 63.0  ·  centrality 3/5, product 2/3  ·  _filing-lang 3_
-
-iBuyer: purchases homes directly from sellers and resells them. The automated valuation model *is* the business — misprice and the inventory eats you — which is maximum centrality attached to punishing economics.
-
-**31. SPGI** — 62.5  ·  centrality 3/5, product 2/3  ·  _AI officer 12; gh-traction 0.0_ · ⚠ claims > traction
+**30. SPGI** — 62.5  ·  centrality 3/5, product 2/3  ·  _AI officer 12; gh-traction 0.0_ · ⚠ claims > traction
 
 Ratings, indices, and market and commodity data. Proprietary corpora being made agent-addressable under a named Chief AI Officer — though flagged claims-exceed-traction here, because the public developer surface is thin relative to the filings.
 
-**32. CLBT** — 61.8  ·  centrality 3/5, product 2/3  ·  _not developer-facing_
+**31. CLBT** — 61.8  ·  centrality 3/5, product 2/3  ·  _not developer-facing_
 
 Digital forensics for law enforcement: extracts and analyses data from seized devices. Extraction is engineering, but the paid job is triage — entity resolution, image classification, transcription across terabytes — the Axon pattern of a system-of-record moat monetised through model-native product.
 
-**33. SPOT** — 61.8 **[BCTK]**  ·  centrality 2/5, product 2/3  ·  _gh-traction 0.0; blog-operator 0_
+**32. SPOT** — 61.8 **[BCTK]**  ·  centrality 2/5, product 2/3  ·  _gh-traction 0.0; blog-operator 0_
 
-**34. RBLX** — 61.8  ·  centrality 2/5, product 2/3  ·  _not developer-facing_
+**33. RBLX** — 61.8  ·  centrality 2/5, product 2/3  ·  _not developer-facing_
 
 User-generated 3D gaming platform. Real-time safety classification across voice and text involving minors is a licence to operate rather than a feature, and generative creation tools lower the skill floor for the creator base that supplies all its content.
+
+**34. OPEN** — 60.8  ·  centrality 3/5, product 2/3  ·  _filing-lang 3_
+
+iBuyer: purchases homes directly from sellers and resells them. The automated valuation model *is* the business — misprice and the inventory eats you — which is maximum centrality attached to punishing economics.
 
 **35. CHRW** — 60.0  ·  centrality 3/5, product 2/3  ·  _not developer-facing_
 
@@ -198,13 +198,13 @@ Sells engineered training and evaluation data to frontier model developers. Be p
 
 Marketing automation for e-commerce, sitting directly above Shopify. It predicts per-shopper churn, next order date and lifetime value across many merchants, an aggregation no single store could achieve — though its repo traction is thin and it carries platform dependency.
 
-**49. S** — 51.3  ·  centrality 2/5, product 1/3  ·  _filing-lang 1; gh-traction 0.0_
-
-Endpoint security. Behavioural detection and autonomous alert triage attack the security-analyst labour line, which is the right thesis — but it competes head-on with CrowdStrike and is losing.
-
-**50. INTU** — 50.9  ·  centrality 2/5, product 2/3  ·  _not developer-facing_
+**49. INTU** — 50.9  ·  centrality 2/5, product 2/3  ·  _not developer-facing_
 
 TurboTax, QuickBooks, Credit Karma and Mailchimp. It owns the tax returns and small-business ledgers outright — not customer data held in trust — and is moving from software that helps you do the work to agents that do it, which attacks the accountant's fee pool rather than a software budget.
+
+**50. S** — 50.6  ·  centrality 2/5, product 1/3  ·  _filing-lang 1; gh-traction 0.0_
+
+Endpoint security. Behavioural detection and autonomous alert triage attack the security-analyst labour line, which is the right thesis — but it competes head-on with CrowdStrike and is losing.
 
 **51. DOCU** — 50.4  ·  centrality 2/5, product 2/3  ·  _filing-lang 2; gh-traction 1.5; blog-operator 0_
 

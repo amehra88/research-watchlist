@@ -152,6 +152,29 @@ LAB_RISK = {
  "DE":0,"TSLA":0,"AUR":0,"KDK":0,"RXRX":0,"PL":0,"HNGE":0,"V":0,"MA":0,"SHOP":1,
 }
 
+# MOMENTUM -- the competitive-position axis (operator 2026-08-20, prompted by
+# "MBLY - I worry about competition"). The scorecard had NO measure of whether a
+# company is winning or losing its market. That gap was papered over by hand-
+# downgrading SentinelOne, which is a hack, not an algorithm.
+#
+# Growth and gross-margin DIRECTION together are the cleanest public read on
+# competitive position: a company taking share grows fast AND holds or expands
+# margin. Growing slowly while margin compresses means someone is out-competing
+# you on both price and product, whatever the AI story says.
+#
+# (yoy_growth_pct, gm_delta_bps, score 0-3, evidence). FactSet actuals.
+# TODO: auto-populate from FF_SALES/FF_GROSS_MGN for the full list; hand-entered
+# for the names reviewed so far. Unmeasured names score neutral, never penalised.
+MOMENTUM = {
+ "IOT":  (30.5, -190, 3, "+30.5% YoY, GM ~75.4%; 7 straight sequential gains"),
+ "NET":  (35.9, -600, 2, "+36% but GM 77.8->71.8%; growth is not the question, cost is"),
+ "CRWD": (25.6, +150, 3, "+25.6% at 5x S's size AND margin expanding"),
+ "MDB":  (25.2, +150, 3, "+25.2% with GM 70.6->72.2%"),
+ "S":    (20.8, -350, 1, "slower than a competitor 5x its size, margin -350bps"),
+ "OPEN": (-44.0, +250, 0, "revenue -44% from peak; margin up only because it stopped buying"),
+ "MBLY": (5.0, -240, 0, "LTM +5.0%, GM 42.9% = series LOW. Competition confirmed"),
+}
+
 # (multiplier, reason). Efficacy contested by a regulator or independent testing.
 CREDIBILITY = {
     "EVLV": (0.85, "FTC settlement re detection-efficacy claims; independent tests missed knives"),
@@ -235,10 +258,15 @@ def main():
         mult = cred[0] if cred else 1.0
         flywheel = 3.0 if tk in LABEL_FLYWHEEL else 0.0
         lab = -1.8 * LAB_RISK.get(tk, 1)
+        mom = MOMENTUM.get(tk)
+        # centred on 1.5 so a measured-but-mediocre name is penalised and an
+        # unmeasured name is neutral -- never punish a company for missing data
+        momentum = (mom[2] - 1.5) * 1.5 if mom else 0.0
         churn = -2.0 if tk in LEADERSHIP_CHURN else 0.0
 
         rows.append({"ticker": tk,
-                     "score": round((thesis + corrob + flywheel + churn + lab) * mult, 1),
+                     "score": round((thesis + corrob + flywheel + churn + lab + momentum) * mult, 1),
+                     "momentum": (mom[3] if mom else ""),
                      "lab_risk": LAB_RISK.get(tk, 1),
                      "ml": ml, "credibility": (cred[1] if cred else ""),
                      "flywheel": LABEL_FLYWHEEL.get(tk, ""),
@@ -261,6 +289,8 @@ def main():
             flag += "  !! leadership churn"
         if r["lab_risk"] >= 2:
             flag += "  !! lab-encroachment %d/3" % r["lab_risk"]
+        if r["momentum"]:
+            flag += "  [mom: %s]" % r["momentum"]
         print("| %d | %s | %s | %d/5 | %d/3 | %d/3 | %s%s | %s |" % (
             i, r["ticker"], r["score"], r["centrality"], r["product"], r["ml"],
             r["evidence"], flag, r["basis"]))
