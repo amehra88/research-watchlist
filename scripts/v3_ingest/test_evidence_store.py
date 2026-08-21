@@ -20,6 +20,35 @@ def test_calendar_quarter_maps_month_to_quarter():
     assert es.calendar_quarter("2025-12-31") == "2025Q4"
 
 
+def test_join_period_key_ignores_a_fiscal_label_and_uses_the_date():
+    """The silent-mismatch guard. exchanges.jsonl carries 6,035 fiscal and
+    4,086 calendar period_keys; claims are always calendar. LITE's fiscal
+    2026Q4 call happened 2026-08-11, which is calendar 2026Q3 — joining on the
+    raw label would line it up two quarters away, with no error raised."""
+    got = es.join_period_key(period_key="2026Q4", period_basis="fiscal",
+                             event_date="2026-08-11")
+    assert got == "2026Q3", got
+    # a calendar row derives to the same thing it already claims
+    assert es.join_period_key(period_key="2026Q1", period_basis="calendar",
+                              event_date="2026-02-04") == "2026Q1"
+
+
+def test_join_period_key_refuses_to_guess_without_a_date():
+    """A fiscal label with no date cannot be converted. Returning it anyway
+    would reintroduce exactly the silent mismatch this function exists to
+    prevent, so it raises instead."""
+    try:
+        es.join_period_key(period_key="2026Q4", period_basis="fiscal",
+                           event_date=None)
+    except ValueError as e:
+        assert "calendar" in str(e)
+    else:
+        raise AssertionError("a fiscal label with no date must raise")
+    # ... but a calendar label with no date is already usable
+    assert es.join_period_key(period_key="2026Q1", period_basis="calendar",
+                              event_date=None) == "2026Q1"
+
+
 def test_claim_id_is_stable_and_text_sensitive():
     a = es.claim_id("mdna", "doc1", "capacity rose 34%")
     b = es.claim_id("mdna", "doc1", "capacity rose 34%")

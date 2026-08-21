@@ -42,6 +42,31 @@ def calendar_quarter(date_iso: str) -> str:
     return f"{y}Q{(int(m) - 1) // 3 + 1}"
 
 
+def join_period_key(*, period_key, period_basis, event_date) -> str:
+    """The key to join the QUESTION side to the EVIDENCE side on.
+
+    THE TRAP: exchanges.jsonl `period_key` is not one thing. Measured on the
+    corpus, 6,035 rows carry `period_basis: fiscal` and 4,086 carry `calendar`.
+    LITE's fiscal 2026Q4 is calendar 2026Q2. Meanwhile every claim written by
+    this module is calendar (see calendar_quarter). Joining the two registers on
+    a raw `period_key` therefore lines up rows that are two quarters apart, and
+    does it silently — the strings match, so nothing errors.
+
+    That would corrupt both §6.2 (the evidence-count vs question-count
+    comparison) and §6.3 (the lag from first evidence to first question), which
+    are the two numbers the whole system exists to produce.
+
+    So: always derive from the publication date, which is basis-independent.
+    `period_key` is kept in the record for display, never for joining."""
+    if event_date:
+        return calendar_quarter(event_date)
+    if period_basis == "calendar" and period_key:
+        return str(period_key)
+    raise ValueError(
+        "cannot derive a calendar join key: no event_date, and period_key "
+        f"{period_key!r} is basis {period_basis!r} rather than calendar")
+
+
 def claim_id(source: str, document_id: str, text: str) -> str:
     h = hashlib.sha1(f"{source}|{document_id}|{text}".encode()).hexdigest()
     return h[:16]
