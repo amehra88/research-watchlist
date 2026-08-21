@@ -18,10 +18,19 @@ THREE CORRECTIONS over the first version, all from operator review:
    GEOGRAPHIC segments (FF_SALES_GEO_SEG) but not business segments, so a true datacom-only
    split needs extraction from the filings. Every run says so.
 
-2. "there are other chinese companies." Eoptolink joins Innolight in the panel; Accelink and
-   HG Genuine are tracked but classified out. Still missing: TFC Optical, Broadex, Dongshan,
-   Hisense Broadband, Source Photonics. The Chinese side is therefore UNDERCOUNTED and the
-   share below is a FLOOR.
+2. "there are other chinese companies." Seven more were resolved via FactSet and classified
+   on their own business descriptions, which is where the work was — naively adding every
+   Chinese optical name would have put a PCB maker and several passive-component firms into
+   a MODULE share calculation:
+     added to panel  Eoptolink, T&S Communications (transceivers, AOC/DAC)
+     component       Accelink, TFC Optical (ceramics/adaptors/lens arrays),
+                     Broadex/EverProX (PLC splitters, AWGs, fiber arrays)
+     diversified     HG Genuine (laser equipment), Dongshan Precision (mostly PCB)
+     no data         O-Net — a genuine module maker, but FactSet flags it private and
+                     FF_SALES is null for every quarter. It was taken private. This is a
+                     real, unfixable hole and the script prints it on every run.
+   Still absent: Hisense Broadband (unlisted subsidiary), Source Photonics (private). The
+   Chinese side remains UNDERCOUNTED and the share is a FLOOR.
 
 3. "i want it by quarter." Full quarterly series from FactSet FF_SALES in USD — no FX
    assumption, no cumulative/standalone confusion from Chinese H1 and 9M reporting.
