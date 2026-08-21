@@ -1,0 +1,34 @@
+# snapshot of the live droplet crontab — written by scripts/snapshot_crontab.sh
+# snapshot taken: 2026-08-21T13:30:02-04:00
+PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+0 7 * * * /root/bin/alert_on_failure.sh daily_digest /root/daily/run_daily.sh
+7 12 * * 0 /root/bin/alert_on_failure.sh nport_weekly /root/nport/run_weekly.sh >> /root/nport/data/cron.log 2>&1
+7 12 * * 1 /root/bin/alert_on_failure.sh nport_resend /root/nport/resend_last.sh >> /root/nport/data/cron.log 2>&1
+30 7 * * 1-6 /root/bin/alert_on_failure.sh watchlist_derive /root/research/scripts/derive_watchlist.sh >> /root/research/logs/cron.log 2>&1
+30 2 * * * /root/bin/alert_on_failure.sh earnings_reviewer /root/research-watchlist/scripts/cron_earnings_reviewer.py
+
+*/15 * * * * . /root/.gmail-poller.env && /root/bin/alert_on_failure.sh gmail_poller /root/research/scripts/poll_gmail_transcripts.py
+*/15 * * * * /root/bin/alert_on_failure.sh auto_sync /root/research-watchlist/scripts/auto_sync.py
+7,22,37,52 * * * * /root/bin/alert_on_failure.sh sidecar_pdfs /root/research-watchlist/scripts/sidecar_pdfs.py
+12,27,42,57 * * * * set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh enrich_sidecars /root/research-watchlist/scripts/enrich_sidecars.py
+
+# News digest (Phase C) — dual-source pre/post-market, ET-direct (spec §8)
+45 6 * * 1-5 set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh news_digest_premarket /root/research-watchlist/scripts/news_digest.py --premarket
+30 18 * * 1-5 set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh news_digest_postmarket /root/research-watchlist/scripts/news_digest.py --postmarket
+
+# chunk_store pg backup (step 5b) — nightly 03:00 ET, gzipped SQL, 14-day retention
+0 3 * * * /root/bin/alert_on_failure.sh chunk_store_backup /root/backups/pg_dump_chunk_store.sh >> /root/backups/cron.log 2>&1
+*/15 * * * * cd /root/research-watchlist && /root/bin/alert_on_failure.sh v3_inbox python3 scripts/v3_ingest/inbox_processor.py >> logs/v3_inbox.log 2>&1
+0 10 * * * cd /root/research-watchlist && /root/bin/alert_on_failure.sh v3_substacks python3 scripts/v3_ingest/substacks.py >> logs/v3_substacks.log 2>&1
+0 11 * * * cd /root/research-watchlist && /root/bin/alert_on_failure.sh v3_sec python3 scripts/v3_ingest/sec_filings.py >> logs/v3_sec.log 2>&1
+30 10 * * * cd /root/research-watchlist && /root/bin/alert_on_failure.sh claude_auth_canary python3 scripts/v3_ingest/claude_auth_canary.py >> logs/v3_canary.log 2>&1
+# one-shot SEC run watchdog (2026-08-10 11:00 run = first unattended test of the OOM fix); self-removes on verdict
+
+# AI application-layer screens (EDGAR full-text, all filers) - quarterly, 1st of Feb/May/Aug/Nov
+15 7 1 2,5,8,11 * /root/bin/alert_on_failure.sh ai_screens /root/research-watchlist/scripts/screens/run_ai_screens.sh >> /root/research-watchlist/logs/ai_screens.log 2>&1
+# one-shot: finish entity extraction + CNINFO ingest (self-removes on completion)
+0 13 * * * /root/.claude/jobs/cb12edf0/tmp/finish_work.sh >> /root/research-watchlist/logs/finish_work.log 2>&1
+# entity/claim extraction — daily, capped at 60 chunks/vertical (steady state ~4/day)
+0 14 * * * cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh v3_entities python3 scripts/v3_ingest/entities.py --vertical all >> logs/entities.log 2>&1
+# version-control the crontab: snapshot daily so auto_sync commits any schedule change
+30 13 * * * /root/research-watchlist/scripts/snapshot_crontab.sh >> /root/research-watchlist/logs/crontab_snapshot.log 2>&1

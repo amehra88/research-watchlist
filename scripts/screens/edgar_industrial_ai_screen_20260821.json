@@ -1,0 +1,1564 @@
+[
+ {
+  "score": 19,
+  "n": 5,
+  "filer": "Serve Robotics Inc. /DE/  (SERV)  (CIK 0001832483)",
+  "sic": "3569",
+  "phrases": [
+   "autonomy stack",
+   "autonomous systems",
+   "autonomous navigation",
+   "computer vision",
+   "machine vision"
+  ]
+ },
+ {
+  "score": 17,
+  "n": 5,
+  "filer": "Ouster, Inc.  (OUST, OUSTZ)  (CIK 0001816581)",
+  "sic": "3569",
+  "phrases": [
+   "sensor fusion",
+   "autonomous systems",
+   "autonomous navigation",
+   "neural network",
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 16,
+  "n": 4,
+  "filer": "Hyperscale Data, Inc.  (GPUS, GPUS-PD)  (CIK 0000896493)",
+  "sic": "3533",
+  "phrases": [
+   "sensor fusion",
+   "autonomous systems",
+   "autonomous navigation",
+   "computer vision"
+  ]
+ },
+ {
+  "score": 14,
+  "n": 3,
+  "filer": "AEye, Inc.  (LIDR, LIDRW)  (CIK 0001818644)",
+  "sic": "3714",
+  "phrases": [
+   "perception system",
+   "perception stack",
+   "autonomous systems"
+  ]
+ },
+ {
+  "score": 13,
+  "n": 4,
+  "filer": "VenHub Global, Inc.  (VHUB)  (CIK 0001972234)",
+  "sic": "3590",
+  "phrases": [
+   "autonomous systems",
+   "computer vision",
+   "predictive maintenance",
+   "machine vision"
+  ]
+ },
+ {
+  "score": 13,
+  "n": 4,
+  "filer": "T3 Defense Inc.  (DFNS, DFNSW)  (CIK 0001787518)",
+  "sic": "8742",
+  "phrases": [
+   "autonomous systems",
+   "computer vision",
+   "digital twin",
+   "machine vision"
+  ]
+ },
+ {
+  "score": 12,
+  "n": 3,
+  "filer": "Ondas Inc.  (ONDS)  (CIK 0001646188)",
+  "sic": "3663",
+  "phrases": [
+   "autonomy stack",
+   "autonomous systems",
+   "computer vision"
+  ]
+ },
+ {
+  "score": 12,
+  "n": 3,
+  "filer": "ONE STOP SYSTEMS, INC.  (OSS)  (CIK 0001394056)",
+  "sic": "3571",
+  "phrases": [
+   "sensor fusion",
+   "autonomous navigation",
+   "deep learning"
+  ]
+ },
+ {
+  "score": 11,
+  "n": 3,
+  "filer": "Mistras Group, Inc.  (MG)  (CIK 0001436126)",
+  "sic": "8711",
+  "phrases": [
+   "sensor fusion",
+   "predictive maintenance",
+   "neural network"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 3,
+  "filer": "CNH Industrial N.V.  (CNH)  (CIK 0001567094)",
+  "sic": "3531",
+  "phrases": [
+   "autonomous systems",
+   "computer vision",
+   "machine vision"
+  ]
+ },
+ {
+  "score": 8,
+  "n": 3,
+  "filer": "XERIANT, INC.  (XERI)  (CIK 0001481504)",
+  "sic": "3721",
+  "phrases": [
+   "autonomous systems",
+   "predictive maintenance",
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 8,
+  "n": 2,
+  "filer": "Nauticus Robotics, Inc.  (KITT, KITTW)  (CIK 0001849820)",
+  "sic": "3569",
+  "phrases": [
+   "autonomous systems",
+   "autonomous navigation"
+  ]
+ },
+ {
+  "score": 8,
+  "n": 2,
+  "filer": "VISTEON CORP  (VC)  (CIK 0001111335)",
+  "sic": "3714",
+  "phrases": [
+   "sensor fusion",
+   "machine vision"
+  ]
+ },
+ {
+  "score": 7,
+  "n": 2,
+  "filer": "AeroVironment Inc  (AVAV)  (CIK 0001368622)",
+  "sic": "3721",
+  "phrases": [
+   "autonomous systems",
+   "machine vision"
+  ]
+ },
+ {
+  "score": 7,
+  "n": 2,
+  "filer": "DUKE Robotics Corp.  (DUKR, DUKRD)  (CIK 0001638911)",
+  "sic": "3721",
+  "phrases": [
+   "autonomous systems",
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 7,
+  "n": 2,
+  "filer": "SYNTEC OPTICS HOLDINGS, INC.  (OPTX, OPTXW)  (CIK 0001866816)",
+  "sic": "3827",
+  "phrases": [
+   "autonomous systems",
+   "machine vision"
+  ]
+ },
+ {
+  "score": 7,
+  "n": 2,
+  "filer": "QUALCOMM INC/DE  (QCOM)  (CIK 0000804328)",
+  "sic": "3663",
+  "phrases": [
+   "autonomous systems",
+   "computer vision"
+  ]
+ },
+ {
+  "score": 7,
+  "n": 2,
+  "filer": "Tesla, Inc.  (TSLA)  (CIK 0001318605)",
+  "sic": "3711",
+  "phrases": [
+   "autonomous systems",
+   "neural network"
+  ]
+ },
+ {
+  "score": 7,
+  "n": 2,
+  "filer": "BOEING CO  (BA, BA-PA)  (CIK 0000012927)",
+  "sic": "3721",
+  "phrases": [
+   "autonomous systems",
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 7,
+  "n": 2,
+  "filer": "Aptiv PLC  (APTV)  (CIK 0001521332)",
+  "sic": "3714",
+  "phrases": [
+   "autonomous systems",
+   "deep learning"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "Safe Pro Group Inc.  (SPAI)  (CIK 0002011208)",
+  "sic": "3842",
+  "phrases": [
+   "computer vision",
+   "deep learning"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "OneMedNet Corp  (ONMD, ONMDW)  (CIK 0001849380)",
+  "sic": "8731",
+  "phrases": [
+   "computer vision",
+   "deep learning"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "Ranpak Holdings Corp.  (PACK)  (CIK 0001712463)",
+  "sic": "2670",
+  "phrases": [
+   "computer vision",
+   "machine vision"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "GBT Technologies Inc.  (GTCH)  (CIK 0001471781)",
+  "sic": "8742",
+  "phrases": [
+   "computer vision",
+   "deep learning"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "ZEBRA TECHNOLOGIES CORP  (ZBRA)  (CIK 0000877212)",
+  "sic": "3560",
+  "phrases": [
+   "computer vision",
+   "machine vision"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "Lumentum Holdings Inc.  (LITE)  (CIK 0001633978)",
+  "sic": "3669",
+  "phrases": [
+   "computer vision",
+   "machine vision"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "Terra Innovatum Global N.V.  (NKLR)  (CIK 0002067627)",
+  "sic": "3443",
+  "phrases": [
+   "digital twin",
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "COHU INC  (COHU)  (CIK 0000021535)",
+  "sic": "3825",
+  "phrases": [
+   "digital twin",
+   "deep learning"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "FEDEX CORP  (FDX)  (CIK 0001048911)",
+  "sic": "4513",
+  "phrases": [
+   "digital twin",
+   "neural network"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "BLUSKY AI INC.  (BSAI)  (CIK 0001416090)",
+  "sic": "1040",
+  "phrases": [
+   "predictive maintenance",
+   "deep learning"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "COGNEX CORP  (CGNX)  (CIK 0000851205)",
+  "sic": "3823",
+  "phrases": [
+   "machine vision",
+   "deep learning"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "Spectral AI, Inc.  (MDAI, MDAIW)  (CIK 0001833498)",
+  "sic": "3841",
+  "phrases": [
+   "neural network",
+   "deep learning"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "iRhythm Holdings, Inc.  (IRTC)  (CIK 0001388658)",
+  "sic": "3841",
+  "phrases": [
+   "neural network",
+   "deep learning"
+  ]
+ },
+ {
+  "score": 6,
+  "n": 2,
+  "filer": "NeuroPace Inc  (NPCE)  (CIK 0001528287)",
+  "sic": "3841",
+  "phrases": [
+   "neural network",
+   "deep learning"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 2,
+  "filer": "AIRO Group Holdings, Inc.  (AIRO)  (CIK 0001927958)",
+  "sic": "3721",
+  "phrases": [
+   "autonomous systems",
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 2,
+  "filer": "HUNTINGTON INGALLS INDUSTRIES, INC.  (HII)  (CIK 0001501585)",
+  "sic": "3730",
+  "phrases": [
+   "autonomous systems",
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "INTERLINK ELECTRONICS INC  (LINK)  (CIK 0000828146)",
+  "sic": "3577",
+  "phrases": [
+   "sensor fusion"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "AXON ENTERPRISE, INC.  (AXON)  (CIK 0001069183)",
+  "sic": "3480",
+  "phrases": [
+   "sensor fusion"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Nuburu, Inc.  (BURU, BURUW)  (CIK 0001814215)",
+  "sic": "3690",
+  "phrases": [
+   "sensor fusion"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Lifeward Ltd.  (LFWD)  (CIK 0001607962)",
+  "sic": "3842",
+  "phrases": [
+   "sensor fusion"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 2,
+  "filer": "MultiSensor AI Holdings, Inc.  (MSAI, MSAIW)  (CIK 0001863990)",
+  "sic": "3827",
+  "phrases": [
+   "predictive maintenance",
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 2,
+  "filer": "Fluence Energy, Inc.  (FLNC)  (CIK 0001868941)",
+  "sic": "3690",
+  "phrases": [
+   "predictive maintenance",
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 2,
+  "filer": "HeartBeam, Inc.  (BEAT, BEATW)  (CIK 0001779372)",
+  "sic": "3841",
+  "phrases": [
+   "deep learning",
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 2,
+  "filer": "HeartSciences Inc.  (HSCS, HSCSW)  (CIK 0001468492)",
+  "sic": "3842",
+  "phrases": [
+   "deep learning",
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 2,
+  "filer": "Heartflow, Inc.  (HTFL)  (CIK 0001464521)",
+  "sic": "3841",
+  "phrases": [
+   "deep learning",
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "Redwire Corp  (RDW)  (CIK 0001819810)",
+  "sic": "3760",
+  "phrases": [
+   "autonomous systems"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "Knightscope, Inc.  (KSCP)  (CIK 0001600983)",
+  "sic": "3669",
+  "phrases": [
+   "autonomous systems"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "NEXTNAV INC.  (NN, NNAVW, NXNVW)  (CIK 0001865631)",
+  "sic": "3812",
+  "phrases": [
+   "autonomous systems"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "DATA I/O CORP  (DAIO)  (CIK 0000351998)",
+  "sic": "3825",
+  "phrases": [
+   "autonomous systems"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "KULR Technology Group, Inc.  (KULR)  (CIK 0001662684)",
+  "sic": "3670",
+  "phrases": [
+   "autonomous systems"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "GENCOR INDUSTRIES INC  (GENC)  (CIK 0000064472)",
+  "sic": "3531",
+  "phrases": [
+   "autonomous systems"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "Aeva Technologies, Inc.  (AEVA, AEVAW)  (CIK 0001789029)",
+  "sic": "3714",
+  "phrases": [
+   "autonomous systems"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "CPI AEROSTRUCTURES INC  (CVU)  (CIK 0000889348)",
+  "sic": "3728",
+  "phrases": [
+   "autonomous systems"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "Symbotic Inc.  (SYM)  (CIK 0001837240)",
+  "sic": "3569",
+  "phrases": [
+   "autonomous systems"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "INTRUSION INC  (INTZ)  (CIK 0000736012)",
+  "sic": "3576",
+  "phrases": [
+   "autonomous systems"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "NightFood Holdings, Inc.  (NGTF)  (CIK 0001593001)",
+  "sic": "3590",
+  "phrases": [
+   "autonomous systems"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "York Space Systems Inc.  (YSS)  (CIK 0002086587)",
+  "sic": "3760",
+  "phrases": [
+   "autonomous systems"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "FARADAY FUTURE INTELLIGENT ELECTRIC INC.  (FFAI, FFAIW)  (CIK 0001805521)",
+  "sic": "3711",
+  "phrases": [
+   "autonomous systems"
+  ]
+ },
+ {
+  "score": 4,
+  "n": 1,
+  "filer": "TERADYNE, INC  (TER)  (CIK 0000097210)",
+  "sic": "3825",
+  "phrases": [
+   "autonomous navigation"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "LANTRONIX INC  (LTRX)  (CIK 0001114925)",
+  "sic": "3576",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Arlo Technologies, Inc.  (ARLO)  (CIK 0001736946)",
+  "sic": "3651",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "MITEK SYSTEMS INC  (MITK)  (CIK 0000807863)",
+  "sic": "3577",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Planet Labs PBC  (PL, PL-WT)  (CIK 0001836833)",
+  "sic": "3663",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "NCR Voyix Corp  (VYX, NCRRP)  (CIK 0000070866)",
+  "sic": "3578",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Owlet, Inc.  (OWLT, OWLTW)  (CIK 0001816708)",
+  "sic": "3829",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "LINCOLN ELECTRIC HOLDINGS INC  (LECO)  (CIK 0000059527)",
+  "sic": "3540",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "TRIMBLE INC.  (TRMB)  (CIK 0000864749)",
+  "sic": "3829",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "ChronoScale Holdings Corp  (CHRN)  (CIK 0001549084)",
+  "sic": "3569",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "RICHTECH ROBOTICS INC.  (RR)  (CIK 0001963685)",
+  "sic": "3569",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "ENDRA Life Sciences Inc.  (NDRA)  (CIK 0001681682)",
+  "sic": "3845",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "NABORS INDUSTRIES LTD  (NBR, NBRWF)  (CIK 0001163739)",
+  "sic": "1381",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Dror Ortho-Design, Inc.  (DROR)  (CIK 0001282980)",
+  "sic": "3843",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Evolv Technologies Holdings, Inc.  (EVLV, EVLVW)  (CIK 0001805385)",
+  "sic": "3577",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "ALLURION TECHNOLOGIES, INC.  (ALUR, ALURW)  (CIK 0001964979)",
+  "sic": "3841",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "ALLURION TECHNOLOGIES, INC.  (ALUR, ALUR-WT)  (CIK 0001964979)",
+  "sic": "3841",
+  "phrases": [
+   "computer vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "BlackSky Technology Inc.  (BKSY, BKSY-WT)  (CIK 0001753539)",
+  "sic": "3663",
+  "phrases": [
+   "digital twin"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "USA Rare Earth, Inc.  (USAR)  (CIK 0001970622)",
+  "sic": "1000",
+  "phrases": [
+   "digital twin"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Proto Labs Inc  (PRLB)  (CIK 0001443669)",
+  "sic": "3440",
+  "phrases": [
+   "digital twin"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "New Horizon Aircraft Ltd.  (HOVR, HOVRW)  (CIK 0001930021)",
+  "sic": "3721",
+  "phrases": [
+   "digital twin"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "ROCKWELL AUTOMATION, INC  (ROK)  (CIK 0001024478)",
+  "sic": "3829",
+  "phrases": [
+   "digital twin"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Bowman Consulting Group Ltd.  (BWMN)  (CIK 0001847590)",
+  "sic": "8742",
+  "phrases": [
+   "digital twin"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Transocean Ltd.  (RIG)  (CIK 0001451505)",
+  "sic": "1381",
+  "phrases": [
+   "digital twin"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "TETRA TECH INC  (TTEK)  (CIK 0000831641)",
+  "sic": "8711",
+  "phrases": [
+   "digital twin"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Microvast Holdings, Inc.  (MVST, MVSTW)  (CIK 0001760689)",
+  "sic": "3690",
+  "phrases": [
+   "digital twin"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "MiniMed Group, Inc.  (MMED)  (CIK 0002062583)",
+  "sic": "3841",
+  "phrases": [
+   "digital twin"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "ConnectM Technology Solutions, Inc.  (CNTM)  (CIK 0001895249)",
+  "sic": "1700",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "HONEYWELL INTERNATIONAL INC  (HON)  (CIK 0000773840)",
+  "sic": "3724",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Hyliion Holdings Corp.  (HYLN)  (CIK 0001759631)",
+  "sic": "3713",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Damon Inc.  (DMNIF)  (CIK 0002000640)",
+  "sic": "3751",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Expion360 Inc.  (XPON)  (CIK 0001894954)",
+  "sic": "3690",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Kimball Electronics, Inc.  (KE)  (CIK 0001606757)",
+  "sic": "3672",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "MOHAWK INDUSTRIES INC  (MHK)  (CIK 0000851968)",
+  "sic": "2273",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Elite Express Holding Inc.  (ETS)  (CIK 0002053641)",
+  "sic": "4210",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "UNIVERSAL ELECTRONICS INC  (UEIC)  (CIK 0000101984)",
+  "sic": "3651",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "National Energy Services Reunited Corp.  (NESR)  (CIK 0001698514)",
+  "sic": "1389",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Allegiant Travel CO  (ALGT)  (CIK 0001362468)",
+  "sic": "4512",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "REGAL REXNORD CORP  (RRX)  (CIK 0000082811)",
+  "sic": "3569",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Noble Corp plc  (NE, NE-WT, NE-WTA)  (CIK 0001895262)",
+  "sic": "1381",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Otis Worldwide Corp  (OTIS)  (CIK 0001781335)",
+  "sic": "3600",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "AUTOLIV INC  (ALV)  (CIK 0001034670)",
+  "sic": "3714",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Flowco Holdings Inc.  (FLOC)  (CIK 0002035149)",
+  "sic": "3533",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Johnson Controls International plc  (JCI)  (CIK 0000833444)",
+  "sic": "3585",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Nikola Corp  (NKLAQ)  (CIK 0001731289)",
+  "sic": "3711",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Limbach Holdings, Inc.  (LMB)  (CIK 0001606163)",
+  "sic": "1700",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "BETA Technologies, Inc.  (BETA)  (CIK 0001784570)",
+  "sic": "3721",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Alliance Laundry Holdings Inc.  (ALH)  (CIK 0001317685)",
+  "sic": "3580",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "ChargePoint Holdings, Inc.  (CHPT)  (CIK 0001777393)",
+  "sic": "3690",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Worthington Steel, Inc.  (WS)  (CIK 0001968487)",
+  "sic": "3310",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Atlas Lithium Corp  (ATLX)  (CIK 0001540684)",
+  "sic": "1400",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "McEwen Inc.  (MUX)  (CIK 0000314203)",
+  "sic": "1040",
+  "phrases": [
+   "predictive maintenance"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Orthofix Medical Inc.  (OFIX)  (CIK 0000884624)",
+  "sic": "3841",
+  "phrases": [
+   "machine vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "TEL INSTRUMENT ELECTRONICS CORP  (CIK 0000096885)",
+  "sic": "3670",
+  "phrases": [
+   "machine vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Optex Systems Holdings Inc  (OPXS)  (CIK 0001397016)",
+  "sic": "3827",
+  "phrases": [
+   "machine vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "TELEDYNE TECHNOLOGIES INC  (TDY)  (CIK 0001094285)",
+  "sic": "3812",
+  "phrases": [
+   "machine vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Massimo Group  (MAMO)  (CIK 0001952853)",
+  "sic": "3790",
+  "phrases": [
+   "machine vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "DOVER Corp  (DOV)  (CIK 0000029905)",
+  "sic": "3530",
+  "phrases": [
+   "machine vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "NOVANTA INC  (NOVT, NOVTU)  (CIK 0001076930)",
+  "sic": "3690",
+  "phrases": [
+   "machine vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "ORTHOPEDIATRICS CORP  (KIDS)  (CIK 0001425450)",
+  "sic": "3841",
+  "phrases": [
+   "machine vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Beyond Air, Inc.  (XAIR)  (CIK 0001641631)",
+  "sic": "3841",
+  "phrases": [
+   "machine vision"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "PHINIA INC.  (PHIN)  (CIK 0001968915)",
+  "sic": "3714",
+  "phrases": [
+   "neural network"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Axe Compute Inc.  (AGPU)  (CIK 0001446159)",
+  "sic": "3842",
+  "phrases": [
+   "neural network"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Keysight Technologies, Inc.  (KEYS)  (CIK 0001601046)",
+  "sic": "3823",
+  "phrases": [
+   "neural network"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Hyperfine, Inc.  (HYPR)  (CIK 0001833769)",
+  "sic": "3845",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Blackwell 3D Construction Corp.  (BDCC)  (CIK 0001495648)",
+  "sic": "1520",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Elvictor Group, Inc.  (ELVG, ELVGD)  (CIK 0001741489)",
+  "sic": "8742",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Palo Alto Networks Inc  (PANW)  (CIK 0001327567)",
+  "sic": "3577",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "CISO Global, Inc.  (CISO)  (CIK 0001777319)",
+  "sic": "8742",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Absci Corp  (ABSI)  (CIK 0001672688)",
+  "sic": "8731",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "ITRON, INC.  (ITRI)  (CIK 0000780571)",
+  "sic": "3825",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "HOLOGIC INC  (HOLX)  (CIK 0000859737)",
+  "sic": "3844",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Ivanhoe Electric Inc.  (IE)  (CIK 0001879016)",
+  "sic": "1000",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "CapsoVision, Inc  (CV)  (CIK 0001378325)",
+  "sic": "3845",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "REVVITY, INC.  (RVTY)  (CIK 0000031791)",
+  "sic": "3826",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Butterfly Network, Inc.  (BFLY)  (CIK 0001804176)",
+  "sic": "3844",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "HP INC  (HPQ)  (CIK 0000047217)",
+  "sic": "3570",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "SharkNinja, Inc.  (SN)  (CIK 0001957132)",
+  "sic": "3630",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Cytek Biosciences, Inc.  (CTKB)  (CIK 0001831915)",
+  "sic": "3826",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "DarioHealth Corp.  (DRIO)  (CIK 0001533998)",
+  "sic": "3841",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "Profusa, Inc.  (PFSA, NVACW)  (CIK 0001859807)",
+  "sic": "3841",
+  "phrases": [
+   "deep learning"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Volato Group, Inc.  (SOAR, SOARW)  (CIK 0001853070)",
+  "sic": "4522",
+  "phrases": [
+   "large language model"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "SCHOLASTIC CORP  (SCHL)  (CIK 0000866729)",
+  "sic": "2731",
+  "phrases": [
+   "large language model"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Global Business Travel Group, Inc.  (GBTG)  (CIK 0001820872)",
+  "sic": "4700",
+  "phrases": [
+   "large language model"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "WEBTOON Entertainment Inc.  (WBTN)  (CIK 0001997859)",
+  "sic": "2741",
+  "phrases": [
+   "large language model"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Neonode Inc.  (NEON)  (CIK 0000087050)",
+  "sic": "3679",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "20/20 Biolabs, Inc.  (AIDX)  (CIK 0001139685)",
+  "sic": "8734",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Hypha Labs, Inc.  (FUNI)  (CIK 0001502966)",
+  "sic": "8734",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Flux Power Holdings, Inc.  (FLUX)  (CIK 0001083743)",
+  "sic": "3690",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "EXPONENT INC  (EXPO)  (CIK 0000851520)",
+  "sic": "8742",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Global Innovative Platforms Inc.  (GIPL)  (CIK 0001837774)",
+  "sic": "3841",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Nautilus Biotechnology, Inc.  (NAUT)  (CIK 0001808805)",
+  "sic": "3826",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "LENSAR, Inc.  (LNSR)  (CIK 0001320350)",
+  "sic": "3841",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "LogicMark, Inc.  (LGMK)  (CIK 0001566826)",
+  "sic": "3842",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Seagate Technology Holdings plc  (STX)  (CIK 0001137789)",
+  "sic": "3572",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "ACCURAY INC  (ARAY)  (CIK 0001138723)",
+  "sic": "3841",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Corsair Gaming, Inc.  (CRSR)  (CIK 0001743759)",
+  "sic": "3577",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "TechnipFMC plc  (FTI)  (CIK 0001681459)",
+  "sic": "3533",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Jet.AI Inc.  (JTAI)  (CIK 0001861622)",
+  "sic": "4522",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Mirion Technologies, Inc.  (MIR)  (CIK 0001809987)",
+  "sic": "3829",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Enovix Corp  (ENVX)  (CIK 0001828318)",
+  "sic": "3690",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Astrana Health, Inc.  (ASTH)  (CIK 0001083446)",
+  "sic": "8742",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Outset Medical, Inc.  (OM)  (CIK 0001484612)",
+  "sic": "3845",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Evolent Health, Inc.  (EVH)  (CIK 0001628908)",
+  "sic": "8741",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Ceribell, Inc.  (CBLL)  (CIK 0001861107)",
+  "sic": "3845",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "CARLSMED, INC.  (CARL)  (CIK 0001794546)",
+  "sic": "3841",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "International Seaways, Inc.  (INSW)  (CIK 0001679049)",
+  "sic": "4400",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "Bionano Genomics, Inc.  (BNGO)  (CIK 0001411690)",
+  "sic": "3826",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ },
+ {
+  "score": 1,
+  "n": 1,
+  "filer": "QT IMAGING HOLDINGS, INC.  (QTI, QTIWW)  (CIK 0001844505)",
+  "sic": "3845",
+  "phrases": [
+   "machine learning algorithms"
+  ]
+ }
+]

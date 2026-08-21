@@ -14,9 +14,11 @@ Pipeline (was ticker-first; now merged-pool):
     → dedup items by sha256(source+title) vs the state ledger (STALE_HOURS)
     → cluster near-duplicate headlines (Jaccard, reused)
     → LLM classify clusters (materiality / themes / macro)   [Pass A/B/C, batched]
-    → summarize survivors (>=1 pass hit)                     [batched]
-    → route into Company / Themes / Macro sections
+    → RANK survivors and select the top DIGEST_LIMIT          [rank.py, batched]
+    → summarize the SELECTED stories only                     [batched]
+    → route into Company / Themes / Macro sections (rank order preserved)
     → render brief + (live) file notes/news/{date}-{slug}.md → chunk into pg
+       (selected → full notes; below-the-cut survivors → headline-only notes, same corpus)
 
 Modes:
   --premarket / --postmarket   full digest, EMAIL, writes ledger + files pg (standalone, as before)
@@ -26,6 +28,18 @@ Modes:
                                standalone emails' dedup.
   --dry-run                    print to stdout; no email, no ledger write, no pg filing.
   --no-factset                 Google-only (skip the FactSet channel).
+
+DELIVERY (operator, 2026-08-21): this digest is a STANDALONE EMAIL. It used to ALSO appear as the
+NEWS FLOW section of the 07:00 Daily Digest, which delivered the same stories twice each morning;
+combine_and_send.py dropped that section and run_daily.sh no longer waits for report_news_{date}.txt
+(still written, as a gitignored audit artifact). On weekends run_daily.sh invokes --premarket, since
+the 06:45 cron is Mon-Fri and the weekend run IS the standalone email.
+
+Story cap (operator, 2026-08-19; tightened to 20 on 2026-08-21): at most rank.DIGEST_LIMIT stories, max
+rank.MAX_PER_TICKER per ticker, with sell-side rating actions ranked last and admitted only when
+they state a non-valuation rationale. Selection sits BEFORE the summarizer, so it cuts the largest
+cost line (~$3.2/run over ~260 items) rather than merely shortening the email. Everything that
+misses the cut is still classified and still filed to notes/news + pg, headline-only.
 
 Engine: `claude -p` on subscription auth (ANTHROPIC_API_KEY stripped), per the cost model;
 rides the daily auth canary. Per-source/per-batch isolation: one feed or one classifier
@@ -59,6 +73,7 @@ from newsdigest import google_rss, factset_news          # noqa: E402
 from newsdigest.cluster import cluster_items             # noqa: E402
 from newsdigest import classify_llm, summarize           # noqa: E402
 from newsdigest import pre_filter, merge, verdict_cache  # noqa: E402  (pre-LLM volume reduction: Levers 1-3)
+from newsdigest import rank                             # noqa: E402  (editorial top-N selection)
 
 LOG_PATH = os.path.join(REPO_ROOT, "logs", "news_digest.log")
 LEDGER_PATH = os.path.join(REPO_ROOT, "state", "news_digest_seen.jsonl")
@@ -90,6 +105,18 @@ def load_universe_ticker_names(identities) -> dict:
             if t:
                 universe.add(t)
     return {t: identities[t].name for t in universe if t in identities}
+
+
+def load_ticker_tiers() -> dict:
+    """{TICKER: watchlist block name} — the tier signal rank.py ranks on (T1 > T2 > not held)."""
+    wl = yaml.safe_load(open(WATCHLIST_YAML)) or {}
+    tiers = {}
+    for block in ("tier_1_bctk", "tier_2_active_candidates"):
+        for x in (wl.get(block) or []):
+            t = x.get("ticker") if isinstance(x, dict) else x
+            if t and t not in tiers:          # first block wins: a cross-tier dup stays T1
+                tiers[t] = block
+    return tiers
 
 
 def load_valid_themes() -> set:
@@ -254,9 +281,6 @@ def cluster_pool(items, classifier):
 
 # ─────────────────────────── routing + rendering (Phase 4) ──────────────────────
 
-_CONF_RANK = {"high": 3, "medium": 2, "low": 1}
-
-
 def _cluster_urls(cluster, cap=4):
     urls = []
     for it in sorted(cluster.items, key=lambda x: x["published"], reverse=True):
@@ -269,8 +293,14 @@ def _cluster_urls(cluster, cap=4):
 
 
 def route(survivors):
-    """survivors: list of (cluster, Classification, Summary). Route each to ONE section by
-    the highest-priority pass it hits: Company > Themes > Macro. Returns 3 sorted lists."""
+    """survivors: list of (cluster, Classification, Summary), ALREADY IN RANK ORDER. Route each to
+    ONE section by the highest-priority pass it hits: Company > Themes > Macro.
+
+    Order is PRESERVED, not recomputed. This used to sort each section by (confidence, volume) —
+    which as of the 2026-08-19 selection pass would silently discard the editorial ranking and
+    restore the ordering that put four near-duplicate SK Hynix clusters in the top six slots.
+    Both signals are measured dead ends anyway (106 of 262 items were conf=high; only 4 of those
+    had volume >= 3). rank.py owns ordering now; route only bins."""
     # Priority for a no-ticker story: Macro > Themes. A macro print (CPI/PCE/Fed) often also
     # carries an incidental theme tag (e.g. fed_policy_tech); it belongs in Macro, where the
     # PM looks for top-down signal — not buried in Themes.
@@ -282,10 +312,6 @@ def route(survivors):
             macro.append((c, cls, summ))
         elif cls.themes:
             themes.append((c, cls, summ))
-    keyf = lambda t: (_CONF_RANK.get(t[1].confidence, 0), t[0].volume)
-    company.sort(key=keyf, reverse=True)
-    themes.sort(key=keyf, reverse=True)
-    macro.sort(key=keyf, reverse=True)
     return company, themes, macro
 
 
@@ -307,13 +333,19 @@ def _render_item(c, cls, summ, lines):
         lines.append(f"    → {urls[0]}")
 
 
-def render_sections(company, themes, macro, mode, now_local, banners, suppressed, failures, dropped_cap):
+def render_sections(company, themes, macro, mode, now_local, banners, suppressed, failures,
+                    dropped_cap, n_survivors=None, n_filed=0, filed=True):
     date_str = now_local.strftime("%Y-%m-%d")
     n = len(company) + len(themes) + len(macro)
+    # No silent caps (same convention as dropped_cap): if selection trimmed the pool, SAY SO in the
+    # header, not only in the footer — the count is the first thing the operator reads.
+    head = f"{n} stories · {len(company)} company · {len(themes)} thematic · {len(macro)} macro"
+    if n_survivors and n_survivors > n:
+        head = f"top {n} of {n_survivors} · {len(company)} company · {len(themes)} thematic · {len(macro)} macro"
     lines = [
         f"NEWS FLOW — {date_str} ({mode})",
         "=" * 40,
-        f"{n} stories · {len(company)} company · {len(themes)} thematic · {len(macro)} macro",
+        head,
     ]
     for b in banners:
         lines.append(f"⚠ {b}")
@@ -336,6 +368,14 @@ def render_sections(company, themes, macro, mode, now_local, banners, suppressed
                  "Classifier: claude -p 3-pass (materiality/themes/macro).")
     if suppressed:
         lines.append(f"Deduped {suppressed} item(s) already surfaced within {STALE_HOURS}h (state ledger).")
+    if n_survivors and n_survivors > n:
+        lines.append(
+            f"Showing the top {n} of {n_survivors} stories that passed materiality triage "
+            f"(editorial rank: tier → estimate-changing → novelty → cross-read; sell-side last; "
+            f"max {rank.MAX_PER_TICKER} per ticker). "
+            + (f"The other {n_survivors - n} are filed to notes/news + pg (headline, tickers, "
+               f"themes, sources — not summarized) and are searchable there."
+               if (filed and n_filed) else "The remainder is not filed this run."))
     if dropped_cap:
         lines.append(f"NOTE: {dropped_cap} lowest-volume cluster(s) dropped by the MAX_CLUSTERS={MAX_CLUSTERS} cap.")
     if failures:
@@ -387,32 +427,109 @@ def build_news_note(c, cls, summ, date_str) -> str:
     return f"---\n{front}---\n\n" + "\n".join(body) + "\n"
 
 
-def note_path(c, summ, date_str):
-    # deterministic per story per day (date + slug + short cluster-hash) → re-filing overwrites
-    # the same file, so multiple runs in a day don't create duplicate notes/pg chunks.
-    return os.path.join(NOTES_NEWS_DIR, f"{date_str}-{_slug(summ.headline or c.headline)}-{c.hash[:8]}.md")
+def build_headline_note(c, cls, date_str) -> str:
+    """A note for a survivor that was NOT selected for the digest (2026-08-19 top-N cap).
+
+    It carries everything the classifier already produced — tickers, themes, macro signals,
+    every cluster headline, source URLs — but no LLM-written bullets, because the summarizer no
+    longer runs on it. That keeps the pg corpus at full recall for ~$0 while the emailed digest
+    stays at the operator's story limit. `summarized: false` marks the difference so a later
+    consumer can tell a headline note from a full one."""
+    fm = {
+        "doc_type": "news",
+        "source": "news",
+        "tickers": list(cls.materiality),
+        "themes": list(cls.themes),
+        "macro_signals": list(cls.macro),
+        "lens_tags": list(cls.lens_hits),
+        "confidence": cls.confidence,
+        "rationale": cls.rationale,
+        "summarized": False,
+        "source_urls": _cluster_urls(c, cap=8),
+        "cluster_headlines": sorted({it["title"] for it in c.items}),
+        "factset_sentiment": getattr(c, "_fa_sentiment", None) or "",
+        "published_date": max(c.items, key=lambda x: x["published"])["published"].date().isoformat(),
+        "ingestion_date": date_str,
+        "extraction_source": "v3 news-flow channel (news_digest.py), classified but below the "
+                             "digest cut — headline-only note, not summarized",
+    }
+    front = yaml.safe_dump(fm, sort_keys=False, allow_unicode=True, default_flow_style=False)
+    # ## (not #) for the same reason as build_news_note: a lone H1 yields zero chunks in pg.
+    body = [f"## {c.headline.strip()}", ""]
+    if cls.rationale:
+        body += [cls.rationale, ""]
+    for h in sorted({it["title"] for it in c.items}):
+        body.append(f"- {h}")
+    return f"---\n{front}---\n\n" + "\n".join(body) + "\n"
 
 
-def file_notes(survivors, date_str):
-    """Write + ingest a note per survivor. Returns (n_written, n_ingested). Isolated per note."""
+def note_path(c, date_str):
+    """Deterministic per story per day (date + slug + short cluster-hash) → re-filing overwrites
+    the same file, so multiple runs in a day don't create duplicate notes/pg chunks.
+
+    The slug comes from the CLUSTER headline, never the summarizer's rewritten one. Since the
+    2026-08-19 story cap a cluster can be filed as a full note in one run (it made the top 30) and
+    a headline-only note in another (it didn't) — and the brief re-sources what premarket already
+    saw. Slugging from the summary would give those two runs two different filenames for the SAME
+    cluster hash, i.e. two files and two pg documents for one story, breaking exactly the
+    idempotence this function exists to provide."""
+    return os.path.join(NOTES_NEWS_DIR, f"{date_str}-{_slug(c.headline)}-{c.hash[:8]}.md")
+
+
+def judged_item_hashes(clusters, classifications) -> set:
+    """Item hashes belonging to clusters that actually received a classifier verdict.
+
+    This is the ledger's write scope. The ledger suppresses an item from the NEXT run's pool, so
+    marking something the pipeline never judged loses it outright — it reaches neither the digest
+    nor notes/news + pg. On 2026-08-21 the 06:45 run 429'd on its first classify call and, writing
+    `kept` unconditionally, marked 558 stories surfaced while delivering zero; recovery meant
+    hand-deleting them before a re-run would show anything.
+
+    Verdict-scoped, not delivery-scoped, is the right line: a story classified and filed as a
+    headline-only note WAS processed even though the cap kept it out of the email. Items left
+    unclassified — by a 429, by the MAX_CLUSTERS backstop, or by a batch that never returned —
+    stay unmarked and get another chance."""
+    return {it["_h"] for c in clusters if c.hash in classifications for it in c.items}
+
+
+def should_send_email(survivors, unclassified, unsummarized, ranked_ok) -> bool:
+    """An empty digest is worth sending only when emptiness is a FINDING, never when it is a
+    FAILURE. 'Nothing cleared the bar today' is information; a 0-story digest carrying only
+    warning banners is noise stacked on the alert the non-zero exit already sends (2026-08-21)."""
+    if survivors:
+        return True
+    return not (unclassified or unsummarized or not ranked_ok)
+
+
+def file_notes(summarized, unsummarized, date_str):
+    """Write + ingest one note per survivor. Returns (n_written, n_ingested, n_headline_only).
+
+    `summarized` are (cluster, Classification, Summary) — the digest's selected stories, filed in
+    full. `unsummarized` are (cluster, Classification) that ranked below the cut: filed as
+    headline-only notes so the pg corpus keeps full recall even though the summarizer skipped
+    them. Isolated per note — one failure never aborts filing."""
     sys.path.insert(0, CHUNKING_DIR)
     os.makedirs(NOTES_NEWS_DIR, exist_ok=True)
     if not os.environ.get("CHUNK_STORE_BACKEND"):
         os.environ["CHUNK_STORE_BACKEND"] = "pg"
     from ingest import ingest  # noqa: E402
     from pathlib import Path
-    written = ingested = 0
-    for c, cls, summ in survivors:
+    written = ingested = headline_only = 0
+    jobs = ([(c, cls, summ, False) for c, cls, summ in summarized]
+            + [(c, cls, None, True) for c, cls in unsummarized])
+    for c, cls, summ, is_headline in jobs:
         try:
-            p = note_path(c, summ, date_str)
+            p = note_path(c, date_str)
             with open(p, "w") as fh:
-                fh.write(build_news_note(c, cls, summ, date_str))
+                fh.write(build_headline_note(c, cls, date_str) if is_headline
+                         else build_news_note(c, cls, summ, date_str))
             written += 1
+            headline_only += int(is_headline)
             ingest([Path(p)])
             ingested += 1
         except Exception as e:  # noqa: BLE001 — one note must not abort filing
             logger.warning("filing failed for cluster %s: %s: %s", c.hash, type(e).__name__, e)
-    return written, ingested
+    return written, ingested, headline_only
 
 
 # ─────────────────────────────── orchestration ──────────────────────────────────
@@ -444,6 +561,7 @@ def main():
     identities = load_identities()
     classifier = load_classifier()
     ticker_names = load_universe_ticker_names(identities)
+    ticker_tiers = load_ticker_tiers()
     valid_themes = load_valid_themes()
     macro_cfg = load_macro_cfg()
     src_ids = list(identities.items())
@@ -541,20 +659,37 @@ def main():
     logger.info("classified: %d verdicts, %d survivors, %d unclassified (cost=$%.4f)",
                 len(classifications), len(survivors_cc), len(unclassified), c_cost)
 
-    # ── Phase 3: summarize survivors ──
+    # ── Phase 2b: editorial selection (operator cap, 2026-08-19) ──
+    # Placed BEFORE summarize deliberately: the summarizer used to run over every survivor
+    # (~260 items, ~$3.2/run) and is now the single largest saving in the pipeline. It also
+    # applies the max-N-per-ticker rule that stops one event (SK Hynix's buyback: 26 of 262
+    # items on 2026-08-19) from occupying the whole brief.
+    selected, r_cost, rank_note, ranked_ok = rank.select_top(
+        survivors_cc, REPO_ROOT, limit=rank.DIGEST_LIMIT, tier_map=ticker_tiers, logger=logger)
+    if rank_note:
+        banners.append(rank_note)
+    selected_cc = [(c, cls) for c, cls, _reason in selected]
+    sel_hashes = {c.hash for c, _cls in selected_cc}
+    below_cut = [(c, cls) for c, cls in survivors_cc if c.hash not in sel_hashes]
+    logger.info("selection: %d survivors → %d for the digest, %d below the cut (cost=$%.4f)",
+                len(survivors_cc), len(selected_cc), len(below_cut), r_cost)
+
+    # ── Phase 3: summarize the SELECTED stories only ──
     summaries, s_cost, unsummarized = summarize.summarize_survivors(
-        survivors_cc, REPO_ROOT, logger=logger)
-    survivors = [(c, cls, summaries[c.hash]) for c, cls in survivors_cc if c.hash in summaries]
+        selected_cc, REPO_ROOT, logger=logger)
+    survivors = [(c, cls, summaries[c.hash]) for c, cls in selected_cc if c.hash in summaries]
     logger.info("summarized: %d items (%d unsummarized, cost=$%.4f)",
                 len(survivors), len(unsummarized), s_cost)
     if unsummarized:
-        banners.append(f"{len(unsummarized)} classified stor{'y' if len(unsummarized) == 1 else 'ies'} "
+        banners.append(f"{len(unsummarized)} selected stor{'y' if len(unsummarized) == 1 else 'ies'} "
                        f"not summarized (claude -p quota/error) — omitted from digest, see log")
 
     # ── Phase 4: route + render ──
     company, themes, macro = route(survivors)
     section = render_sections(company, themes, macro, mode, now_local, banners,
-                              suppressed, failures, dropped_cap)
+                              suppressed, failures, dropped_cap,
+                              n_survivors=len(survivors_cc), n_filed=len(below_cut),
+                              filed=not args.dry_run)
 
     # persist a log artifact (gitignored audit trail)
     artifact = os.path.join(REPO_ROOT, "logs",
@@ -567,9 +702,10 @@ def main():
         logger.warning("could not write artifact: %s", e)
 
     # ── Phase 4b: file notes/news + pg (live only) ──
-    if not args.dry_run and survivors:
-        written, ingested = file_notes(survivors, date_str)
-        logger.info("filed notes/news: %d written, %d ingested to pg", written, ingested)
+    if not args.dry_run and (survivors or below_cut):
+        written, ingested, headline_only = file_notes(survivors, below_cut, date_str)
+        logger.info("filed notes/news: %d written (%d full, %d headline-only), %d ingested to pg",
+                    written, written - headline_only, headline_only, ingested)
 
     # ── report_news artifact for the combined brief (all live modes; brief is the one that
     #    matters, but refreshing in every mode keeps combine_and_send's date lookup satisfied) ──
@@ -583,29 +719,47 @@ def main():
             logger.warning("could not write report_news: %s", e)
 
     # ── ledger write: premarket/postmarket only (brief is read-only; dry-run never writes) ──
+    # Scope is verdict-based — see judged_item_hashes(). Boilerplate dropped by pre_filter stays
+    # unmarked too; re-dropping it next run is free (deterministic regex, never reaches the LLM).
     if not args.dry_run and mode in ("premarket", "postmarket"):
+        judged = judged_item_hashes(clusters, classifications)
         for it in kept:
             h = it["_h"]
+            if h not in judged:
+                continue
             if h not in seen:
                 seen[h] = {"first_surfaced_ts": now, "tickers": [it["ticker"]]}
             elif it["ticker"] not in seen[h]["tickers"]:
                 seen[h]["tickers"].append(it["ticker"])
-        rewrite_ledger(seen)
-        logger.info("ledger updated: %d entries", len(seen))
+        if judged:
+            rewrite_ledger(seen)
+            logger.info("ledger updated: %d entries (%d of %d kept item(s) had a verdict)",
+                        len(seen), len(judged), len(kept))
+        else:
+            logger.error("ledger NOT written: 0 clusters classified this run — marking items "
+                         "surfaced would drop them from the next run's pool entirely")
 
-    logger.info("run done: mode=%s stories=%d unclassified=%d google_down=%s factset_down=%s "
-                "suppressed=%d cost=$%.4f", mode, len(survivors), len(unclassified),
-                google_down, factset_down, suppressed, c_cost + s_cost)
+    logger.info("run done: mode=%s stories=%d/%d survivors unclassified=%d google_down=%s "
+                "factset_down=%s suppressed=%d cost=$%.4f (classify=$%.4f rank=$%.4f "
+                "summarize=$%.4f)", mode, len(survivors), len(survivors_cc), len(unclassified),
+                google_down, factset_down, suppressed, c_cost + r_cost + s_cost,
+                c_cost, r_cost, s_cost)
 
     # ── delivery ──
     if args.dry_run:
         print(section)
     elif mode in ("premarket", "postmarket"):
-        label = "Pre-market" if mode == "premarket" else "Post-market"
-        subject = f"{label} news digest — {date_str}"
-        from newsdigest.email_send import send
-        status = send(subject, section)
-        logger.info("email sent (status %s)", status)
+        if not should_send_email(survivors, unclassified, unsummarized, ranked_ok):
+            logger.error("email SUPPRESSED: 0 stories and the run failed (unclassified=%d "
+                         "unsummarized=%d ranked_ok=%s) — an empty digest would add nothing to the "
+                         "failure alert; artifact saved at %s",
+                         len(unclassified), len(unsummarized), ranked_ok, artifact)
+        else:
+            label = "Pre-market" if mode == "premarket" else "Post-market"
+            subject = f"{label} news digest — {date_str}"
+            from newsdigest.email_send import send
+            status = send(subject, section)
+            logger.info("email sent (status %s)", status)
     else:  # brief — no email; report_news already written
         logger.info("brief mode: no email; report_news is the deliverable")
 
@@ -617,10 +771,18 @@ def main():
     # Guardrail against silent under-reporting (2026-07-08 classify drop / 2026-07-21 summarize
     # drop). NOTE: this only alerts if the invocation is wrapped by alert_on_failure.sh (see
     # run_daily.sh); a bare `... --brief || true` would swallow it.
-    if unclassified or unsummarized:
-        logger.error("run INCOMPLETE: %d unclassified + %d unsummarized cluster(s) (processing "
+    # A FAILED ranking joins this set as of the 2026-08-19 story cap — but only a true fallback
+    # (`ranked_ok` False), not a sharded recovery, which still produced real editorial ranking and
+    # only warrants the banner. Before the cap, ordering was
+    # cosmetic — every survivor was rendered anyway, so a bad sort cost nothing. Now the ranking
+    # DECIDES which 30 of ~260 the operator ever sees, so falling back to the deterministic order
+    # is a degraded product, not a degraded nicety. In --brief mode there is no email at all, so
+    # the banner alone would be near-invisible; the non-zero exit is what reaches the operator.
+    if unclassified or unsummarized or not ranked_ok:
+        logger.error("run INCOMPLETE: %d unclassified + %d unsummarized cluster(s)%s (processing "
                      "failure, not below-bar drops) — exiting non-zero to trigger alerting",
-                     len(unclassified), len(unsummarized))
+                     len(unclassified), len(unsummarized),
+                     "" if ranked_ok else "; ranking degraded to deterministic order")
         sys.exit(1)
 
 

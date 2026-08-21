@@ -2,7 +2,7 @@
 """
 Path A v3 SEC filings channel.
 
-Daily (07:00 ET) the droplet polls EDGAR for new filings from the T1+T2 watchlist
+Daily at 11:00 ET the droplet polls EDGAR for new filings from the T1+T2 watchlist
 universe (config/watchlist.yaml tier_1_bctk + tier_2_active_candidates; NOT .pvt
 privates, NOT tier_3), filters by form type and — for 8-Ks — by item-type signal
 value, fetches full content plus key EX-99.* exhibits (esp. earnings press releases
@@ -114,7 +114,7 @@ def run_claude(prompt: str) -> tuple[str, float]:
     if result.returncode != 0:
         # Auth/usage errors land on STDOUT (stderr is usually empty) — log both.
         raise RuntimeError(f"claude -p rc={result.returncode} "
-                           f"stderr={result.stderr[:200]!r} stdout={result.stdout[:300]!r}")
+                           f"stderr={result.stderr[:200]!r} stdout={result.stdout[:800]!r}")
     env = json.loads(result.stdout)
     if env.get("is_error"):
         raise RuntimeError(f"claude -p is_error: {str(env.get('result'))[:200]}")
@@ -143,6 +143,18 @@ def http_get(url: str) -> requests.Response:
 
 # ───────────────────────────── Watchlist universe ─────────────────────────────
 
+def is_private_id(t) -> bool:
+    """True for a `.pvt` pseudo-identifier (private company, e.g. simaai.pvt).
+
+    The module docstring has always said this universe excludes .pvt, but nothing enforced it —
+    fine while every .pvt lived only in private_drivers. simaai.pvt (2026-08-19) is the first
+    private company that is also a BCTK HOLDING and therefore sits in tier_1_bctk, so the
+    exclusion now has to be real: a private company has no CIK, and without this guard every run
+    would flag-and-skip it forever, which is the coverage-theatre the tier_4 block comment warns
+    against."""
+    return str(t).endswith(".pvt")
+
+
 def load_universe() -> list[str]:
     """T1 (tier_1_bctk) + T2 (tier_2_active_candidates) + ingest_comparables.
 
@@ -155,7 +167,7 @@ def load_universe() -> list[str]:
     for key in ("tier_1_bctk", "tier_2_active_candidates", "ingest_comparables"):
         for entry in (wl.get(key) or []):
             t = entry.get("ticker") if isinstance(entry, dict) else entry
-            if t:
+            if t and not is_private_id(t):
                 out.append(str(t))
     # de-dup, preserve order
     seen: set[str] = set()
@@ -275,6 +287,10 @@ def select_filings(filings: list[dict], *, backfill: bool, processed: set[str],
     event_forms = set(_CFG.get("forms", {}).get("event", []))
     event_cut = today - dt.timedelta(days=int(bf.get("event_days", 30)))
     periodic_cut = today - dt.timedelta(days=int(bf.get("periodic_days", 365)))
+    # Hard history floor, applied in BOTH modes. The backfill-only cut below never ran
+    # in daily mode, so every filing EDGAR returned — back to 2002 — stayed eligible and
+    # the per-form caps metered it out ~10/ticker/day forever.
+    history_floor = today - dt.timedelta(days=365 * int(_CFG.get("max_history_years", 3)))
     caps = {k: int(v) for k, v in (bf.get("max_per_form", {}) or {}).items()}
 
     kept: list[dict] = []
@@ -291,6 +307,8 @@ def select_filings(filings: list[dict], *, backfill: bool, processed: set[str],
         except ValueError:
             continue
         cut = event_cut if bf_form in event_forms else periodic_cut
+        if fdate < history_floor:
+            continue                      # older than max_history_years — never ingest
         if backfill and fdate < cut:
             continue
         kept.append(f)
@@ -594,6 +612,26 @@ THEME_RETRY_SLEEP_S = 5
 
 def is_auth_failure(exc: Exception) -> bool:
     return bool(_AUTH_FAIL_RE.search(str(exc)))
+
+
+# A usage/rate limit fails EVERY subsequent call until the window resets. On 2026-08-20 an
+# entity run did 19 successful calls, hit the limit at 19:13, then retried 288 more times
+# over 53 minutes — all failing, all pointless — and still logged DONE. Treat it like an
+# auth failure: abort the run, do not grind.
+_LIMIT_RE = re.compile(
+    r"usage limit|rate limit|rate_limit|quota|too many requests|429|"
+    r"limit reached|overloaded",
+    re.IGNORECASE,
+)
+
+
+def is_rate_limited(exc: Exception) -> bool:
+    return bool(_LIMIT_RE.search(str(exc)))
+
+
+def is_fatal_run_failure(exc: Exception) -> bool:
+    """Errors where continuing the batch cannot succeed: bad auth, or a usage limit."""
+    return is_auth_failure(exc) or is_rate_limited(exc)
 
 
 def extract_themes_with_retry(body_md: str, ticker: str, valid_themes: set[str],

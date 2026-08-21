@@ -97,6 +97,8 @@ Untitled*.canvas
 Untitled*.base
 
 .obsidian/
+scripts/screens/.gh_usage.md
+scripts/screens/.blog_proof.md
 
 # ETF flow monitor state. All ignored, including the flow ledger itself.
 #

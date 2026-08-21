@@ -1,0 +1,272 @@
+{
+ "rows": [
+  {
+   "ticker": "MDB",
+   "url": "https://www.mongodb.com/blog/rss",
+   "feed_bytes": 538114,
+   "operator_terms": [
+    "distill",
+    "embedding model",
+    "fine-tun",
+    "guardrail",
+    "hallucinat",
+    "human-in-the-loop",
+    "inference latency",
+    "mcp server",
+    "model context protocol",
+    "rag",
+    "retrieval-augmented",
+    "tool calling",
+    "vector index"
+   ],
+   "marketing_terms": [
+    "ai-powered",
+    "cutting-edge",
+    "game-chang",
+    "revolutioniz",
+    "transforming the"
+   ],
+   "score": 13,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "GTLB",
+   "url": "https://about.gitlab.com/atom.xml",
+   "feed_bytes": 222109,
+   "operator_terms": [
+    "distill",
+    "evaluation harness",
+    "guardrail",
+    "human-in-the-loop",
+    "mcp server",
+    "model context protocol",
+    "prompt injection"
+   ],
+   "marketing_terms": [],
+   "score": 7,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "NET",
+   "url": "https://blog.cloudflare.com/rss/",
+   "feed_bytes": 303663,
+   "operator_terms": [
+    "context window",
+    "embedding model",
+    "guardrail",
+    "mcp server",
+    "model context protocol",
+    "prompt injection",
+    "tokens per"
+   ],
+   "marketing_terms": [
+    "ai-powered",
+    "cutting-edge"
+   ],
+   "score": 7,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "BOX",
+   "url": "https://medium.com/feed/box-tech-blog",
+   "feed_bytes": 164972,
+   "operator_terms": [
+    "context window",
+    "fine-tun",
+    "hallucinat",
+    "human-in-the-loop",
+    "rag"
+   ],
+   "marketing_terms": [
+    "cutting-edge"
+   ],
+   "score": 5,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "CRM",
+   "url": "https://engineering.salesforce.com/feed/",
+   "feed_bytes": 161458,
+   "operator_terms": [
+    "context window",
+    "evaluation harness",
+    "hallucinat",
+    "regression suite",
+    "tool calling"
+   ],
+   "marketing_terms": [
+    "ai-powered"
+   ],
+   "score": 5,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "DT",
+   "url": "https://www.dynatrace.com/news/feed/",
+   "feed_bytes": 445045,
+   "operator_terms": [
+    "context window",
+    "guardrail",
+    "hallucinat",
+    "mcp server",
+    "model context protocol"
+   ],
+   "marketing_terms": [
+    "ai-powered"
+   ],
+   "score": 5,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "PLTR",
+   "url": "https://blog.palantir.com/feed",
+   "feed_bytes": 196406,
+   "operator_terms": [
+    "distill",
+    "fine-tun",
+    "guardrail",
+    "retrieval-augmented"
+   ],
+   "marketing_terms": [
+    "game-chang"
+   ],
+   "score": 4,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "RDDT",
+   "url": "https://www.reddit.com/r/RedditEng/.rss",
+   "feed_bytes": 414197,
+   "operator_terms": [
+    "distill",
+    "guardrail",
+    "hallucinat",
+    "human-in-the-loop"
+   ],
+   "marketing_terms": [
+    "ai-powered"
+   ],
+   "score": 4,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "DDOG",
+   "url": "https://www.datadoghq.com/blog/index.xml",
+   "feed_bytes": 48198,
+   "operator_terms": [
+    "fine-tun",
+    "guardrail",
+    "mcp server"
+   ],
+   "marketing_terms": [
+    "ai-powered"
+   ],
+   "score": 3,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "FROG",
+   "url": "https://jfrog.com/blog/feed/",
+   "feed_bytes": 124326,
+   "operator_terms": [
+    "context window",
+    "mcp server",
+    "tokens per"
+   ],
+   "marketing_terms": [
+    "ai-powered"
+   ],
+   "score": 3,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "OKTA",
+   "url": "https://developer.okta.com/feed.xml",
+   "feed_bytes": 303119,
+   "operator_terms": [
+    "mcp server",
+    "model context protocol"
+   ],
+   "marketing_terms": [],
+   "score": 2,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "TEAM",
+   "url": "https://www.atlassian.com/blog/feed",
+   "feed_bytes": 346339,
+   "operator_terms": [
+    "guardrail",
+    "mcp server"
+   ],
+   "marketing_terms": [
+    "ai-powered"
+   ],
+   "score": 2,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "CRWD",
+   "url": "https://www.crowdstrike.com/blog/feed/",
+   "feed_bytes": 5481,
+   "operator_terms": [
+    "agent harness"
+   ],
+   "marketing_terms": [],
+   "score": 1,
+   "insufficient_sample": true
+  },
+  {
+   "ticker": "ESTC",
+   "url": "https://www.elastic.co/blog/feed",
+   "feed_bytes": 27022,
+   "operator_terms": [
+    "retrieval-augmented"
+   ],
+   "marketing_terms": [],
+   "score": 1,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "DOCU",
+   "url": "https://www.docusign.com/blog/feed",
+   "feed_bytes": 648710,
+   "operator_terms": [],
+   "marketing_terms": [
+    "transforming the"
+   ],
+   "score": 0,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "KVYO",
+   "url": "https://klaviyo.tech/feed.xml",
+   "feed_bytes": 51365,
+   "operator_terms": [],
+   "marketing_terms": [],
+   "score": 0,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "SHOP",
+   "url": "https://shopify.engineering/blog.atom",
+   "feed_bytes": 240640,
+   "operator_terms": [],
+   "marketing_terms": [],
+   "score": 0,
+   "insufficient_sample": false
+  },
+  {
+   "ticker": "SPOT",
+   "url": "https://engineering.atspotify.com/feed/",
+   "feed_bytes": 6189,
+   "operator_terms": [],
+   "marketing_terms": [],
+   "score": 0,
+   "insufficient_sample": true
+  }
+ ],
+ "unresolved": [
+  "MORN (HTTP 202)"
+ ]
+}

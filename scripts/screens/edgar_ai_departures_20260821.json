@@ -1,0 +1,45 @@
+[
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Sprout Social, Inc.  (SPT)  (CIK 0001517375)",
+  "phrases": [
+   "Chief Technology Officer resigned",
+   "Chief Technology Officer, resigned"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Lucid Group, Inc.  (LCID)  (CIK 0001811210)",
+  "phrases": [
+   "Chief Technology Officer resigned",
+   "Chief Technology Officer, resigned"
+  ]
+ },
+ {
+  "score": 10,
+  "n": 2,
+  "filer": "Strive, Inc.  (ASST)  (CIK 0001920406)",
+  "phrases": [
+   "Chief Technology Officer resigned",
+   "Chief Technology Officer, resigned"
+  ]
+ },
+ {
+  "score": 5,
+  "n": 1,
+  "filer": "Proto Labs Inc  (PRLB)  (CIK 0001443669)",
+  "phrases": [
+   "Chief Technology Officer will depart"
+  ]
+ },
+ {
+  "score": 3,
+  "n": 1,
+  "filer": "authID Inc.  (AUID)  (CIK 0001534154)",
+  "phrases": [
+   "Chief Product Officer resigned"
+  ]
+ }
+]

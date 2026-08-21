@@ -1,0 +1,148 @@
+# Quarterly revenue, USD millions, by CALENDAR quarter end. Source: FactSet FF_SALES,
+# periodicity=QTR, currency=USD, pulled 2026-08-21. Audit cards available per point via
+# FF_SALES(QTR,<date>,<date>,,RP,USD) on the FactSet identifier.
+#
+# WHY A FILE. FactSet is reachable via MCP in an interactive session but NOT from cron, so
+# the series is snapshotted here and refreshed deliberately. Re-pull when new quarters land.
+#
+# WHY USD FROM FACTSET rather than converting CNY ourselves: removes the FX assumption
+# entirely. An earlier version divided CNY by an assumed ~7.2 and was accurate to ~1%, but
+# assumed rather than sourced.
+#
+# ROLE is load-bearing for the share math — "you can't just look at headline revenue":
+#   module_maker  competes head-to-head in datacom transceivers. The share numerator/denominator.
+#   component     sells INTO module makers (lasers, chips, subsystems). Different layer.
+#   contract_mfr  BUILDS modules for the module makers. Its revenue OVERLAPS theirs, so
+#                 including it double-counts. Excluded from share by default.
+#   diversified   material non-optical revenue; totals overstate its optical position.
+#
+# PURITY: fraction of revenue that is datacom optics, where known. null = unknown, and the
+# script will say so rather than assume 1.0.
+
+companies:
+  COHR:
+    name: Coherent
+    bloc: US
+    role: module_maker
+    purity: null        # includes lasers + industrial + telecom; segment split not in FactSet
+    factset_id: COHR-US
+    quarters: {2024-03-31: 1208.8, 2024-06-30: 1314.4, 2024-09-30: 1348.1, 2024-12-31: 1434.7,
+               2025-03-31: 1497.9, 2025-06-30: 1529.4, 2025-09-30: 1581.4, 2025-12-31: 1685.6,
+               2026-03-31: 1805.6, 2026-06-30: 2045.5}
+  LITE:
+    name: Lumentum
+    bloc: US
+    role: module_maker
+    purity: null        # includes legacy telecom
+    factset_id: LITE-US
+    quarters: {2024-03-31: 366.5, 2024-06-30: 308.3, 2024-09-30: 336.9, 2024-12-31: 402.2,
+               2025-03-31: 425.2, 2025-06-30: 480.7, 2025-09-30: 533.8, 2025-12-31: 665.5,
+               2026-03-31: 808.4, 2026-06-30: 1006.3}
+  AAOI:
+    name: Applied Optoelectronics
+    bloc: US
+    role: module_maker
+    purity: null        # datacom + CATV/broadband
+    factset_id: AAOI-US
+    quarters: {2024-03-31: 40.7, 2024-06-30: 43.3, 2024-09-30: 65.2, 2024-12-31: 100.3,
+               2025-03-31: 99.9, 2025-06-30: 103.0, 2025-09-30: 118.6, 2025-12-31: 134.3,
+               2026-03-31: 151.1, 2026-06-30: 191.9}
+  innolight.cn:
+    name: Zhongji Innolight
+    bloc: CN
+    role: module_maker
+    purity: null        # near pure-play datacom transceivers
+    factset_id: 300308-CN
+    quarters: {2024-03-31: 673.7, 2024-06-30: 822.4, 2024-09-30: 908.8, 2024-12-31: 911.0,
+               2025-03-31: 917.2, 2025-06-30: 1121.9, 2025-09-30: 1427.3, 2025-12-31: 1866.6,
+               2026-03-31: 2815.7}
+  eoptolink.cn:
+    name: Eoptolink Technology
+    bloc: CN
+    role: module_maker
+    purity: null        # near pure-play optical modules
+    factset_id: 300502-CN
+    quarters: {2024-03-31: 154.8, 2024-06-30: 222.4, 2024-09-30: 335.2, 2024-12-31: 489.1,
+               2025-03-31: 556.9, 2025-06-30: 882.7, 2025-09-30: 847.7, 2025-12-31: 1175.8,
+               2026-03-31: 1204.2}
+
+  # --- classified OUT of the share math, deliberately -------------------------
+  FN:
+    name: Fabrinet
+    bloc: US
+    role: contract_mfr
+    note: "BUILDS modules for COHR/LITE and others. Its revenue OVERLAPS theirs — including
+           it double-counts the same modules. Tracked for the supplier read-through, never
+           added to the share denominator."
+    factset_id: FN-US
+    quarters: {2024-03-31: 731.5, 2024-06-30: 753.3, 2024-09-30: 804.2, 2024-12-31: 833.6,
+               2025-03-31: 871.8, 2025-06-30: 909.7, 2025-09-30: 978.1, 2025-12-31: 1132.9,
+               2026-03-31: 1214.3, 2026-06-30: 1315.8}
+  accelink.cn:
+    name: Accelink Technologies
+    bloc: CN
+    role: component
+    note: "Optical components and subsystems, sells INTO module makers. Different layer of
+           the stack — the name to watch for Chinese in-house laser capability, but not a
+           module-share competitor."
+    factset_id: 002281-CN
+    quarters: {2024-03-31: 179.6, 2024-06-30: 251.2, 2024-09-30: 316.4, 2024-12-31: 402.6,
+               2025-03-31: 304.4, 2025-06-30: 417.6, 2025-09-30: 459.5, 2025-12-31: 479.1,
+               2026-03-31: 400.5, 2026-06-30: 563.6}
+  hgtech.cn:
+    name: HG Genuine (Huagong Tech)
+    bloc: CN
+    role: diversified
+    note: "Laser equipment, sensors AND optical interconnect. Total revenue materially
+           overstates its optical position; no segment split available."
+    factset_id: 000988-CN
+    quarters: {2024-03-31: 301.9, 2024-06-30: 418.4, 2024-09-30: 530.4, 2024-12-31: 376.6,
+               2025-03-31: 461.1, 2025-06-30: 590.8, 2025-09-30: 476.3, 2025-12-31: 467.8,
+               2026-03-31: 616.1}
+
+  ts_comm.cn:
+    name: T&S Communications
+    bloc: CN
+    role: module_maker
+    purity: null        # transceivers, AOC/DAC, plus passive components
+    factset_id: 300570-CN
+    note: "FactSet countryOfRiskGeoRev = US — its revenue is largely US-facing despite the
+           Shenzhen listing. Small relative to Innolight but a genuine module competitor."
+    quarters: {2024-03-31: 31.1, 2024-06-30: 39.2, 2024-09-30: 56.3, 2024-12-31: 64.3,
+               2025-03-31: 50.3, 2025-06-30: 63.3, 2025-09-30: 53.9, 2025-12-31: 46.9,
+               2026-03-31: 49.2, 2026-06-30: 97.0}
+
+  # --- resolved and deliberately classified OUT ------------------------------
+  tfc.cn:
+    name: Suzhou TFC Optical Communication
+    bloc: CN
+    role: component
+    factset_id: 300394-CN
+    note: "Zirconia ceramics, CNC metal parts, receptacles, isolators, adaptors, lens arrays.
+           Passive components and mechanical parts, not modules."
+    quarters: {}
+  broadex.cn:
+    name: Broadex / EverProX Technologies
+    bloc: CN
+    role: component
+    factset_id: 300548-CN
+    note: "PLC splitters, AWGs, VOAs, fiber arrays, silicon-photonics packaging. Sells INTO
+           module makers."
+    quarters: {}
+  dongshan.cn:
+    name: Suzhou Dongshan Precision
+    bloc: CN
+    role: diversified
+    factset_id: 002384-CN
+    note: "Segments are PCB, Photoelectric Display and Precision Manufacturing — dominated by
+           PCB. Not an optical module maker; including its total would badly distort share."
+    quarters: {}
+  onet.cn:
+    name: O-Net Technologies (Group)
+    bloc: CN
+    role: module_maker
+    factset_id: 877-HK
+    note: "Optical modules and subsystems, so it BELONGS in the panel — but FactSet flags
+           privateEntityFlag=1 and FF_SALES returns null for every quarter. Taken private;
+           no current public financials. A real, unfixable hole in the panel."
+    quarters: {}

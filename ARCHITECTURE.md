@@ -90,6 +90,14 @@ fetch → cluster (headline Jaccard ≥ 0.6) → classify HIGH/MEDIUM/DROP (volu
 relevance gate, FactSet in-both / sentiment) → 18h state-ledger de-dup → plain-text Brevo email.
 Per-ticker isolation; degraded-coverage banners; rendered body persisted to a gitignored
 `logs/news_digest_*.txt` audit artifact. Code: `scripts/news_digest.py` + `scripts/newsdigest/`.
+**Story cap (2026-08-19):** the digest carries at most **30 stories**, **max 2 per ticker**, chosen by
+an editorial ranking pass (`scripts/newsdigest/rank.py`) that runs between classify and summarize —
+tier → estimate-changing → novelty → cross-read, with sell-side rating actions ranked last and
+admitted only when they state a non-valuation rationale. Sitting before the summarizer is what makes
+it a cost cut (~$5.6 → ~$3.1 per run) rather than a cosmetic one. Survivors below the cut are still
+filed to `notes/news/` + pg as headline-only notes, so corpus recall is unchanged. Header reads
+`top 30 of N`; a ranking failure falls back to a deterministic order and says so in a banner.
+
 **Thresholds are v1 — known tuning items are tracked in §8 (cluster embeddings, SEO patterns,
 sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
 

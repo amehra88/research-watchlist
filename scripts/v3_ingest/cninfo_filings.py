@@ -49,7 +49,7 @@ WATCHLIST = REPO_ROOT / "config" / "watchlist.yaml"
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "chunking"))
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "v3_ingest"))
 
-from sec_filings import is_auth_failure, log, run_claude  # noqa: E402
+from sec_filings import is_fatal_run_failure, log, run_claude  # noqa: E402
 
 SEARCH_URL = "http://www.cninfo.com.cn/new/information/topSearch/query"
 QUERY_URL = "http://www.cninfo.com.cn/new/hisAnnouncement/query"
@@ -329,8 +329,9 @@ def main() -> int:
             except Exception as e:  # noqa: BLE001
                 failed += 1
                 log(f"    FAILED {f['title'][:40]}: {type(e).__name__}: {e}")
-                if is_auth_failure(e):
-                    log("    auth failure — aborting run")
+                if is_fatal_run_failure(e):
+                    log("    fatal (auth or usage limit) — aborting run; re-run later to "
+                        "resume from the checkpoint")
                     return 1
                 continue
 

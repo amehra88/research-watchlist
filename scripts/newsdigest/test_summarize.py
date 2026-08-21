@@ -135,9 +135,83 @@ def test_persistent_429_fast_abort_no_continue():
     print(f"  ✓ persistent 429 → fast-abort in {len(calls)} call, 60/60 UNSUMMARIZED, 0 storm, non-zero-exit signal")
 
 
+
+def _ids_in(prompt):
+    import re
+    return re.findall(r"\[cluster_id: ([^\]]+)\]", prompt)
+
+
+def _mk(cid):
+    from newsdigest.classify_llm import Classification
+    from datetime import datetime, timezone
+    now = datetime(2026, 8, 19, tzinfo=timezone.utc)
+
+    class C:
+        hash = cid
+        volume = 1
+        sources = {"Src"}
+        items = [{"title": f"Headline for {cid}", "published": now}]
+    return C(), Classification(cluster_id=cid, materiality=["NVDA"], confidence="high")
+
+
+def test_timeout_splits_batch_instead_of_losing_it():
+    """2026-08-19: a 20-item batch timed out and took 20 of the digest's 30 stories with it.
+    Output length is what blows the budget, so halves almost always fit."""
+    import subprocess
+    from newsdigest import summarize as sm
+
+    survivors = [_mk(f"c{i}") for i in range(20)]
+    seen = {"sizes": []}
+    orig = sm._run_claude
+
+    def fake(prompt, repo_root, timeout=None):
+        n = prompt.count("[cluster_id: ")
+        seen["sizes"].append(n)
+        if n > 5:                                  # anything bigger than 5 stories "times out"
+            raise subprocess.TimeoutExpired("claude", timeout or 600)
+        body = ",".join('{"cluster_id":"%s","headline":"h","bullets":["b"],'
+                        '"lens_tags":[],"why_it_matters":"w"}' % cid
+                        for cid in _ids_in(prompt))
+        return "[" + body + "]", 0.02
+
+    sm._run_claude = fake
+    try:
+        out, cost, unsummarized = sm.summarize_survivors(survivors, ".", logger=None)
+    finally:
+        sm._run_claude = orig
+    assert not unsummarized, f"split must recover every story, {len(unsummarized)} lost"
+    assert len(out) == 20, f"expected 20 summaries, got {len(out)}"
+    assert max(seen["sizes"]) == 20 and min(seen["sizes"]) <= 5, seen["sizes"]
+    print(f"  ✓ timeout splits 20 → {seen['sizes'][1:]} and recovers all 20 stories")
+
+
+def test_timeout_split_respects_max_depth():
+    """A batch that times out no matter how small must be given up on, not split forever."""
+    import subprocess
+    from newsdigest import summarize as sm
+    survivors = [_mk(f"d{i}") for i in range(20)]
+    calls = {"n": 0}
+    orig = sm._run_claude
+
+    def always_timeout(prompt, repo_root, timeout=None):
+        calls["n"] += 1
+        raise subprocess.TimeoutExpired("claude", timeout or 600)
+
+    sm._run_claude = always_timeout
+    try:
+        out, cost, unsummarized = sm.summarize_survivors(survivors, ".", logger=None)
+    finally:
+        sm._run_claude = orig
+    assert len(unsummarized) == 20 and not out
+    assert calls["n"] < 40, f"split must terminate, made {calls['n']} calls"
+    print(f"  ✓ hopeless batch terminates after {calls['n']} calls (fails loud, no infinite split)")
+
+
 if __name__ == "__main__":
     for fn in (test_clean_run_all_summarized,
                test_generic_batch_failure_isolated_not_aborted,
-               test_persistent_429_fast_abort_no_continue):
+               test_persistent_429_fast_abort_no_continue,
+               test_timeout_splits_batch_instead_of_losing_it,
+               test_timeout_split_respects_max_depth):
         fn()
     print("\nALL PASS — summarizer no-silent-drop + 429 fast-abort invariant holds.")

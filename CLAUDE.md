@@ -52,7 +52,18 @@ Beyond the FSI plugin templates above, this repo is also Ashim Mehra's working r
 
 ### Purpose and scope
 
-Watchlist: 147 tickers in `config/watchlist.yaml`, tiered T1 (BCTK, 41 tickers), T2 (17), T3 (89). Supply chain map: `config/supply-chain.yaml` (146/147 coverage, FactSet-extracted) plus `config/supply-chain-manual.yaml` for overrides.
+Watchlist: `config/watchlist.yaml` holds **159 distinct identifiers** across four tiers (178 tier entries; 19 tickers appear in both T2 and T3, so the entry count exceeds the distinct count):
+
+- **T1 `tier_1_bctk`** (44) — BCTK holdings. Carries the full scoring block (ai_positioning, competitive_advantage, potential_investor_interest). **May contain a `.pvt` id** when the fund holds a private company: `simaai.pvt` (SiMa.ai, added 2026-08-19) is the first. Such a name is registered in `private_drivers` (with `bctk_holding: true`) *and* listed here, because T1 means "what BCTK owns" and omitting it would make that false. `sec_filings.py` and `cron_earnings_reviewer.py` both carry a `.pvt` guard so a private id never reaches EDGAR or the transcript pipeline; `news_digest.py` is safe by construction (it intersects with `ticker_identity`).
+- **T2 `tier_2_active_candidates`** (41) — active candidates, same scoring block.
+- **T3 `tier_3_watchlist`** (93) — minimal entries (`ticker`, `themes`, `added_date`). A ticker-shaped slot for a name you might take a position in. Read by `scripts/cron_earnings_reviewer.py`.
+- **T4 `tier_4_ecosystem`** (8) — **not a tier of conviction; a different kind of object.** Companies you will not own that move names you do (Chinese optical-transceiver makers vs COHR/LITE; BE's Indian/Taiwanese suppliers). Keyed by a dot-suffixed `id` (`innolight.cn`), never a ticker, so they cannot enter the `[A-Z]+` earnings pipeline. Every entry carries `relation` + `affects` and `edgar_coverage: false` — evidence accumulates *about* them via `v3_ingest/entities.py`, never *from* them. The block's own header comment explains why they must not be filed as T3.
+
+Plus 14 `private_drivers` (`.pvt` ids). Most are companies that *move* holdings; one (`simaai.pvt`) is a holding itself and is flagged `bctk_holding: true`. On an IPO a `.pvt` converts to a real ticker — see `scripts/migrate_spacex_to_spcx.py` for the `spacex.pvt` → `SPCX` precedent.
+
+T1+T2 is the materiality universe for the news classifier; T3 is earnings-only; T4 is mention-resolution only.
+
+Supply chain map: `/root/research/config/supply-chain.yaml` (8,756 FactSet-extracted edges) plus `/root/research/config/supply-chain-manual.yaml` for operator-entered edges. **These live in the sibling `/root/research` repo, not here** — only `watchlist.yaml` is symlinked across (`/root/research/config/watchlist.yaml` → this repo). Edge schema is defined in `/root/research/DESIGN.md` §4.2; note `supplier` means *issuer depends on target for inputs*, so the supplier goes in `target`.
 
 Three analytical dimensions tracked per ticker: competitive position, product cadence, revenue growth and margins. Synthesized in ticker-level notes at `notes/{TICKER}/`.
 
@@ -89,7 +100,7 @@ Private companies that drive public theses (OpenAI, Anthropic, xAI, …) are not
 
 ### Agents (production)
 
-- `.claude/agents/earnings-reviewer.md` — production agent invoked by cron at 6:30am ET daily via `scripts/cron_earnings_reviewer.py`; processes prior-day earnings transcripts via InsiderScore + FactSet MCPs
+- `.claude/agents/earnings-reviewer.md` — production agent invoked by cron at **02:30 ET** daily via `scripts/cron_earnings_reviewer.py` (moved from 06:30 on 2026-08-21: it was the largest single consumer in the 06:00 hour and its usage landed inside the operator's own working window; it uses a 24h lookback so the hour is arbitrary); processes prior-day earnings transcripts via InsiderScore + FactSet MCPs
 - `.claude/agents/earnings-reviewer-from-pdf.md` — same logic for operator-uploaded PDFs, wrapped by `/root/research/scripts/process_uploaded_transcript.py` (sibling repo)
 - `plugins/agent-plugins/ticker-synthesis/agents/ticker-synthesis.md` — synthesizes a ticker's three dimensions from notes/, watchlist, supply chain (Phase 2 sources stubbed)
 - `.claude/agents/market-researcher.md` — general market research helper

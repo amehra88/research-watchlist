@@ -51,6 +51,13 @@ themes:
     - nuclear_energy_buildout
     - pc_demand
     - sovereign_ai_deployments
+  # space_supply_chain (added 2026-08-19): BUILD-SIDE inputs to launch and spacecraft —
+  # enabling materials (superalloys, titanium, beryllium), propulsion and structural components,
+  # heat-shield and precision fabrication, avionics. Deliberately NARROWER than space_economy,
+  # which had become a catch-all firing on 727 of 809 SPCX news notes and therefore no longer
+  # discriminated as a retrieval filter. Tag the SUPPLIER's story here; leave launch economics,
+  # constellation and mission news on space_economy. Distinct from aerospace_defense_aftermarket
+  # (service/spares economics, not build-side supply). Constituents: MTRN, CRS, DPC.
   supply:
     - advanced_materials_ai_infra
     - ai_compute_topology
@@ -68,6 +75,7 @@ themes:
     - semiconductor_cycle
     - silicon_architecture_competition
     - solar_supply_chain
+    - space_supply_chain
     - thermal_management_cooling
   margins_pricing:
     - ai_inference_margin_compression
@@ -224,6 +232,13 @@ private_drivers:
     affects: [NOW]
     notes: "US enterprise customer-service AI-agent platform; the principal direct competitor to Sierra in autonomous customer support. Key private name in agent_framework_landscape (enterprise vertical-agent axis). Competitive read-through to Salesforce Agentforce (CRM, not in watchlist) and ServiceNow (NOW)."
     added_date: 2026-06-03
+  - name: "SiMa.ai"
+    pvt_id: simaai.pvt
+    aliases: ["SiMa.ai", "SiMa ai", "SiMa", "SiMa Technologies", "Sima.ai"]
+    affects: [NVDA, ARM, QCOM, AMD, TSM]
+    bctk_holding: true
+    notes: "Fabless edge-AI silicon: MLSoC (machine-learning system-on-chip) for embedded and physical-AI inference at the edge rather than datacenter training. FIRST .pvt id that is a BCTK HOLDING rather than only a thesis driver, so it is registered here (the .pvt authority) AND listed in tier_1_bctk — see the tier_1 entry and the .pvt guards added to sec_filings.py / cron_earnings_reviewer.py on 2026-08-19. Read-through: edge/embedded inference is the segment NVDA serves with Jetson and where ARM, QCOM and AMD compete, so SiMa is a datapoint on where inference workloads land. Position and company details are OPERATOR-ASSERTED (2026-08-19); no public filings exist, so nothing here is verifiable against a primary document."
+    added_date: 2026-08-19
 
 # ---------------------------------------------------------------------------
 # External web sources to track over time. Includes company technical blogs,
@@ -391,6 +406,10 @@ ingest_comparables:
     informs: [COHR, LITE]
     added_date: 2026-08-10
     notes: "Fabrinet (NYSE) — the contract manufacturer that actually builds much of the datacom transceiver volume for COHR, LITE and others. Absent from the watchlist entirely until now, which is a live hole: FN's filings disclose datacom transceiver volume, mix and customer-concentration detail that directly tests COHR's supply_tightness assumption from the outside. Not an investment candidate here — ingested as evidence."
+  - ticker: RKLB
+    informs: [SPCX]
+    added_date: 2026-08-19
+    notes: "Rocket Lab USA (NASDAQ: RKLB) — the principal listed pure-play competitor to SPCX in launch, and a component supplier into the wider satellite build. Same shape as the AAOI case below: added T3 the same day as a name to watch, which does NOT put it in the SEC universe (sec_filings.load_universe reads T1 + T2 + ingest_comparables only), so its filings would never have been ingested despite RKLB being an active EDGAR filer. This entry closes that gap WITHOUT changing its tier — RKLB stays T3, a name to watch, not an investment candidate promoted merely to get it ingested. Why the evidence matters: SPCX's thesis rests on launch cadence and cost-per-kg, and RKLB's 10-K/10-Q disclose Electron/Neutron cadence, backlog and Space Systems mix — the only external, filed check on how much of the launch market a competitor is actually taking. Operator request 2026-08-19."
   - ticker: AAOI
     informs: [COHR, LITE]
     added_date: 2026-08-10
@@ -752,6 +771,10 @@ tier_1_bctk:
     themes: []      # TODO: assign themes via WATCHLIST email
     notes: "DPC Holdings PLC (parent of Doncasters Group) — Jersey-domiciled, NYSE-listed. 250-year-old UK manufacturer of aerospace + industrial gas turbine (IGT) engine components (turbine blades, structural/rotating parts). IPO 2026-06-25 at $33 (~$21.7B mcap); BCTK initiated 0.67% position late June (per 06/26/2026 daily holdings). Read-through: aerospace/defense supply chain + IGT demand tied to data-center / grid power buildout."
     added_date: 2026-06-26
+  - ticker: simaai.pvt
+    themes: [silicon_architecture_competition, inference_compute_economics, chip_design_competition]
+    added_date: 2026-08-19
+    notes: "SiMa.ai — PRIVATE BCTK holding, added at operator request 2026-08-19. Fabless edge-AI silicon (MLSoC) for embedded / physical-AI inference at the edge rather than datacenter training.\nTHIS IS THE FIRST .pvt ID IN A TIER BLOCK, and it is deliberate. The 14 private_drivers are companies that MOVE holdings; this one IS a holding, so T1 (defined as 'BCTK holdings') would be false if it were left out. It keeps the .pvt id rather than being given a pseudo-ticker, because a private company has no symbol and inventing one would collide with the [A-Z]+ regexes that gate the earnings pipeline. Registered in private_drivers (the .pvt authority) as simaai.pvt with bctk_holding: true.\nCONSUMERS: sec_filings.py load_universe() and cron_earnings_reviewer.py both read T1 and neither filtered non-ticker ids, so both would have queried EDGAR/transcripts for a private company and produced flagged-and-skipped noise every run. A .pvt guard was added to each on 2026-08-19 (sec_filings.py already DOCUMENTED the exclusion at module level but did not enforce it). news_digest.py is safe by construction — it intersects the universe with ticker_identity, which has no .pvt entries.\nEverything here is OPERATOR-ASSERTED: no public filings exist, so no claim in this entry is verifiable against a primary document. Convert to a real ticker on any IPO, per the spacex.pvt -> SPCX precedent (scripts/migrate_spacex_to_spcx.py)."
   - ticker: ENTG
     themes: [foundry_capacity, semiconductor_cycle, advanced_materials_ai_infra, china_export_controls, lithography_roadmap, nand_demand_cycle]
     added_date: 2026-05-09
@@ -1187,15 +1210,33 @@ tier_2_active_candidates:
   - ticker: DASH
     themes: [agentic_commerce, ai_re_architected_incumbent, ad_market_strength, autonomous_vehicle_competition, platform_take_rate, local_commerce_delivery]
     added_date: 2026-05-11
+  - ticker: DE
+    themes: [ai_native_vertical, ai_re_architected_incumbent]
+    added_date: 2026-08-20
+    ai_positioning:
+      score: "4"
+      notes: "Deere - See & Spray CV decides per plant, priced on herbicide saved; training data from a customer-funded machine fleet. Proves the thesis outside tech. Rank #8."
   - ticker: DOCN
     themes: [ai_infrastructure_capex, ai_infrastructure_software, inference_compute_economics, data_center_deployment_constraints, enterprise_ai_adoption]
     added_date: 2026-05-11
+  - ticker: GH
+    themes: [ai_native_vertical, enterprise_ai_adoption]
+    added_date: 2026-08-20
+    ai_positioning:
+      score: "4"
+      notes: "Guardant Health - tumor-naive MRD + screening require learned classifiers over methylation and fragmentomics. Delete the model and you have a blood draw. Rank #2 on ai-forward screen."
   - ticker: GLW
     themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, hyperscaler_revenue_concentration, solar_supply_chain]
     added_date: 2026-05-11
   - ticker: INTC
     themes: [silicon_architecture_competition, foundry_capacity, ai_infrastructure_capex, lithography_roadmap, inference_compute_economics, pc_demand, hyperscaler_revenue_concentration]
     added_date: 2026-05-09
+  - ticker: IRTC
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20
+    ai_positioning:
+      score: "4"
+      notes: "iRhythm - closest structural twin to HTFL. Classifier reads ~14d continuous ECG; FDA clearance + CPT code + a decade of labelled recordings. Rank #3."
   - ticker: MRVL
     themes: [silicon_architecture_competition, ai_infrastructure_capex, networking_competitive_landscape, hyperscaler_revenue_concentration, ai_compute_topology, inference_compute_economics]
     added_date: 2026-05-09
@@ -1234,6 +1275,12 @@ tier_2_active_candidates:
   - ticker: RDDT
     themes: [ad_market_strength, search_disruption, ai_re_architected_incumbent]
     added_date: 2026-05-09
+  - ticker: RDNT
+    themes: [ai_native_vertical, ai_re_architected_incumbent]
+    added_date: 2026-08-20
+    ai_positioning:
+      score: "4"
+      notes: "RadNet - owns the scanners, the images AND the outcomes that label them; DeepHealth sold as cash-pay upsell. Vertically integrated data/model/distribution. Rank #5."
   - ticker: ROKU
     themes: [ad_market_strength, ai_re_architected_incumbent]
     added_date: 2026-05-09
@@ -1319,6 +1366,12 @@ tier_2_active_candidates:
     themes: []
     added_date: 2026-06-24
     scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
+  - ticker: UPST
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20
+    ai_positioning:
+      score: "4"
+      notes: "Upstart - the credit decision IS the model, trained on outcomes for borrowers a bureau cutoff would reject. Funding-fragile. Rank #9."
   - ticker: WMT
     themes: []
     added_date: 2026-06-24
@@ -1393,6 +1446,9 @@ tier_3_watchlist:
   - ticker: ADI
     themes: [automotive_semiconductor_demand, semiconductor_cycle, data_center_deployment_constraints, ai_infrastructure_capex, china_us_tensions]
     added_date: 2026-05-11
+  - ticker: ADPT
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Adaptive Biotech - clonoSEQ MRD; real ML (TCR-antigen map) not yet in revenue
   - ticker: AEIS
     themes: [foundry_capacity, semiconductor_cycle, data_center_deployment_constraints]
     added_date: 2026-05-11
@@ -1405,6 +1461,9 @@ tier_3_watchlist:
   - ticker: APP
     themes: [ad_market_strength, ai_re_architected_incumbent, vertical_ai_applications]
     added_date: 2026-05-09
+  - ticker: AUR
+    themes: [ai_native_vertical, autonomous_vehicle_competition]
+    added_date: 2026-08-20  # Aurora - driving policy is the entire product; loss-funded data collection
   - ticker: BABA
     themes: [china_ai_infrastructure_demand, ad_market_strength, agentic_commerce, ai_re_architected_incumbent, china_us_tensions, frontier_model_competition]
     added_date: 2026-05-09
@@ -1414,12 +1473,22 @@ tier_3_watchlist:
   - ticker: CEG
     themes: [nuclear_energy_buildout, data_center_deployment_constraints, ai_infrastructure_capex]
     added_date: 2026-05-09
+  - ticker: CHRW
+    themes: [ai_re_architected_incumbent]
+    added_date: 2026-08-20  # C.H. Robinson - only name where labour substitution is publicly auditable (shipments/employee)
+  - ticker: CLBT
+    themes: [ai_re_architected_incumbent]
+    added_date: 2026-08-20  # Cellebrite - extraction is engineering, the paid job is AI triage; Axon-shaped gov moat
   - ticker: CLS
     themes: [ai_infrastructure_capex, hyperscaler_revenue_concentration, ai_compute_topology, data_center_deployment_constraints]
     added_date: 2026-05-10
   - ticker: CRDO
     themes: [networking_competitive_landscape, ai_infrastructure_capex, ai_compute_topology, hyperscaler_revenue_concentration]
     added_date: 2026-05-09
+  - ticker: CRS
+    themes: [aerospace_defense_aftermarket, space_economy, space_supply_chain]
+    added_date: 2026-08-19
+    notes: "Carpenter Technology Corp (NYSE: CRS) — specialty alloys and engineered materials: high-temperature nickel/cobalt superalloys, titanium and ultra-high-strength steels for aero-engine, space-launch and industrial applications. Added T3 at operator request 2026-08-19 as an ENABLING-MATERIALS supplier into the space/launch build, i.e. the read-through is upstream of SPCX rather than a launch-economics play. Supply-chain edge SPCX -> CRS (kind: supplier) recorded in /root/research/config/supply-chain-manual.yaml. Sits alongside DPC (Doncasters, T1) as the second aero/space component-materials name."
   - ticker: CRUS
     themes: [handset_competition, semiconductor_cycle]
     added_date: 2026-05-11
@@ -1441,6 +1510,15 @@ tier_3_watchlist:
   - ticker: EQIX
     themes: [data_center_deployment_constraints, ai_infrastructure_capex, hyperscaler_revenue_concentration]
     added_date: 2026-05-11
+  - ticker: ESTC
+    themes: [ai_infrastructure_software]
+    added_date: 2026-08-20  # Elastic - retrieval/vector infrastructure under RAG apps; 765-star MCP server
+  - ticker: EVLV
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Evolv - weapons vs benign in a live physical stream. CAVEAT: FTC settlement re efficacy claims
+  - ticker: FDS
+    themes: [ai_re_architected_incumbent, ai_agent_monetization]
+    added_date: 2026-08-20  # FactSet - clears all three EDGAR screens; corpus going agent-addressable via MCP
   - ticker: FFIV
     themes: [networking_competitive_landscape, cybersecurity_competitive_landscape, enterprise_ai_adoption]
     added_date: 2026-05-11
@@ -1450,6 +1528,9 @@ tier_3_watchlist:
   - ticker: FROG
     themes: [enterprise_ai_adoption, ai_infrastructure_software, cybersecurity_competitive_landscape]
     added_date: 2026-05-09
+  - ticker: GEHC
+    themes: [ai_re_architected_incumbent]
+    added_date: 2026-08-20  # GE HealthCare - DL reconstruction inside the scanner; zero lab-encroachment risk; named CAIO
   - ticker: HPE
     themes: [ai_infrastructure_capex, networking_competitive_landscape, enterprise_ai_adoption, data_center_deployment_constraints, hyperscaler_revenue_concentration]
     added_date: 2026-05-11
@@ -1459,6 +1540,12 @@ tier_3_watchlist:
   - ticker: IBM
     themes: [enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization, ai_infrastructure_software]
     added_date: 2026-05-11
+  - ticker: ISRG
+    themes: [ai_re_architected_incumbent]
+    added_date: 2026-08-20  # Intuitive Surgical - best unconverted corpus in med-tech; no AI revenue yet, hold as free option
+  - ticker: KDK
+    themes: [ai_native_vertical, autonomous_vehicle_competition]
+    added_date: 2026-08-20  # Kodiak AI - driverless trucking; same shape as AUR
   - ticker: KLAC
     themes: [foundry_capacity, semiconductor_cycle, china_export_controls, lithography_roadmap, nand_demand_cycle]
     added_date: 2026-05-09
@@ -1477,6 +1564,10 @@ tier_3_watchlist:
   - ticker: MKSI
     themes: [foundry_capacity, semiconductor_cycle, lithography_roadmap]
     added_date: 2026-05-11
+  - ticker: MTRN
+    themes: [advanced_materials_ai_infra, aerospace_defense_aftermarket, space_economy, space_supply_chain]
+    added_date: 2026-08-19
+    notes: "Materion Corp (NYSE: MTRN) — advanced materials: beryllium and specialty alloys, precision optics, thin-film deposition materials for semiconductors. Added T3 at operator request 2026-08-19 as the second ENABLING-MATERIALS name into the space/launch build. EVIDENCE (Q3 2025 earnings call, 29-Oct-2025, CEO Jugal Vijayvargiya): 'We have secured meaningful wins with space propulsion applications... We have a number of products being introduced at our LARGE SPACE CUSTOMER... Our sales in the space market have increased fivefold in just three years.' CAVEAT: the large space customer is NOT NAMED in the transcript; SpaceX is the operator's inference from context (260+ launches in 2024, SpaceX-dominated). Treat the SPCX link as operator-asserted, not disclosed. Supply-chain edge SPCX -> MTRN (kind: supplier) in /root/research/config/supply-chain-manual.yaml. Note MTRN is dual-relevant to this watchlist: the deposition-materials business is a semiconductor supply-chain read as well as a space one. Sibling names: CRS (T3, specialty alloys), DPC (T1, Doncasters aero/IGT components)."
   - ticker: MSI
     themes: [surveillance_security_tech, ai_native_vertical, vertical_ai_applications]
     added_date: 2026-05-11
@@ -1489,9 +1580,15 @@ tier_3_watchlist:
   - ticker: NFLX
     themes: [ad_market_strength, ai_generated_content, vertical_ai_applications]
     added_date: 2026-05-09
+  - ticker: NP
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Neptune Insurance - flood underwriting model IS the company; modelling edge measurable in loss ratios
   - ticker: NTES
     themes: [ai_generated_content, china_us_tensions, vertical_ai_applications]
     added_date: 2026-05-11
+  - ticker: NTRA
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Natera - Signatera MRD. NOTE: tumor-informed = statistics not learned models; ML content thinner than label implies
   - ticker: NVMI
     themes: [foundry_capacity, semiconductor_cycle, lithography_roadmap]
     added_date: 2026-05-09
@@ -1501,6 +1598,9 @@ tier_3_watchlist:
   - ticker: ONTO
     themes: [foundry_capacity, semiconductor_cycle, lithography_roadmap]
     added_date: 2026-05-11
+  - ticker: OPEN
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Opendoor - AVM is the business, but revenue -44% from peak. A rates trade, not an AI trade
   - ticker: PANW
     themes: [cybersecurity_competitive_landscape, enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization]
     added_date: 2026-05-09
@@ -1510,15 +1610,31 @@ tier_3_watchlist:
   - ticker: PINS
     themes: [ad_market_strength, search_disruption, agentic_commerce, ai_re_architected_incumbent]
     added_date: 2026-05-09
+  - ticker: PL
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Planet Labs - temporal Earth corpus cannot be back-filled, but much of revenue is imagery ACCESS not inference; ~35x sales
   - ticker: QCOM
     themes: [handset_competition, silicon_architecture_competition, china_us_tensions, automotive_semiconductor_demand, ai_infrastructure_capex]
     added_date: 2026-05-11
+  - ticker: RBLX
+    themes: [ai_native_vertical, ai_generated_content]
+    added_date: 2026-08-20  # Roblox - safety classification is a licence to operate, not a feature
+  - ticker: RELX
+    themes: [ai_re_architected_incumbent]
+    added_date: 2026-08-20  # RELX - owns legal/scientific ground truth generative systems must be grounded in. LAB-ENCROACHMENT RISK 3/3
+  - ticker: RKLB
+    themes: [space_economy, space_supply_chain]
+    added_date: 2026-08-19
+    notes: "Rocket Lab USA (NASDAQ: RKLB) — small/medium-lift launch (Electron, Neutron) plus a Space Systems segment selling spacecraft components (reaction wheels, solar arrays, separation systems) to other satellite builders. Added T3 at operator request 2026-08-19 as the principal listed pure-play COMPETITOR to SPCX in launch. Tagged space_supply_chain as well as space_economy because Space Systems is genuinely build-side component supply, not only launch economics. NOTE ON COVERAGE: T3 is read by cron_earnings_reviewer.py but is NOT in the SEC-filings universe (sec_filings.py load_universe reads T1 + T2 + ingest_comparables only), so RKLB 10-K/10-Q/8-K will NOT be ingested from this entry alone despite RKLB being an active EDGAR filer — add it to ingest_comparables (informs: [SPCX]) if primary-filing evidence is wanted."
   - ticker: RKT
     themes: [search_disruption, agentic_commerce, ai_re_architected_incumbent]
     added_date: 2026-05-09
   - ticker: RMBS
     themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, chip_design_competition]
     added_date: 2026-05-11
+  - ticker: RXRX
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Recursion - purest archetype A on the list; clinical output unproven
   - ticker: SE
     themes: [agentic_commerce, ai_generated_content, platform_take_rate, local_commerce_delivery]
     added_date: 2026-05-11
@@ -1537,6 +1653,9 @@ tier_3_watchlist:
   - ticker: SOLS
     themes: [advanced_materials_ai_infra, semiconductor_cycle, ai_infrastructure_capex, thermal_management_cooling, nuclear_energy_buildout]
     added_date: 2026-05-11
+  - ticker: SPGI
+    themes: [ai_re_architected_incumbent]
+    added_date: 2026-08-20  # S&P Global - CAIO + MCP surface, but flagged claims>traction; own the index business not the AI narrative
   - ticker: SWKS
     themes: [handset_competition, semiconductor_cycle, china_us_tensions]
     added_date: 2026-05-11
@@ -1546,9 +1665,15 @@ tier_3_watchlist:
   - ticker: TEAM
     themes: [enterprise_ai_adoption, ai_re_architected_incumbent, ai_agent_monetization]
     added_date: 2026-05-11
+  - ticker: TEM
+    themes: [ai_native_vertical]
+    added_date: 2026-08-20  # Tempus - clinical-molecular join. DILIGENCE: what share of revenue is data licensing vs lab reimbursement
   - ticker: TER
     themes: [foundry_capacity, semiconductor_cycle, ai_infrastructure_capex, humanoid_robotics_competition]
     added_date: 2026-05-09
+  - ticker: TRI
+    themes: [ai_re_architected_incumbent]
+    added_date: 2026-08-20  # Thomson Reuters - CoCounsel on Westlaw; same liability-grounding thesis as RELX, narrower. LAB RISK 3/3
   - ticker: TSEM
     themes: [foundry_capacity, semiconductor_cycle, china_us_tensions]
     added_date: 2026-05-11

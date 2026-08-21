@@ -1,0 +1,708 @@
+[
+ {
+  "ticker": "CRWD",
+  "org": "crowdstrike",
+  "traction": 10.0,
+  "repos": 5,
+  "stars": 248,
+  "forks": 85,
+  "days_since_push": 1,
+  "top_repos": [
+   {
+    "name": "CrowdStrike/falcon-mcp",
+    "stars": 238,
+    "pushed": "2026-08-19"
+   },
+   {
+    "name": "CrowdStrike/aidr-mcp-proxy",
+    "stars": 3,
+    "pushed": "2026-08-06"
+   },
+   {
+    "name": "CrowdStrike/mcpscanner",
+    "stars": 3,
+    "pushed": "2026-02-24"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "ESTC",
+  "org": "elastic",
+  "traction": 10.0,
+  "repos": 5,
+  "stars": 765,
+  "forks": 180,
+  "days_since_push": 0,
+  "top_repos": [
+   {
+    "name": "elastic/mcp-server-elasticsearch",
+    "stars": 705,
+    "pushed": "2026-08-14"
+   },
+   {
+    "name": "elastic/example-mcp-app-security",
+    "stars": 21,
+    "pushed": "2026-08-20"
+   },
+   {
+    "name": "elastic/example-mcp-dashbuilder",
+    "stars": 16,
+    "pushed": "2026-08-04"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "NET",
+  "org": "cloudflare",
+  "traction": 10.0,
+  "repos": 4,
+  "stars": 5742,
+  "forks": 702,
+  "days_since_push": 0,
+  "top_repos": [
+   {
+    "name": "cloudflare/mcp-server-cloudflare",
+    "stars": 4097,
+    "pushed": "2026-08-20"
+   },
+   {
+    "name": "cloudflare/mcp",
+    "stars": 742,
+    "pushed": "2026-08-14"
+   },
+   {
+    "name": "cloudflare/workers-mcp",
+    "stars": 646,
+    "pushed": "2026-04-23"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "TEAM",
+  "org": "atlassian",
+  "traction": 10.0,
+  "repos": 3,
+  "stars": 1038,
+  "forks": 132,
+  "days_since_push": 2,
+  "top_repos": [
+   {
+    "name": "atlassian/atlassian-mcp-server",
+    "stars": 977,
+    "pushed": "2026-07-27"
+   },
+   {
+    "name": "atlassian/trello-mcp-server",
+    "stars": 41,
+    "pushed": "2026-08-18"
+   },
+   {
+    "name": "atlassian/forge-skills",
+    "stars": 20,
+    "pushed": "2026-08-17"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "FROG",
+  "org": "jfrog",
+  "traction": 9.6,
+  "repos": 2,
+  "stars": 133,
+  "forks": 32,
+  "days_since_push": 3,
+  "top_repos": [
+   {
+    "name": "jfrog/mcp-jfrog",
+    "stars": 118,
+    "pushed": "2026-07-05"
+   },
+   {
+    "name": "jfrog/jfrog-mcp-server",
+    "stars": 15,
+    "pushed": "2026-08-17"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "TDC",
+  "org": "teradata",
+  "traction": 9.4,
+  "repos": 4,
+  "stars": 57,
+  "forks": 59,
+  "days_since_push": 0,
+  "top_repos": [
+   {
+    "name": "Teradata/teradata-mcp-server",
+    "stars": 54,
+    "pushed": "2026-08-20"
+   },
+   {
+    "name": "Teradata/teradata-qg-mcp-server",
+    "stars": 2,
+    "pushed": "2025-12-30"
+   },
+   {
+    "name": "Teradata/teradata-etl-mcp-server",
+    "stars": 1,
+    "pushed": "2026-07-08"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "AMPL",
+  "org": "amplitude",
+  "traction": 9.4,
+  "repos": 3,
+  "stars": 85,
+  "forks": 15,
+  "days_since_push": 0,
+  "top_repos": [
+   {
+    "name": "amplitude/mcp-server-guide",
+    "stars": 45,
+    "pushed": "2025-10-24"
+   },
+   {
+    "name": "amplitude/mcp-marketplace",
+    "stars": 32,
+    "pushed": "2026-08-12"
+   },
+   {
+    "name": "amplitude/Amplitude-MCP-Analytics-Node",
+    "stars": 8,
+    "pushed": "2026-08-20"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "FIG",
+  "org": "figma",
+  "traction": 9.3,
+  "repos": 1,
+  "stars": 1910,
+  "forks": 175,
+  "days_since_push": 0,
+  "top_repos": [
+   {
+    "name": "figma/mcp-server-guide",
+    "stars": 1910,
+    "pushed": "2026-08-20"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "PD",
+  "org": "pagerduty",
+  "traction": 8.9,
+  "repos": 2,
+  "stars": 76,
+  "forks": 41,
+  "days_since_push": 36,
+  "top_repos": [
+   {
+    "name": "PagerDuty/pagerduty-mcp-server",
+    "stars": 76,
+    "pushed": "2026-07-15"
+   },
+   {
+    "name": "PagerDuty/cursor-plugin",
+    "stars": 0,
+    "pushed": "2026-04-07"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "NTAP",
+  "org": "netapp",
+  "traction": 8.7,
+  "repos": 4,
+  "stars": 35,
+  "forks": 22,
+  "days_since_push": 0,
+  "top_repos": [
+   {
+    "name": "NetApp/ontap-mcp",
+    "stars": 17,
+    "pushed": "2026-08-20"
+   },
+   {
+    "name": "NetApp/mcp",
+    "stars": 16,
+    "pushed": "2026-08-20"
+   },
+   {
+    "name": "NetApp/gcnv-mcp-server",
+    "stars": 2,
+    "pushed": "2026-08-20"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "OKTA",
+  "org": "okta",
+  "traction": 8.7,
+  "repos": 1,
+  "stars": 55,
+  "forks": 56,
+  "days_since_push": 10,
+  "top_repos": [
+   {
+    "name": "okta/okta-mcp-server",
+    "stars": 55,
+    "pushed": "2026-08-10"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "ZS",
+  "org": "zscaler",
+  "traction": 8.4,
+  "repos": 1,
+  "stars": 46,
+  "forks": 27,
+  "days_since_push": 1,
+  "top_repos": [
+   {
+    "name": "zscaler/zscaler-mcp-server",
+    "stars": 46,
+    "pushed": "2026-08-19"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "FSLY",
+  "org": "fastly",
+  "traction": 8.3,
+  "repos": 3,
+  "stars": 39,
+  "forks": 9,
+  "days_since_push": 2,
+  "top_repos": [
+   {
+    "name": "fastly/mcp",
+    "stars": 38,
+    "pushed": "2026-08-18"
+   },
+   {
+    "name": "fastly/edge-mcp",
+    "stars": 1,
+    "pushed": "2026-08-17"
+   },
+   {
+    "name": "fastly/compute-mcp-server-sample",
+    "stars": 0,
+    "pushed": "2025-05-13"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "SHOP",
+  "org": "shopify",
+  "traction": 6.4,
+  "repos": 2,
+  "stars": 35,
+  "forks": 6,
+  "days_since_push": 135,
+  "top_repos": [
+   {
+    "name": "Shopify/dev-mcp-gemini-cli",
+    "stars": 31,
+    "pushed": "2026-04-07"
+   },
+   {
+    "name": "Shopify/consumer-agent-mcp",
+    "stars": 4,
+    "pushed": "2025-12-08"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "CRTO",
+  "org": "criteo",
+  "traction": 5.4,
+  "repos": 1,
+  "stars": 34,
+  "forks": 8,
+  "days_since_push": 401,
+  "top_repos": [
+   {
+    "name": "criteo/openapi-to-mcp",
+    "stars": 34,
+    "pushed": "2025-07-15"
+   }
+  ],
+  "low_adoption": false
+ },
+ {
+  "ticker": "RDDT",
+  "org": "reddit",
+  "traction": 4.0,
+  "repos": 1,
+  "stars": 15,
+  "forks": 10,
+  "days_since_push": 1,
+  "top_repos": [
+   {
+    "name": "reddit/devvit-mcp",
+    "stars": 15,
+    "pushed": "2026-08-19"
+   }
+  ],
+  "low_adoption": true
+ },
+ {
+  "ticker": "WDAY",
+  "org": "workday",
+  "traction": 4.0,
+  "repos": 1,
+  "stars": 9,
+  "forks": 7,
+  "days_since_push": 1,
+  "top_repos": [
+   {
+    "name": "Workday/ai-conversation-bridge",
+    "stars": 9,
+    "pushed": "2026-08-19"
+   }
+  ],
+  "low_adoption": true
+ },
+ {
+  "ticker": "EPAM",
+  "org": "epam",
+  "traction": 4.0,
+  "repos": 3,
+  "stars": 10,
+  "forks": 0,
+  "days_since_push": 1,
+  "top_repos": [
+   {
+    "name": "epam/TimeBase-MCP",
+    "stars": 7,
+    "pushed": "2026-08-18"
+   },
+   {
+    "name": "epam/ai-dial-memory-backend",
+    "stars": 2,
+    "pushed": "2026-08-05"
+   },
+   {
+    "name": "epam/statgpt-mcp-app-frontend",
+    "stars": 1,
+    "pushed": "2026-08-19"
+   }
+  ],
+  "low_adoption": true
+ },
+ {
+  "ticker": "PLTR",
+  "org": "palantir",
+  "traction": 4.0,
+  "repos": 1,
+  "stars": 12,
+  "forks": 12,
+  "days_since_push": 36,
+  "top_repos": [
+   {
+    "name": "palantir/palantir-mcp",
+    "stars": 12,
+    "pushed": "2026-07-15"
+   }
+  ],
+  "low_adoption": true
+ },
+ {
+  "ticker": "PUBM",
+  "org": "pubmatic",
+  "traction": 4.0,
+  "repos": 1,
+  "stars": 7,
+  "forks": 3,
+  "days_since_push": 21,
+  "top_repos": [
+   {
+    "name": "PubMatic/pubmatic-mcp-server",
+    "stars": 7,
+    "pushed": "2026-07-30"
+   }
+  ],
+  "low_adoption": true
+ },
+ {
+  "ticker": "MORN",
+  "org": "morningstar",
+  "traction": 4.0,
+  "repos": 1,
+  "stars": 21,
+  "forks": 4,
+  "days_since_push": 338,
+  "top_repos": [
+   {
+    "name": "Morningstar/morningstar-mcp-server",
+    "stars": 21,
+    "pushed": "2025-09-16"
+   }
+  ],
+  "low_adoption": true
+ },
+ {
+  "ticker": "BOX",
+  "org": "box",
+  "traction": 4.0,
+  "repos": 1,
+  "stars": 6,
+  "forks": 8,
+  "days_since_push": 334,
+  "top_repos": [
+   {
+    "name": "box/mcp-server-box-remote",
+    "stars": 6,
+    "pushed": "2025-09-20"
+   }
+  ],
+  "low_adoption": true
+ },
+ {
+  "ticker": "BAND",
+  "org": "bandwidth",
+  "traction": 3.7,
+  "repos": 1,
+  "stars": 1,
+  "forks": 2,
+  "days_since_push": 30,
+  "top_repos": [
+   {
+    "name": "Bandwidth/mcp-server",
+    "stars": 1,
+    "pushed": "2026-07-21"
+   }
+  ],
+  "low_adoption": true
+ },
+ {
+  "ticker": "ADSK",
+  "org": "autodesk",
+  "traction": 3.0,
+  "repos": 1,
+  "stars": 2,
+  "forks": 0,
+  "days_since_push": 35,
+  "top_repos": [
+   {
+    "name": "Autodesk/claude-browser-test-skills",
+    "stars": 2,
+    "pushed": "2026-07-16"
+   }
+  ],
+  "low_adoption": true
+ },
+ {
+  "ticker": "MQ",
+  "org": "marqeta",
+  "traction": 2.6,
+  "repos": 1,
+  "stars": 3,
+  "forks": 0,
+  "days_since_push": 115,
+  "top_repos": [
+   {
+    "name": "marqeta/marqeta-mcp",
+    "stars": 3,
+    "pushed": "2026-04-27"
+   }
+  ],
+  "low_adoption": true
+ },
+ {
+  "ticker": "MDB",
+  "org": "mongodb",
+  "traction": 2.2,
+  "repos": 1,
+  "stars": 1,
+  "forks": 1,
+  "days_since_push": 143,
+  "top_repos": [
+   {
+    "name": "mongodb/tines-claude",
+    "stars": 1,
+    "pushed": "2026-03-30"
+   }
+  ],
+  "low_adoption": true
+ },
+ {
+  "ticker": "DOCU",
+  "org": "docusign",
+  "traction": 1.5,
+  "repos": 1,
+  "stars": 0,
+  "forks": 1,
+  "days_since_push": 134,
+  "top_repos": [
+   {
+    "name": "docusign/mcp-agent-foundry-procurement-python",
+    "stars": 0,
+    "pushed": "2026-04-08"
+   }
+  ],
+  "low_adoption": true
+ },
+ {
+  "ticker": "KVYO",
+  "org": "klaviyo",
+  "traction": 1.4,
+  "repos": 2,
+  "stars": 0,
+  "forks": 0,
+  "days_since_push": 338,
+  "top_repos": [
+   {
+    "name": "klaviyo/gh-mcp2",
+    "stars": 0,
+    "pushed": "2025-09-16"
+   },
+   {
+    "name": "klaviyo/deleteme-gh-mcp",
+    "stars": 0,
+    "pushed": "2025-09-16"
+   }
+  ],
+  "low_adoption": true
+ },
+ {
+  "ticker": "ASAN",
+  "org": "asana",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "BIGC",
+  "org": "bigcommerce",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "BLZE",
+  "org": "backblaze",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "BRZE",
+  "org": "braze",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "CRM",
+  "org": "salesforce",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "DDOG",
+  "org": "datadog",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "DT",
+  "org": "dynatrace",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "FDS",
+  "org": "factset",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "GTLB",
+  "org": "gitlab",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "NABL",
+  "org": "n-able",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "PSTG",
+  "org": "purestorage",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "S",
+  "org": "sentinelone",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "SNOW",
+  "org": "snowflakedb",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "SPGI",
+  "org": "spglobal",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "SPOT",
+  "org": "spotify",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "TWLO",
+  "org": "twilio",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "U",
+  "org": "unity",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "UPWK",
+  "org": "upwork",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "V",
+  "org": "visa",
+  "traction": 0.0,
+  "top_repos": []
+ },
+ {
+  "ticker": "YEXT",
+  "org": "yext",
+  "traction": 0.0,
+  "top_repos": []
+ }
+]

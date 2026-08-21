@@ -40,6 +40,18 @@ BOILERPLATE = [
     "DDOG Maintained by Barclays -- Price Target Raised to $290",
     "DDOG Maintains by Evercore ISI Group -- Price Target Raised to $280",
     "New Buy Rating for Microsoft (MSFT), the Technology Giant",
+    # sell-side rating actions — REVERSED policy 2026-08-19 (operator): reiterations always drop;
+    # changes drop unless the headline states a non-valuation rationale. Real headlines pulled from
+    # logs/news_digest_premarket_20260819_064501.txt, where the old filter caught only 1 of 28.
+    "Zacks Upgrades DoorDash to Hold in Quantitative Screener Action",
+    "Zacks downgrades Datadog to Hold",
+    "Goldman Sachs reiterates Buy on Rubrik ahead of earnings",
+    "Analyst reiterates Buy rating on NVIDIA with $350 price target",
+    "Apple receives rare analyst upgrade with price target raised from $260 to $400",
+    "DDOG Downgraded by Jefferies, Shares Dip 2%",            # no stated reason -> drops under the new rule
+    "Rosenblatt initiates coverage of Astera Labs at Buy",
+    "Melius upgrades Broadcom on valuation",                  # rationale IS valuation -> drops
+    "Wedbush raises Tesla price target to $500 on recent share price gains",
     # no-catalyst price stubs
     "Micron Stock Up; No Catalyst Named in Headlines",
     "Micron Technology stock movement examined amid semiconductor sector dynamics",
@@ -53,13 +65,21 @@ MATERIAL = [
     "TSMC Plans Wafer Price Increase of Up to 10% by 2027",
     "Tesla Q2 Earnings Miss Expectations Amid EV Market Challenges",
     "Micron Has Strong Q3 Earnings and Rising Guidance. Is It a Buy?",
-    "Bank of America Issues Highly Bullish Micron Call, Citing ~83% Share Price Upside",
+    "Bank of America Issues Highly Bullish Micron Call, Citing ~83% Share Price Upside",  # a bullish CALL, not a rating action — no rating verb, so spared
     "AMD Stock Rises; Move Likely Linked to Microsoft Azure Deal Announcement",
     "Apple Endorses Alibaba AI for China Apple Intelligence Deployment",
-    "DDOG Downgraded by Jefferies, Shares Dip 2%",            # a downgrade that MOVED the stock — material
     "Intel Stock Rises Premarket on Reports of Planned Data Center Layoffs Ahead of Earnings",
     "Meta Platforms: Is This the Most Undervalued Stock in Big Tech?",  # thesis piece, not a Zacks "Right Now" template
     "TSMC vs. ASML: Which Is the Better AI Semiconductor Ecosystem Stock to Buy?",  # real thematic compare — 'which is the better', NOT 'which stock should'
+    # rating actions WITH a non-valuation rationale — spared here, then ranked LAST by rank.py
+    "Morgan Stanley downgrades Baidu and cuts price target to $80 on advertising weakness",
+    "Barclays cuts Baidu price target on ad revenue decline",
+    "Stifel Raises Palo Alto Networks Price Target Following Positive Demand Checks",
+    "Citizens raises MongoDB price target on improved sales data",
+    # non-analyst uses of the same words must never be caught
+    "Vietnam plans infrastructure upgrades around Samsung manufacturing hubs in Bac Ninh",
+    "Samsung Foundry Raises Prices on Select New Orders by Up to 15%",
+    "Micron Upgrades Fab Equipment at Taiwan Site to Support HBM4 Ramp",
 ]
 
 
@@ -95,8 +115,26 @@ def test_factset_cluster_exempt():
     print("  ✓ FactSet cluster exempt from the category filter")
 
 
+def test_factset_not_exempt_for_rating_actions():
+    """StreetAccount carries heavy rating-action volume; the blanket FactSet exemption used to let
+    all of it through the one filter the operator asked for (2026-08-19)."""
+    fa_rating = FakeC(["Zacks downgrades Datadog to Hold"], is_factset=True)
+    assert not pre_filter.keep_cluster(fa_rating), "FactSet must NOT shield a rating action"
+    fa_13f = FakeC(["Earned Wealth Advisors LLC Sells 6,596 Shares of Intel Corporation"], is_factset=True)
+    assert pre_filter.keep_cluster(fa_13f), "FactSet exemption must still hold for other categories"
+    print("  ✓ FactSet exemption narrowed: rating actions drop, other categories still exempt")
+
+
+def test_rating_action_categorized_as_analyst_stub():
+    c = FakeC(["Zacks downgrades Datadog to Hold"])
+    assert pre_filter.cluster_category(c) == "analyst_stub"
+    print("  ✓ rating actions are labelled analyst_stub in the drop breakdown")
+
+
 if __name__ == "__main__":
     for fn in (test_boilerplate_all_caught, test_material_all_spared,
-               test_cluster_dropped_only_if_all_boilerplate, test_factset_cluster_exempt):
+               test_cluster_dropped_only_if_all_boilerplate, test_factset_cluster_exempt,
+               test_factset_not_exempt_for_rating_actions,
+               test_rating_action_categorized_as_analyst_stub):
         fn()
     print("\nALL PASS — category filter is precise (catches boilerplate, spares material).")

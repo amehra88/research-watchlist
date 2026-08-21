@@ -18,11 +18,18 @@ from __future__ import annotations
 import json
 import os
 import re
+import subprocess
 from dataclasses import dataclass, field
 
 from .classify_llm import _run_claude, _extract_json_array, SessionLimitError, MODEL  # reuse the claude -p wrapper
 
 BATCH_SIZE = 20                    # survivors are far fewer than the raw pool
+
+# The summarizer is OUTPUT-heavy (3-5 bullets + why_it_matters per story), which is the slow half
+# of a claude -p call, so it gets a longer budget than a classify batch. Measured: a 20-item batch
+# hit the 300s classify timeout on 2026-08-17 AND 2026-08-19.
+SUMMARIZE_TIMEOUT_S = 600
+MAX_SPLIT_DEPTH = 3                # 20 -> 10 -> 5 -> 2; below that a single story is the unit
 MACRO_LABEL = "MACRO / no single ticker"
 
 
@@ -122,9 +129,10 @@ def summarize_survivors(survivors, repo_root, batch_size: int = BATCH_SIZE,
 
     `unsummarized` is the list of survivor cluster hashes with no summary — a PROCESSING
     FAILURE the caller must fail loud on (never a silent drop from the digest). Two ways in:
-      • a genuine per-batch error (timeout / unparseable) leaves THAT batch's items
-        unsummarized but the run CONTINUES — per-batch isolation, so other batches still
-        summarize;
+      • a genuine per-batch error leaves THAT batch's items unsummarized but the run CONTINUES
+        (per-batch isolation). A TIMEOUT specifically now splits the batch in half and retries
+        first (added 2026-08-19), since output length is what blows the budget and half a batch
+        almost always fits; only a batch that still times out at MAX_SPLIT_DEPTH is lost;
       • a session-limit 429 ABORTS the run fast (NON-RETRYABLE): every remaining batch is
         left unsummarized. Retrying/continuing only fires more doomed calls at the drained
         quota — the 2026-07-21 pathology where the summarizer plowed all ~13 batches into a
@@ -132,20 +140,44 @@ def summarize_survivors(survivors, repo_root, batch_size: int = BATCH_SIZE,
         429 fast-abort + fail-loud contract exactly."""
     out: dict[str, Summary] = {}
     total_cost = 0.0
-    for i in range(0, len(survivors), batch_size):
-        batch = survivors[i:i + batch_size]
-        prompt = build_summarizer_prompt(batch)
+
+    def _run_batch(batch, depth=0):
+        """One batch, with SPLIT-ON-TIMEOUT. Returns cost; writes into `out`. Raises
+        SessionLimitError (non-retryable) up to the caller.
+
+        Splitting halves the OUTPUT length, which is what actually blows the timeout, so a batch
+        that times out whole will almost always succeed in halves. classify_llm has had this ladder
+        since the 2026-07-08 drop; the summarizer never did, and simply lost the batch. That was
+        survivable at ~13 batches/run and is not at 2: on the 2026-08-19 postmarket run the single
+        failed 20-item batch cost 20 of 30 stories — two thirds of the digest."""
         try:
-            text, cost = _run_claude(prompt, repo_root)
-            total_cost += cost
+            text, cost = _run_claude(build_summarizer_prompt(batch), repo_root,
+                                     SUMMARIZE_TIMEOUT_S)
             parsed = _extract_json_array(text)
             if parsed is None:
                 raise ValueError(f"unparseable response: {text[:160]!r}")
             for obj in parsed:
                 if isinstance(obj, dict):
-                    s = _validate(obj)
-                    if s.cluster_id:
-                        out[s.cluster_id] = s
+                    sm = _validate(obj)
+                    if sm.cluster_id:
+                        out[sm.cluster_id] = sm
+            return cost
+        except subprocess.TimeoutExpired:
+            if len(batch) <= 1 or depth >= MAX_SPLIT_DEPTH:
+                if logger:
+                    logger.warning("summarizer batch of %d timed out at depth %d — giving up on it",
+                                   len(batch), depth)
+                return 0.0
+            mid = len(batch) // 2
+            if logger:
+                logger.warning("summarizer batch of %d timed out at %ds — splitting (depth %d)",
+                               len(batch), SUMMARIZE_TIMEOUT_S, depth + 1)
+            return _run_batch(batch[:mid], depth + 1) + _run_batch(batch[mid:], depth + 1)
+
+    for i in range(0, len(survivors), batch_size):
+        batch = survivors[i:i + batch_size]
+        try:
+            total_cost += _run_batch(batch)
         except SessionLimitError as e:
             # 429 quota exhaustion is NON-RETRYABLE and NON-CONTINUABLE: stop calling claude -p
             # entirely. Everything summarized before the 429 is kept; the remainder falls through
