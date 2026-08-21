@@ -283,3 +283,74 @@ def extract_phrases(text: str):
     if is_limit_cliff(env):
         return [], "failed: usage-limit cliff"
     return parse_phrases(env)
+
+
+# ───────────────────── new-theme candidate clustering ─────────────────────
+
+MIN_CANDIDATE_COMPANIES = 3
+MIN_CANDIDATE_BANKS = 2
+
+
+def cluster_candidates(rows: list, vecs: dict, threshold: float = 0.80) -> list:
+    """Greedy single-pass clustering of below-threshold phrases.
+
+    Greedy, not k-means: the number of emergent topics is unknown by
+    construction, and a centroid method needs that number up front. The cost
+    is order-sensitivity, which is acceptable because the operator reads the
+    clusters before anything is named.
+
+    Reports n_banks / n_companies / n_exchanges separately — the §5 weighting
+    is meaningless if they are collapsed into one count.
+    """
+    clusters = []
+    for row in rows:
+        v = vecs.get(row["phrase"])
+        if v is None:
+            continue
+        placed = False
+        for c in clusters:
+            if cosine(v, c["_centroid"]) >= threshold:
+                c["unit_ids"].append(row["unit_id"])
+                c["phrases"].add(row["phrase"])
+                c["_companies"].add(row.get("ticker"))
+                if row.get("speaker_firm"):
+                    c["_banks"].add(row["speaker_firm"])
+                c["_registers"].add(row.get("register"))
+                placed = True
+                break
+        if not placed:
+            clusters.append({
+                "_centroid": v,
+                "unit_ids": [row["unit_id"]],
+                "phrases": {row["phrase"]},
+                "_companies": {row.get("ticker")},
+                "_banks": ({row["speaker_firm"]}
+                           if row.get("speaker_firm") else set()),
+                "_registers": {row.get("register")},
+            })
+
+    out = []
+    for c in clusters:
+        out.append({
+            "label_suggestion": sorted(c["phrases"])[0],
+            "phrases": sorted(c["phrases"]),
+            "unit_ids": c["unit_ids"],
+            "registers": sorted(x for x in c["_registers"] if x),
+            "n_exchanges": len(c["unit_ids"]),
+            "n_companies": len({x for x in c["_companies"] if x}),
+            "n_banks": len(c["_banks"]),
+        })
+    out.sort(key=lambda c: (c["n_banks"], c["n_companies"]), reverse=True)
+    return out
+
+
+def promotable(cluster: dict) -> bool:
+    """Breadth gate before a cluster reaches the operator.
+
+    Evidence-only clusters are exempt from the bank test: an analyst has by
+    definition not asked about them yet, and that silence IS stage 1 of §6.3 —
+    the earliest and most valuable state the system can report."""
+    if cluster.get("registers") == ["evidence"]:
+        return cluster.get("n_companies", 0) >= MIN_CANDIDATE_COMPANIES
+    return (cluster.get("n_companies", 0) >= MIN_CANDIDATE_COMPANIES
+            and cluster.get("n_banks", 0) >= MIN_CANDIDATE_BANKS)

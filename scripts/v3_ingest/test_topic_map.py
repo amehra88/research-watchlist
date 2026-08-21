@@ -237,6 +237,56 @@ def test_is_limit_cliff_matches_the_2026_08_11_signature():
                                   "num_turns": 1, "total_cost_usd": 0})
 
 
+def test_cluster_candidates_groups_near_identical_phrasings():
+    """Two analysts will never use the same words for the same idea. If the
+    clusterer cannot see through that, no candidate ever reaches the gate."""
+    rows = [
+        {"unit_id": "u1", "phrase": "chinese transceiver competition",
+         "ticker": "AAOI", "speaker_firm": "Wolfe", "register": "question"},
+        {"unit_id": "u2", "phrase": "china transceiver competition",
+         "ticker": "LITE", "speaker_firm": "Mizuho", "register": "question"},
+        {"unit_id": "u3", "phrase": "silicon carbide pricing",
+         "ticker": "ON", "speaker_firm": "Baird", "register": "question"},
+    ]
+    vecs = {"chinese transceiver competition": [1.0, 0.0],
+            "china transceiver competition": [0.97, 0.24],
+            "silicon carbide pricing": [0.0, 1.0]}
+    got = tm.cluster_candidates(rows, vecs, threshold=0.80)
+    sizes = sorted(len(c["unit_ids"]) for c in got)
+    assert sizes == [1, 2], f"expected a 2-cluster and a singleton, got {sizes}"
+
+
+def test_cluster_reports_distinct_companies_and_banks_not_raw_counts():
+    """n_banks > n_companies > n_exchanges (spec §5). Forty mentions from one
+    bank at one company is that company's marketing, not a diffusing idea."""
+    rows = [
+        {"unit_id": f"u{i}", "phrase": "chinese transceiver competition",
+         "ticker": "AAOI", "speaker_firm": "Wolfe", "register": "question"}
+        for i in range(40)
+    ]
+    vecs = {"chinese transceiver competition": [1.0, 0.0]}
+    got = tm.cluster_candidates(rows, vecs, threshold=0.80)
+    assert len(got) == 1
+    assert got[0]["n_exchanges"] == 40
+    assert got[0]["n_companies"] == 1
+    assert got[0]["n_banks"] == 1
+
+
+def test_promotable_requires_breadth_across_companies_and_banks():
+    assert not tm.promotable({"n_companies": 1, "n_banks": 1})
+    assert not tm.promotable({"n_companies": 5, "n_banks": 1})
+    assert tm.promotable({"n_companies": tm.MIN_CANDIDATE_COMPANIES,
+                          "n_banks": tm.MIN_CANDIDATE_BANKS})
+
+
+def test_evidence_only_clusters_are_promotable_without_banks():
+    """Stage 1 of §6.3 is evidence with NO questions. A gate that demands
+    banks would discard exactly the earliest signal the system exists to find."""
+    c = {"n_companies": tm.MIN_CANDIDATE_COMPANIES, "n_banks": 0,
+         "registers": ["evidence"]}
+    assert tm.promotable(c)
+
+
 # ───────────────────────── runner ─────────────────────────
 
 if __name__ == "__main__":
