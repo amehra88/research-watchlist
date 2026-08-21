@@ -159,6 +159,53 @@ as a risk TO LITE. Its manufacturing footprint is in Asia, so a trade-restrictio
 not purely a shelter — it is partly an exposure. This cuts against reading `policy_shelter` as
 one-directionally favourable even if it does arrive.
 
+### SHARE IS THE TEST — resolved 2026-08-21, and it is measurable now
+
+Operator: *"if they take material share, yes it could be a thesis breaker. They all also talk
+about tam, and we can triangulate what it is and then try and back into market share."*
+
+**This resolves the silicon-photonics question.** Share taken via SiPh counts exactly the same
+as share taken via InP. The route does not matter; the share does. `chinese_laser_capability`
+is therefore a MECHANISM to watch, not the test itself — the test is share.
+
+**On TAM triangulation — do it, but not as the primary measure.** The corpus does hold TAM
+language (LITE 2026-08-11: CPO/NPO engagements *"significantly upping our optical TAM"*, scope
+undefined; CRDO 2026-04-13: *"SiPho PIC market ... $6 billion by 2030"* per LightCounting).
+But the statements are sparse for optical names, scoped inconsistently (whole-optical vs
+component-level), and usually sourced to a third party. Normalising the definitions is the
+hard part, not finding the numbers.
+
+**A bottom-up denominator is available today and is self-consistent:** total disclosed revenue
+across the tracked set. We now hold primary revenue for BOTH sides — US names via EDGAR,
+Chinese via CNINFO and StreetAccount. No third-party TAM estimate required.
+
+**First cut, 2026-08-21 (INDICATIVE — see caveats):**
+
+| company | latest revenue | growth |
+|---|---|---|
+| COHR | $2.05B Q4 FY26 -> ~$8.2B annualised | +34% y/y |
+| LITE | $1.01B Q4 FY26; $1.25B Q1 guide -> ~$4-5B | growing |
+| Innolight | RMB 37.46B FY2025 ~ $5.2B | **+64%** |
+| Eoptolink | RMB 24.84B FY2025 ~ $3.45B | **+187%** |
+
+Two readings, and the second is the one that matters:
+1. **Level:** Innolight alone is already larger than LITE's entire company. On datacom only
+   the gap is wider still — Innolight and Eoptolink are near pure-play, while COHR's $2.05B
+   includes lasers and industrial.
+2. **Trajectory — the actual share signal:** +64% and +187% against COHR's +34%. Share is
+   shifting on the growth differential regardless of the absolute base. If those rates
+   persist for even a few quarters the shift is material on the operator's own test.
+
+**CAVEATS, do not skip:** fiscal periods are NOT aligned (COHR/LITE FY26 ended mid-2026;
+Chinese FY2025 is calendar 2025). FX assumed ~7.2 CNY/USD, not looked up. Segment mix is not
+matched. These are indicative magnitudes, not a share calculation.
+
+**To make it a real measure:** align on calendar quarters, use a looked-up FX rate, and
+compare DATACOM segment revenue rather than company totals — COHR and LITE both disclose
+segment splits, and the Chinese names are close enough to pure-play to use totals. Then track
+the ratio quarterly. That is a small, bounded build and it turns this assumption from a
+judgement into a tracked number.
+
 ### `policy_shelter` — WATCH ITEM, NOT AN ASSUMPTION (revised 2026-08-21)
 **Operator, 2026-08-21:** *"partially right as its still debated and the policy has not come
 out yet and is unlikely in the next 12 months."*
