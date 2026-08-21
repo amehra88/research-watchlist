@@ -2,7 +2,7 @@
 """
 Cron wrapper for scheduled earnings-reviewer runs.
 
-Designed to run daily at 6:30am ET. Queries the earnings calendar for the last
+Designed to run daily at 02:30 ET (moved from 06:30 on 2026-08-21 — see CLAUDE.md). Queries the earnings calendar for the last
 24 hours via claude -p, intersects with the watchlist at config/watchlist.yaml,
 invokes earnings-reviewer for each matched ticker. Logs STATUS markers per
 invocation to logs/cron-earnings-reviewer.log.

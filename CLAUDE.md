@@ -100,7 +100,7 @@ Private companies that drive public theses (OpenAI, Anthropic, xAI, …) are not
 
 ### Agents (production)
 
-- `.claude/agents/earnings-reviewer.md` — production agent invoked by cron at 6:30am ET daily via `scripts/cron_earnings_reviewer.py`; processes prior-day earnings transcripts via InsiderScore + FactSet MCPs
+- `.claude/agents/earnings-reviewer.md` — production agent invoked by cron at **02:30 ET** daily via `scripts/cron_earnings_reviewer.py` (moved from 06:30 on 2026-08-21: it was the largest single consumer in the 06:00 hour and its usage landed inside the operator's own working window; it uses a 24h lookback so the hour is arbitrary); processes prior-day earnings transcripts via InsiderScore + FactSet MCPs
 - `.claude/agents/earnings-reviewer-from-pdf.md` — same logic for operator-uploaded PDFs, wrapped by `/root/research/scripts/process_uploaded_transcript.py` (sibling repo)
 - `plugins/agent-plugins/ticker-synthesis/agents/ticker-synthesis.md` — synthesizes a ticker's three dimensions from notes/, watchlist, supply chain (Phase 2 sources stubbed)
 - `.claude/agents/market-researcher.md` — general market research helper

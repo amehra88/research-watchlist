@@ -2,7 +2,7 @@
 """
 Path A v3 SEC filings channel.
 
-Daily (07:00 ET) the droplet polls EDGAR for new filings from the T1+T2 watchlist
+Daily at 11:00 ET the droplet polls EDGAR for new filings from the T1+T2 watchlist
 universe (config/watchlist.yaml tier_1_bctk + tier_2_active_candidates; NOT .pvt
 privates, NOT tier_3), filters by form type and — for 8-Ks — by item-type signal
 value, fetches full content plus key EX-99.* exhibits (esp. earnings press releases
