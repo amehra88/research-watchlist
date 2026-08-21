@@ -1,45 +1,326 @@
 [
  {
-  "score": 10,
-  "n": 2,
-  "filer": "Sprout Social, Inc.  (SPT)  (CIK 0001517375)",
-  "phrases": [
-   "Chief Technology Officer resigned",
-   "Chief Technology Officer, resigned"
-  ]
- },
- {
-  "score": 10,
-  "n": 2,
-  "filer": "Lucid Group, Inc.  (LCID)  (CIK 0001811210)",
-  "phrases": [
-   "Chief Technology Officer resigned",
-   "Chief Technology Officer, resigned"
-  ]
- },
- {
-  "score": 10,
-  "n": 2,
-  "filer": "Strive, Inc.  (ASST)  (CIK 0001920406)",
-  "phrases": [
-   "Chief Technology Officer resigned",
-   "Chief Technology Officer, resigned"
+  "score": 5,
+  "filer": "Aterian, Inc.  (ATER)  (CIK 0001757715)",
+  "cik": "1757715",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001437749-25-032576"
   ]
  },
  {
   "score": 5,
-  "n": 1,
+  "filer": "BLACKLINE, INC.  (BL)  (CIK 0001666134)",
+  "cik": "1666134",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001666134-25-000029"
+  ]
+ },
+ {
+  "score": 5,
+  "filer": "Backblaze, Inc.  (BLZE)  (CIK 0001462056)",
+  "cik": "1462056",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001628280-25-031146"
+  ]
+ },
+ {
+  "score": 5,
+  "filer": "Cboe Global Markets, Inc.  (CBOE)  (CIK 0001374310)",
+  "cik": "1374310",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001104659-26-006416"
+  ]
+ },
+ {
+  "score": 5,
+  "filer": "CitroTech Inc.  (CITR)  (CIK 0000894556)",
+  "cik": "894556",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001683168-26-002645"
+  ]
+ },
+ {
+  "score": 5,
+  "filer": "DOMO, INC.  (DOMO)  (CIK 0001505952)",
+  "cik": "1505952",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001628280-26-045630"
+  ]
+ },
+ {
+  "score": 5,
+  "filer": "DOW INC.  (DOW)  (CIK 0001751788)",
+  "cik": "1751788",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001193125-26-002444"
+  ]
+ },
+ {
+  "score": 5,
+  "filer": "Eventbrite, Inc.  (EB)  (CIK 0001475115)",
+  "cik": "1475115",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001475115-25-000067"
+  ]
+ },
+ {
+  "score": 5,
+  "filer": "GERON CORP  (GERN, GERNW)  (CIK 0000886744)",
+  "cik": "886744",
+  "roles": [
+   "Chief Technical Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001628280-25-044862"
+  ]
+ },
+ {
+  "score": 5,
+  "filer": "NEWS CORP  (NWS, NWSA, NWSAL)  (CIK 0001564708)",
+  "cik": "1564708",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001564708-25-000334"
+  ]
+ },
+ {
+  "score": 5,
+  "filer": "OPEN TEXT CORP  (OTEX)  (CIK 0001002638)",
+  "cik": "1002638",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001002638-25-000058"
+  ]
+ },
+ {
+  "score": 5,
   "filer": "Proto Labs Inc  (PRLB)  (CIK 0001443669)",
-  "phrases": [
-   "Chief Technology Officer will depart"
+  "cik": "1443669",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001104659-25-096447"
+  ]
+ },
+ {
+  "score": 5,
+  "filer": "SOCIETY PASS INCORPORATED.  (SOPA)  (CIK 0001817511)",
+  "cik": "1817511",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001213900-25-056302"
+  ]
+ },
+ {
+  "score": 5,
+  "filer": "TABLE TRAC INC  (TBTC)  (CIK 0001090396)",
+  "cik": "1090396",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001437749-26-000465"
+  ]
+ },
+ {
+  "score": 5,
+  "filer": "Ulta Beauty, Inc.  (ULTA)  (CIK 0001403568)",
+  "cik": "1403568",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001104659-26-083524"
+  ]
+ },
+ {
+  "score": 5,
+  "filer": "Xometry, Inc.  (XMTR)  (CIK 0001657573)",
+  "cik": "1657573",
+  "roles": [
+   "Chief Technology Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0000950170-25-014165"
+  ]
+ },
+ {
+  "score": 4,
+  "filer": "Indaptus Therapeutics, Inc.  (INDP)  (CIK 0001857044)",
+  "cik": "1857044",
+  "roles": [
+   "Chief Science Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001493152-26-002850"
+  ]
+ },
+ {
+  "score": 4,
+  "filer": "Intellia Therapeutics, Inc.  (NTLA)  (CIK 0001652130)",
+  "cik": "1652130",
+  "roles": [
+   "Chief Scientific Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001193125-25-004080"
   ]
  },
  {
   "score": 3,
-  "n": 1,
+  "filer": "1stdibs.com, Inc.  (DIBS)  (CIK 0001600641)",
+  "cik": "1600641",
+  "roles": [
+   "Chief Product Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001600641-25-000034"
+  ]
+ },
+ {
+  "score": 3,
+  "filer": "Aurora Innovation, Inc.  (AUR, AUROW)  (CIK 0001828108)",
+  "cik": "1828108",
+  "roles": [
+   "Chief Product Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001828108-25-000083"
+  ]
+ },
+ {
+  "score": 3,
+  "filer": "Elastic N.V.  (ESTC)  (CIK 0001707753)",
+  "cik": "1707753",
+  "roles": [
+   "Chief Product Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001707753-26-000024"
+  ]
+ },
+ {
+  "score": 3,
+  "filer": "MITEK SYSTEMS INC  (MITK)  (CIK 0000807863)",
+  "cik": "807863",
+  "roles": [
+   "Chief Product Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0000807863-25-000126"
+  ]
+ },
+ {
+  "score": 3,
+  "filer": "NetApp, Inc.  (NTAP)  (CIK 0001002047)",
+  "cik": "1002047",
+  "roles": [
+   "Chief Product Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0000950170-25-078936"
+  ]
+ },
+ {
+  "score": 3,
+  "filer": "PayPal Holdings, Inc.  (PYPL)  (CIK 0001633917)",
+  "cik": "1633917",
+  "roles": [
+   "Chief Product Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001193125-25-010401"
+  ]
+ },
+ {
+  "score": 3,
+  "filer": "SOUNDHOUND AI, INC.  (SOUN, SOUNW)  (CIK 0001840856)",
+  "cik": "1840856",
+  "roles": [
+   "Chief Product Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001213900-26-030707"
+  ]
+ },
+ {
+  "score": 3,
   "filer": "authID Inc.  (AUID)  (CIK 0001534154)",
-  "phrases": [
-   "Chief Product Officer resigned"
+  "cik": "1534154",
+  "roles": [
+   "Chief Product Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001213900-26-086236"
+  ]
+ },
+ {
+  "score": 2,
+  "filer": "LifeStance Health Group, Inc.  (LFST)  (CIK 0001845257)",
+  "cik": "1845257",
+  "roles": [
+   "Chief Information Officer"
+  ],
+  "n_filings": 1,
+  "filings": [
+   "0001193125-25-119479"
   ]
  }
 ]

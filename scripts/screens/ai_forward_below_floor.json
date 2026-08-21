@@ -38,25 +38,6 @@
   "disqualifier_note": "merchant data + AI-forward CEO; monetised via retention, not a priced model"
  },
  {
-  "ticker": "ESTC",
-  "score": 55.6,
-  "momentum": "",
-  "lab_risk": 1,
-  "ml": 2,
-  "credibility": "",
-  "flywheel": "",
-  "churn": "",
-  "thesis": 54.5,
-  "corroboration": 2.9,
-  "centrality": 2,
-  "product": 2,
-  "basis": "retrieval/vector infrastructure; 765-star MCP server",
-  "evidence": "gh-traction 10.0; blog-operator 1",
-  "contradiction": "",
-  "disqualifier": "thesis-adjacent",
-  "disqualifier_note": "retrieval infrastructure UNDER the app layer; real developer surface"
- },
- {
   "ticker": "FDS",
   "score": 55.1,
   "momentum": "",
@@ -150,6 +131,25 @@
   "contradiction": "",
   "disqualifier": "immaterial-to-pandl",
   "disqualifier_note": "prints the AI revenue number, but revenue is flat; option not business"
+ },
+ {
+  "ticker": "ESTC",
+  "score": 53.6,
+  "momentum": "",
+  "lab_risk": 1,
+  "ml": 2,
+  "credibility": "",
+  "flywheel": "",
+  "churn": "CPO Ken Exner resigned Jun 2026, in the same 8-K as a restructuring plan",
+  "thesis": 54.5,
+  "corroboration": 2.9,
+  "centrality": 2,
+  "product": 2,
+  "basis": "retrieval/vector infrastructure; 765-star MCP server",
+  "evidence": "gh-traction 10.0; blog-operator 1",
+  "contradiction": "",
+  "disqualifier": "thesis-adjacent",
+  "disqualifier_note": "retrieval infrastructure UNDER the app layer; real developer surface"
  },
  {
   "ticker": "NU",

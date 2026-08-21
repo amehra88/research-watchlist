@@ -151,7 +151,7 @@ like when you size it honestly.
 playbook on a deliberately low-tech industry. The most interesting non-tech bet on the list and
 entirely unproven. Score is meaningless here; it is a jockey bet.
 
-**NU (52.7)**, **WAY (52.7)**, **SHOP (56.8)**, **ESTC (55.6)**, **FIG (54.7)** — thesis-adjacent.
+**NU (52.7)**, **WAY (52.7)**, **SHOP (56.8)**, **ESTC (53.6)**, **FIG (54.7)** — thesis-adjacent.
 Each has something real (Nubank underwrites where no bureau file exists and effectively *is* the
 bureau in a thin-file market; Waystar predicts denials on a proprietary claims corpus; Elastic is
 retrieval infrastructure *under* the app layer with a 765-star MCP server; Figma holds design
@@ -190,11 +190,39 @@ Rebuilt as two stages: stage 1 searches departure boilerplate with no role filte
 recall — **692 candidate filings**), stage 2 fetches each filing and scores it only when a
 technical role appears within 1,200 characters of the departure language.
 
-**Generalisable lesson, and it is the same shape as the industrial-dialect finding:** a
-phrase screen works only when the thing you are looking for is expressed in a single phrase.
-"AI revenue" is one phrase and the screen works. "The CTO left" is a *relationship between two
-phrases*, and no amount of phrase-list tuning fixes that — it needs a fetch-and-parse. Before
-adding the next screen, ask which of the two shapes it is.
+**Result: 5 → 27 companies**, and I verified hits by reading the filing text rather than
+trusting the match. Two are names on this list, and both are true positives:
+
+- **AUR** — Sterling Anderson, **co-founder and Chief Product Officer**, resigned May 2025
+  from the role *and* the board. For a pre-revenue company whose entire thesis is forward
+  execution, losing a founding technical principal is the "technical leadership" criterion
+  breaking, not a footnote. **#14 → #18.**
+- **ESTC** — CPO Ken Exner resigned June 2026, disclosed in the same 8-K as a restructuring
+  plan. **#44 → #49.**
+
+**Correction to my own diagnosis, which matters more than the fix.** I wrote above that the
+CrowdStrike miss was a phrase-matching failure. I checked, and it wasn't. CrowdStrike filed
+five Item 5.02 8-Ks in this window and **not one of them mentions "Chief Technology Officer"** —
+they name the CFO, the President and the Chief Security Officer. There was no filing to find.
+
+A CTO frequently is not a Section 16 officer, so no Item 5.02 obligation attaches and the
+departure is announced by press release or on a call instead. So there are **two independent
+problems**, and I had merged them:
+
+1. The phrase method genuinely was broken — that is what 5 → 27 fixes, and it is why AUR and
+   ESTC surfaced.
+2. Even repaired, this screen has a **scope ceiling** it cannot cross. It sees Section 16
+   officers in 8-Ks, and much senior technical churn never appears there.
+
+The consequence is a routing decision, not a tuning one: **EDGAR cannot be the primary
+instrument for technical-leadership churn.** The right instrument is the news channel, which
+already ingests press releases and would have caught CrowdStrike. The rebuilt screen is a
+high-precision supplement, not the source of record.
+
+The general lesson still stands on its own terms — a phrase screen works only when the target
+is *one phrase* ("AI revenue" is; "the CTO left" is a relationship between two phrases and
+needs fetch-and-parse) — but it is not the explanation for the CrowdStrike miss, and I should
+not have asserted it as one before checking.
 
 **3. Corrections carried into the notes.** INOD's margin worry removed as empirically false;
 WLY's "AI revenue" hit sized against a flat top line.
@@ -203,8 +231,14 @@ WLY's "AI revenue" hit sized against a flat top line.
 
 ## What I would still fix
 
-- **`leadership_churn` is hand-entered.** Only CRWD carries it, from my own reading. Once the
-  rebuilt screen validates, the axis should be populated from it rather than by hand.
+- **Route technical churn through the news channel.** The rebuilt EDGAR screen is now a
+  verified supplement (it found AUR and ESTC), but its Section 16 ceiling means it will keep
+  missing cases like CrowdStrike. The news channel already ingests the press releases that
+  carry them.
+- **Precision needs watching as this scales.** `"separation from the Company"` alone matches
+  414 filings, and a 1,200-character window can in principle catch a filing where the CFO
+  leaves and the CTO is merely thanked nearby. The two hits that mattered were verified by
+  hand; a larger harvest needs a sample audit before it feeds scoring automatically.
 - **The claims>traction flag cannot see private traction** (the FDS false positive). It should
   be downgraded to a prompt to check rather than a scoring penalty.
 - **Six reason codes were assigned by hand.** They are judgments, not measurements, and should

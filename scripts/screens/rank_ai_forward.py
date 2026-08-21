@@ -127,8 +127,13 @@ LABEL_FLYWHEEL = {
 # criteria, so senior technical departure is a genuine negative -- and the officer
 # screen only sees APPOINTMENTS, which biases it optimistic. Tracked by hand until
 # the 8-K departure screen backfills it.
+# Populated by hand from CRWD; the other two came from the REBUILT departures
+# screen (2026-08-21) and were verified by reading the 8-K text, not trusted on
+# the match alone. Both are Item 5.02 (b) departures naming the officer.
 LEADERSHIP_CHURN = {
     "CRWD": "CTO departed 2026 -- watch whether the detection-engineering bench holds",
+    "AUR":  "co-founder/CPO Sterling Anderson resigned May 2025, from the role AND the board",
+    "ESTC": "CPO Ken Exner resigned Jun 2026, in the same 8-K as a restructuring plan",
 }
 
 # LAB ENCROACHMENT RISK (operator 2026-08-20: "I don't trust Claude not to compete

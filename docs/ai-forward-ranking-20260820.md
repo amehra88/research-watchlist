@@ -58,21 +58,21 @@ Data integration and decision software for governments and large enterprises; AI
 
 **13. CRWD** — 84.3 **[BCTK]**  ·  centrality 3/5, product 3/3  ·  _filing-lang 2; gh-traction 10.0; blog-operator 0_
 
-**14. AUR** — 81.8  ·  centrality 5/5, product 1/3  ·  _not developer-facing_
-
-Autonomous trucking, operating driverless Class 8 freight on highway routes. Perception, prediction and planning are the entire product — unambiguous AI centrality, unproven business, and it must fund its data collection at a loss.
-
-**15. KDK** — 81.8  ·  centrality 5/5, product 1/3  ·  _not developer-facing_
+**14. KDK** — 81.8  ·  centrality 5/5, product 1/3  ·  _not developer-facing_
 
 Driverless trucking for freight and defence applications. Same shape as Aurora: the driving policy is the company, with the same loss-funded data-collection problem.
 
-**16. NTRA** — 81.8  ·  centrality 5/5, product 3/3  ·  _not developer-facing_
+**15. NTRA** — 81.8  ·  centrality 5/5, product 3/3  ·  _not developer-facing_
 
 Molecular diagnostics; Signatera sequences a patient's tumor to build a personalised ctDNA panel that detects residual or recurrent disease. Detection at parts-per-million is a statistical inference problem whose sensitivity improves with accumulated data — a compounding loop a competitor cannot shortcut.
 
-**17. SERV** — 81.8  ·  centrality 5/5, product 1/3  ·  _not developer-facing_
+**16. SERV** — 81.8  ·  centrality 5/5, product 1/3  ·  _not developer-facing_
 
-**18. TSLA** — 81.8 **[BCTK]**  ·  centrality 4/5, product 2/3  ·  _not developer-facing_
+**17. TSLA** — 81.8 **[BCTK]**  ·  centrality 4/5, product 2/3  ·  _not developer-facing_
+
+**18. AUR** — 79.8  ·  centrality 5/5, product 1/3  ·  _not developer-facing_
+
+Autonomous trucking, operating driverless Class 8 freight on highway routes. Perception, prediction and planning are the entire product — unambiguous AI centrality, unproven business, and it must fund its data collection at a loss.
 
 **19. EVLV** — 77.3  ·  centrality 4/5, product 3/3  ·  _not developer-facing_
 
@@ -166,27 +166,27 @@ Makes the da Vinci surgical robots. It owns the largest surgical video corpus pa
 
 **43. SHOP** — 56.8 **[BCTK]**  ·  centrality 2/5, product 2/3  ·  _filing-lang 2; AI officer 4; gh-traction 6.4; blog-operator 0_
 
-**44. ESTC** — 55.6  ·  centrality 2/5, product 2/3  ·  _gh-traction 10.0; blog-operator 1_
-
-Search and observability, built on Elasticsearch with vector search. It is retrieval infrastructure sitting underneath RAG applications, with a 765-star MCP server confirming a real developer surface.
-
-**45. FDS** — 55.1  ·  centrality 2/5, product 2/3  ·  _filing-lang 4; AI officer 8; gh-traction 0.0_ · ⚠ claims > traction
+**44. FDS** — 55.1  ·  centrality 2/5, product 2/3  ·  _filing-lang 4; AI officer 8; gh-traction 0.0_ · ⚠ claims > traction
 
 Financial data and analytics for institutional investors. It has a Chief AI Officer and is exposing its corpus through MCP so agents can query it directly; it clears all three filing screens, and its claims-exceed-traction flag is a false positive — the MCP server is real, just not on public GitHub.
 
-**46. FIG** — 54.7  ·  centrality 2/5, product 2/3  ·  _filing-lang 3; gh-traction 9.3_
+**45. FIG** — 54.7  ·  centrality 2/5, product 2/3  ·  _filing-lang 3; gh-traction 9.3_
 
 Collaborative interface design software. It holds design files as structured data rather than pixels, which is exactly what makes generative design and its 1,910-star MCP server function.
 
-**47. V** — 54.5  ·  centrality 2/5, product 2/3  ·  _gh-traction 0.0_
+**46. V** — 54.5  ·  centrality 2/5, product 2/3  ·  _gh-traction 0.0_
 
 Global payment network. The transaction graph is among the most valuable proprietary behavioural datasets in finance and it is building an agentic-commerce surface — but the network survives entirely untouched without any model, so centrality is limited.
 
-**48. OUST** — 54.5  ·  centrality 2/5, product 2/3  ·  _not developer-facing_
+**47. OUST** — 54.5  ·  centrality 2/5, product 2/3  ·  _not developer-facing_
 
-**49. WLY** — 53.9  ·  centrality 3/5, product 2/3  ·  _filing-lang 5; AI officer 3_
+**48. WLY** — 53.9  ·  centrality 3/5, product 2/3  ·  _filing-lang 5; AI officer 3_
 
 Academic and professional publishing. It licenses its scholarly corpus to model developers and is one of only five 10-K filers in fourteen months to use the phrase 'AI revenue' — a rare case of a company printing the number rather than gesturing at it.
+
+**49. ESTC** — 53.6  ·  centrality 2/5, product 2/3  ·  _gh-traction 10.0; blog-operator 1_
+
+Search and observability, built on Elasticsearch with vector search. It is retrieval infrastructure sitting underneath RAG applications, with a 765-star MCP server confirming a real developer surface.
 
 **50. NU** — 52.7  ·  centrality 2/5, product 2/3  ·  _not developer-facing_
 
