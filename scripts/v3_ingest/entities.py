@@ -53,6 +53,13 @@ from sec_filings import is_fatal_run_failure, log, run_claude  # noqa: E402
 
 CONTENT_CAP = 14_000        # chars of chunk text sent to the extractor
 
+# Default cap on chunks per run. Without one this is a full corpus re-scan, so an
+# unattended gap turns into a batch big enough to trip the subscription usage limit —
+# which is exactly what happened 2026-08-20 (19 calls succeeded, then 288 straight
+# failures over 53 minutes). Steady-state inflow is ~4 optics chunks/day, so 60 clears
+# a normal day many times over and still bounds a bad one. Pass --limit 0 to opt out.
+DEFAULT_MAX_PER_RUN = 60
+
 # Pre-filter: cheap regex that decides which chunks are worth spending a call on.
 VERTICALS: dict[str, str] = {
     "optics": (
@@ -269,12 +276,29 @@ def persist(row: dict, mentions: list[dict]) -> int:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Entity + claim extraction (one vertical)")
-    ap.add_argument("--vertical", default="optics", choices=sorted(VERTICALS))
-    ap.add_argument("--limit", type=int, help="process at most N chunks")
+    ap.add_argument("--vertical", default="optics",
+                    choices=sorted(VERTICALS) + ["all"],
+                    help="one vertical, or 'all' to run every vertical in sequence")
+    ap.add_argument("--limit", type=int, default=None,
+                    help=f"process at most N chunks (default {DEFAULT_MAX_PER_RUN}; "
+                         f"0 = uncapped, for deliberate backlog clearing)")
     ap.add_argument("--dry-run", action="store_true",
                     help="extract + print; no table write, no checkpoint")
     args = ap.parse_args()
 
+    verticals = sorted(VERTICALS) if args.vertical == "all" else [args.vertical]
+    cap = DEFAULT_MAX_PER_RUN if args.limit is None else args.limit
+    rc = 0
+    for _v in verticals:
+        rc = run_vertical(_v, cap, args.dry_run) or rc
+    return rc
+
+
+def run_vertical(vertical: str, cap: int, dry_run: bool) -> int:
+    class _A:                       # keep the original body's arg references intact
+        pass
+    args = _A(); args.vertical = vertical; args.dry_run = dry_run
+    args.limit = cap or None
     rx = VERTICALS[args.vertical]
     st = load_state()
     done = set(st["done"])
