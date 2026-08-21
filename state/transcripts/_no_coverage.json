@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-08-20T23:26:15+00:00",
+ "generated_at": "2026-08-21T09:26:06+00:00",
  "window": {
-  "start": "2025-11-20",
-  "end": "2026-08-20"
+  "start": "2025-11-21",
+  "end": "2026-08-21"
  },
  "no_factset_id": [
   {
@@ -204,20 +204,6 @@
   "AWS"
  ],
  "incomplete": [
-  "GEV",
-  "GLW",
-  "GOOG",
-  "GWRE",
-  "HNGE",
-  "INDI",
-  "INTC",
-  "IOT",
-  "LRCX",
-  "META",
-  "MPWR",
-  "MRVL",
-  "MSFT",
-  "MTRN",
   "MU",
   "NET",
   "NOW",
