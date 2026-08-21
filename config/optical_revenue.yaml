@@ -99,3 +99,50 @@ companies:
     quarters: {2024-03-31: 301.9, 2024-06-30: 418.4, 2024-09-30: 530.4, 2024-12-31: 376.6,
                2025-03-31: 461.1, 2025-06-30: 590.8, 2025-09-30: 476.3, 2025-12-31: 467.8,
                2026-03-31: 616.1}
+
+  ts_comm.cn:
+    name: T&S Communications
+    bloc: CN
+    role: module_maker
+    purity: null        # transceivers, AOC/DAC, plus passive components
+    factset_id: 300570-CN
+    note: "FactSet countryOfRiskGeoRev = US — its revenue is largely US-facing despite the
+           Shenzhen listing. Small relative to Innolight but a genuine module competitor."
+    quarters: {2024-03-31: 31.1, 2024-06-30: 39.2, 2024-09-30: 56.3, 2024-12-31: 64.3,
+               2025-03-31: 50.3, 2025-06-30: 63.3, 2025-09-30: 53.9, 2025-12-31: 46.9,
+               2026-03-31: 49.2, 2026-06-30: 97.0}
+
+  # --- resolved and deliberately classified OUT ------------------------------
+  tfc.cn:
+    name: Suzhou TFC Optical Communication
+    bloc: CN
+    role: component
+    factset_id: 300394-CN
+    note: "Zirconia ceramics, CNC metal parts, receptacles, isolators, adaptors, lens arrays.
+           Passive components and mechanical parts, not modules."
+    quarters: {}
+  broadex.cn:
+    name: Broadex / EverProX Technologies
+    bloc: CN
+    role: component
+    factset_id: 300548-CN
+    note: "PLC splitters, AWGs, VOAs, fiber arrays, silicon-photonics packaging. Sells INTO
+           module makers."
+    quarters: {}
+  dongshan.cn:
+    name: Suzhou Dongshan Precision
+    bloc: CN
+    role: diversified
+    factset_id: 002384-CN
+    note: "Segments are PCB, Photoelectric Display and Precision Manufacturing — dominated by
+           PCB. Not an optical module maker; including its total would badly distort share."
+    quarters: {}
+  onet.cn:
+    name: O-Net Technologies (Group)
+    bloc: CN
+    role: module_maker
+    factset_id: 877-HK
+    note: "Optical modules and subsystems, so it BELONGS in the panel — but FactSet flags
+           privateEntityFlag=1 and FF_SALES returns null for every quarter. Taken private;
+           no current public financials. A real, unfixable hole in the panel."
+    quarters: {}

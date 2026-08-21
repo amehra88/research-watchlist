@@ -66,9 +66,18 @@ def main() -> int:
     panel = {k: v for k, v in comps.items() if v["role"] in roles}
     excluded = {k: v for k, v in comps.items() if k not in panel}
 
+    # A company can belong in the panel but have no obtainable data (O-Net was taken
+    # private). Exclude it from the maths but SAY SO — silently dropping it would hide a
+    # real hole, and blocking on it would refuse to produce any number at all.
+    no_data = {k: v for k, v in panel.items() if not v.get("quarters")}
+    panel = {k: v for k, v in panel.items() if v.get("quarters")}
+
     print(f"PANEL ({', '.join(roles)}):")
     for k, v in sorted(panel.items(), key=lambda kv: kv[1]["bloc"]):
         print(f"   {v['bloc']}  {k:<16}{v['name']}")
+    for k, v in no_data.items():
+        why = " ".join((v.get("note") or "no data").split())[:78]
+        print(f"   !! {v['bloc']}  {k:<13}{v['name']} — IN SCOPE BUT NO DATA: {why}")
     print("EXCLUDED:")
     for k, v in excluded.items():
         why = " ".join((v.get("note") or "").split())[:88]
