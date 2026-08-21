@@ -41,6 +41,19 @@ _HEADERS = {
 }
 
 
+# VIX regime bands. Absolute levels, using the conventional market reading, because a
+# percentile alone is not enough: a 90th-percentile VIX in a calm year can still be a low
+# absolute number, and "high for this year" is not the same statement as "high".
+VIX_BANDS = (
+    (12.0, "very low"),
+    (16.0, "low"),
+    (20.0, "normal"),
+    (25.0, "elevated"),
+    (30.0, "high"),
+    (float("inf"), "stress"),
+)
+
+
 class FearGreed(NamedTuple):
     score: float
     rating: str
@@ -50,9 +63,42 @@ class FearGreed(NamedTuple):
     month_ago: float | None
     year_ago: float | None
     fetched_at: str
+    # VIX rides along in the same payload, so it costs no extra fetch. Defaults keep an
+    # older cache file loadable.
+    vix_level: float | None = None
+    vix_percentile: float | None = None
+    vix_history_days: int | None = None
 
     def as_dict(self) -> dict:
         return dict(self._asdict())
+
+
+def vix_band(level: float | None) -> str:
+    if level is None:
+        return "unknown"
+    for ceiling, name in VIX_BANDS:
+        if level < ceiling:
+            return name
+    return "stress"
+
+
+def parse_vix(payload: dict) -> tuple[float | None, float | None, int]:
+    """(level, percentile-vs-trailing-history, n_days) from the CNN volatility block.
+
+    The percentile is computed here rather than taken from CNN's per-point `rating`, whose
+    labels read inverted for this component (it tagged a 14.89 VIX "extreme fear"). Deriving
+    it from the level series is unambiguous.
+    """
+    block = (payload or {}).get("market_volatility_vix") or {}
+    hist = [p.get("y") for p in (block.get("data") or [])
+            if isinstance(p.get("y"), (int, float))]
+    if not hist:
+        return None, None, 0
+    level = float(hist[-1])
+    below = sum(1 for v in hist if v < level)
+    equal = sum(1 for v in hist if v == level)
+    pct = 100.0 * (below + 0.5 * equal) / len(hist)
+    return level, pct, len(hist)
 
 
 def fetch(url: str = FEAR_GREED_URL, timeout: int = 20) -> dict:
@@ -76,6 +122,7 @@ def parse(payload: dict, now: datetime | None = None) -> FearGreed:
         v = block.get(key)
         return float(v) if isinstance(v, (int, float)) else None
 
+    vix_level, vix_pct, vix_days = parse_vix(payload)
     return FearGreed(
         score=float(block["score"]),
         rating=str(block.get("rating") or "unknown"),
@@ -85,6 +132,9 @@ def parse(payload: dict, now: datetime | None = None) -> FearGreed:
         month_ago=num("previous_1_month"),
         year_ago=num("previous_1_year"),
         fetched_at=now.isoformat(),
+        vix_level=vix_level,
+        vix_percentile=vix_pct,
+        vix_history_days=vix_days,
     )
 
 
@@ -152,17 +202,34 @@ def _arrow(cur: float, prev: float | None) -> str:
 
 
 def render_line(fg: FearGreed | None, status: str, now: datetime | None = None) -> str:
-    """The one-line regime header that sits ABOVE Block A (operator layout decision)."""
-    if fg is None or status == "none":
-        return "FEAR & GREED: unavailable (CNN fetch failed, no cached value)"
+    """The market-risk header that sits ABOVE Block A (operator layout decision).
 
-    parts = [f"FEAR & GREED: {fg.score:.0f} ({fg.rating})"]
-    parts.append(f"1w {_arrow(fg.score, fg.week_ago)}")
-    parts.append(f"1m {_arrow(fg.score, fg.month_ago)}")
-    line = "  |  ".join(parts)
+    Two lines, because sentiment and volatility answer different questions: Fear & Greed is
+    positioning psychology, VIX is what options are actually charging for protection. Each
+    carries its own context so neither number has to be calibrated from memory.
+    """
+    if fg is None or status == "none":
+        return "MARKET RISK: unavailable (CNN fetch failed, no cached value)"
+
+    lines = ["MARKET RISK"]
+    lines.append(f"  Fear & Greed  {fg.score:>4.0f}  ({fg.rating})"
+                 f"   1w {_arrow(fg.score, fg.week_ago)}"
+                 f"   1m {_arrow(fg.score, fg.month_ago)}")
+
+    if fg.vix_level is not None:
+        band = vix_band(fg.vix_level)
+        ctx = f"{band}"
+        if fg.vix_percentile is not None and fg.vix_history_days:
+            # Both readings, because they can disagree and the disagreement is the useful
+            # part: a "normal" absolute VIX at the 95th percentile of a calm year says
+            # something a single number cannot.
+            ctx += f", {fg.vix_percentile:.0f}th pctile of the past year"
+        lines.append(f"  VIX           {fg.vix_level:>4.1f}  ({ctx})")
+        lines.append("                      under 12 very low · 16-20 normal · "
+                     "over 25 high · over 30 stress")
 
     if status in ("cached", "stale"):
         age = age_hours(fg, now)
         age_txt = f"{age:.0f}h old" if age is not None else "age unknown"
-        line += f"   [CACHED — {age_txt}, CNN fetch failed]"
-    return line
+        lines.append(f"  [CACHED — {age_txt}, CNN fetch failed]")
+    return "\n".join(lines)

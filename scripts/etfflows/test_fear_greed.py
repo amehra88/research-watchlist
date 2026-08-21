@@ -124,12 +124,71 @@ def test_corrupt_cache_is_survivable():
 def test_render_line_shape():
     r = fg.parse(LIVE, now=NOW)
     line = fg.render_line(r, "live", now=NOW)
-    print(f"       {line}")
-    check("line leads with the score and rating", line.startswith("FEAR & GREED: 56 (greed)"),
-          f"got {line!r}")
+    print("\n" + line)
+    check("header is labelled market risk", line.startswith("MARKET RISK"), f"got {line!r}")
+    check("fear & greed score present", "Fear & Greed" in line and "56" in line)
     check("1w delta shown as a signed change", "1w -7" in line, f"got {line!r}")
     check("1m delta shown as a signed change", "1m +19" in line, f"got {line!r}")
-    check("single line", "\n" not in line)
+
+
+# ── VIX ───────────────────────────────────────────────────────────────────────
+
+def test_vix_parsed_from_the_same_payload():
+    """VIX rides along in the CNN response, so it costs no extra fetch."""
+    payload = dict(LIVE)
+    payload["market_volatility_vix"] = {"data": [
+        {"x": 1, "y": 20.0}, {"x": 2, "y": 18.0}, {"x": 3, "y": 14.89}]}
+    r = fg.parse(payload, now=NOW)
+    check("level is the LATEST point", r.vix_level == 14.89, f"got {r.vix_level}")
+    check("percentile computed against its own history",
+          r.vix_percentile is not None and r.vix_percentile < 50, f"got {r.vix_percentile}")
+    check("history length recorded", r.vix_history_days == 3)
+
+
+def test_vix_bands_are_absolute_levels():
+    """A percentile alone is not enough: 'high for this calm year' != 'high'."""
+    for level, want in ((9.5, "very low"), (14.9, "low"), (18.0, "normal"),
+                        (22.0, "elevated"), (27.0, "high"), (45.0, "stress")):
+        if fg.vix_band(level) != want:
+            check(f"VIX {level} reads '{want}'", False, f"got {fg.vix_band(level)}")
+            return
+    check("VIX bands map levels to plain words", True)
+    check("unknown level is 'unknown'", fg.vix_band(None) == "unknown")
+
+
+def test_vix_line_carries_both_kinds_of_context():
+    payload = dict(LIVE)
+    payload["market_volatility_vix"] = {"data": [{"x": i, "y": 20.0} for i in range(50)]
+                                        + [{"x": 99, "y": 14.89}]}
+    line = fg.render_line(fg.parse(payload, now=NOW), "live", now=NOW)
+    check("absolute level shown", "14.9" in line, f"got:\n{line}")
+    check("band word shown", "low" in line, f"got:\n{line}")
+    check("percentile-vs-own-history shown", "pctile of the past year" in line, f"got:\n{line}")
+    check("scale legend shown so no number needs memorising",
+          "under 12 very low" in line and "over 30 stress" in line, f"got:\n{line}")
+
+
+def test_missing_vix_block_degrades():
+    """No VIX must not take down the header."""
+    r = fg.parse(LIVE, now=NOW)          # LIVE has no market_volatility_vix
+    check("absent VIX parses as None", r.vix_level is None)
+    line = fg.render_line(r, "live", now=NOW)
+    check("header still renders without VIX", "Fear & Greed" in line)
+    check("no VIX row is emitted", "VIX" not in line, f"got:\n{line}")
+
+
+def test_old_cache_without_vix_still_loads():
+    """Cache files written before VIX existed must not break on load."""
+    import json as _json
+    with tempfile.TemporaryDirectory() as d:
+        path = os.path.join(d, "fg.json")
+        old = fg.parse(LIVE, now=NOW).as_dict()
+        for k in ("vix_level", "vix_percentile", "vix_history_days"):
+            old.pop(k, None)
+        with open(path, "w") as fh:
+            _json.dump(old, fh)
+        r = fg.load_cache(path)
+        check("pre-VIX cache loads", r is not None and r.vix_level is None, f"got {r}")
 
 
 def test_headers_still_include_the_418_workaround():
