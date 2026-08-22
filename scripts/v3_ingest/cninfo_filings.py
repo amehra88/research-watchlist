@@ -58,6 +58,7 @@ UA = "Mozilla/5.0 (research-watchlist; contact ashimmehra@gmail.com)"
 SLEEP_S = 1.0                       # CNINFO publishes no rate cap — be conservative
 SLICE_CHARS = 12_000                # per claude -p call; the measured $0.15 unit
 MAX_SLICES = 3                      # cap cost per filing
+FATAL_STREAK = 3                    # abort on a STREAK, not one blip (see entities.py)
 
 # Annual + interim + quarterlies. Shenzhen/Shanghai share these category codes.
 CATEGORIES = {
@@ -290,6 +291,7 @@ def main() -> int:
     log(f"CNINFO START companies={len(entries)} since={args.since} dry_run={args.dry_run}")
 
     written = failed = 0
+    consecutive_fatal = 0
     cost = 0.0
     for entry in entries:
         code = stock_code(entry)
@@ -314,6 +316,7 @@ def main() -> int:
             key = f["url"]
             if key in done and not args.dry_run:
                 continue
+            fcost = 0.0
             try:
                 text = pdf_text(s, f["url"])
                 slices = pick_slices(text)
@@ -324,15 +327,23 @@ def main() -> int:
                                            affects=", ".join(entry.get("affects") or []),
                                            text=sl)
                     out, c = run_claude(prompt)
-                    cost += c
+                    fcost += c
                     claims += parse_claims(out)
+                cost += fcost
             except Exception as e:  # noqa: BLE001
                 failed += 1
                 log(f"    FAILED {f['title'][:40]}: {type(e).__name__}: {e}")
                 if is_fatal_run_failure(e):
-                    log("    fatal (auth or usage limit) — aborting run; re-run later to "
-                        "resume from the checkpoint")
-                    return 1
+                    consecutive_fatal += 1
+                    if consecutive_fatal >= FATAL_STREAK:
+                        log(f"    {consecutive_fatal} consecutive fatal failures (auth or "
+                            f"usage limit) — aborting; re-run later to resume from the "
+                            f"checkpoint")
+                        return 1
+                    log(f"    fatal-looking failure {consecutive_fatal}/{FATAL_STREAK} — "
+                        f"continuing in case it is transient")
+                else:
+                    consecutive_fatal = 0
                 continue
 
             if args.dry_run:
@@ -354,9 +365,10 @@ def main() -> int:
             except Exception as e:  # noqa: BLE001
                 log(f"    WROTE {path.name} but INGEST_DEFERRED: {type(e).__name__}: {e}")
             written += 1
+            consecutive_fatal = 0
             done[key] = {"note": path.name, "claims": len(claims),
                          "at": dt.datetime.now().isoformat(timespec="seconds")}
-            st["cost"] = st.get("cost", 0.0) + cost
+            st["cost"] = st.get("cost", 0.0) + fcost
             save_state(st)
 
     log(f"CNINFO DONE written={written} failed={failed} cost=${cost:.4f}")
