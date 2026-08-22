@@ -371,6 +371,7 @@ def promotable(cluster: dict) -> bool:
 
 import argparse  # noqa: E402  (appended with the Task 6 code)
 import concurrent.futures as cf  # noqa: E402
+import itertools  # noqa: E402
 import threading  # noqa: E402
 
 STATE_DIR = REPO_ROOT / "state" / "topics"
@@ -587,12 +588,19 @@ def main(argv=None) -> int:
     log(f"{len(themes)} theme anchors from config/watchlist.yaml")
 
     want = set(args.register or ["question", "evidence"])
-    units = []
-    if "question" in want:
-        units += list(iter_question_units())
-    if "evidence" in want:
-        units += list(iter_evidence_units())
-    log(f"{len(units)} input units ({sorted(want)})")
+    q_units = list(iter_question_units()) if "question" in want else []
+    e_units = list(iter_evidence_units()) if "evidence" in want else []
+
+    # Interleave the two registers rather than running one then the other.
+    # A usage cliff can stop this pass at any point, and concatenated order
+    # means an early stop yields questions only — with no evidence side there
+    # is no §6.2 gap to compute and no stage 1 at all, which is the single most
+    # valuable thing the run produces. Interleaved, a partial run is a smaller
+    # version of the whole answer instead of half of one.
+    units = [u for pair in itertools.zip_longest(q_units, e_units)
+             for u in pair if u is not None]
+    log(f"{len(units)} input units ({sorted(want)}: "
+        f"{len(q_units)} question, {len(e_units)} evidence, interleaved)")
 
     ledger = Ledger(PROGRESS_PATH)
     todo = [u for u in units if not ledger.done(u["unit_id"])]
