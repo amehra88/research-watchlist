@@ -289,6 +289,34 @@ def test_evidence_only_clusters_are_promotable_without_banks():
 
 # ───────────────────── Task 6: ledger, rows, CLI ─────────────────────
 
+def test_score_phrases_never_caches_phrase_vectors():
+    """The memory guard, and it is easy to undo by accident.
+
+    embed() keeps a cached vector resident in _CACHES for the life of the
+    process and re-serialises the dict on every flush. Measured at 41.5
+    KB/vector, 15k phrases is a 638MB file and ~1.5GB parsed, against ~500MB
+    free — the exact structure the batching in score_phrases exists to avoid.
+    Passing a cache_path here would rebuild it silently, and only at the END
+    of a 9-hour run."""
+
+    class FakeEmb:
+        def __init__(self):
+            self.kwargs = []
+
+        def embed(self, texts, task_type, **kw):
+            self.kwargs.append(kw)
+            return [[1.0, 0.0, 0.0] for _ in texts]
+
+    fe = FakeEmb()
+    tm.score_phrases(["alpha", "beta"], [[1.0, 0.0, 0.0]], ["t1"], emb=fe)
+    assert fe.kwargs, "score_phrases did not call embed"
+    for kw in fe.kwargs:
+        assert kw.get("use_cache") is False, \
+            f"phrase vectors must not be cached, got {kw}"
+        assert "cache_path" not in kw, \
+            "a cache_path re-enables exactly what this guard prevents"
+
+
 def test_topic_row_carries_everything_the_metrics_need():
     """§5 needs speaker_firm for n_banks, ticker for n_companies, period_key
     for the quarter bucket, and first_evidence_date for the §6.3 clock. A row

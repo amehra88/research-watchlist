@@ -499,7 +499,6 @@ def score_phrases(phrases: list, anchor_vecs: list, anchors: list, *, emb,
                   threshold: float = SIM_THRESHOLD,
                   min_margin: float = MIN_MARGIN,
                   batch_size: int = EMBED_BATCH,
-                  cache_path: Path | None = None,
                   keep_vectors: bool = True):
     """-> (scores, vecs)
 
@@ -525,8 +524,14 @@ def score_phrases(phrases: list, anchor_vecs: list, anchors: list, *, emb,
     uniq = sorted(set(phrases))
     for i in range(0, len(uniq), batch_size):
         batch = uniq[i:i + batch_size]
-        raw = emb.embed(batch, "retrieval_document", cache_path=cache_path,
-                        use_cache=cache_path is not None,
+        # use_cache=False, and this is the whole point of the function.
+        # embed() keeps a cached vector resident in _CACHES for the life of
+        # the process and re-serialises the dict on every flush, so caching
+        # here would quietly rebuild the very structure the batching exists to
+        # avoid: measured at 41.5 KB/vector, 15k phrases is a 638MB file and
+        # ~1.5GB parsed, against ~500MB free. Re-embedding costs ~15 min at
+        # the measured 58 ms/phrase. That is the trade, and it is not close.
+        raw = emb.embed(batch, "retrieval_document", use_cache=False,
                         batch_size=batch_size)
         V = np.asarray(raw, dtype=np.float32)
         V /= np.clip(np.linalg.norm(V, axis=1, keepdims=True), 1e-12, None)
@@ -603,6 +608,10 @@ def main(argv=None) -> int:
         f"{len(q_units)} question, {len(e_units)} evidence, interleaved)")
 
     ledger = Ledger(PROGRESS_PATH)
+    # Recorded so a reader can tell a partial map from a complete one. Without
+    # it the ledger says how many units were attempted but not how many exist,
+    # and a half-extracted map looks exactly like a finished one.
+    ledger.data["n_units"] = len(units)
     todo = [u for u in units if not ledger.done(u["unit_id"])]
     log(f"{len(todo)} units need phrase extraction "
         f"({len(units) - len(todo)} already done)")
@@ -669,8 +678,7 @@ def main(argv=None) -> int:
                             "retrieval_document", cache_path=EMBED_CACHE_PATH)
 
     scores, vecs = score_phrases([p for _, p in pairs], anchor_vecs, themes,
-                                 emb=emb, threshold=args.threshold,
-                                 cache_path=EMBED_CACHE_PATH)
+                                 emb=emb, threshold=args.threshold)
     log(f"scored {len(scores)} distinct phrases")
 
     STATE_DIR.mkdir(parents=True, exist_ok=True)

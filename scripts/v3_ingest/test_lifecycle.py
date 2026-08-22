@@ -144,6 +144,30 @@ def test_detection_log_records_a_later_distinct_pair():
         assert recs[1]["detected_on"] == "2026-09-01"
 
 
+def test_coverage_reads_attempted_and_total_from_the_ledger():
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "_progress.json"
+        p.write_text(json.dumps({"version": 1, "n_units": 8717,
+                                 "entries": {"a": {"status": "ok"},
+                                             "b": {"status": "empty"}}}))
+        assert lc.coverage(p) == (2, 8717)
+        assert lc.coverage(Path(d) / "missing.json") == (0, 0)
+
+
+def test_a_detection_records_the_coverage_it_was_computed_at():
+    """A stage-1 claim made on a 3%-extracted map is a different claim from
+    one made on a finished map, and detected_on is permanent. The log has to
+    carry enough to tell them apart years later."""
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "detections.jsonl"
+        lc.append_detections(p, [{"theme": "t1", "ticker": "AAOI",
+                                  "first_evidence_date": "2026-05-01",
+                                  "stage": 1}],
+                             as_of="2026-08-22", coverage_pct=42.5)
+        rec = json.loads(p.read_text().splitlines()[0])
+        assert rec["coverage_pct"] == 42.5
+
+
 # ───────────────────────── runner ─────────────────────────
 
 if __name__ == "__main__":

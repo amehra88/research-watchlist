@@ -43,6 +43,7 @@ REPO_ROOT = Path("/root/research-watchlist")
 TOPICS_PATH = REPO_ROOT / "state" / "topics" / "topics.jsonl"
 EXCHANGES_PATH = REPO_ROOT / "state" / "transcripts" / "exchanges.jsonl"
 DETECTIONS_PATH = REPO_ROOT / "state" / "topics" / "detections.jsonl"
+PROGRESS_PATH = REPO_ROOT / "state" / "topics" / "_progress.json"
 
 #: stage 4 = "questions on most covered calls". A bare majority is not enough
 #: on its own — two names with one asked about is a majority and plainly not
@@ -180,7 +181,19 @@ def summarize(lags: list) -> dict:
 
 # ───────────────────── the append-only detection log ─────────────────────
 
-def append_detections(path: Path, entries: list, as_of: str) -> int:
+def coverage(progress_path: Path = PROGRESS_PATH) -> tuple:
+    """-> (attempted, total). Both 0 if the ledger is missing."""
+    if not Path(progress_path).exists():
+        return (0, 0)
+    try:
+        d = json.loads(Path(progress_path).read_text())
+    except ValueError:
+        return (0, 0)
+    return (len(d.get("entries", {})), int(d.get("n_units") or 0))
+
+
+def append_detections(path: Path, entries: list, as_of: str,
+                      coverage_pct: float | None = None) -> int:
     """Append stage-1 detections, stamped with the date first seen.
 
     First-seen wins. Restamping on a re-run would destroy the only property
@@ -205,6 +218,8 @@ def append_detections(path: Path, entries: list, as_of: str) -> int:
         for e in new:
             rec = dict(e)
             rec["detected_on"] = as_of
+            if coverage_pct is not None:
+                rec["coverage_pct"] = round(coverage_pct, 1)
             fh.write(json.dumps(rec, sort_keys=True) + "\n")
     return len(new)
 
@@ -214,6 +229,8 @@ def main(argv=None) -> int:
     ap.add_argument("--as-of", default=dt.date.today().isoformat())
     ap.add_argument("--no-log", action="store_true",
                     help="report only; do not append to the detection log")
+    ap.add_argument("--force-log", action="store_true",
+                    help="append even though extraction is incomplete")
     args = ap.parse_args(argv)
 
     rows = list(iter_rows())
@@ -259,10 +276,27 @@ def main(argv=None) -> int:
         log(f"    {e['ticker']:<6} {e['theme']:<44} "
             f"{e['open_lag_days']:>4}d open since {e['first_evidence_date']}")
 
-    if not args.no_log:
-        n = append_detections(DETECTIONS_PATH, stage1, args.as_of)
-        log(f"{n} new detections appended -> {DETECTIONS_PATH} "
-            f"(first-seen dates are never restamped)")
+    attempted, total = coverage()
+    pct = (100.0 * attempted / total) if total else 0.0
+    log(f"extraction coverage: {attempted}/{total or '?'} units ({pct:.1f}%)")
+
+    if args.no_log:
+        return 0
+    # A stage-1 detection means "evidence exists and nobody has asked". On a
+    # partial map that is indistinguishable from "the question rows for this
+    # pair simply have not been extracted yet" — and detected_on freezes the
+    # mistake permanently. The log is only worth keeping if it never records
+    # something that was never true, so completeness is enforced, not advised.
+    if total and attempted < total and not args.force_log:
+        log(f"REFUSING to append: the map is {pct:.1f}% extracted, so a "
+            f"stage-1 pair may only look unasked because its question rows "
+            f"are still pending. Re-run topic_map.py to finish, or pass "
+            f"--force-log if you accept a provisional detection.")
+        return 2
+    n = append_detections(DETECTIONS_PATH, stage1, args.as_of,
+                          coverage_pct=pct)
+    log(f"{n} new detections appended -> {DETECTIONS_PATH} "
+        f"(first-seen dates are never restamped)")
     return 0
 
 
