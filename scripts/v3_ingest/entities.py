@@ -60,6 +60,11 @@ CONTENT_CAP = 14_000        # chars of chunk text sent to the extractor
 # a normal day many times over and still bounds a bad one. Pass --limit 0 to opt out.
 DEFAULT_MAX_PER_RUN = 60
 
+# Consecutive fatal-looking failures before giving up. 1 is too twitchy — a transient blip
+# killed the whole bloom vertical on 2026-08-21 and the same chunk worked minutes later.
+# No limit is too costly — an exhausted quota burned 80 doomed calls that same day.
+FATAL_STREAK = 3
+
 # Pre-filter: cheap regex that decides which chunks are worth spending a call on.
 VERTICALS: dict[str, str] = {
     "optics": (
@@ -313,6 +318,7 @@ def run_vertical(vertical: str, cap: int, dry_run: bool) -> int:
         f"already_done={len(done)} dry_run={args.dry_run}")
 
     ok = empty = failed = written = 0
+    consecutive_fatal = 0          # a blip is not exhaustion — see FATAL_STREAK
     cost = 0.0
     for i, row in enumerate(rows, 1):
         try:
@@ -322,11 +328,24 @@ def run_vertical(vertical: str, cap: int, dry_run: bool) -> int:
             failed += 1
             log(f"  [{i}/{len(rows)}] FAILED {row['chunk_id'][:50]}: {type(e).__name__}: {e}")
             if is_fatal_run_failure(e):
-                log("  fatal (auth or usage limit) — aborting run rather than burning the "
-                    "whole batch; re-run later to resume from the checkpoint")
-                break
+                consecutive_fatal += 1
+                # Abort on a STREAK, not on one failure. Aborting immediately is too
+                # aggressive: on 2026-08-21 the bloom vertical died on a single transient
+                # blip 15s after the optics run finished, and the same chunk succeeded
+                # minutes later. Never aborting is too lenient: an exhausted quota burned
+                # 37 CNINFO filings and 43 chunks the same day. A short streak separates
+                # a blip from real exhaustion.
+                if consecutive_fatal >= FATAL_STREAK:
+                    log(f"  {consecutive_fatal} consecutive fatal failures (auth or usage "
+                        f"limit) — aborting; re-run later to resume from the checkpoint")
+                    break
+                log(f"  fatal-looking failure {consecutive_fatal}/{FATAL_STREAK} — "
+                    f"continuing in case it is transient")
+            else:
+                consecutive_fatal = 0
             continue
 
+        consecutive_fatal = 0          # any success clears the streak
         if not mentions:
             empty += 1
         else:
