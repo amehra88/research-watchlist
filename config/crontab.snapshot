@@ -1,5 +1,5 @@
 # snapshot of the live droplet crontab — written by scripts/snapshot_crontab.sh
-# snapshot taken: 2026-08-21T13:30:02-04:00
+# snapshot taken: 2026-08-22T13:30:02-04:00
 PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 0 7 * * * /root/bin/alert_on_failure.sh daily_digest /root/daily/run_daily.sh
 7 12 * * 0 /root/bin/alert_on_failure.sh nport_weekly /root/nport/run_weekly.sh >> /root/nport/data/cron.log 2>&1
@@ -27,8 +27,14 @@ PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 # AI application-layer screens (EDGAR full-text, all filers) - quarterly, 1st of Feb/May/Aug/Nov
 15 7 1 2,5,8,11 * /root/bin/alert_on_failure.sh ai_screens /root/research-watchlist/scripts/screens/run_ai_screens.sh >> /root/research-watchlist/logs/ai_screens.log 2>&1
 # one-shot: finish entity extraction + CNINFO ingest (self-removes on completion)
-0 13 * * * /root/.claude/jobs/cb12edf0/tmp/finish_work.sh >> /root/research-watchlist/logs/finish_work.log 2>&1
 # entity/claim extraction — daily, capped at 60 chunks/vertical (steady state ~4/day)
 0 14 * * * cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh v3_entities python3 scripts/v3_ingest/entities.py --vertical all >> logs/entities.log 2>&1
 # version-control the crontab: snapshot daily so auto_sync commits any schedule change
 30 13 * * * /root/research-watchlist/scripts/snapshot_crontab.sh >> /root/research-watchlist/logs/crontab_snapshot.log 2>&1
+
+# ETF flow & crowding monitor — FETCH ONLY, 05:30 ET weekdays (~15 claude -p calls).
+# Deliberately outside 06:45-08:15: run_daily.sh records that on 2026-08-13 two claude -p
+# heavy jobs in one rolling 5h window exhausted the subscription and the news digest shipped
+# 40 of 256 stories. The 07:00 --report step (in run_daily.sh) makes ZERO LLM calls.
+# 05:30 is verified, not assumed: at 05:05 ET the prior day's flows were already published.
+30 5 * * 1-5 /root/bin/alert_on_failure.sh etf_flows_fetch /root/research-watchlist/scripts/etf_flows.py --fetch
