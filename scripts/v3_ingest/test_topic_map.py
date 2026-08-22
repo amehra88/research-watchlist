@@ -287,6 +287,94 @@ def test_evidence_only_clusters_are_promotable_without_banks():
     assert tm.promotable(c)
 
 
+# ───────────────────── Task 6: ledger, rows, CLI ─────────────────────
+
+def test_topic_row_carries_everything_the_metrics_need():
+    """§5 needs speaker_firm for n_banks, ticker for n_companies, period_key
+    for the quarter bucket, and first_evidence_date for the §6.3 clock. A row
+    missing any of them silently breaks a metric downstream."""
+    row = tm.topic_row(
+        {"unit_id": "v1", "register": "question", "ticker": "AAOI",
+         "period_key": "2026Q3", "speaker_firm": "Wolfe Research LLC",
+         "first_evidence_date": None},
+        "chinese transceiver competition", "china_ai_infrastructure_demand",
+        0.81)
+    for k in ("unit_id", "register", "ticker", "period_key", "speaker_firm",
+              "first_evidence_date", "phrase", "theme", "similarity"):
+        assert k in row, f"missing {k}"
+    assert row["similarity"] == 0.81
+
+
+def test_ledger_retries_failed_but_not_empty():
+    """empty is answered-and-done; failed is unknown-and-retried."""
+    with tempfile.TemporaryDirectory() as d:
+        led = tm.Ledger(Path(d) / "_progress.json")
+        led.record("u1", "ok", 2)
+        led.record("u2", "empty", 0)
+        led.record("u3", "failed: timeout", 0)
+        assert led.done("u1") is True
+        assert led.done("u2") is True
+        assert led.done("u3") is False
+        assert led.done("u4") is False
+
+
+def test_ledger_survives_a_reload():
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "_progress.json"
+        led = tm.Ledger(p)
+        led.record("u1", "ok", 2)
+        led.save()
+        assert tm.Ledger(p).done("u1") is True
+
+
+def test_a_usage_limit_cliff_is_resumable_not_swallowed():
+    """The b1c351aa lesson, at the level that actually matters: a cliff must
+    land as `failed`, so the NEXT run re-attempts the unit. Routing it to
+    `empty` would mark 8,677 units answered-and-done after the first cliff and
+    quietly produce a topic map built from a fraction of the corpus.
+
+    `extract_phrases` is where the cliff is detected, so the status string it
+    emits and the status set `Ledger.done` trusts must agree. They are written
+    in two different functions, which is exactly how they drift."""
+    _, status = tm.parse_phrases({"is_error": True, "duration_api_ms": 0,
+                                  "num_turns": 1, "total_cost_usd": 0,
+                                  "result": "usage limit reached"})
+    assert status.startswith("failed"), status
+    with tempfile.TemporaryDirectory() as d:
+        led = tm.Ledger(Path(d) / "_progress.json")
+        led.record("u1", "failed: usage-limit cliff", 0)
+        led.save()
+        assert tm.Ledger(Path(d) / "_progress.json").done("u1") is False, \
+            "a cliffed unit must be retried on resume, not skipped"
+
+
+def test_ledger_reads_the_nested_entries_shape_it_writes():
+    """The file is {"version": 1, "entries": {...}}, not a flat map. Reading
+    it as flat gives `'int' object has no attribute 'get'` on the version key
+    — which is how the P1 progress file broke once already."""
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "_progress.json"
+        led = tm.Ledger(p)
+        led.record("u1", "ok", 2)
+        led.save()
+        raw = json.loads(p.read_text())
+        assert raw["version"] == 1
+        assert "u1" in raw["entries"]
+        assert raw["entries"]["u1"]["status"] == "ok"
+
+
+def test_ledger_tolerates_a_corrupt_progress_file():
+    """A kill mid-save must not make the whole pass unresumable."""
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "_progress.json"
+        p.write_text('{"version": 1, "entr')
+        led = tm.Ledger(p)
+        assert led.done("u1") is False
+        led.record("u1", "ok", 1)
+        led.save()
+        assert tm.Ledger(p).done("u1") is True
+
+
 # ───────────────────────── runner ─────────────────────────
 
 if __name__ == "__main__":
