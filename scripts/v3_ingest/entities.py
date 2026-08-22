@@ -342,7 +342,7 @@ def run_vertical(vertical: str, cap: int, dry_run: bool) -> int:
                 # 37 CNINFO filings and 43 chunks the same day. A short streak separates
                 # a blip from real exhaustion.
                 if consecutive_fatal >= FATAL_STREAK:
-                    log(f"  {consecutive_fatal} consecutive fatal failures (auth or usage "
+                    log(f"  {consecutive_fatal} consecutive fatal failures (usage "
                         f"limit) — aborting; re-run later to resume from the checkpoint")
                     break
                 log(f"  fatal-looking failure {consecutive_fatal}/{FATAL_STREAK} — "
