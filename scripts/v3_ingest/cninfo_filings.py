@@ -49,7 +49,8 @@ WATCHLIST = REPO_ROOT / "config" / "watchlist.yaml"
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "chunking"))
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "v3_ingest"))
 
-from sec_filings import is_fatal_run_failure, log, run_claude  # noqa: E402
+from sec_filings import (is_auth_failure, is_fatal_run_failure, log,  # noqa: E402
+                         run_claude)
 
 SEARCH_URL = "http://www.cninfo.com.cn/new/information/topSearch/query"
 QUERY_URL = "http://www.cninfo.com.cn/new/hisAnnouncement/query"
@@ -333,11 +334,16 @@ def main() -> int:
             except Exception as e:  # noqa: BLE001
                 failed += 1
                 log(f"    FAILED {f['title'][:40]}: {type(e).__name__}: {e}")
+                if is_auth_failure(e):
+                    log("  auth failure — aborting immediately; an expired token is not "
+                        "transient and a retry cannot fix it. Run `claude /login` on "
+                        "the droplet, then re-run to resume from the checkpoint.")
+                    return 1
                 if is_fatal_run_failure(e):
                     consecutive_fatal += 1
                     if consecutive_fatal >= FATAL_STREAK:
-                        log(f"    {consecutive_fatal} consecutive fatal failures (auth or "
-                            f"usage limit) — aborting; re-run later to resume from the "
+                        log(f"    {consecutive_fatal} consecutive fatal failures (usage "
+                            f"limit) — aborting; re-run later to resume from the "
                             f"checkpoint")
                         return 1
                     log(f"    fatal-looking failure {consecutive_fatal}/{FATAL_STREAK} — "

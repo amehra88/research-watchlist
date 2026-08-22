@@ -49,7 +49,8 @@ STATE = REPO_ROOT / "state" / "v3_ingest" / "entities.json"
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "chunking"))
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "v3_ingest"))
 
-from sec_filings import is_fatal_run_failure, log, run_claude  # noqa: E402
+from sec_filings import (is_auth_failure, is_fatal_run_failure, log,  # noqa: E402
+                         run_claude)
 
 CONTENT_CAP = 14_000        # chars of chunk text sent to the extractor
 
@@ -327,6 +328,11 @@ def run_vertical(vertical: str, cap: int, dry_run: bool) -> int:
         except Exception as e:  # noqa: BLE001
             failed += 1
             log(f"  [{i}/{len(rows)}] FAILED {row['chunk_id'][:50]}: {type(e).__name__}: {e}")
+            if is_auth_failure(e):
+                log("  auth failure — aborting immediately; an expired token is not "
+                    "transient and a retry cannot fix it. Run `claude /login` on "
+                    "the droplet, then re-run to resume from the checkpoint.")
+                break
             if is_fatal_run_failure(e):
                 consecutive_fatal += 1
                 # Abort on a STREAK, not on one failure. Aborting immediately is too
