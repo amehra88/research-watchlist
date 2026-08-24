@@ -1,0 +1,39 @@
+---
+doc_type: news
+source: news
+tickers:
+- 005930.KS
+themes:
+- semiconductor_cycle
+macro_signals: []
+lens_tags:
+- company
+- theme
+confidence: high
+rationale: Samsung stock skids on investor disappointment with record shareholder
+  return plan; capital allocation signal.
+summarized: false
+source_urls:
+- https://news.google.com/rss/articles/CBMihAFBVV95cUxQYS0wRWdmbS1BeEkwU25lMTNnMWZTM0Y5bDJ0X0ZLM3MteUpfNG4ya3U1dmJwR2oyVlhLVENKWDdadG9Ca0VFcnMxbHVNR1N1Z0xpU1RJb2JyTlR4OHFXODN1ajhtZ0l6RmNGUEEtVWJfZmdIclBHRF9KemFZTTFpUlB3V2Y?oc=5
+- https://news.google.com/rss/articles/CBMiogFBVV95cUxOLTNYY2oxVldBeXlIVEViNWtQQ2xsWFJIWGdNZ0wyN3h0akw0SUtqN3pzU0FhR3lMMXlnR2VxZ3dUOWVfQVJRWV9aOS0tODMtQUVKb0lQOEhwU2lxTGc1cnh1ZVh1SHJlOUNBUWpPeHFPMUpETUtmWlczZDFWaVltdG84TGlJaXZBNi1nSFdwNk1mUHFOTC04Q1dfRXVuWmRRUWc?oc=5
+- https://news.google.com/rss/articles/CBMiwgFBVV95cUxPZVV4aDFXUDV2QTJFSGhZelZHTjdyOUJxWWlYVG1rOXRiaTk1V05tZXRkNU1palh2OU1CN2Q1eW04SElpNDR1clUwU1dGd3d5eVFzcFhVQ2h2QnJXUjRsSDV0bTFDWHBhQ2VfSFNSejg0V0JFS2lvTEx1cERrUzFkMmY2YjNTTzR3dUpDNGhJLVhNSml3Nmlycm9kV3FMUjZkbzRBVGdBZ3lGRjI4WklQQ0pTU2M4Unhsa1pLem9ReHFPdw?oc=5
+- https://news.google.com/rss/articles/CBMiigFBVV95cUxOTlFzTERiOTVJWEJocnU3azRKb3NhMU40dVJHRUZYbnVNQ24zSTBWX3V5X0t4S24tZ1dmdURGWXZkTm40dHZZM19naV8wV215dlYwRE9qRWJpOWZSOW5CNUVBbWNpaFl5b3JTZ09YNWJXR0FyQkNLQlVUTW9VQ203S2ZJN0dOdXllLVE?oc=5
+- https://news.google.com/rss/articles/CBMi2gFBVV95cUxOeDNsQUZ6SWNmZEJHX1BtUXZOT1VjeXVLRDRWRW56YmNhOHZHLW9uZEgtbFd2RDAzZFM5eTFsY0hwcmJsUG1ZU001VzNYT25mUkp1b0o1d0tPem10Q2labks3MW1FcmZwMEVnbFhzczhFWEpNLVotc3NMWmhYZXlKRzZsZUpPdGJ1WlNVcWJhdURXVW9sYUg4cGRGZlR5YkVVWk5Sc0R2N1RVNlczQTl2Z0Y2NkRNVUp5WmpzY01MYk5QU3JHbzdWQUhDWDFjUFJWR1pLX1JzUHJBUQ?oc=5
+- https://news.google.com/rss/articles/CBMiugFBVV95cUxPOE1sYWQ3clljejhYRWhKWGJiWXc2bTFlTURPRmc5cDNDdkF1eG5RYzl3aWo5dXhZTUVQZkwwTndqbm40OWpKOXlETDVYbmdoNkxYcDQ5VGlVZ1BJZU0wek82bHBnX3BjRXY4OGZhUFBHYnlyZ19Ja3VXZG9zLUhNTU9uT2lBLVBfdU1KWmVOSTRvc2JQSFlTaTRwNXFpcnRNVXVlVHlPdTc5dmUyYXhEUEpkam1RVjR6eFE?oc=5
+- https://news.google.com/rss/articles/CBMiwgFBVV95cUxPN1FoeGxWWi1vYWUxU1dKa1lpYmZYQlFXRm53UjMzcWYyY1h1U3NSdG5ZcFlaWkNxb3JZdWx4bEUtS0loT2tqajd3X21HaUxMQTEwYnhKY3R1ZVdYNTFrVENwcWJhNExoMmkyUjQ3NU9lZG9NQmpiMkJoeG91YmZfR216MnlINEpwTE5vVGxtNGtCdlNDX1JPTURLRXQ1cU9iLXZjeE9Jd0ZiSjlCT1JJb3VJWlRPbHhSTHFmdE9HR2s2Zw?oc=5
+cluster_headlines:
+- Samsung Electronics shares skid as record shareholder returns disappoint
+- Samsung Stock Slips As Shareholder Returns Disappoint
+factset_sentiment: ''
+published_date: '2026-08-24'
+ingestion_date: '2026-08-24'
+extraction_source: v3 news-flow channel (news_digest.py), classified but below the
+  digest cut — headline-only note, not summarized
+---
+
+## Samsung Electronics shares skid as record shareholder returns disappoint
+
+Samsung stock skids on investor disappointment with record shareholder return plan; capital allocation signal.
+
+- Samsung Electronics shares skid as record shareholder returns disappoint
+- Samsung Stock Slips As Shareholder Returns Disappoint
