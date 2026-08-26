@@ -1,0 +1,38 @@
+---
+doc_type: news
+source: news
+tickers:
+- AVGO
+themes:
+- ai_infrastructure_capex
+- silicon_architecture_competition
+macro_signals: []
+lens_tags:
+- company
+- theme
+confidence: medium
+rationale: Broadcom highlighted as AI infrastructure cash-flow pick; thematic framing
+  of AVGO's custom silicon and networking position.
+summarized: false
+source_urls:
+- https://news.google.com/rss/articles/CBMizAFBVV95cUxQOEM2NnJBSDRtakZSZFlhbVNtVWZsLUlwaWRsZ1hKMXVpMU1naGctME13NDRTTXJscUpiZGkxTkRMdmN2NnRBVmpFQndXVzFxNVZtTUdvV2lZTUsxZmNEZzAyQUxYUnI1LWRjcjdVSE40VVRZNVFNOXc0aENORjE5UzRXb0NjakYxdlp2Uk9Wa0RVWUFjbmRwTDBjdVZhZVhKN3RPclJESUxkbDdyajZ0UmxSRkhuNXRNYTRyOVk5azlsc2xXeTMwMFVCTWzSAdIBQVVfeXFMUE95eG1JX1RUa29ocVJmYk5vMU41THUtWURiRWhZcFpyNDJabU94V2xnYnNKMDBweHpTZ0RxZlZud3VBdEl5dWoza0dfTEM2ZUVQOXE0cFlSM2duWFZDWVh1OW5PVkxTLXIzMGNNdzc4d3l4OWxIWEY1YmpqLVhnRFNfU3lvUk9GMHgwbmR1ei16TXNncGJoVVlXXzNTaXZwZUgwUmdYaGRwRXpaNUYtWlMzRGRGcklNaTc0ZDNhRWdFOU5ZU1dtdExqQWUyVFZIM1B3?oc=5
+- https://news.google.com/rss/articles/CBMizAFBVV95cUxQZV9PTjVTellYRkV1dWRmdHVGcTBxTV9icmU3V1dnT3Jyak5JVjJ1eFVOQVNRN0ZTMmxnSXFDUGtkMDhlZ1dseXVGRXMxaGRROTJSVnhLQ3UwcUVpTGsyb0xUS0kzeG5CNXB5dDB4QmZhWFRrckZXME1iY2d4bkhoZjdDM1I2MWgzSFBWalVGOUttWEFlRzM1VjQyeVJ2RlFGcnJkQ3FkRzdtbi1sTktPVkNHdGV6LTlaaVhzTFZxZU80UDh0NkZkZVI2Q2rSAdIBQVVfeXFMT2xBeno0Ykdxbk93aGtFal9ORGdJaEhpRTctYUl5Sk1nXzJTRnpjaXNuMjU3NUtXQnh5N3l0cW9FOVhfVDJyTUE1VFFhSEs2dFlNaTdHYnZ3aV9qWllaMjc3dmc1dW5sYWRxZEhlZnhTUHV2VkZGUXZkeTBIR3REU2dLSTFxSVlWV0dvVUdLaDRrY0FIbGV3ZGRRajRrVHNKeFd3NnQ2aTQyVmhIY1F1eVh1eG1ieWpBREpqak9XOGVsMm5zYkVRbVk0WnphanlMSDZB?oc=5
+- https://news.google.com/rss/articles/CBMizgFBVV95cUxPYmZPX2RWT3YydENrNFZzOXdraEdic3ZIeWJLOWlZZm1aOVlIT2NQOGlFT0JBN3NTTTB4T0duemlmQjhKQ25GMk05T0N6bl9pdlY5a0ktN1A2QXJ4WU04emJ4V002ek4tTUJsSDlvV0ZlLUctMGhKM3hhOE5INS1URHNMazhuc0kzVW9aaUtxT2lqY3A4ZlJ6Z1VHa0o2a2ZFNDRuQWV4M2tjTUw1TW41b1lWOHg0UnlqOXZkejNCdXhpNFVxMjBQbzNmMWZCQdIB0wFBVV95cUxQSzVvSXplY3kxNVlvR09jVGZOTGVJV0pxbGJvaXcwalRfNnd6OWRmYzd5cDVmd0dCVXQ4cE9HSHNURzFEY1lDeG04WEZhbE93M0c1ZEg2dW0zNS1mQ1hNSHlvbmZwRWttX0RZcEJ5a2pxQmJqQTBfU0pFUjBCUC1sVFJlY1NrRTRmZG13LW9hNVVENDJGRnNOSXlGT0RIcVA4QUlNTFF5em5ISklHQno0bUhtOFZOR2lxM1dhcWMwbWJrMTB0MWxlc0RvWUVVa2JLOXhV?oc=5
+cluster_headlines:
+- Broadcom Stock And 2 AI Infrastructure Picks Backed By Strong Cash Flow
+- Broadcom Stock Leads 3 AI Infrastructure Picks With Strong Growth Potential
+- Broadcom Stock Leads 3 Cash Flow Picks For AI Infrastructure Investors
+factset_sentiment: ''
+published_date: '2026-08-26'
+ingestion_date: '2026-08-26'
+extraction_source: v3 news-flow channel (news_digest.py), classified but below the
+  digest cut — headline-only note, not summarized
+---
+
+## Broadcom Stock And 2 AI Infrastructure Picks Backed By Strong Cash Flow
+
+Broadcom highlighted as AI infrastructure cash-flow pick; thematic framing of AVGO's custom silicon and networking position.
+
+- Broadcom Stock And 2 AI Infrastructure Picks Backed By Strong Cash Flow
+- Broadcom Stock Leads 3 AI Infrastructure Picks With Strong Growth Potential
+- Broadcom Stock Leads 3 Cash Flow Picks For AI Infrastructure Investors
