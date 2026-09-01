@@ -1,0 +1,33 @@
+---
+doc_type: news
+source: news
+tickers:
+- ARM
+themes:
+- humanoid_robotics_competition
+- silicon_architecture_competition
+macro_signals: []
+lens_tags:
+- company
+- theme
+confidence: medium
+rationale: ARM featured alongside robotics/automation stocks; ARM architecture relevance
+  to robotics silicon and automation platforms.
+summarized: false
+source_urls:
+- https://news.google.com/rss/articles/CBMi1gFBVV95cUxNY2drNjBDMDFWYkVFZkxIMS1nWmR0eGpreUZ1SUhQNG91Vk1mdjZTVzBDY2pYb2Z6NFJYTEhXYUUzb1JoUjY5NTNIOXZPNVExWm5MbmloWUc2SmlKNk80bUNYRXVadUlWVVlKdFdEYVlpTDVqdk9wQlNCb3VWX1REZTVFWnZNUmpGUU5aZWx2bUp2YlJfRWRyd0RFb3FEbHhRMVU5Z1NDR29yTmtlTjZQcGM1cWprRVBXaktFXzRTb1puVU00aUdqWDZNcU9kajlfZXVSZGVB0gHWAUFVX3lxTE1jZ2s2MEMwMVZiRUVmTEgxLWdaZHR4amt5RnVJSFA0b3VWTWZ2NlNXMENjalhvZno0UlhMSFdhRTNvUmhSNjk1M0g5dk81UTFabkxuaWhZRzZKaUo2TzRtQ1hFdVp1SVZVWUp0V0RhWWlMNWp2T3BCU0JvdVZfVERlNUVadk1SakZRTlplbHZtSnZiUl9FZHJ3REVvcURseFExVTlnU0NHb3JOa2VONlBwYzVxamtFUFdqS0VfNFNvWm5VTTRpR2pYNk1xT2RqOV9ldVJkZUE?oc=5
+- https://news.google.com/rss/articles/CBMi0AFBVV95cUxNb2s1UElROHU3ZkFxZW1iZXE5eVVKYVVDWUdDTU5pczNXellfcVFEczAxUXRGMHQtU2hlMVdfLW93LVU3bEJGS01SN0ZjeVBKYjY3a0s5SmRaeEwwZmsxMk0xY2F4dUF5ZThWN1gyMWhLN0I3dDNwWFFMbU1Ddm1XSXJHcHNNOW05WGVGME1xZjhXekYzUnJNTGV0Tkw1cTJpa01IM1VtMEk4T280UE44b3FXand3YlBJclUzeWFwZEM0UU9McDRrd2pCcGdCNE5H0gHWAUFVX3lxTE1jZ2s2MEMwMVZiRUVmTEgxLWdaZHR4amt5RnVJSFA0b3VWTWZ2NlNXMENjalhvZno0UlhMSFdhRTNvUmhSNjk1M0g5dk81UTFabkxuaWhZRzZKaUo2TzRtQ1hFdVp1SVZVWUp0V0RhWWlMNWp2T3BCU0JvdVZfVERlNUVadk1SakZRTlplbHZtSnZiUl9FZHJ3REVvcURseFExVTlnU0NHb3JOa2VONlBwYzVxamtFUFdqS0VfNFNvWm5VTTRpR2pYNk1xT2RqOV9ldVJkZUE?oc=5
+cluster_headlines:
+- Arm Stock And 2 Robotics And Automation Stocks To Watch Now
+factset_sentiment: ''
+published_date: '2026-09-01'
+ingestion_date: '2026-09-01'
+extraction_source: v3 news-flow channel (news_digest.py), classified but below the
+  digest cut — headline-only note, not summarized
+---
+
+## Arm Stock And 2 Robotics And Automation Stocks To Watch Now
+
+ARM featured alongside robotics/automation stocks; ARM architecture relevance to robotics silicon and automation platforms.
+
+- Arm Stock And 2 Robotics And Automation Stocks To Watch Now

@@ -1,0 +1,33 @@
+---
+doc_type: news
+source: news
+tickers:
+- AVGO
+themes:
+- ai_infrastructure_capex
+- chip_design_competition
+macro_signals: []
+lens_tags:
+- company
+- theme
+confidence: medium
+rationale: AVGO featured in AI infra earnings-growth stock screen; timely reinforcement
+  ahead of September 2 earnings.
+summarized: false
+source_urls:
+- https://news.google.com/rss/articles/CBMi0AFBVV95cUxPNVhMams2RmJUaUtZR2RDRmd6M1pqYXZaenFlSjlfOFhFQ1gxY1pYYzZVZUVKMDVUekFGWVdBSW5pYTdLYVAwb25wX2FXMW16dHZvNjg5T0c4MldRVnJHeFNuVTY5MklxQ3NlTlI3cEMtdFk2VnpSbnBsY3hHeWxZd2dfRXBPTWNkSVdERy1MVFAxYjhFdWZoU1lRdmd2TnEtV2FuTVBRMWhQYXFNSjc1MVZ0ZHRVZmliZlVHclRnbmpQMVhpLWg1UkJzLVRzWWQ50gHWAUFVX3lxTFAzTVdvN0hPT1RSLWpNcVQyY3NoVFlhaDNPNUJhTlEyalc2dmpUVXgybEtNYUh3dmhnUXFuMFpFT3h4LWVOT2o3bTRQVTZrMGw2VFBNbTc2Nk1EM3JyLUQwQ01LWmdGZXNuVzNUZUJhT3V2bEN2MGZiV2N4b3E3NzlDdVRsT2RyYTFUUzhmS0pqSTZsYnB2Smp4QkdOYmR4UEx6UG5RbVBtM3NuOWxaWVJIX2hKak9pazVHV1NVSkFSRG80UkRQSUlkSVozcnlxTEM4V3BvU3c?oc=5
+- https://news.google.com/rss/articles/CBMizgFBVV95cUxPcG9NMmY5enctVVhERUNvTnlWNDdXMTJKdF8tMEh0TU4wUm5nam16TkZmT1dkMENMM3NIY3B0OV9EcUh5dkl0T2NEdm1OQVhyNU9VbTFvdHBELW51eVhER1dnSWcyY3pYQXAwMk9aWnpjQlBGa2JHY1p3TkI5eU9CQ183eXNwTDNldXc0UmFkQmFDb3NPb3hUTE02TDBHbDlEb3cxOGl5VE9xb05BcFNMc05YUlcyc054RGZBYUhscjAySWhJVEpNUGVRTkl2UdIB0wFBVV95cUxOYUJ5VzVqM3hjSkJzMDJPZnJkSk9ZWWdaZDFRUkptZDRmSkE0TkdaRl9PZy1ZLXJEeTdRTk54bFQ2YTFEdlVfTFBWTVp2MHE4RGNjOFBwU3NjeUtyek9HaEpNTXJoc2V5Qk55U29WaU9RbDJHb2xNRDdHaVpnckhkcVR1RzRuVk1vaC1jZzhmTVJ0MUxwQ2UxMWtNUHJvbjZsWlh0WVJpZ1pDckZUbFBvQ2xYSWRBTGs3YzY2OXNaMjJxb0lrTzVkNHdUbHhSLVJZR1pN?oc=5
+cluster_headlines:
+- Broadcom Stock And 2 AI Infrastructure Picks With Strong Earnings Growth
+factset_sentiment: ''
+published_date: '2026-09-01'
+ingestion_date: '2026-09-01'
+extraction_source: v3 news-flow channel (news_digest.py), classified but below the
+  digest cut — headline-only note, not summarized
+---
+
+## Broadcom Stock And 2 AI Infrastructure Picks With Strong Earnings Growth
+
+AVGO featured in AI infra earnings-growth stock screen; timely reinforcement ahead of September 2 earnings.
+
+- Broadcom Stock And 2 AI Infrastructure Picks With Strong Earnings Growth
