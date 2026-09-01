@@ -8,29 +8,27 @@ themes:
 - inference_compute_economics
 macro_signals: []
 lens_tags:
-- 'Company: NVDA'
-- 'Theme: ai_compute_topology'
-- 'Theme: inference_compute_economics'
+- company
+- theme
 confidence: high
 rationale: NVDA post-earnings -5% + Jensen 'this time is different' defense; core
   AI demand signal for the thesis
+summarized: false
 source_urls:
 - https://news.google.com/rss/articles/CBMikAFBVV95cUxQdU01REcxUjBFX3lxR1hYb0N1X3o4WXlrT3p0S2w5ZndyRGZMbXRFQzM2dTdRVkJNVlNSeFpRLWJyTFA1MlVGZkptN3FpM3p6YVgtRnI4UEtXSDBDX1dfZEdWazZILUxBODhFaGY4dVJ5VXFzQzRjTjl4SkhWZFVJTzMxUXpGdi1Kd3NTXzZ4emo?oc=5
+- https://news.google.com/rss/articles/CBMikgFBVV95cUxPbGttajRkREp4M0lnTUc2MWhYN0hJSUJPeEdCY2xpdHpHMW5laXViWHdvNEQtNlBTblJZRmU2SWFldGtNdFBnVkx2amlLeWJmMEg0S2lQMmlCakJuRmFHaHpoQnoxSzZWd3VHRnU2elhKYVhsejNnZkpQNHgyQjl0V0VqclFFTzRzLTZQTFF1Z1FyQQ?oc=5
 cluster_headlines:
 - Nvidia Just Slid 5% Post-Earnings. Again. CEO Jensen Huang Insists "This Time Is
   Different." Is the Stock Still a Buy?
 factset_sentiment: ''
 published_date: '2026-09-01'
 ingestion_date: '2026-09-01'
-extraction_source: v3 news-flow channel (news_digest.py), claude -p 3-pass classifier
-  + summarizer
+extraction_source: v3 news-flow channel (news_digest.py), classified but below the
+  digest cut — headline-only note, not summarized
 ---
 
-## Nvidia Falls 5% Post-Earnings Again; CEO Jensen Huang Defends AI Demand Outlook as 'Different This Time'
+## Nvidia Just Slid 5% Post-Earnings. Again. CEO Jensen Huang Insists "This Time Is Different." Is the Stock Still a Buy?
 
-NVDA's recurring post-earnings selloff pattern, even with strong underlying AI demand, raises a standing question about whether the stock is structurally priced for perfection; Jensen's 'this time is different' defense will be scrutinized against actual guidance read-through, and the pattern itself is a tactical signal for positioning around NVDA earnings events.
+NVDA post-earnings -5% + Jensen 'this time is different' defense; core AI demand signal for the thesis
 
-- NVDA fell 5% following its earnings report — a pattern the headline explicitly notes has recurred ('Again').
-- CEO Jensen Huang defended the AI demand outlook with 'this time is different' framing.
-- Analyst commentary questions whether the stock remains a buy following the post-earnings drop.
-- No specific earnings figures, revenue beats, or forward guidance numbers are cited in the headline.
+- Nvidia Just Slid 5% Post-Earnings. Again. CEO Jensen Huang Insists "This Time Is Different." Is the Stock Still a Buy?
