@@ -1,0 +1,53 @@
+---
+doc_type: news
+source: news
+tickers:
+- AAPL
+themes: []
+macro_signals: []
+lens_tags:
+- 'Company: AAPL'
+confidence: high
+rationale: Tim Cook steps down; John Ternus named Apple CEO with $58M FY27 compensation
+  — major leadership succession event.
+source_urls:
+- https://news.google.com/rss/articles/CBMimAFBVV95cUxPZHF4RERoa0g1TUhPRUtTWmowUUFrMnY0NmI4c0RISVltNEpQYWoyT0l5TGVPRGFjSkdsXzB6dldEbTZpMXNMa1JmZUZSZkNsWlRpSTZ2ZXEyOFNZTDBCSkdHNlhWb2JmX1VDb3pocHdSOGN0RktrYlpxVjNkT1k4Z2pvNzBCUVpDTmt0U3Jqb1g1SkU1ZWc5RA?oc=5
+- https://news.google.com/rss/articles/CBMirwFBVV95cUxPalpIZ3VxZ2hpTTA1MC1yVG0weUgwQmtNSXFWTnBGeWJWUEV0U2R3XzF1TzAtMmp4OFBZSmk0aGpqT1UzOWNqV1hxZ19QcDJqRzZ1NjloUjNDVVJIeDNvNWRubEVqbUdRclBINE92Y0laalZDQTBsdFEzcjlpTTltbldRVDBMUWwtVm9qbUdjVnVWbWdpdjhETEVwY0hPekdWNHB4dGx4T3Q2OU9aZ1RN?oc=5
+- https://news.google.com/rss/articles/CBMitgFBVV95cUxQM2dFUkZ2N002Sm1Ea0dsTTlLTTZMOHpoSEhXa0p0b1VBa24tZUI4YXJvWlR0NlFwaEtsTW9wdzJraG5JS2ZKWU1zejFTQlBudTlURklFQXZ1VHp6N3pkVXBjWjZvZ2dVZEk3WlB4VjE2WkdMVWNoVUwxLUlLY2c2dmg3MF9CaVlIR0NPNkhJOGcyeVBPYVU1N3I3TDdHQ2QxbEVYQUJoWUZfYVJsdUhlbHNyNUR3UdIBuwFBVV95cUxPMmFMM0pUc2JPYThWSTY4S0VwOUlVQnN0Y3Jsb1lOb2EyQ09mRVdSRzJxemVINTVFUGRLN0hCaEwtMWR4LVdOMW00d0c2clpSUkY4Vmp0YVpWaFRacm1WR0htTFFzSi1tT3otbWdUUVVEbC1jUUt6UkJnc0J3X2ZOeV9PZmR6ZGVJTzRFd1VTVEppU2RxWnJNWmZCeVYxWllpVTNDNDhuT3J4UDRBTzBaVkRSRmdRLWFyclJZ?oc=5
+- https://news.google.com/rss/articles/CBMitAFBVV95cUxOc3o5RHdRYi1GTXVHZHJDRUFyTFAxMGJyX1ZpTmtJYW5FWFUwRDJ3TURqbS00RzN6YU9DbF8yOV9fYkc5N0ZELVNacHRiQVBKX3BvT1IzNS1LNGZFOTF5S0JRZHB5WUdXVlMzSDBteWFwLS1VNUgtWmFjWlZodFJXRHlFT0FlbDE5cy1wSVpSSk1FajdBT3k3RGdEMDg1VnctQ2hWNTlaNkkzSE9PQUVOYkhoSFDSAcIBQVVfeXFMTlBfUXNNVENYRlZVcFFsSVNrcmFzWk9PSTNPdjZRMTd3dFh4WGVaMERVTkZkS1ZCV3Blak0yQUN0T2VNdEtjV3JReS1aTDRYSV82WGFpRkJxNjdUR3M1QUVqVU1zRWszZzVFQ1JleVYyM3VPSG9iUVh4alZFRHVvZFlUUDV0dndpYmJZVExvUDFDQ2VIajE1eHE5SjREZFV1THZHbWdDQm0tT3hFaDJoT21Qbll3VWJUdGJpNmc0RWFoX2c?oc=5
+- https://news.google.com/rss/articles/CBMi2gFBVV95cUxNUDhmOXFzZXVSaVJNZ0tDdllWbnExNERNRGV2M0twWUh3YWdIMHhSeC1TTTdwMmNUYm1VWV9PcTJhb3VCMzZuODBlYmNFZXVOeW1SMU96azBvVUQ2RkNjR0tQa081MzlYeEdWV2Q5RnprQkFZNzhiVnk1NXNZZE1vTG5HbWNxeTNXYWtoLWhZRFN6bEtHcXFQRnAxX2k5a1JfLUZTb3dLclJtcWVSSmo2dG9kdjJWRXJkSUVKT1JTTDZIVDVzUGg0ZzFsNG1aMkxfT1BhdHNiSHVuUdIB3wFBVV95cUxNazNaMGpGT3pWV29XSEdQMWZfQ0dBMFY1U1F4M1lmd3hRX25PbzVTdkRHOVNSOEEzWFdrcW1TMl9jdEdGajgtRHo3YVF4TkpUZkx5VVBqcmZBWVhwSHJ4QnlxMlNTSkVEYjVlMFc1bHpFbklzalJOR1NySnJxOGZsY3FuUk5tWmdOX0dybktFV1AwX0x1TExnZm1ZYUMzeVpmcXZ4VGNIUE82VERSQW5GZ1FnbFJORTFrbFdEZHhlMXJnbzFMeWlTMGFsYmtJTFcwZUNLY1Rfbk5tS2NMZUNn?oc=5
+- https://news.google.com/rss/articles/CBMi2AFBVV95cUxQNzBlSmo5MTYxMHozSUhzbExTT0Q0YzNVdE5nLXprVUw2MFBqWjZUX0w1eFh6NHhBTFVjMERlRjJ0bWNhT2ktRlpCT0V0ZjlQaXRPSlBuaDdiN2JFS01pQ3JlSU5qLW45YlUzeUZsTi03RE14MmJ1QUlPbWI5aUFGX3RpbTl2UEdXS3ZFN2k2QlVpY0p2VnNLdmFvX3dxRWR2aENBdm4taUhwOGJBV3kyVVFZSEVsSFNoUzVjVklUcXllb1hLcjFyaHZrWjBmaDNxNkdJVFJhdW3SAd4BQVVfeXFMTUJManN5NWlpaEtWUWR5ME0tYWR5RGxNM2ExMHB0dFpESUFRdjFfenZhOGUyTWQ2NEx6WU9GODZuRTZ3aDJNMjJzNUF3SzU4Q3EtTS00ZXpvTEh1SHFHbEVDWFlNTy16RkZwWkwyYUYyVi00SmhMR1VBZ1NIMnJsenVlYlpzXzNWOVdtMnFrbGg3SkpyQ3NBVG9YcldoUkRQcmVldW81UHhiSWxSV1hVeGhTTDVmamI4ZHhZWV9keVBZV1IzN0FHNHhYUVp2aXEzcTJfU0FYSE9JdDEwQ3V3?oc=5
+- https://news.google.com/rss/articles/CBMiqwFBVV95cUxQLXV2VVNVNFY2ODdKaTBiQ2J6dC10VWc5S0E0dGlKcmZvSnBhWjZMUjMyR0dudmdvZHd2elFFRHcxY2F6YVRmTmNkMHgxNWhZUWRqMHhNVm81NWJfd0hsZExOS2VtcnZDeERCYzEtMF9Nbm1zVWVPSVRkbDJxeEZMVUttNGNiVzRmQkhFMUk5a3hEQ2EwZWdndDl0djUtZXp4WldoRU9aeVQzZHPSAbIBQVVfeXFMTjZBT2tFZGttS2w4cDdMdjM2U25fWFBVMXk4UFcyOWVoMGN0TEtDeFZPV1dfcEhNdGpsVHI0S0NOMVhpRTRqU2Z3M2RENkVSOHBRVWp1cl8wem5FckZTLXRWZXJrS0dvMnBzdFNSOHhJcnZGYXNnYzRkeFBnM2s1QktVX3BSQkNfbzNudE5sNXZfQmFQYURwNTdCY0loSy1rc3FEdmx5S3JNa3lFbWd2STlJUQ?oc=5
+- https://news.google.com/rss/articles/CBMi1wFBVV95cUxQbHRmVlFyUEl4d196dnBmNWgyMXE4Sk4zMTREX3d2M0w5Y1JtT0RvekJ3b01taTRUV19LTEREbHpJZzdERWlrX3dSa3F2RHNBWEZmRDdrR2FJQk42cUdvemFjS2ZpVXJvdG9TdGZsUlE2VG1uV1BkNVMyWkVUT0ZDYWVFYkxVQVhPV053RjJUaDM4c2gwX0NSSkRacXVpLUlZbXFZVDlhR2hwWWRvTG9INE9GNVFZMHZxTXplTk5HeGRMaEt3NGtJbGhVZVZzTHdpWFVrb3N1b9IB3AFBVV95cUxQdFZKb3Nua2txMnF4YWprQ3ZWUUl1SGFuSDlOcEVaRlUwLW9Lc1lpSXZqQkg2UGEzTEZjbmNjV2JmTnNfdzJ2VDR4QUI0TnJObUxGMjN3Sy14a3FqV1AxcEZjaUd3TEU4ZzNrRnNFdEZCZmQzaXI2Y2hFX204Z0J5clJ4endYR3J2QkFZaUJjUnYwV0Q4aENQcFQzcXRIQ0xvZ1MtbkNlMHBWYmxHalNVTG9RMXpmbTNkbUJYdEVXREs2X1lYakwtNGJlblJ2VjNRdkhXY2xjeUhHcnE1?oc=5
+cluster_headlines:
+- Apple CEO John Ternus To Get $58 Mn Pay Package In FY27; Tim Cook To Earn $47 Mn
+- Apple CEO John Ternus gets $58 million pay package as Tim Cook moves to executive
+  chairman
+- Apple CEO John Ternus gets a big pay raise through fiscal 2027
+- 'Apple CEO salary: John Ternus may get $58 million package, here’s how his pay compares
+  with Tim Cook'
+- Apple's New CEO John Ternus To Get $58 Million Pay Package In FY27
+- Apple's new CEO John Ternus to receive US$58m compensation
+- Apple’s 2,275% gain under Tim Cook is a tough act for John Ternus to follow
+- John Ternus succeeds Tim Cook as Apple CEO after 15 years
+- John Ternus takes over Apple from Tim Cook
+- John Ternus takes over as CEO of Apple as Tim Cook steps aside
+- Ternus Formally Replaces Cook as Apple CEO
+- Watch Apple’s Ternus Era Begins After Tim Cook Delivers 2,300% Stock Gain
+- With Tim Cook's Era Ending, Is Apple Stock a Buy Under John Ternus?
+factset_sentiment: ''
+published_date: '2026-09-02'
+ingestion_date: '2026-09-02'
+extraction_source: v3 news-flow channel (news_digest.py), claude -p 3-pass classifier
+  + summarizer
+---
+
+## John Ternus formally succeeds Tim Cook as Apple CEO; Ternus to receive ~$58M compensation in fiscal 2027
+
+Apple CEO succession after 15 years of Cook is a major strategic inflection point for the world's largest company by market cap; markets will scrutinize Ternus's capital allocation priorities, product pipeline philosophy, and approach to AI integration against an extraordinarily high performance benchmark — near-term uncertainty around strategic continuity is the primary risk.
+
+- John Ternus has formally replaced Tim Cook as Apple (AAPL) CEO after Cook's 15-year tenure
+- Cook moves to an executive chairman role
+- Ternus's fiscal 2027 compensation package is reported at approximately $58M across multiple outlets; Cook's package cited at approximately $47M in the same period
+- Multiple outlets cite Cook's stock appreciation tenure at approximately 2,275–2,300% — outlets differ slightly on the precise figure
+- 13-outlet cluster confirms the transition; this is a verified, high-confidence event
