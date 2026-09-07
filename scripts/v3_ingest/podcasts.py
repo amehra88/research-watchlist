@@ -32,7 +32,6 @@ import datetime as dt
 import json
 import re
 import sqlite3
-import subprocess
 import sys
 from pathlib import Path
 
@@ -51,6 +50,9 @@ MAX_EPISODES_PER_RUN = 20          # cap runaway cost if watermark is reset
 BUDGET_WARN_USD = 0.50             # warn (not abort) if pre-flight estimate exceeds this
 MODEL = "claude-sonnet-4-6"        # Sonnet: substantive-vs-name-drop judgment quality
 CLAUDE_TIMEOUT_S = 300
+
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))   # claude_p (shared -p wrapper)
+import claude_p                                          # noqa: E402
 
 # Which watchlist.yaml theme categories are extractable. Operator decision
 # (Checkpoint B): strategic[] + macro_policy[] = 25 tags, so regulation-heavy
@@ -281,25 +283,27 @@ def estimate_cost(prompt: str, n_episodes: int) -> float:
     )
 
 
+EXTRACTION_SYSTEM_PROMPT = (
+    "You are a precise financial-research tagging assistant. Follow the instructions "
+    "in the user message exactly and output only the JSON array it specifies."
+)
+
+
 def run_claude(prompt: str) -> tuple[str, float]:
-    """Invoke `claude -p` (tool-free, JSON envelope). Returns (model_text, cost_usd)."""
-    cmd = [
-        "claude", "-p", prompt,
-        "--output-format", "json",
-        "--allowedTools", "",
-        "--model", MODEL,
-    ]
-    result = subprocess.run(
-        cmd, capture_output=True, text=True,
-        timeout=CLAUDE_TIMEOUT_S, cwd=str(REPO_ROOT),
-    )
-    if result.returncode != 0:
-        # Auth/usage errors land on STDOUT (stderr is usually empty) — log both.
-        raise RuntimeError(f"claude -p rc={result.returncode} "
-                           f"stderr={result.stderr[:200]!r} stdout={result.stdout[:300]!r}")
-    envelope = json.loads(result.stdout)
-    text = envelope.get("result", "")
-    cost = float(envelope.get("total_cost_usd", 0.0) or 0.0)
+    """Lean-mode `claude -p` (tool-free, JSON envelope). Returns (model_text, cost_usd).
+
+    Two fixes over the previous inline subprocess call:
+
+    * It passes `env=` at all. This was the ONLY claude -p wrapper on the box that
+      inherited the ambient environment, so a set ANTHROPIC_API_KEY silently moved this
+      job onto metered API billing instead of the subscription auth every other channel
+      uses. claude_p.run always strips the key.
+    * It drops the ~28K-token Claude Code harness this tool-less text->JSON job never
+      used (measurements in scripts/lib/claude_p.py).
+    """
+    text, cost, _env = claude_p.run(prompt, system_prompt=EXTRACTION_SYSTEM_PROMPT,
+                                    model=MODEL, cwd=str(REPO_ROOT),
+                                    timeout=CLAUDE_TIMEOUT_S)
     return text, cost
 
 
