@@ -48,10 +48,25 @@ import subprocess
 # costs ~31K again. Fail loudly instead of regressing quietly.
 #
 # The envelope reports total prompt tokens, not wrapper alone, so the guard checks
-# total MINUS an estimate of the payload. The estimate is crude (chars/4), but it
-# only has to separate ~2.6K from ~31K — a 28K gap that dwarfs tokenization error.
+# total MINUS an estimate of the payload.
+#
+# The divisor is deliberately CONSERVATIVE (it over-estimates payload tokens, which
+# under-estimates overhead and biases the guard toward staying silent). Measured over
+# real production prompts on 2026-09-07, English prose mixed with tickers, JSON and
+# comma-separated vocabularies runs 1.98-3.37 chars/token — nowhere near 4:
+#
+#     sec tagger      2.14 - 2.47      news summarize  1.98 - 2.19
+#     news classify   2.11 - 3.37      news rank       2.67 - 2.90
+#
+# At chars/4 the largest real ranking prompt (83,558 chars) scored an apparent
+# overhead of 13,028 against this 12,000 ceiling — a FALSE TRIP that would have hard-
+# failed the digest on a call that was behaving perfectly. Biasing the other way costs
+# nothing, because the signal this guard exists to catch is the ~28K harness returning:
+# with the flags dead, overhead lands ~20-29K on these same prompts, still far above
+# the ceiling. Under-estimating payload is what makes the guard fragile; over-
+# estimating it only makes the guard more conservative.
 LEAN_WRAPPER_CEILING = 12000
-_CHARS_PER_TOKEN = 4
+_CHARS_PER_TOKEN = 2
 
 DEFAULT_TIMEOUT_S = 300
 

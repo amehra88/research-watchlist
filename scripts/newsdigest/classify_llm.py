@@ -28,8 +28,13 @@ import json
 import os
 import re
 import subprocess
+import sys
 import time
 from dataclasses import dataclass, field
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))  # claude_p (shared -p wrapper)
+import claude_p                                                       # noqa: E402
 
 # Batching. These calls are OUTPUT-token bound: each cluster costs one JSON object with a
 # rationale sentence, so wall-time scales ~linearly with cluster count. Measured on
@@ -42,7 +47,7 @@ BATCH_SIZE = 40                  # Lever 4 (2026-07-21): 20→40 halves classify
                                  # the split-ladder in _classify_recursive (a timed-out 40-batch splits
                                  # to 20+20 and completes) — net-fewer calls even when some batches split.
                                  # Summarizer stays at 20 (no split-ladder). See the quota-budget memory.
-PROMPT_VERSION = "v3.1-2026-07"  # bump on any classifier prompt/logic change → invalidates the verdict cache
+PROMPT_VERSION = "v3.2-2026-09"  # bump on any classifier prompt/logic change → invalidates the verdict cache
 MODEL = "claude-sonnet-4-6"      # matches the substack/inbox v3 extractors
 CLAUDE_TIMEOUT_S = 300
 MAX_TRANSIENT_RETRIES = 2        # rc!=0 / unparseable → retry SAME batch (with backoff)
@@ -218,26 +223,49 @@ def _detect_session_limit(stdout: str):
     return (m.group(0).strip() if m else "")
 
 
-def _claude_env() -> dict:
-    return {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
+# One neutral system prompt serves classify, summarize and rank. It deliberately carries
+# NO job-specific content: all three state their own role and output contract in the user
+# prompt and parse a JSON array back, so there is nothing here that could drift another
+# job's output — the risk that made sec_filings/substacks each define their own.
+LEAN_SYSTEM_PROMPT = (
+    "You are a precise financial-research assistant. Follow the instructions in the "
+    "user message exactly and output only the JSON array it specifies."
+)
+
+
+# factset_news.py imports this. That job is an MCP tool-caller and is deliberately NOT
+# lean — stripping settings would drop the FactSet server and it would answer from memory
+# rather than error — but it still needs subscription auth, so it shares this one helper.
+# Kept as an alias (not a re-implementation) so there is a single definition of "strip
+# ANTHROPIC_API_KEY" across every claude -p job on the box.
+_claude_env = claude_p.claude_env
+
+
+def _precheck_session_limit(stdout: str) -> None:
+    """Map a subscription 429 to SessionLimitError BEFORE the returncode is examined.
+
+    Passed to claude_p.run(precheck=...) because the ordering is load-bearing: a quota
+    429 arrives either with rc!=0 or as an is_error envelope, and both must raise the
+    non-retryable SessionLimitError rather than a generic RuntimeError the retry ladder
+    would happily burn quota on.
+    """
+    hint = _detect_session_limit(stdout)
+    if hint is not None:
+        raise SessionLimitError(hint)
 
 
 def _run_claude(prompt: str, repo_root: str, timeout: int = CLAUDE_TIMEOUT_S) -> tuple[str, float]:
-    cmd = ["claude", "-p", prompt, "--output-format", "json", "--allowedTools", "", "--model", MODEL]
-    result = subprocess.run(cmd, capture_output=True, text=True,
-                            timeout=timeout, cwd=str(repo_root), env=_claude_env())
-    # Session-limit 429 is checked FIRST — it can arrive with rc!=0 OR as an is_error envelope,
-    # and must map to the non-retryable SessionLimitError rather than a generic transient error.
-    hint = _detect_session_limit(result.stdout)
-    if hint is not None:
-        raise SessionLimitError(hint)
-    if result.returncode != 0:
-        raise RuntimeError(f"claude -p rc={result.returncode} "
-                           f"stderr={result.stderr[:200]!r} stdout={result.stdout[:300]!r}")
-    env = json.loads(result.stdout)
-    if env.get("is_error"):
-        raise RuntimeError(f"claude -p is_error: {str(env.get('result'))[:200]}")
-    return env.get("result", ""), float(env.get("total_cost_usd", 0.0) or 0.0)
+    """Lean-mode `claude -p`: no tools, no settings, no plugin/MCP load.
+
+    Signature is unchanged on purpose — four test suites monkeypatch this attribute
+    with `(prompt, repo_root, timeout)` stubs, and rank.py/summarize.py import it
+    directly. Only the body moved onto scripts/lib/claude_p.py, which strips the ~28K
+    Claude Code harness these tool-less JSON jobs never used.
+    """
+    text, cost, _env = claude_p.run(prompt, system_prompt=LEAN_SYSTEM_PROMPT, model=MODEL,
+                                    cwd=str(repo_root), timeout=timeout,
+                                    precheck=_precheck_session_limit)
+    return text, cost
 
 
 def _extract_json_array(text: str):
