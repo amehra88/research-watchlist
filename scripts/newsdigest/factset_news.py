@@ -7,8 +7,34 @@ post-filters a single shared similarity search, so the whole universe is covered
 of calls instead of one per ticker — verified lossless 2026-08-14: AAPL queried alone returned
 exactly the documentIDs it got inside a 10-ticker batch, and INTC returned 0 either way.
 
-Python owns chunking and the saturation split; the model is a verbatim transport that must not
-summarise, re-rank or paginate.
+Python owns chunking and the saturation split. THE MODEL MAKES THE CALL; WE READ THE TOOL'S
+OWN OUTPUT. It used to be asked to echo the rows back as a JSON array, which (a) paid ~600
+output tokens per call to transcribe data Python could read directly, and (b) put a model
+between the tool and the parser, where it could reword, drop or invent a row with no error.
+The transcript is now read with `--output-format stream-json` and the raw tool_result payload
+is parsed, the pattern etfflows/factset_flows.py established on 2026-08-19 (500 rows: echo =
+590s and truncated; raw = 18s and byte-exact). The raw payload carries every field the prompt
+used to ask for, so _normalize is unchanged.
+
+That also makes the harness-stripping flags SAFE here. `--setting-sources ""` alone leaves the
+FactSet MCP server loaded (probed 2026-09-07: real rows came back); adding `--strict-mcp-config`
+removes it, and the model then hunts with ToolSearch and answers without data. Reading the raw
+tool_result turns that silent failure into a hard one: no FactSet tool_use in the transcript
+means the tool never ran, and that raises rather than reading as "no news".
+
+Measured per session (3 ids, 3 API turns: ToolSearch -> tool call -> DONE), 2026-09-07:
+
+    default harness + JSON echo (production until 2026-09-07)   ~100,000 prompt tokens
+    --system-prompt + --setting-sources ""                         59,654
+    + --tools ToolSearch                                           21,953   <- shipped
+    + --tools ""            (no ToolSearch: every connector's schemas load eagerly)   76,377
+    + --tools <FactSet tool name>                       (same eager load)             76,374
+    + --strict-mcp-config   (connector unloaded, tool never runs -> ToolUnavailableError)
+
+`--tools ToolSearch` keeps only the discovery tool: the built-in tool schemas go, and the
+connector tools stay deferred until the single ToolSearch fetch. The 10-ticker/4-day A/B
+returned the identical 12 documentIDs under every flag set that ran the tool, so the choice is
+purely cost. test_factset_tool_result.py pins this argv.
 
 Doc dict: {documentID, headline, sentiment, source, date, url, tickers[]}
 fetch_batch returns (docs, failed_tickers) and never raises — the caller degrades to
@@ -18,35 +44,71 @@ names, so a story mentioning two holdings no longer enters the pool twice.
 from __future__ import annotations
 
 import json
-import re
 import subprocess
+import sys
 from datetime import datetime, timedelta
+from pathlib import Path
 
 from . import FACTSET_CHUNK_SIZE, FACTSET_RESULT_LIMIT, FACTSET_TIMEOUT_SECONDS
 from .classify_llm import _claude_env, MODEL  # reuse the claude -p auth/model convention
 
+# The stream-json transcript readers live in etfflows.factset_flows (lookthrough.py already
+# imports them from there). One definition, covered by etfflows/test_factset_flows.py, rather
+# than a third copy that could drift from the two spill formats those tests pin down.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from etfflows.factset_flows import _tool_result_blocks, resolve_payload, rows_of  # noqa: E402
+
 _TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_UnstructuredContent"
 
-def _extract_json_array(text: str):
-    """Pull the first top-level JSON array out of claude's stdout."""
-    if not text:
-        return None
-    text = text.strip()
-    text = re.sub(r"^```(?:json)?|```$", "", text.strip(), flags=re.MULTILINE).strip()
-    start = text.find("[")
-    end = text.rfind("]")
-    if start == -1 or end == -1 or end < start:
-        return None
-    try:
-        return json.loads(text[start : end + 1])
-    except json.JSONDecodeError:
-        return None
+# Lean system prompt. The default Claude Code preamble (~28K tokens) is replaced, but
+# `--strict-mcp-config` is deliberately NOT passed — that is the flag that drops the MCP server.
+SYSTEM_PROMPT = (
+    "You are a data-retrieval backend. Call the tool you are told to call, exactly once, with "
+    "exactly the arguments given, then reply DONE. Do not summarise or restate the tool output."
+)
+
+
+class ToolUnavailableError(RuntimeError):
+    """The FactSet tool was never invoked — the transcript has no tool_use naming it.
+
+    This is the failure a mis-set flag produces (e.g. `--strict-mcp-config` unloading the MCP
+    server): the model cannot see the tool, so it answers without data. It is NOT a chunk with
+    no news and NOT a transient error — retrying per ticker would fail 30 more times the same
+    way. fetch_batch treats it as non-splittable and fails the whole chunk at once.
+    """
+
+def _factset_tool_ran(stdout: str) -> bool:
+    """True iff the transcript contains a tool_use block naming the FactSet tool.
+
+    Presence of SOME tool_result is not enough: when the FactSet server is missing the model
+    reaches for ToolSearch instead, and ToolSearch's "No matching deferred tools found" is a
+    perfectly well-formed tool_result. The invocation itself is what has to be checked.
+    """
+    for line in (stdout or "").splitlines():
+        try:
+            ev = json.loads(line.strip())
+        except (json.JSONDecodeError, ValueError):
+            continue
+        content = (ev.get("message") or {}).get("content")
+        if not isinstance(content, list):
+            continue
+        for block in content:
+            if isinstance(block, dict) and block.get("type") == "tool_use" \
+                    and str(block.get("name", "")).endswith("FactSet_UnstructuredContent"):
+                return True
+    return False
+
+
+def _is_news_payload(rows) -> bool:
+    """A FactSet news result is a list whose rows all carry a documentID; [] is a real empty."""
+    return isinstance(rows, list) and all(
+        isinstance(r, dict) and "documentID" in r for r in rows)
 
 
 def _batch_prompt(ids, start_date, end_date, limit) -> str:
-    """Ask for the tool's own result elements verbatim. The model is a transport, not an
-    analyst: it must not summarise, rank or reword, and it must not decide pagination —
-    Python owns chunking and the saturation split."""
+    """Ask the model to make ONE call and stop. It is not asked to echo anything back —
+    Python reads the tool's own output from the transcript — so it cannot summarise, rank,
+    reword or paginate. Python owns chunking and the saturation split."""
     return (
         "Call the FactSet_UnstructuredContent tool EXACTLY ONCE with these arguments:\n"
         '  query: "What are the most important recent news developments for this company?"\n'
@@ -55,14 +117,8 @@ def _batch_prompt(ids, start_date, end_date, limit) -> str:
         f"  startDate: '{start_date}'\n"
         f"  endDate: '{end_date}'\n"
         f"  limit: {limit}\n"
-        "Do NOT pass a sort argument. Do NOT call the tool more than once. Do NOT paginate.\n\n"
-        "Then return ONLY a JSON array (no prose, no markdown, no code fences) of the tool's "
-        "result elements, each as "
-        '{"documentID": str, "headline": str, "sentiment": str, "source": str, '
-        '"storyDateTime": ISO8601 str, "viewUrl": str, "ids": [str]}. '
-        "Copy every value VERBATIM from the tool response — do not summarise, reword, filter, "
-        "re-rank or invent. Include every element the tool returned. "
-        "Return [] if the tool returned no results."
+        "Do NOT pass a sort argument. Do NOT call the tool more than once. Do NOT paginate.\n"
+        "After the tool returns, reply with exactly: DONE"
     )
 
 
@@ -83,20 +139,32 @@ def make_runner(now: datetime, repo_root, timeout=FACTSET_TIMEOUT_SECONDS):
         start = (now - timedelta(hours=window_hours)).date().isoformat()
         end = now.date().isoformat()
         # --model pinned and ANTHROPIC_API_KEY stripped, same convention as the per-ticker path.
+        # `--verbose` is what makes stream-json carry the tool_use/tool_result blocks.
+        # `--tools ToolSearch` (NOT "" and NOT the FactSet tool name — both load every
+        # connector schema eagerly at ~76K) is the 60K -> 22K step; see the module docstring.
         cmd = ["claude", "-p", _batch_prompt(ids, start, end, limit),
-               "--allowedTools", _TOOL, "--model", MODEL]
+               "--allowedTools", _TOOL, "--model", MODEL,
+               "--system-prompt", SYSTEM_PROMPT, "--setting-sources", "",
+               "--tools", "ToolSearch",
+               "--output-format", "stream-json", "--verbose"]
         result = subprocess.run(
             cmd, capture_output=True, text=True, timeout=timeout, cwd=str(repo_root),
             env=_claude_env(),
         )
         if result.returncode != 0:
             raise RuntimeError(f"rc={result.returncode}: {(result.stderr or '').strip()[:160]}")
-        parsed = _extract_json_array(result.stdout or "")
-        if parsed is None:
-            # Unparseable is a FAILURE, not an empty result. Returning [] here would silently
-            # drop a whole chunk and read as "no news" — the 2026-08-11 silent-degradation trap.
-            raise ValueError(f"unparseable: {(result.stdout or '').strip()[:160]}")
-        return [d for d in parsed if isinstance(d, dict)], "ok"
+        stdout = result.stdout or ""
+        if not _factset_tool_ran(stdout):
+            raise ToolUnavailableError(
+                "no FactSet tool_use in transcript — the tool was never called: "
+                f"{stdout.strip()[-200:]}")
+        for text in reversed(_tool_result_blocks(stdout)):
+            rows = rows_of(resolve_payload(text))
+            if _is_news_payload(rows):
+                return rows, "ok"
+        # The tool ran but nothing in the transcript parses as its result. A FAILURE, not an
+        # empty chunk — returning [] here would read as "no news" (the 2026-08-11 trap).
+        raise ValueError(f"tool_result unusable: {stdout.strip()[-200:]}")
     return run
 
 
@@ -154,6 +222,11 @@ def fetch_batch(idents, window_hours, runner, chunk_size=FACTSET_CHUNK_SIZE,
     def run(chunk):
         try:
             raw, _status = runner(chunk, window_hours, limit)
+        except ToolUnavailableError:
+            # The tool is not loaded at all. Splitting to per-ticker would fire one doomed
+            # call per id (30 for a full chunk) and fail identically — fail the chunk as one.
+            failed.update(id_to_ticker[i] for i in chunk if i in id_to_ticker)
+            return
         except Exception:  # noqa: BLE001 — one bad chunk must not lose the other chunks
             if len(chunk) == 1:
                 failed.update(id_to_ticker[i] for i in chunk if i in id_to_ticker)

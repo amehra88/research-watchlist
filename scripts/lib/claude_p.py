@@ -35,6 +35,24 @@ mcp mode (`tools=`) — for jobs that call an MCP tool (FactSet, InsiderScore).
     error — the model would lose the tool and answer from memory, writing
     plausible-looking but fabricated data downstream. Never put an MCP job in
     lean mode.
+
+MCP-LEAN (not a mode here yet — reference implementation: newsdigest/factset_news.py)
+    An MCP job CAN drop most of the harness if, and only if, it reads the raw
+    tool_result from a stream-json transcript and verifies the tool_use happened
+    (so an unloaded tool is a hard error, not a fabricated answer). Measured
+    2026-09-07 on that job, per session of 3 API turns:
+
+        default                                          ~100,000 prompt tokens
+        --system-prompt + --setting-sources ""              59,654
+        + --tools ToolSearch                                21,953   <- use this
+        + --tools "" or --tools <mcp tool name>             ~76,400  (all schemas eager)
+        + --strict-mcp-config                               tool unloaded, never runs
+
+    `--setting-sources ""` alone does NOT unload the claude.ai connectors —
+    `--strict-mcp-config` is the flag that does. `--tools ToolSearch` keeps only
+    the discovery tool. Port this into a third build_cmd mode when a second MCP
+    job adopts it (factset_flows.py already reads raw tool_result and is the
+    obvious next one).
 """
 from __future__ import annotations
 
