@@ -36,7 +36,6 @@ import imaplib
 import json
 import os
 import re
-import subprocess
 import sys
 from email.header import decode_header, make_header
 from email.message import Message
@@ -67,6 +66,8 @@ CONTENT_CAP = 16_000               # chars of post body passed to the LLM extrac
 MAX_MESSAGES_PER_RUN = 250          # headroom over label size so the backlog fully drains
 
 sys.path.insert(0, str(CHUNKING_DIR))   # chunker / ingest / store / embed
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))   # claude_p (shared -p wrapper)
+import claude_p                                          # noqa: E402
 
 _GMAIL_USER = ""
 _GMAIL_PW = ""
@@ -102,24 +103,21 @@ def load_env() -> None:
         os.environ["CHUNK_STORE_BACKEND"] = _read_env_value(PODCASTS_ENV, "CHUNK_STORE_BACKEND") or "pg"
 
 
-def _claude_env() -> dict:
-    return {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
+def run_claude(prompt: str, system_prompt: str) -> tuple[str, float]:
+    """Lean-mode `claude -p`: no tools, no settings, no plugin/MCP load.
 
+    This is a tool-less text->JSON job, so the default Claude Code coding-agent
+    preamble is ~28K tokens of dead weight per call (measurements in
+    scripts/lib/claude_p.py). The caller supplies its own system prompt; because
+    the default preamble is gone the user prompt must be self-contained, which
+    EXTRACT_INSTRUCTIONS already is.
 
-def run_claude(prompt: str) -> tuple[str, float]:
-    cmd = ["claude", "-p", prompt, "--output-format", "json",
-           "--allowedTools", "", "--model", MODEL]
-    result = subprocess.run(cmd, capture_output=True, text=True,
-                            timeout=CLAUDE_TIMEOUT_S, cwd=str(REPO_ROOT), env=_claude_env())
-    if result.returncode != 0:
-        # The CLI writes its auth/usage error envelope to STDOUT, not stderr, so log both
-        # (stderr is usually empty on an auth failure — see substack_claude_p_rc1_failure).
-        raise RuntimeError(f"claude -p rc={result.returncode} "
-                           f"stderr={result.stderr[:200]!r} stdout={result.stdout[:300]!r}")
-    env = json.loads(result.stdout)
-    if env.get("is_error"):
-        raise RuntimeError(f"claude -p is_error: {str(env.get('result'))[:200]}")
-    return env.get("result", ""), float(env.get("total_cost_usd", 0.0) or 0.0)
+    The wrapper preserves the STDOUT-not-stderr error logging this channel needs —
+    an auth failure writes its envelope to stdout (see substack_claude_p_rc1_failure).
+    """
+    text, cost, _env = claude_p.run(prompt, system_prompt=system_prompt, model=MODEL,
+                                    cwd=str(REPO_ROOT), timeout=CLAUDE_TIMEOUT_S)
+    return text, cost
 
 
 # ───────────────────────────── Vocab + subscriptions ─────────────────────────────
@@ -356,6 +354,12 @@ Output ONLY a JSON object, no prose / markdown / code fences:
 """
 
 
+EXTRACT_SYSTEM_PROMPT = (
+    "You are a precise financial-research tagging assistant. Follow the instructions "
+    "in the user message exactly and output only the JSON object it specifies."
+)
+
+
 def extract_tags(content: str, pub: dict | None, valid_tickers: set[str],
                  valid_themes: set[str]) -> tuple[list[str], list[str], float]:
     hints = ", ".join((pub or {}).get("default_themes") or []) or "(none)"
@@ -365,7 +369,7 @@ def extract_tags(content: str, pub: dict | None, valid_tickers: set[str],
               + f"\n\nPUBLICATION: {(pub or {}).get('name', 'unknown')} "
               + f"(typical themes, hints only — still verify per-post: {hints})"
               + "\n\nSUBSTACK POST:\n" + content[:CONTENT_CAP] + "\n")
-    text, cost = run_claude(prompt)
+    text, cost = run_claude(prompt, EXTRACT_SYSTEM_PROMPT)
     m = re.search(r"\{.*\}", text, re.S)
     if not m:
         raise ValueError(f"no JSON object in extraction response: {text[:160]!r}")
