@@ -40,13 +40,22 @@ def load_reports(path):
     """Pull the REPORTS list out of combine_and_send.py without importing it.
 
     Parsed rather than imported because importing pulls in Brevo config and network code.
+
+    Returns (title, path_template) pairs. Since 2026-08-21 each entry carries a third
+    element, the weekday set it is required on (`MON_SAT`, `DAILY`) — a NAME, not a
+    literal, so the whole tuple is no longer literal_eval-able. This contract is about
+    titles and paths only, so take the two leading string literals and ignore the rest.
     """
     tree = ast.parse(open(path).read())
     for node in ast.walk(tree):
         if isinstance(node, ast.Assign):
             for tgt in node.targets:
                 if isinstance(tgt, ast.Name) and tgt.id == "REPORTS":
-                    return [tuple(ast.literal_eval(e)) for e in node.value.elts]
+                    out = []
+                    for e in node.value.elts:
+                        title, template = e.elts[:2]
+                        out.append((ast.literal_eval(title), ast.literal_eval(template)))
+                    return out
     return None
 
 
