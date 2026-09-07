@@ -366,6 +366,72 @@ def test_prompt_carries_the_query_arguments():
           "frequency" not in ff._prompt(["XLK"], "flows", "2026-08-01", "2026-08-19", 500, None))
 
 
+def _capture_argv(module, call):
+    """Run `call()` with module.claude_p.subprocess.run faked to an empty transcript; return the argv."""
+    captured = {}
+
+    class _R:
+        stdout, returncode, stderr = "", 0, ""
+
+    orig = module.claude_p.subprocess.run
+    module.claude_p.subprocess.run = lambda cmd, **kw: (captured.setdefault("cmd", cmd), _R())[1]
+    try:
+        try:
+            call()
+        except Exception as exc:  # noqa: BLE001 — we only want the argv here
+            captured["exc"] = exc
+    finally:
+        module.claude_p.subprocess.run = orig
+    return captured
+
+
+def test_runner_argv_is_the_measured_mcp_lean_recipe():
+    """Measured 2026-09-07 on the sibling FactSet news pull, per 3-turn session: default
+    harness ~100K prompt tokens; lean system prompt + --setting-sources "" 59.7K; + --tools
+    ToolSearch 22K. `--tools ""` or naming the MCP tool loads every connector schema eagerly
+    (~76K) and --strict-mcp-config unloads the connector. Pin the argv so a drift cannot
+    silently cost 3x."""
+    cap = _capture_argv(ff, lambda: ff.make_runner(".")(["SMH-US"], "flows", "2026-09-01",
+                                                          "2026-09-05", 500, None))
+    cmd = cap["cmd"]
+    flag = lambda n: cmd[cmd.index(n) + 1]  # noqa: E731
+    check("allowedTools is the FundsETF tool", flag("--allowedTools") == ff._TOOL)
+    check("--tools ToolSearch (not '' / not the tool name)", flag("--tools") == "ToolSearch", str(cmd))
+    check("--setting-sources ''", flag("--setting-sources") == "")
+    check("lean --system-prompt present", "--system-prompt" in cmd)
+    check("no --strict-mcp-config", "--strict-mcp-config" not in cmd)
+    check("stream-json + --verbose", flag("--output-format") == "stream-json" and "--verbose" in cmd)
+    check("empty transcript -> ToolUnavailableError (tool never ran)",
+          isinstance(cap.get("exc"), ff.ToolUnavailableError), repr(cap.get("exc")))
+
+
+def test_toolsearch_miss_is_tool_unavailable_not_unusable():
+    """The shape --strict-mcp-config produces: ToolSearch's 'No matching deferred tools
+    found' is a well-formed tool_result, so 'some tool_result exists' must not pass."""
+    t = "\n".join([
+        json.dumps({"type": "assistant", "message": {"content": [
+            {"type": "tool_use", "id": "1", "name": "ToolSearch", "input": {}}]}}),
+        json.dumps({"type": "user", "message": {"content": [
+            {"type": "tool_result", "tool_use_id": "1", "content": "No matching deferred tools found"}]}}),
+        json.dumps({"type": "assistant", "message": {"content": [
+            {"type": "text", "text": "The FundsETF tool is not available."}]}}),
+    ])
+
+    class _R:
+        stdout, returncode, stderr = t, 0, ""
+    orig = ff.claude_p.subprocess.run
+    ff.claude_p.subprocess.run = lambda cmd, **kw: _R()
+    try:
+        try:
+            ff.make_runner(".")(["SMH-US"], "flows", "2026-09-01", "2026-09-05", 500, None)
+            exc = None
+        except Exception as e:  # noqa: BLE001
+            exc = e
+    finally:
+        ff.claude_p.subprocess.run = orig
+    check("ToolSearch-only transcript -> ToolUnavailableError", isinstance(exc, ff.ToolUnavailableError), repr(exc))
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for fn in tests:

@@ -34,10 +34,11 @@ import json
 import os
 import re
 import sqlite3
-import subprocess
 from typing import NamedTuple, Sequence
 
-from .factset_flows import _claude_env, _tool_result_blocks, resolve_payload, rows_of, MODEL
+from .factset_flows import _tool_result_blocks, resolve_payload, rows_of, MODEL, claude_p  # noqa: E501
+
+ToolUnavailableError = claude_p.ToolUnavailableError
 
 _OWNERSHIP_TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_Ownership"
 _PRICES_TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_GlobalPrices"
@@ -81,22 +82,16 @@ def _run(cmd_prompt: str, tool: str, repo_root, timeout: int):
     read the tool's own output. A full holdings list or a month of constituent volume is
     easily large enough to spill to disk, so echo-verbatim would fail here for exactly the
     reasons it failed for flows."""
-    result = subprocess.run(
-        ["claude", "-p", cmd_prompt, "--allowedTools", tool, "--model", MODEL,
-         "--output-format", "stream-json", "--verbose"],
-        capture_output=True, text=True, timeout=timeout, cwd=str(repo_root),
-        env=_claude_env(),
-    )
-    if result.returncode != 0:
-        raise RuntimeError(f"rc={result.returncode}: {(result.stderr or '').strip()[:200]}")
-    blocks = _tool_result_blocks(result.stdout or "")
-    if not blocks:
-        raise ValueError(f"no tool_result: {(result.stdout or '').strip()[-200:]}")
+    # mcp-lean transport (scripts/lib/claude_p.py); raises ToolUnavailableError if `tool`
+    # was never invoked, so an unloaded connector is a hard failure, not empty holdings.
+    stdout = claude_p.run_mcp(cmd_prompt, mcp_tool=tool, model=MODEL, cwd=str(repo_root),
+                              timeout=timeout)
+    blocks = _tool_result_blocks(stdout)
     for text in reversed(blocks):
         rows = rows_of(resolve_payload(text))
         if rows is not None:
             return [r for r in rows if isinstance(r, dict)]
-    raise ValueError(f"tool_result unusable: {blocks[-1][:200]}")
+    raise ValueError(f"tool_result unusable: {(blocks or [stdout])[-1][-200:]}")
 
 
 def make_holdings_runner(repo_root, timeout: int = HOLDINGS_TIMEOUT):

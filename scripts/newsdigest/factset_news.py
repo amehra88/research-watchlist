@@ -44,59 +44,35 @@ names, so a story mentioning two holdings no longer enters the pool twice.
 from __future__ import annotations
 
 import json
-import subprocess
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
 from . import FACTSET_CHUNK_SIZE, FACTSET_RESULT_LIMIT, FACTSET_TIMEOUT_SECONDS
-from .classify_llm import _claude_env, MODEL  # reuse the claude -p auth/model convention
+from .classify_llm import MODEL  # reuse the claude -p model pin
 
 # The stream-json transcript readers live in etfflows.factset_flows (lookthrough.py already
 # imports them from there). One definition, covered by etfflows/test_factset_flows.py, rather
 # than a third copy that could drift from the two spill formats those tests pin down.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))
 from etfflows.factset_flows import _tool_result_blocks, resolve_payload, rows_of  # noqa: E402
+import claude_p  # noqa: E402  — shared `claude -p` wrapper; this job is mcp-lean mode
 
 _TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_UnstructuredContent"
 
-# Lean system prompt. The default Claude Code preamble (~28K tokens) is replaced, but
-# `--strict-mcp-config` is deliberately NOT passed — that is the flag that drops the MCP server.
-SYSTEM_PROMPT = (
-    "You are a data-retrieval backend. Call the tool you are told to call, exactly once, with "
-    "exactly the arguments given, then reply DONE. Do not summarise or restate the tool output."
-)
+# The argv (lean system prompt, --setting-sources "", --tools ToolSearch, NO
+# --strict-mcp-config) is built by claude_p.build_cmd — see its docstring for the numbers.
+SYSTEM_PROMPT = claude_p.MCP_SYSTEM_PROMPT
 
+# The FactSet tool was never invoked (no tool_use naming it in the transcript). NOT a chunk
+# with no news and NOT transient — retrying per ticker would fail 30 more times the same
+# way, so fetch_batch treats it as non-splittable and fails the whole chunk at once.
+ToolUnavailableError = claude_p.ToolUnavailableError
 
-class ToolUnavailableError(RuntimeError):
-    """The FactSet tool was never invoked — the transcript has no tool_use naming it.
-
-    This is the failure a mis-set flag produces (e.g. `--strict-mcp-config` unloading the MCP
-    server): the model cannot see the tool, so it answers without data. It is NOT a chunk with
-    no news and NOT a transient error — retrying per ticker would fail 30 more times the same
-    way. fetch_batch treats it as non-splittable and fails the whole chunk at once.
-    """
 
 def _factset_tool_ran(stdout: str) -> bool:
-    """True iff the transcript contains a tool_use block naming the FactSet tool.
-
-    Presence of SOME tool_result is not enough: when the FactSet server is missing the model
-    reaches for ToolSearch instead, and ToolSearch's "No matching deferred tools found" is a
-    perfectly well-formed tool_result. The invocation itself is what has to be checked.
-    """
-    for line in (stdout or "").splitlines():
-        try:
-            ev = json.loads(line.strip())
-        except (json.JSONDecodeError, ValueError):
-            continue
-        content = (ev.get("message") or {}).get("content")
-        if not isinstance(content, list):
-            continue
-        for block in content:
-            if isinstance(block, dict) and block.get("type") == "tool_use" \
-                    and str(block.get("name", "")).endswith("FactSet_UnstructuredContent"):
-                return True
-    return False
+    return claude_p.tool_was_called(stdout, _TOOL)
 
 
 def _is_news_payload(rows) -> bool:
@@ -138,26 +114,10 @@ def make_runner(now: datetime, repo_root, timeout=FACTSET_TIMEOUT_SECONDS):
         # this to an exact hour window without first establishing what tz storyDateTime is in.
         start = (now - timedelta(hours=window_hours)).date().isoformat()
         end = now.date().isoformat()
-        # --model pinned and ANTHROPIC_API_KEY stripped, same convention as the per-ticker path.
-        # `--verbose` is what makes stream-json carry the tool_use/tool_result blocks.
-        # `--tools ToolSearch` (NOT "" and NOT the FactSet tool name — both load every
-        # connector schema eagerly at ~76K) is the 60K -> 22K step; see the module docstring.
-        cmd = ["claude", "-p", _batch_prompt(ids, start, end, limit),
-               "--allowedTools", _TOOL, "--model", MODEL,
-               "--system-prompt", SYSTEM_PROMPT, "--setting-sources", "",
-               "--tools", "ToolSearch",
-               "--output-format", "stream-json", "--verbose"]
-        result = subprocess.run(
-            cmd, capture_output=True, text=True, timeout=timeout, cwd=str(repo_root),
-            env=_claude_env(),
-        )
-        if result.returncode != 0:
-            raise RuntimeError(f"rc={result.returncode}: {(result.stderr or '').strip()[:160]}")
-        stdout = result.stdout or ""
-        if not _factset_tool_ran(stdout):
-            raise ToolUnavailableError(
-                "no FactSet tool_use in transcript — the tool was never called: "
-                f"{stdout.strip()[-200:]}")
+        # --model pinned and ANTHROPIC_API_KEY stripped inside run_mcp. It raises
+        # ToolUnavailableError if the FactSet tool was never invoked.
+        stdout = claude_p.run_mcp(_batch_prompt(ids, start, end, limit), mcp_tool=_TOOL,
+                                  model=MODEL, cwd=str(repo_root), timeout=timeout)
         for text in reversed(_tool_result_blocks(stdout)):
             rows = rows_of(resolve_payload(text))
             if _is_news_payload(rows):

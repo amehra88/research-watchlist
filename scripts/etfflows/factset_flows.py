@@ -29,10 +29,15 @@ from __future__ import annotations
 import json
 import os
 import re
-import subprocess
+import sys
 from datetime import date, timedelta
 
 from . import FACTSET_CHUNK_SIZE, FACTSET_RESULT_LIMIT, FACTSET_TIMEOUT_SECONDS
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "lib"))
+import claude_p  # noqa: E402  — shared `claude -p` wrapper (mcp-lean mode)
+
+ToolUnavailableError = claude_p.ToolUnavailableError
 
 _TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_FundsETF"
 MODEL = "claude-sonnet-4-6"   # matches the newsdigest transport
@@ -221,25 +226,19 @@ def make_runner(repo_root, timeout: int = FACTSET_TIMEOUT_SECONDS):
     is no opportunity to round, reorder or drop a row.
     """
     def run(ids, data_type, start, end, limit, frequency):
-        cmd = ["claude", "-p", _prompt(ids, data_type, start, end, limit, frequency),
-               "--allowedTools", _TOOL, "--model", MODEL,
-               "--output-format", "stream-json", "--verbose"]
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout,
-                                cwd=str(repo_root), env=_claude_env())
-        if result.returncode != 0:
-            raise RuntimeError(f"rc={result.returncode}: {(result.stderr or '').strip()[:200]}")
-
-        blocks = _tool_result_blocks(result.stdout or "")
-        if not blocks:
-            # No tool_result at all means the call never happened. That is a failure, not an
-            # ETF with no flows — returning [] here would write a silent gap into history.
-            raise ValueError("no tool_result in transcript: "
-                             f"{(result.stdout or '').strip()[-200:]}")
+        # mcp-lean transport (scripts/lib/claude_p.py): lean system prompt, no harness,
+        # --tools ToolSearch. run_mcp raises ToolUnavailableError if the FundsETF tool was
+        # never invoked, so an unloaded connector cannot read as an ETF with no flows —
+        # returning [] here would write a silent gap into history.
+        stdout = claude_p.run_mcp(_prompt(ids, data_type, start, end, limit, frequency),
+                                  mcp_tool=_TOOL, model=MODEL, cwd=str(repo_root),
+                                  timeout=timeout)
+        blocks = _tool_result_blocks(stdout)
         for text in reversed(blocks):
             rows = rows_of(resolve_payload(text))
             if rows is not None:
                 return [r for r in rows if isinstance(r, dict)]
-        raise ValueError(f"tool_result unusable: {blocks[-1][:200]}")
+        raise ValueError(f"tool_result unusable: {(blocks or [stdout])[-1][-200:]}")
     return run
 
 

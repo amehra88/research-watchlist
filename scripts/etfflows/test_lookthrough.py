@@ -243,6 +243,39 @@ def test_missing_holdings_is_skipped_not_fatal():
     check("no holdings -> skipped quietly, no raise", res == [])
 
 
+def test_runners_use_the_mcp_lean_argv():
+    """Same measured recipe as factset_flows (see its test): --tools ToolSearch, lean system
+    prompt, --setting-sources '', no --strict-mcp-config; and an empty transcript (tool never
+    ran) raises ToolUnavailableError rather than 'no tool_result'."""
+    for name, call, tool in (
+        ("holdings", lambda: lt.make_holdings_runner(".")(["SMH-US"], 25), lt._OWNERSHIP_TOOL),
+        ("adv", lambda: lt.make_adv_runner(".")(["NVDA-US"], "2026-09-01", "2026-09-05"), lt._PRICES_TOOL),
+    ):
+        captured = {}
+
+        class _R:
+            stdout, returncode, stderr = "", 0, ""
+        orig = lt.claude_p.subprocess.run
+        lt.claude_p.subprocess.run = lambda cmd, **kw: (captured.setdefault("cmd", cmd), _R())[1]
+        try:
+            try:
+                call()
+                exc = None
+            except Exception as e:  # noqa: BLE001
+                exc = e
+        finally:
+            lt.claude_p.subprocess.run = orig
+        cmd = captured["cmd"]
+        flag = lambda n: cmd[cmd.index(n) + 1]  # noqa: E731
+        check(f"{name}: allowedTools", flag("--allowedTools") == tool)
+        check(f"{name}: --tools ToolSearch", flag("--tools") == "ToolSearch", str(cmd))
+        check(f"{name}: --setting-sources ''", flag("--setting-sources") == "")
+        check(f"{name}: lean system prompt", "--system-prompt" in cmd)
+        check(f"{name}: no --strict-mcp-config", "--strict-mcp-config" not in cmd)
+        check(f"{name}: stream-json --verbose", flag("--output-format") == "stream-json" and "--verbose" in cmd)
+        check(f"{name}: empty transcript -> ToolUnavailableError", isinstance(exc, lt.ToolUnavailableError), repr(exc))
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for fn in tests:

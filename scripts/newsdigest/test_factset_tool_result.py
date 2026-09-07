@@ -59,13 +59,13 @@ def _runner_on(stdout, rc=0):
     class _R:
         def __init__(self):
             self.stdout, self.returncode, self.stderr = stdout, rc, ""
-    orig = fn.subprocess.run
-    fn.subprocess.run = lambda *a, **k: _R()
+    orig = fn.claude_p.subprocess.run
+    fn.claude_p.subprocess.run = lambda *a, **k: _R()
     try:
         from datetime import datetime
         return fn.make_runner(datetime(2026, 9, 7, 7), ".")(["NVDA-US", "AMD-US"], 24, 50)
     finally:
-        fn.subprocess.run = orig
+        fn.claude_p.subprocess.run = orig
 
 
 def test_strict_mcp_shape_raises_tool_unavailable():
@@ -191,8 +191,8 @@ def test_argv_pins_the_measured_flag_set():
     def fake_run(cmd, **kw):
         captured["cmd"] = cmd
         return _R()
-    orig = fn.subprocess.run
-    fn.subprocess.run = fake_run
+    orig = fn.claude_p.subprocess.run
+    fn.claude_p.subprocess.run = fake_run
     try:
         from datetime import datetime
         try:
@@ -200,7 +200,7 @@ def test_argv_pins_the_measured_flag_set():
         except fn.ToolUnavailableError:
             pass  # empty stdout -> no tool_use; expected. We only want the argv.
     finally:
-        fn.subprocess.run = orig
+        fn.claude_p.subprocess.run = orig
     cmd = captured["cmd"]
 
     def flag(name):
