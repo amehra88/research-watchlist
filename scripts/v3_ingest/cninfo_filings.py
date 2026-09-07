@@ -72,6 +72,11 @@ CATEGORIES = {
 # financial statements (better obtained from FactSet) or governance.
 SECTION_CUES = ["管理层讨论与分析", "产能", "光模块", "研发", "主营业务", "行业格局", "竞争"]
 
+SYSTEM_PROMPT = (
+    "You are a precise information-extraction backend. Follow the instructions in the "
+    "user message exactly and output only the JSON object it specifies."
+)
+
 PROMPT = """Below is an excerpt from {name}'s {form} filed in Chinese with the Shenzhen/Shanghai
 exchange. This company is a {relation} to {affects}.
 
@@ -327,7 +332,7 @@ def main() -> int:
                                            relation=entry.get("relation"),
                                            affects=", ".join(entry.get("affects") or []),
                                            text=sl)
-                    out, c = run_claude(prompt)
+                    out, c = run_claude(prompt, SYSTEM_PROMPT)
                     fcost += c
                     claims += parse_claims(out)
                 cost += fcost

@@ -85,6 +85,11 @@ ENTITY_TYPES = ("company", "product", "technology", "customer", "facility")
 ROLES = ("competitor", "supplier", "customer", "partner", "self", "unclear")
 STANCES = ("threat", "supportive", "neutral")
 
+SYSTEM_PROMPT = (
+    "You are a precise information-extraction backend. Follow the instructions in the "
+    "user message exactly and output only the JSON object it specifies."
+)
+
 PROMPT = """You are extracting competitive intelligence from a research corpus excerpt.
 
 Extract every NAMED entity that matters competitively, and for each one a single factual
@@ -221,7 +226,7 @@ def extract(row: dict, alias_to_id: dict[str, str],
     subject = (row["tickers"] or ["the subject company"])[0]
     prompt = PROMPT.format(subject=subject, doc_type=row["doc_type"],
                            event_date=row["event_date"], text=row["text"][:CONTENT_CAP])
-    text, cost = run_claude(prompt)
+    text, cost = run_claude(prompt, SYSTEM_PROMPT)
     m = re.search(r"\{.*\}", text, re.S)
     if not m:
         raise ValueError(f"no JSON in response: {text[:160]!r}")

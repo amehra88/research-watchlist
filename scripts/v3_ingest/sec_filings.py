@@ -67,6 +67,8 @@ CLAUDE_TIMEOUT_S = 300
 THEME_CONTENT_CAP = 16_000          # chars of filing body passed to the LLM tagger
 
 sys.path.insert(0, str(CHUNKING_DIR))   # chunker / ingest / store / embed
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))   # claude_p (shared -p wrapper)
+import claude_p                                          # noqa: E402
 
 _SESSION: requests.Session | None = None
 _CFG: dict = {}
@@ -106,19 +108,18 @@ def _claude_env() -> dict:
     return {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
 
 
-def run_claude(prompt: str) -> tuple[str, float]:
-    cmd = ["claude", "-p", prompt, "--output-format", "json",
-           "--allowedTools", "", "--model", MODEL]
-    result = subprocess.run(cmd, capture_output=True, text=True,
-                            timeout=CLAUDE_TIMEOUT_S, cwd=str(REPO_ROOT), env=_claude_env())
-    if result.returncode != 0:
-        # Auth/usage errors land on STDOUT (stderr is usually empty) — log both.
-        raise RuntimeError(f"claude -p rc={result.returncode} "
-                           f"stderr={result.stderr[:200]!r} stdout={result.stdout[:800]!r}")
-    env = json.loads(result.stdout)
-    if env.get("is_error"):
-        raise RuntimeError(f"claude -p is_error: {str(env.get('result'))[:200]}")
-    return env.get("result", ""), float(env.get("total_cost_usd", 0.0) or 0.0)
+def run_claude(prompt: str, system_prompt: str) -> tuple[str, float]:
+    """Lean-mode `claude -p`: no tools, no settings, no plugin/MCP load.
+
+    Callers pass their OWN system prompt — these are tool-less text->JSON jobs and
+    the default Claude Code coding-agent preamble costs ~28K tokens per call to no
+    benefit (see scripts/lib/claude_p.py for the measurements). Because the default
+    preamble is gone, the prompt body must be self-contained; both current callers
+    already state their role and output format inline.
+    """
+    text, cost, _env = claude_p.run(prompt, system_prompt=system_prompt, model=MODEL,
+                                    cwd=str(REPO_ROOT), timeout=CLAUDE_TIMEOUT_S)
+    return text, cost
 
 
 # ───────────────────────────── HTTP (rate-limited) ─────────────────────────────
@@ -580,6 +581,12 @@ def form_slug(form: str) -> str:
     return form.replace("/", "-").replace(" ", "")   # 10-K/A -> 10-K-A
 
 
+THEME_SYSTEM_PROMPT = (
+    "You are a precise financial-research tagging assistant. Follow the instructions "
+    "in the user message exactly and output only the JSON object it specifies."
+)
+
+
 def extract_themes(body_md: str, ticker: str, valid_themes: set[str]) -> tuple[list[str], float]:
     prompt = (
         "You are a precise financial-research tagging assistant. From the SEC FILING "
@@ -590,7 +597,7 @@ def extract_themes(body_md: str, ticker: str, valid_themes: set[str]) -> tuple[l
         '{"themes": ["..."]}\n\n'
         "THEME TAGS (only these are valid):\n" + ", ".join(sorted(valid_themes)) +
         "\n\nSEC FILING EXCERPT:\n" + body_md[:THEME_CONTENT_CAP] + "\n")
-    text, cost = run_claude(prompt)
+    text, cost = run_claude(prompt, THEME_SYSTEM_PROMPT)
     m = re.search(r"\{.*\}", text, re.S)
     if not m:
         raise ValueError(f"no JSON object in theme response: {text[:160]!r}")
