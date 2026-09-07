@@ -90,6 +90,15 @@ def load_watchlist_tickers() -> list[str]:
 
 CHEAP_MODEL = "claude-sonnet-4-6"   # for mechanical JSON lookups, not the review itself
 
+# Measured 2026-09-07 on a day with NO reporting tickers: 62s, 95s, 100s, 118s.
+# The old 180s ceiling left under 2x margin on the CHEAPEST possible case, and the
+# query costs strictly more as tickers actually report (more MCP calls) — which is
+# why rc=124 aborts clustered on active days (08-30, 09-06, 09-07), each zeroing
+# out the whole run. One retry covers ordinary variance; a persistent failure still
+# aborts rather than silently reporting an empty calendar.
+CALENDAR_TIMEOUT_S = 600
+CALENDAR_ATTEMPTS = 2
+
 
 def _claude_env() -> dict:
     """Strip ANTHROPIC_API_KEY so claude -p stays on subscription auth."""
@@ -139,10 +148,15 @@ def query_calendar(watchlist_tickers: list[str]) -> list[str] | None:
         "Example output for a day where NVDA and AMD reported: [\"NVDA\", \"AMD\"]. "
         "Example output for a day with no reports: []."
     )
-    rc, stdout, stderr = run_claude(prompt, timeout_seconds=180, model=CHEAP_MODEL)
-    if rc != 0:
-        log_write(f"  CALENDAR_QUERY_FAILED rc={rc} stderr={stderr[:200]}")
-        return None
+    for attempt in range(1, CALENDAR_ATTEMPTS + 1):
+        rc, stdout, stderr = run_claude(prompt, timeout_seconds=CALENDAR_TIMEOUT_S,
+                                        model=CHEAP_MODEL)
+        if rc == 0:
+            break
+        log_write(f"  CALENDAR_QUERY_FAILED rc={rc} attempt={attempt}/{CALENDAR_ATTEMPTS} "
+                  f"stderr={stderr[:200]}")
+        if attempt == CALENDAR_ATTEMPTS:
+            return None
     # Find the JSON array in the response. Strip whitespace and any leading/trailing prose.
     match = re.search(r"\[\s*(?:\"[A-Z]+\"\s*,?\s*)*\]", stdout)
     if not match:
