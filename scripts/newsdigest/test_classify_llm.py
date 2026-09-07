@@ -135,11 +135,62 @@ def test_persistent_429_fast_abort_no_split():
     print(f"  ✓ persistent 429 → fast-abort in {len(calls)} call, 30/30 UNCLASSIFIED, 0 split, non-zero-exit signal")
 
 
+
+def test_precheck_maps_429_through_claude_p_wrapper():
+    """The 429 precheck must survive the move onto scripts/lib/claude_p.py.
+
+    Every OTHER 429 test in this file stubs `_run_claude` itself and raises
+    SessionLimitError directly, so none of them touch `_precheck_session_limit` — they
+    would all still pass if the precheck were wired up wrongly (or not at all). This
+    test goes through the real `_run_claude` -> `claude_p.run` path with only the
+    subprocess faked, which is the only way to prove the wiring.
+
+    The distinction is load-bearing: a quota 429 must raise the NON-RETRYABLE
+    SessionLimitError. If it degrades to RuntimeError, the recovery ladder treats it as
+    transient and re-sends the batch, burning quota that is already exhausted.
+    """
+    import claude_p
+
+    class _FakeCompleted:
+        def __init__(self, stdout, returncode):
+            self.stdout, self.returncode, self.stderr = stdout, returncode, ""
+
+    # The two shapes a subscription 429 actually arrives in.
+    cases = [
+        # Text must carry a phrase _SESSION_LIMIT_RE actually matches ("session limit" /
+        # "usage limit"). An is_error envelope WITHOUT one is a different failure and is
+        # correctly a generic RuntimeError — asserting otherwise just tests a bad fixture.
+        ("rc!=0", _FakeCompleted(
+            '{"is_error":true,"result":"Claude usage limit reached; resets 4pm"}', 1)),
+        ("api_error_status 429", _FakeCompleted(
+            '{"is_error":true,"api_error_status":429,"result":"resets 4pm"}', 0)),
+    ]
+    orig = claude_p.subprocess.run
+    try:
+        for label, fake in cases:
+            claude_p.subprocess.run = lambda *a, **k: fake
+            try:
+                classify_llm._run_claude("prompt", ".", timeout=5)
+            except classify_llm.SessionLimitError:
+                pass                      # correct
+            except Exception as e:        # noqa: BLE001 — any other type is the bug
+                raise AssertionError(
+                    f"{label}: 429 raised {type(e).__name__}, not SessionLimitError — the "
+                    f"precheck is not wired through claude_p.run, so the retry ladder "
+                    f"would re-send an exhausted batch") from e
+            else:
+                raise AssertionError(f"{label}: 429 raised nothing at all")
+    finally:
+        claude_p.subprocess.run = orig
+    print("  \u2713 429 -> SessionLimitError through the real claude_p.run precheck (both envelope shapes)")
+
+
 if __name__ == "__main__":
     for fn in (test_clean_run_all_classified,
                test_no_drop_on_oversized_batch_timeout,
                test_total_unavailability_is_unclassified_not_dropped,
                test_partial_response_recovers_missing,
-               test_persistent_429_fast_abort_no_split):
+               test_persistent_429_fast_abort_no_split,
+               test_precheck_maps_429_through_claude_p_wrapper):
         fn()
     print("\nALL PASS — no-silent-drop invariant holds (incl. 429 fast-abort).")
