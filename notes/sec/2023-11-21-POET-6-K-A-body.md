@@ -1,0 +1,4039 @@
+---
+doc_type: sec_filing
+source: sec_edgar
+ticker: POET
+accession_number: 0001493152-23-042298
+form_type: 6-K/A
+items:
+- 6-K
+filed_date: '2023-11-21'
+filing_url: https://www.sec.gov/Archives/edgar/data/1437424/000149315223042298/form6-ka.htm
+press_release_url: https://www.sec.gov/Archives/edgar/data/1437424/000149315223042298/ex99-1.htm
+tickers:
+- POET
+themes: []
+themes_failed: true
+ingestion_date: '2026-09-08'
+extraction_source: v3 SEC filings pipeline (sec_filings.py); EDGAR; claude-extracted
+  themes
+---
+
+# POET 6-K/A — filed 2023-11-21
+
+## 6-K/A body
+
+UNITED
+STATES
+SECURITIES AND EXCHANGE COMMISSION
+Washington, D.C. 20549
+Form
+6-K/A
+REPORT
+OF FOREIGN PRIVATE ISSUER PURSUANT TO RULE 13a-16 OR 15d-16
+UNDER
+THE SECURITIES EXCHANGE ACT OF 1934
+For
+the month of November , 2023
+Commission
+File Number: 001-41319
+POET
+TECHNOLOGIES INC.
+(Translation of registrant’s name into English)
+120
+Eglinton Avenue East , Ste. 1107
+Toronto , Ontario M4P 1E2 , Canada
+(Address of principal executive office)
+Indicate
+by check mark whether the registrant files or will file annual reports under cover of Form 20-F or Form 40-F.
+Form 20-F ☒ Form 40-F ☐
+Indicate
+by check mark if the registrant is submitting the Form 6-K in paper as permitted by Regulation S-T Rule 101(b)(1): ☐
+Indicate
+by check mark if the registrant is submitting the Form 6-K in paper as permitted by Regulation S-T Rule 101(b)(7): ☐
+EXPLANATORY
+NOTE
+This
+Form 6-K/A amends the Form 6-K filed by POET Technologies Inc. on November 15, 2023 (the “Original Form 6-K”). This Amendment
+is being filed to provide the XBRL files that were omitted from the Original Form 6-K.
+INCORPORATION
+BY REFERENCE
+This
+report on Form 6-K includes as exhibits the condensed unaudited consolidated financial statements for the nine months ended September
+30, 2023, attached hereto as Exhibit 99.1, management’s discussion and analysis for the nine months ended September 30, 2023, attached
+hereto as Exhibit 99.2, and a press release, attached hereto as Exhibit 99.5. Exhibits 99.1, 99.2 and 99.5 shall be deemed to be incorporated
+by reference as exhibits to the Registration Statement of POET Technologies Inc. on Form F-3 (File No. 333-273853) and to be a part thereof
+from the date on which this report was furnished, to the extent not superseded by documents or reports subsequently filed or furnished.
+EXHIBIT
+LIST
+Exhibit
+No.
+Description
+99.1
+Condensed Unaudited Consolidated Financial Statements for the Nine Months Ended September 30, 2023
+99.2
+Management’s Discussion and Analysis for the Nine Months Ended September 30, 2023
+99.3
+Certification of Interim Filings by Chief Executive Officer, dated November 14, 2023
+99.4
+Certification of Interim Filings by Chief Financial Officer, dated November 14, 2023
+99.5
+Press Release dated November [14], 2023
+101.INS
+Inline XBRL Instance Document
+101.SCH
+Inline XBRL Taxonomy Extension Schema Document
+101.CAL
+Inline XBRL Taxonomy Extension Calculation Linkbase Document
+101.DEF
+Inline XBRL Taxonomy Extension Definition Linkbase Document
+101.LAB
+Inline XBRL Taxonomy Extension Label Linkbase Document
+101.PRE
+Inline XBRL Taxonomy Extension Presentation Linkbase Document
+104
+Cover Page Interactive Data File (embedded within the Inline XBRL document)
+SIGNATURES
+Pursuant
+to the requirements of the Securities Exchange Act of 1934, the registrant has duly caused this report to be signed on its behalf by
+the undersigned, thereunto duly authorized.
+Dated: November 21, 2023
+POET TECHNOLOGIES INC.
+By:
+/s/ Thomas Mika
+Name:
+Thomas Mika
+Title:
+Corporate Secretary
+
+## Exhibit EX-99.1
+
+Exhibit
+99.1
+NOTICE
+TO SHAREHOLDERS
+For
+the Three and Nine Months Ended September 30, 2023
+(Unaudited
+and Expressed in US Dollars)
+POET
+TECHNOLOGIES INC.
+POET
+TECHNOLOGIES INC.
+CONDENSED
+CONSOLIDATED STATEMENTS OF FINANCIAL POSITION
+(Expressed
+in US Dollars)
+September
+30,
+2023
+Audited
+December
+31 ,
+2022
+Assets
+Current
+Cash and cash equivalents (Note
+2)
+$ 4,476,478
+$ 9,229,845
+Accounts receivable (Note 3)
+-
+62,842
+Prepaids and other current
+assets (Note 4)
+462,922
+275,507
+4,939,400
+9,568,194
+Property and equipment (Note 6)
+4,880,250
+5,070,507
+Patents and licenses (Note 7)
+523,757
+510,705
+Right of use assets
+(Note 8)
+365,681
+241,047
+$ 10,709,088
+$ 15,390,453
+Liabilities
+Current
+Accounts payable and accrued liabilities
+(Note 9)
+$ 1,353,208
+$ 3,362,430
+Lease liability (Note 8)
+167,051
+150,951
+Contract liabilities (Note 3)
+105,263
+274,192
+Covid-19 government
+support loans (Note 10)
+29,428
+29,520
+1,654,950
+3,817,093
+Non-current lease liability
+(Note 8)
+232,408
+128,312
+1,887,358
+3,945,405
+Shareholders’
+Equity
+Share capital (Note 11(b))
+165,205,349
+151,206,539
+Warrants and compensation options (Note 12)
+670,115
+5,905,642
+Contributed surplus (Note 13)
+54,446,740
+51,016,808
+Accumulated other comprehensive loss
+( 2,680,463 )
+( 2,660,281 )
+Deficit
+( 208,820,011 )
+( 194,023,660 )
+8,821,730
+11,445,048
+$ 10,709,088
+$ 15,390,453
+Commitments
+and contingencies (Note 15)
+On
+behalf of the Board of Directors
+/s/
+Suresh Venkatesan
+/s/
+Chris Tsiofas
+Director
+Director
+The accompanying notes are an integral part of these condensed consolidated financial statements.
+Page 2
+POET
+TECHNOLOGIES INC.
+CONDENSED
+CONSOLIDATED STATEMENTS OF OPERATIONS AND DEFICIT
+(Expressed
+in US Dollars)
+Three Months
+Ended
+Nine Months
+Ended
+September
+30,
+September
+30,
+2023
+2022
+2023
+2022
+Revenue
+(Note 21)
+$ -
+$ 232,928
+$ 358,226
+$ 353,189
+Operating expenses
+Selling, marketing and
+administration (Note 20)
+2,697,199
+2,074,704
+7,773,022
+6,904,621
+Research and development
+(Note 20)
+2,449,800
+2,361,991
+7,505,863
+7,227,372
+Operating expenses
+5,146,999
+4,436,695
+15,278,885
+14,131,993
+Operating loss before the following
+( 5,146,999 )
+( 4,203,767 )
+( 14,920,659 )
+( 13,778,804 )
+Interest expense (Note 8)
+( 34,890 )
+( 11,707 )
+( 56,635 )
+( 38,128 )
+Other income, including interest
+45,448
+57,429
+180,943
+119,728
+Gain on the contribution of intellectual property
+to joint venture (Note 5)
+527,857
+496,115
+527,857
+496,115
+Share of loss in joint
+venture (Note 5)
+( 527,857 )
+( 379,368 )
+( 527,857 )
+( 1,555,650 )
+Net loss
+( 5,136,441 )
+( 4,041,298 )
+( 14,796,351 )
+( 14,756,739 )
+Deficit, beginning of period
+( 203,683,570 )
+( 183,702,411 )
+( 194,023,660 )
+( 172,986,970 )
+Net loss
+( 5,136,441 )
+( 4,041,298 )
+( 14,796,351 )
+( 14,756,739 )
+Deficit, end of period
+$ ( 208,820,011 )
+$ ( 187,743,709 )
+$ ( 208,820,011 )
+$ ( 187,743,709 )
+Basic and diluted loss
+per share (Note 14)
+$ ( 0.13 )
+$ ( 0.11 )
+$ ( 0.37 )
+$ ( 0.40 )
+CONDENSED
+CONSOLIDATED STATEMENTS OF COMPREHENSIVE LOSS
+(Expressed
+in US Dollars)
+Three Months
+Ended
+Nine Months
+Ended
+September
+30,
+September
+30,
+2023
+2022
+2023
+2022
+Net loss
+$ ( 5,136,441 )
+$ ( 4,041,298 )
+$ ( 14,796,351 )
+$ ( 14,756,739 )
+Other comprehensive (loss) - net of income
+taxes
+Exchange
+differences on translating foreign operations
+( 87,875 )
+( 671,162 )
+( 20,182 )
+( 891,627 )
+Comprehensive loss
+$ ( 5,224,316 )
+$ ( 4,712,460 )
+$ ( 14,816,533 )
+$ ( 15,648,366 )
+The accompanying notes are an integral part of these condensed consolidated financial statements.
+Page 3
+POET
+TECHNOLOGIES INC.
+CONDENSED
+CONSOLIDATED STATEMENTS OF CHANGES IN SHAREHOLDERS’ EQUITY
+(Expressed
+in US Dollars)
+For the
+Nine Months Ended September 30,
+2023
+2022
+Share Capital
+Beginning balance
+$ 151,206,539
+$ 147,729,846
+Funds from the exercise of warrants
+7,767,067
+284,437
+Fair value assigned to warrants exercised
+4,418,783
+79,547
+Funds from the exercise of stock options
+612,310
+418,845
+Fair value assigned to stock options exercised
+538,168
+374,129
+Funds from common shares issued through ATM
+Financing
+983,194
+-
+Share issue costs
+( 320,712 )
+-
+Common shares issued
+to settle accounts payable
+-
+40,029
+September 30,
+165,205,349
+148,926,833
+Warrants
+Beginning balance
+5,905,642
+5,328,455
+Fair value assigned to warrants and compensation
+warrants exercised
+( 4,418,783 )
+( 79,547 )
+Fair value of expired warrants
+( 816,744 )
+-
+September 30,
+670,115
+5,248,908
+Contributed Surplus
+Beginning balance
+51,016,808
+46,954,333
+Stock-based compensation
+3,151,356
+2,847,898
+Fair value of stock options exercised
+( 538,168 )
+( 374,129 )
+Fair value of expired warrants
+816,744
+-
+September 30,
+54,446,740
+49,428,102
+Accumulated Other Comprehensive
+Loss
+Beginning balance
+( 2,660,281 )
+( 2,053,917 )
+Other comprehensive
+(loss) - translation adjustment
+( 20,182 )
+( 891,627 )
+September 30,
+( 2,680,463 )
+( 2,945,544 )
+Deficit
+Beginning balance
+( 194,023,660 )
+( 172,986,970 )
+Net loss
+( 14,796,351 )
+( 14,756,739 )
+September 30,
+( 208,820,011 )
+( 187,743,709 )
+Total
+shareholders’ equity
+$ 8,821,730
+$ 12,914,590
+The accompanying notes are an integral part of these condensed consolidated financial statements.
+Page 4
+POET
+TECHNOLOGIES INC.
+CONDENSED
+CONSOLIDATED STATEMENTS OF CASH FLOWS
+(Expressed
+in US Dollars)
+For the
+Nine Months Ended September 30,
+2023
+2022
+CASH
+(USED IN) PROVIDED BY:
+OPERATING ACTIVITIES
+Net loss
+$ ( 14,796,351 )
+$ ( 14,756,739 )
+Adjustments for:
+Depreciation of property
+and equipment (Note 6)
+1,221,090
+770,080
+Amortization of right of
+use asset (Note 8)
+129,122
+123,345
+Amortization of patents
+and licenses (Note 7)
+66,058
+58,715
+Non-cash interest (Note
+8)
+40,067
+38,128
+Stock-based compensation
+(Note 13)
+3,151,356
+2,847,898
+Gain on contribution of
+intellectual property to joint venture (Note 5)
+( 527,857 )
+( 496,115 )
+Share
+of loss in joint venture (Note 5)
+527,857
+1,555,650
+( 10,188,658 )
+( 9,859,038 )
+Net
+change in non-cash working capital accounts:
+Accounts receivable
+62,000
+-
+Prepaid and other current
+assets
+( 189,988 )
+129,515
+Accounts payable and accrued
+liabilities
+( 2,004,401 )
+( 249,000 )
+Contract
+liabilities
+( 165,263 )
+389,561
+Cash flows from operating
+activities
+( 12,486,310 )
+( 9,588,962 )
+INVESTING ACTIVITIES
+Sale of short-term investments
+-
+6,366,828
+Purchase of property and
+equipment (Note 6)
+( 1,132,514 )
+( 1,365,917 )
+Purchase
+of patents and licenses (Note 7)
+( 79,110 )
+( 62,475 )
+Cash flows from investing
+activities
+( 1,211,624 )
+4,938,436
+FINANCING ACTIVITIES
+Issue of common shares,
+net of share issue costs (Note 11)
+9,041,859
+703,282
+Payment
+of lease liability (Note 8)
+( 173,025 )
+( 159,758 )
+Cash flows from financing
+activities
+8,868,834
+543,524
+EFFECT
+OF EXCHANGE RATE CHANGES ON CASH
+75,733
+( 565,625 )
+NET
+CHANGE IN CASH AND CASH EQUIVALENTS
+( 4,753,367 )
+( 4,672,627 )
+CASH AND CASH EQUIVALENTS,
+beginning of period
+9,229,845
+14,941,775
+CASH
+AND CASH EQUIVALENTS, end of period
+$ 4,476,478
+$ 10,269,148
+The
+accompanying notes are an integral part of these condensed consolidated financial statements.
+Page 5
+POET
+TECHNOLOGIES INC.
+NOTES
+TO CONDENSED CONSOLIDATED FINANCIAL STATEMENTS
+(Expressed
+in US Dollars)
+1. DESCRIPTION OF BUSINESS
+POET
+Technologies Inc. is incorporated in the Province of Ontario. POET Technologies Inc. and its subsidiaries (the “Company”)
+design and develop the POET Optical Interposer and Photonic Integrated Circuits for the data centre, tele-communications and artificial
+intelligence markets. The Company’s head office is located at 120 Eglinton Avenue East, Suite 1107, Toronto, Ontario, Canada M4P
+1E2. These condensed unaudited consolidated financial statements of the Company were approved by the Board of Directors of the Company
+on November 14, 2023.
+As
+at September 30, 2023, the Company has accumulated losses of $ ( 208,820,011 ) and working capital of $ 3,284,450 . During the nine months
+ended September 30, 2023, the Company had negative cash flows from operations of $ 12,486,310 . The Company has prepared a cash flow forecast
+which indicates that it does not have sufficient cash to meet its minimum expenditure commitments and therefore needs to raise additional
+funds to continue as a going concern. As a result, there is substantial doubt about the Company’s ability to continue as a going
+concern.
+To
+address the future funding requirements, management has undertaken the following initiatives:
+1. Initiated
+an at-the-market (“ATM”) equity offering program to raise capital by selling
+shares directly to the public in the open market. The Canadian only ATM was terminated on
+August 5, 2023 while the United States-only ATM program was temporarily suspended in September
+2023.
+2. Raised
+gross proceeds of $ 983,194 from the sale of shares through the ATM.
+3. Established
+a strict budgetary process with a focus on maintaining an appropriate level of corporate
+overhead
+in line with the Company’s available cash resources.
+Although
+the Company has been successful in obtaining equity and similar financings in the past, there is no assurance that it will be able do
+so in the future. The Company does however, have a reasonable expectation that it will be able to manage its finances in order to continue
+its operations.
+2. SUMMARY OF SIGNIFICANT ACCOUNTING POLICIES
+These
+condensed unaudited consolidated financial statements of the Company and its subsidiaries were prepared in accordance with International
+Financial Reporting Standards (“IFRS”), as issued by the International Accounting Standards Board (“IASB”).
+These
+condensed unaudited consolidated financial statements do not include all of the information required for full annual financial statements
+and should be read in conjunction with the consolidated audited financial statements for the year ended December 31, 2022.
+The
+preparation of financial statements in accordance with International Accounting Standards (“IAS”) 34 Interim Financial Reporting,
+requires the use of certain critical accounting estimates. It also requires management to exercise judgment in applying the Company’s
+accounting policies. The areas involving a higher degree of judgment or complexity, or areas where assumptions and estimates are significant
+to the financial statements are disclosed below:
+Basis
+of presentation
+These
+consolidated financial statements include the accounts of POET Technologies Inc. and its subsidiaries; ODIS Inc. (“ODIS”),
+Opel Solar Inc. (“OPEL”), BB Photonics Inc.,(“BB Photonics”), POET Technologies Pte Ltd. (“PTS”)
+and POET Optoelectronics Shenzhen Co. Ltd. (“POET Shenzhen”). All intercompany balances and transactions have been eliminated
+on consolidation.
+Page 6
+POET
+TECHNOLOGIES INC.
+NOTES
+TO CONDENSED CONSOLIDATED FINANCIAL STATEMENTS
+(Expressed
+in US Dollars)
+2. SUMMARY OF SIGNIFICANT ACCOUNTING POLICIES (Continued)
+Foreign
+currency translation
+These
+condensed unaudited consolidated financial statements are presented in U.S. dollars (“USD”), which is the Company’s
+presentation currency.
+Items
+included in the financial statements of each of the Company’s subsidiaries are measured using the currency of the primary economic
+environment in which the entity operates (the “functional currency”). Foreign currency transactions are translated into the
+functional currency using the exchange rates prevailing at the dates of the transaction. Foreign exchange gains and losses resulting
+from the settlement of such transactions and from the translation of monetary assets and liabilities not denominated in the functional
+currency of an entity are recognized in the statement of operations and deficit.
+Assets
+and liabilities of entities with functional currencies other than U.S. dollars are translated into the presentation currency at the year
+end rates of exchange, and the results of their operations are translated at average rates of exchange for the year. The resulting translation
+adjustments are included in accumulated other comprehensive loss in shareholders’ equity. Additionally, foreign exchange gains
+and losses related to certain intercompany loans that are permanent in nature are included in accumulated other comprehensive loss. Elements
+of equity are translated at historical rates.
+Financial
+Instruments
+Financial
+assets held with an objective to hold assets in order to collect contractual cash flows which arise on specified dates that are solely
+principal and interest are measured at amortised cost using the effective interest method. Debt investments held with an objective to
+hold both assets in order to collect contractual cash flows which arise on specified dates that are solely principal and interest as
+well as selling the asset on the basis of fair value are measured at FVTOCI. All other financial assets are classified and measured at
+fair value through profit or loss (“FVTPL”). Financial liabilities are classified as either FVTPL or other financial liabilities,
+and the portion of the change in fair value that relates to the Company’s credit risk is presented in other comprehensive loss.
+Instruments classified as FVTPL are measured at fair value with unrealized gains and losses recognized in net loss. Other financial liabilities
+are subsequently measured at amortised cost using the effective interest method.
+Transaction
+costs that are directly attributable to the acquisition or issuance of financial assets and financial liabilities, other than financial
+assets and financial liabilities classified as FVTPL, are added to or deducted from the fair value on initial recognition. Transaction
+costs directly attributable to the acquisition of financial assets or financial liabilities classified as FVTPL are recognized immediately
+in consolidated net loss.
+Financial
+assets
+The
+Company derecognizes a financial asset when the contractual rights to the cash flows from the financial asset expire, or it transfers
+the rights to receive the contractual cash flows in a transaction in which substantially all of the risks and rewards of ownership of
+the financial asset are transferred or in which the Company neither transfers nor retains substantially all of the risks and rewards
+of ownership and it does not retain control of the financial asset. Any interest in transferred financial assets that is created or retained
+by the Company is recognized as a separate asset or liability.
+Financial
+liabilities
+A
+financial liability is derecognized from the balance sheet when it is extinguished, that is, when the obligation specified in the contract
+is either discharged, cancelled or expires. Where there has been an exchange between an existing borrower and lender of debt instruments
+with substantially different terms, or there has been a substantial modification of the terms of an existing financial liability, this
+transaction is accounted for as an extinguishment of the original financial liability and the recognition of a new financial liability.
+A gain or loss from extinguishment of the original financial liability is recognized in profit or loss.
+The
+Company’s financial instruments include cash and cash equivalents, accounts receivable, accounts payable and accrued liabilities,
+contract liabilities and covid-19 government support loans.
+Page 7
+POET
+TECHNOLOGIES INC.
+NOTES
+TO CONDENSED CONSOLIDATED FINANCIAL STATEMENTS
+(Expressed
+in US Dollars)
+2. SUMMARY OF SIGNIFICANT ACCOUNTING POLICIES (Continued)
+The
+following table outlines the classification of financial instruments under IFRS 9:
+Financial
+Assets
+Cash
+and cash equivalents
+Amortized
+cost
+Accounts
+receivable
+Amortized
+cost
+Financial
+Liabilities
+Accounts
+payable and accrued liabilities
+Amortized
+cost
+Contract
+liabilities
+Amortized
+cost
+Covid-19
+government support loans
+Amortized
+cost
+Convertible
+debentures are accounted for as a compound financial instrument with a debt component and a separate equity component. The debt component
+of these compound financial instruments is measured at fair value on initial recognition by discounting the stream of future interest
+and principal payments at the rate of interest prevailing at the date of issue for instruments of similar term and risk. The debt component
+is subsequently deducted from the total carrying value of the compound instrument to derive the equity component. The debt component
+is subsequently measured at amortized cost using the effective interest rate method. Interest expense based on the coupon rate of the
+debenture and the accretion of the liability component to the amount that will be payable on redemption are recognized through profit
+or loss as a finance cost.
+Cash
+and cash equivalents
+Cash
+and cash equivalents consist of cash in current accounts of $ 1,168,483 (2022 - $ 1,981,765 ) and funds invested in US and Canadian Term
+Deposits of $ 3,307,995 (2022 - $ 7,248,080 ) earning interest at rates ranging from 4 % - 4.2 % and maturing in less than 90 days.
+Property
+and equipment
+Property
+and equipment are recorded at cost. Depreciation is calculated based on the estimated useful life of the asset using the following method
+and useful lives:
+Machinery
+and equipment
+Straight
+Line, 5 years
+Leasehold
+improvements
+Straight
+Line, 5 years or life of the lease, whichever is less
+Office
+equipment
+Straight
+Line, 3 - 5 years
+Patents
+and licenses
+Patents
+and licenses are recorded at cost and amortized on a straight line basis over 12 years. Ongoing maintenance costs are expensed as incurred.
+Revenue
+recognition
+Revenue
+is measured based on the consideration specified in a contract with a customer and excludes amounts collected on behalf of third parties.
+The Company recognizes revenue when it transfers control over a product or service to a customer.
+Sale
+of goods
+Revenue
+from the sale of goods is recognized, net of discounts and customer rebates, at the point in time the transfer of control of the related
+products has taken place as specified in the sales contract and collectability is reasonably assured.
+Page 8
+POET
+TECHNOLOGIES INC.
+NOTES
+TO CONDENSED CONSOLIDATED FINANCIAL STATEMENTS
+(Expressed
+in US Dollars)
+2. SUMMARY OF SIGNIFICANT ACCOUNTING POLICIES (Continued)
+Service
+revenue
+The
+Company provides contract services, primarily in the form of non-recurring revenue (“NRE”) where control is passed to the
+customer over time. The contracts generally provide agreed upon milestones for customer payment which include but are not limited to
+the delivery of sample products, design reports and test reports. The customer makes payment when it has approved the delivery of the
+milestone. The Company must determine if the contract is made up of a series of independent performance obligations or a single performance
+obligation. Where NRE contracts contain multiple performance obligations for which a standalone transaction price can be assessed, revenue
+is recognized as each performance obligation is satisfied. Where NRE contracts contain a single performance obligation to be settled
+over time, revenue is recognized progressively based on the output method.
+Other
+income
+Interest
+income
+Interest
+income on cash and cash equivalents and short-term investments is recognized as earned using the effective interest method.
+Wage
+subsidies
+Wages
+subsidies received from the Singaporean government are netted against payroll costs on the consolidated statements of operations and
+deficit.
+Government
+Grants
+Loans
+received exclusively from governmental agencies to support the Company throughout the COVID-19 pandemic qualify to be forgiven if certain
+conditions are met. Forgiveness of COVID-19 related loans will be recognized as other income on the consolidated statements of operations
+and deficit.
+Stock-based
+compensation
+Stock
+options and warrants awarded to non employees are measured using the fair value of the goods or services received unless that fair value
+cannot be estimated reliably, in which case measurement is based on the fair value of the stock options. Stock options and warrants awarded
+to employees are accounted for using the fair value method. The fair value of such stock options and warrants granted is recognized as
+an expense on a proportionate basis consistent with the vesting features of each tranche of the grant. The fair value is calculated using
+the Black-Scholes option pricing model with assumptions applicable at the date of grant.
+Loss
+per share
+Basic
+loss per share, net of taxes is calculated by dividing net loss by the weighted average number of common shares outstanding during the
+year. Diluted loss per share is calculated by dividing net loss by the weighted average number of common shares outstanding during the
+period after giving effect to potentially dilutive financial instruments. The dilutive effect of stock options and warrants is determined
+using the treasury stock method.
+Joint
+Venture
+A
+joint arrangement is an arrangement among two or more parties where the parties are bound by a contractual arrangement and the contractual
+arrangement gives the parties joint control of the arrangement. A joint venture is a form of joint arrangement where an entity is independently
+formed and the parties jointly have rights to the net assets of the arrangement and therefore account for their interests under the equity
+method.
+Page 9
+POET
+TECHNOLOGIES INC.
+NOTES
+TO CONDENSED CONSOLIDATED FINANCIAL STATEMENTS
+(Expressed
+in US Dollars)
+3. ACCOUNTS RECEIVABLE AND CONTRACT LIABILITIES
+Revenue
+Contract Balances
+Contract
+Receivables
+Liabilities
+Opening balance, January 1, 2023
+$ 62,842
+$ ( 274,192 )
+Changes due to payment, fulfillment of performance
+obligations or revenues recognized
+( 62,842 )
+157,500
+Effect of changes in
+foreign exchange rates
+-
+11,429
+Balance, September
+30, 2023
+$ -
+$ ( 105,263 )
+4. PREPAIDS AND OTHER CURRENT ASSETS
+The
+following table reflects the details of prepaids and other current assets:
+September
+30,
+December 31,
+2023
+2022
+Sales tax recoverable and other
+current assets
+$ 78,005
+$ 128,321
+Prepaid expenses
+356,814
+147,186
+Equipment deposit
+28,103
+-
+$ 462,922
+$ 275,507
+5. JOINT VENTURE
+The
+Company’s contribution of intellectual property to Super Photonics Xiamen Co., Ltd (“SPX”) was independently valued
+at $ 22,500,000 at the time of its contribution. Since the establishment of SPX, the Company recognized a gain of $ 4,868,225 related to
+its contribution of intellectual property to SPX in accordance with IAS 28. The Company only recognized a gain on the contribution of
+the intellectual property equivalent to the Sanan IC’s interest in SPX, the unrecognized gain of $ 17,631,775 will be applied against
+the investment and periodically realized as the Company’s ownership interest in SPX is reduced. At September 30, 2023, Sanan IC’s
+and the Company’s ownership interests were approximately 21.6 % and 78.4 % respectively. At December 31, 2022 and September 30, 2023,
+the Company’s investment in SPX was carried at nil because the losses in SPX exceeded the carrying value of the investment.
+SPX
+was determined to be a joint venture as both Sanan IC and POET exercise joint control over SPX. All relevant activity of SPX require
+unanimous consent.
+Summarized
+financial information of the joint venture is as follows:
+September
+30,
+December 31,
+2023
+2022
+Current assets
+$ 1,315,146
+$ 1,951,654
+Intangible assets
+16,199,173
+18,708,065
+Liabilities
+( 154,720 )
+( 180,897 )
+Owners Equity
+( 17,359,599 )
+( 20,478,822 )
+Net loss for the nine months ended September 30, 2023 and 2022
+$ 2,914,956
+$ 1,329,525
+The
+Company recognizes its share of SPX’s profits or losses using the equity method. On a weighted average basis, the Company’s
+share of the net operating loss was 79.9 % or $ ( 2,329,103 ) , however the Company recognized $ ( 527,857 ) of the net operating loss of SPX
+for the nine months ended September 30, 2023 (2022 - 87.9 % or $ ( 1,555,650 ) ). In accordance with IAS 28, the Company can only account
+for a loss to the extent that it carries a net investment in the joint venture on the consolidated statements of financial position.
+Page 10
+POET
+TECHNOLOGIES INC.
+NOTES
+TO CONDENSED CONSOLIDATED FINANCIAL STATEMENTS
+(Expressed
+in US Dollars)
+6. PROPERTY AND EQUIPMENT
+Equipment not
+Leasehold
+Machinery and
+Office
+in
+service
+improvements
+equipment
+equipment
+Total
+Cost
+Balance, January 1, 2022
+$ -
+$ 117,115
+$ 4,830,020
+$ 183,269
+$ 5,130,404
+Additions, net of returns
+1,902,713
+-
+1,087,414
+21,435
+3,011,562
+Reclassification
+( 141,702 )
+-
+162,917
+( 21,215 )
+-
+Effect of changes in
+foreign exchange rates
+54,898
+6,544
+11,270
+( 5,586 )
+67,126
+Balance, December 31, 2022
+1,815,909
+123,659
+6,091,621
+177,903
+8,209,092
+Additions
+206,378
+-
+913,731
+12,405
+1,132,514
+Reclassification
+( 2,016,605 )
+-
+2,016,605
+-
+-
+Effect of changes in
+foreign exchange rates, net
+( 5,682 )
+( 883 )
+( 99,377 )
+4,261
+( 101,681 )
+Balance, September 30, 2023
+-
+122,776
+8,922,580
+194,569
+9,239,925
+Accumulated Depreciation
+Balance, January 1, 2022
+-
+29,526
+1,930,726
+105,918
+2,066,170
+Depreciation
+-
+24,079
+1,000,085
+30,100
+1,054,264
+Effect on changes in
+foreign exchange rates
+-
+2,529
+27,727
+( 12,105 )
+18,151
+Balance, December 31, 2022
+-
+56,134
+2,958,538
+123,913
+3,138,585
+Depreciation for the
+period
+-
+18,544
+1,178,524
+24,022
+1,221,090
+Balance, September 30, 2023
+-
+74,678
+4,137,062
+147,935
+4,359,675
+Carrying Amounts
+At December 31, 2022
+$ 1,815,909
+$ 67,525
+$ 3,133,083
+$ 53,990
+$ 5,070,507
+At September 30, 2023
+$ -
+$ 48,098
+$ 4,785,518
+$ 46,634
+$ 4,880,250
+7. PATENTS AND LICENSES
+Cost
+Balance, January 1, 2022
+$ 996,461
+Additions
+62,475
+Balance, December 31, 2022
+1,058,936
+Additions
+79,110
+Balance, September 30, 2023
+1,138,046
+Accumulated Depreciation
+Balance, January 1, 2022
+467,985
+Amortization
+80,246
+Balance, December 31, 2022
+548,231
+Amortization during
+the period
+66,058
+Balance, September 30, 2023
+614,289
+Carrying Amounts
+At December 31, 2022
+$ 510,705
+At September 30, 2023
+$ 523,757
+Page 11
+POET
+TECHNOLOGIES INC.
+NOTES
+TO CONDENSED CONSOLIDATED FINANCIAL STATEMENTS
+(Expressed
+in US Dollars)
+8. RIGHT OF USE ASSET AND LEASE LIABILITY
+The
+Company recognizes a lease liability and right of use asset relating to its commercial leases. The lease liability is measured at the
+present value of the remaining lease payments, discounted using the Company’s incremental borrowing rate of 12 %.
+Right of
+use asset
+Building
+Cost
+Balance,
+January 1, 2022
+$ 649,110
+Lease modification
+81,542
+Balance, December 31, 2022
+730,652
+Additions
+260,352
+Balance, September 30, 2023
+991,004
+Accumulated Amortization
+Balance,
+January 1, 2022
+322,220
+Amortization
+158,648
+Effect of changes in
+foreign exchange rates
+8,737
+Balance, December 31, 2022
+489,605
+Amortization during the period
+129,122
+Effect of changes in
+foreign exchange rates, net
+6,596
+Balance, September 30, 2023
+625,323
+Carrying Amounts
+At December 31, 2022
+$ 241,047
+At September 30, 2023
+$ 365,681
+Lease
+liability
+Balance, January 1, 2022
+$ 359,348
+Interest expense
+49,738
+Lease payments
+( 204,518 )
+Lease modification
+81,542
+Effect of changes in
+foreign exchange rates
+( 6,847 )
+Balance, December 31, 2022
+279,263
+Additions
+260,352
+Interest
+expense (1)
+40,067
+Lease payments
+( 172,820 )
+Effect of changes in
+foreign exchange rates, net
+( 7,403 )
+Balance, September 30, 2023
+$ 399,459
+(1) The
+Company paid $ 16,568 in other finance costs.
+9. ACCOUNTS PAYABLE AND ACCRUED LIABILITIES
+September
+30,
+December 31,
+2023
+2022
+Trade payable
+$
+848,075
+$ 2,723,531
+Payroll related liabilities
+449,465
+452,751
+Accrued liabilities
+55,668
+186,148
+$ 1,353,208
+$ 3,362,430
+Page 12
+POET
+TECHNOLOGIES INC.
+NOTES
+TO CONSOLIDATED FINANCIAL STATEMENTS
+(Expressed
+in US Dollars)
+10. COVID-19 GOVERNMENT SUPPORT LOANS
+On
+April 9, 2020, the Canadian government launched the Canada Emergency Business Account (“CEBA”) which is intended to support
+businesses during COVID-19 by providing interest free financing of up to $ 29,428 (CA$ 40,000 ) until December 31, 2023. If 75% of the loan
+is repaid by December 31, 2023, the loan recipient will be eligible for a loan forgiveness of the remaining 25% of the amount loaned.
+On April 15, 2020, the Company received a loan in the amount of $ 29,428 (2022 - $ 29,520 ) through the CEBA. If the loan has not been repaid
+by December 31, 2023, the outstanding amount will be automatically extended for an additional two years at 5 % interest per annum payable
+monthly and maturing on December 31, 2025. The Company expects to repay 75% of the amount borrowed prior to December 31, 2023.
+11. SHARE CAPITAL
+(a) AUTHORIZED
+Unlimited
+number of common shares
+One
+special voting share
+(b) COMMON
+SHARES ISSUED
+Number
+of
+Shares
+Amount
+Balance, January 1, 2022
+36,494,228
+$ 147,729,846
+Shares issued to settle accounts payable
+5,422
+40,029
+Funds from common shares issued on private
+placement
+1,126,635
+3,184,332
+Fair value of warrants issued on private placement
+-
+( 656,734 )
+Share issue costs
+-
+( 247,892 )
+Funds from the exercise of stock options
+143,437
+418,845
+Fair value of stock options exercised
+-
+374,129
+Funds from the exercise of warrants and compensation
+warrants
+72,500
+284,437
+Fair value of warrants and compensation warrants
+exercised
+-
+79,547
+Adjustment for 10 for
+1 share consolidation
+( 272 )
+-
+Balance, December 31, 2022
+37,841,950
+151,206,539
+Funds from the exercise of stock options
+245,606
+612,310
+Fair value of stock options exercised
+-
+538,168
+Funds from the exercise of warrants
+2,364,066
+7,767,067
+Fair value of warrants exercised
+-
+4,418,783
+Funds from Common shares issued through ATM
+financing
+227,673
+983,194
+Share issue costs
+-
+( 320,712 )
+Balance, September 30, 2023
+40,679,295
+$ 165,205,349
+During
+the nine months ended September 30, 2023, the Company raised gross proceeds of $ 983,194 from the issuance of 227,673 common shares through
+an Equity Distribution Agreement, (“EDA”) with multiple agents. Pursuant to the EDA, the Company established an at-the-market
+(“ATM”) equity offering program whereby the Company may, at its discretion, during the term of the ATM agreement issue and
+sell, through the agents such number of common shares of the Company as would result in aggregate gross proceeds to the Company of up
+to US$ 30 million. The agents were paid a commission of 3 % or $ 29,486 of the gross proceeds raised through the ATM. The Company incurred
+additional financing costs including legal and filing fees of $ 291,226 .
+Page 13
+POET
+TECHNOLOGIES INC.
+NOTES
+TO CONSOLIDATED FINANCIAL STATEMENTS
+(Expressed
+in US Dollars)
+12. WARRANTS AND COMPENSATION OPTIONS
+The
+following table reflects the continuity of warrants and compensation options:
+Historical
+Number of
+Average
+Exercise
+Price
+Warrants/
+Compensation
+options
+Historical
+Fair value
+Balance, January 1, 2022
+$ 7.10
+3,021,353
+$ 5,328,455
+Fair value of warrant issued on private placement
+1.17
+563,318
+656,734
+Historical fair value
+assigned to warrants exercised
+3.90
+( 72,500 )
+( 79,547 )
+Balance, December 31, 2022
+6.15
+3,512,171
+5,905,642
+Historical fair value assigned to warrants
+exercised
+3.27
+( 2,364,066 )
+( 4,418,783 )
+Historical fair value
+of warrants expired
+4.50
+( 584,787 )
+( 816,744 )
+Balance, September 30, 2023
+$ 3.64
+563,318
+$ 670,115
+13. STOCK OPTIONS AND CONTRIBUTED SURPLUS
+Stock
+Options
+On
+June 30, 2023, shareholders of the Company approved a fixed 20 % omnibus equity incentive plan (the “Omnibus Plan”). The Omnibus
+Plan replaces the 2021 stock option plan. The Omnibus Plan provides flexibility to the Company to grant different forms of equity-based
+incentive awards to directors, officers, employees and consultants. The Omnibus plan provides the Company with the choice of granting
+stock options (“Options”), share units (“Share Units”) and deferred share units (“DSUs”). The Omnibus
+Plan provides that the maximum number of common shares issuable pursuant to awards granted under the Omnibus Plan and pursuant to other
+previously granted awards is limited to 8,056,055 (the “Number Reserved”). Any subsequent increase in the Number Reserved
+must be approved by shareholders of the Company and cannot, at the time of the increase, exceed 20 % of the number of issued and outstanding
+shares. Awards vest in accordance with the policies determined by the Board of Directors from time to time consistent with the provisions
+of the Omnibus Plan which grants discretion to the Board of Directors.
+Stock
+option transactions and the number of stock options outstanding were as follows:
+Number
+of
+Options
+Historical
+Weighted average
+Exercise
+Price
+Balance, January 1, 2022
+4,959,617
+$
+4.40
+Expired/cancelled
+( 117,438 )
+6.02
+Exercised
+( 143,437 )
+2.85
+Granted
+2,043,083
+3.32
+Balance, December 31, 2022
+6,741,825
+4.10
+Expired/cancelled
+( 182,750 )
+4.66
+Exercised
+( 245,606 )
+2.49
+Granted
+1,002,170
+4.11
+Balance, September 30, 2023
+7,315,639
+$ 4.14
+Page 14
+POET
+TECHNOLOGIES INC.
+NOTES
+TO CONDENSED CONSOLIDATED FINANCIAL STATEMENTS
+(Expressed
+in US Dollars)
+13. STOCK OPTIONS AND CONTRIBUTED SURPLUS (Continued)
+During
+the nine months ended September 30, 2023, the Company granted 1,002,170 (nine months ended September 30, 2022 - 242,939 ) stock options
+to employees and consultants of the Company to purchase common shares at an average price of $ 4.11 (nine months ended September 30, 2022
+- $ 6.39 ) per share.
+During
+the nine months ended September 30, 2023, the Company recorded stock-based compensation of
+$ 3,151,356
+(nine months ended September 30, 2022 - $ 2,847,898 ) relating to stock options that vested during the period.
+The
+stock options granted were valued using the Black-Scholes option pricing model using the following assumptions:
+Nine Months Ended September
+30,
+2023
+2022
+Weighted average exercise price
+$ 4.11
+$ 6.39
+Weighted average risk-free interest rate
+2.88 %
+- 3.48 %
+1.80 %
+- 3.5 %
+Weighted average dividend yield
+0 %
+0 %
+Weighted average volatility
+82.45 %
+84.74 %
+Weighted average estimated life
+10
+years
+10
+years
+Weighted average share price
+$ 4.11
+$ 6.39
+Share price on the various
+grant dates:
+$ 4.05
+- $ 4.63
+$ 4.37
+- $ 6.86
+Weighted average fair value
+$ 3.42
+$ 5.41
+The
+underlying expected volatility was determined by reference to the Company’s historical share price movements, its dividend policy
+and dividend yield and past experience relating to the expected life of granted stock options.
+The
+weighted average remaining contractual life and weighted average exercise price of options outstanding and of options exercisable as
+at September 30, 2023 are as follows:
+Options
+Outstanding
+Options
+Exercisable
+Exercise
+Range
+Number
+Outstanding
+Historical
+Weighted Average
+Exercise
+Price
+Weighted
+Average Remaining
+Contractual
+Life (years)
+Number
+Exercisable
+Historical
+Weighted
+Average
+Exercise
+Price
+$
+0.82
+- $ 1.93
+7,000
+$ 1.91
+4.84
+7,000
+$ 1.91
+$ 1.93
+- $ 2.76
+1,873,823
+$ 2.38
+6.42
+1,267,829
+$ 2.28
+$ 2.76
+- $ 8.84
+5,434,816
+$ 4.31
+7.46
+3,208,513
+$ 4.21
+7,315,639
+$ 3.81
+7.20
+4,483,342
+$ 3.66
+Page 15
+POET
+TECHNOLOGIES INC.
+NOTES
+TO CONDENSED CONSOLIDATED FINANCIAL STATEMENTS
+(Expressed
+in US Dollars)
+14. LOSS PER SHARE
+Three
+Months Ended
+Nine
+Months Ended
+September
+30,
+September
+30,
+2023
+2022
+2023
+2022
+Numerator
+Net
+loss
+$ ( 5,136,441 )
+$ ( 4,041,298 )
+$ ( 14,796,351 )
+$ ( 14,756,739 )
+Denominator
+Weighted
+average number of common shares outstanding - basic and diluted
+40,565,912
+36,672,390
+39,716,526
+36,589,778
+Basic and diluted loss
+per share
+$ ( 0.13 )
+$ ( 0.11 )
+$ ( 0.37 )
+$ ( 0.40 )
+The
+effect of common share purchase options, warrants and broker warrants on the net loss is not reflected as they are anti-dilutive.
+15. COMMITMENTS AND CONTINGENCIES
+The
+Company has operating leases on four facilities; head office located in Toronto, Canada, design and testing operations located in Allentown,
+Pennsylvania (formerly in San Jose, California) and operating facilities located in Singapore and China. The Company’s design and
+testing operations was initiated on April 1, 2021 and expires on September 30, 2025. The lease on the Company’s operating facilities
+in Singapore terminated on May 31, 2023. The lease was renewed on June 1, 2023 and expires on March 31, 2027. The lease on the Company’s
+operating facilities in China was initiated in November 19, 2021 and expires on November 18, 2023. The lease on the operating facility
+in China has since been renewed for another three year term, expiring on November 18, 2026. As of September 30, 2023, the Company’s
+head office was on a month to month lease term.
+Remaining
+minimum annual rental payments to the lease expiration dates are as follows:
+October 1, 2023 to December 31, 2023
+$ 66,019
+2024 and beyond
+457,230
+$ 523,249
+16. RELATED PARTY TRANSACTIONS
+Compensation
+to key management personnel were as follows:
+Three Months
+Ended
+Nine Months
+Ended
+September
+30,
+September
+30,
+2023
+2022
+2023
+2022
+Salaries
+$ 499,160
+$ 504,099
+$ 1,505,341
+$ 1,472,296
+Share-based payments
+( 1 )
+493,952
+351,751
+1,386,341
+1,223,152
+Total
+$ 993,112
+$ 855,850
+$ 2,891,682
+$ 2,695,448
+(1) Share-based payments
+are the fair value of options granted to key management personnel and expensed during the various periods as calculated using the Black-Scholes
+model.
+All
+transactions with related parties have occurred in the normal course of operations and are measured at the exchange amounts, which are
+the amounts of consideration established and agreed to by the related parties.
+Page 16
+POET
+TECHNOLOGIES INC.
+NOTES
+TO CONDENSED CONSOLIDATED FINANCIAL STATEMENTS
+(Expressed
+in US Dollars)
+17. SEGMENT INFORMATION
+The
+Company and its subsidiaries operate in a single segment; the design, manufacture and sale of semi-conductor products and services for
+commercial applications. The Company’s operating and reporting segment reflects the management reporting structure of the organization
+and the manner in which the chief operating decision maker regularly assesses information for decision making purposes, including the
+allocation of resources. A summary of the Company’s operations is below:
+OPEL,
+ODIS, POET Shenzhen and PTS
+OPEL,
+ODIS, POET Shenzhen and PTS are the designers and developers of the POET Optical Interposer platform and optical engines based on the
+POET Optical Interposer platform.
+BB
+Photonics
+BB
+Photonics developed photonic integrated components for the datacom and telecom markets utilizing embedded dielectric technology that
+enabled the partial integration of active and passive devices into photonic integrated circuits. BB Photonics’ operation is currently
+dormant.
+On
+a consolidated basis, the Company operates geographically in China and Singapore (collectively “Asia”), the United States
+and Canada. Geographical information is as follows:
+2023
+As of September
+30,
+Asia
+US
+Canada
+Consolidated
+Current assets
+$ 165,961
+$ 417,624
+$ 4,355,815
+$ 4,939,400
+Property and equipment
+4,300,857
+579,393
+-
+4,880,250
+Patents and licenses
+-
+523,757
+-
+523,757
+Right
+of use assets
+242,168
+123,513
+-
+365,681
+Total
+Assets
+$ 4,708,986
+$ 1,644,287
+$ 4,355,815
+$ 10,709,088
+For the Nine Months Ended September
+30,
+Asia
+US
+Canada
+Consolidated
+Revenue
+$ 358,226
+$ -
+$ -
+$ 358,226
+Selling, marketing and administration
+$ ( 2,025,536 )
+$ ( 4,542,054 )
+$ ( 1,205,432 )
+$ ( 7,773,022 )
+Research and development
+( 4,646,713 )
+( 2,739,509 )
+( 119,641 )
+( 7,505,863 )
+Interest expense
+( 20,243 )
+( 36,392 )
+-
+( 56,635 )
+Share of loss in joint venture
+( 527,857 )
+-
+-
+( 527,857 )
+Gain from contribution of
+IP to joint venture
+527,857
+-
+-
+527,857
+Other
+income, including Interest
+-
+-
+180,943
+180,943
+Net
+loss
+$ ( 6,334,266 )
+$ ( 7,317,955 )
+$ ( 1,144,130 )
+$ ( 14,796,351 )
+2022
+As of December 31,
+Asia
+US
+Canada
+Consolidated
+Current assets
+$ 664,658
+$ 133,501
+$ 8,770,035
+$ 9,568,194
+Property and equipment
+4,496,734
+573,773
+-
+5,070,507
+Patents and licenses
+-
+510,705
+-
+510,705
+Right of use assets
+55,775
+185,272
+-
+241,047
+Total Assets
+$ 5,217,167
+$ 1,403,251
+$ 8,770,035
+$ 15,390,453
+Page 17
+POET
+TECHNOLOGIES INC.
+NOTES
+TO CONDENSED CONSOLIDATED FINANCIAL STATEMENTS
+(Expressed
+in US Dollars)
+17. SEGMENT INFORMATION (continued)
+For the
+Nine Months Ended September 30,
+Asia
+US
+Canada
+Consolidated
+Revenue
+$ 353,189
+$ -
+$ -
+$ 353,189
+Selling, marketing and administration
+$ ( 1,549,628 )
+$ ( 4,280,844 )
+$ ( 1,074,149 )
+$ ( 6,904,621 )
+Research and development
+( 3,992,505 )
+( 3,099,397 )
+( 135,470 )
+( 7,227,372 )
+Interest
+( 14,429 )
+( 23,699 )
+-
+( 38,128 )
+Share of loss in joint venture
+( 1,555,650 )
+-
+-
+( 1,555,650 )
+Gain from contribution of IP to joint
+venture
+496,115
+-
+-
+496,115
+Other income, including
+interest
+-
+-
+119,728
+119,728
+Net loss
+$ ( 6,262,908 )
+$ ( 7,403,940 )
+$ ( 1,089,891 )
+$ ( 14,756,739 )
+18. FINANCIAL INSTRUMENTS AND RISK MANAGEMENT
+The
+Company’s financial instruments consist of cash and cash equivalents, short-term investments, covid-19 government support loans
+and accounts payable and accrued liabilities. Unless otherwise noted, it is management’s opinion that the Company is not exposed
+to significant interest risk arising from these financial instruments. The Company estimates that carrying value of these instruments
+approximates fair value due to their short term nature.
+The
+Company has classified financial assets and (liabilities) as follows:
+September
+30,
+December 31,
+2023
+2022
+Cash and cash equivalents, measured at amortized
+cost:
+Cash and
+cash equivalents
+$ 4,476,478
+$ 9,229,845
+Receivables, measured at amortized cost:
+Accounts receivable
+$ -
+$ 62,842
+Other liabilities, measured at amortized
+cost:
+Accounts payable and accrued
+liabilities
+$ ( 1,353,208 )
+$ ( 3,362,430 )
+Covid-19 government support
+loans
+$ ( 29,428 )
+$ ( 29,520 )
+Contract
+liabilities
+$ ( 105,263 )
+$ ( 274,192 )
+Exchange
+Rate Risk
+The
+functional currency of each of the entities included in the accompanying consolidated financial statements is the local currency where
+the entity is domiciled. Functional currencies include the Chinese Yuan, US, Singapore and Canadian dollar. Most transactions within
+the entities are conducted in functional currencies. As such, none of the entities included in the consolidated financial statements
+engage in hedging activities. The Company is exposed to a foreign currency risk when its subsidiaries hold current assets or current
+liabilities in currencies other than its functional currency. A 10 % change in foreign currencies held would increase or decrease other
+comprehensive loss by $ 8,200 .
+Liquidity
+Risk
+The
+Company currently does not maintain credit facilities. The Company’s existing cash and cash resources are not sufficient to fund
+operating and investing activities beyond one year from the date of these unaudited condensed consolidated financial statements.
+Page 18
+POET
+TECHNOLOGIES INC.
+NOTES
+TO CONDENSED CONSOLIDATED FINANCIAL STATEMENTS
+(Expressed
+in US Dollars)
+19. CAPITAL MANAGEMENT
+In
+the management of capital, the Company includes shareholders’ equity (excluding accumulated other comprehensive loss and deficit)
+and cash and cash equivalents and short-term investments. The components of capital on September 30, 2023 were:
+Cash and cash equivalents and short-term
+investments
+$ 4,476,478
+Shareholders’ equity
+$ 220,322,204
+The
+Company’s objective in managing capital is to ensure that financial flexibility is present to increase shareholder value through
+growth and responding to changes in economic and/or market conditions; to maintain a strong capital base so as to maintain investor,
+creditor and market confidence and to sustain future development of the business and to safeguard the Company’s ability to obtain
+financing should the need arise.
+In
+maintaining its capital, the Company has a strict investment policy which includes investing its surplus capital only in highly liquid,
+highly rated financial instruments. The Company reviews its capital management approach on an ongoing basis.
+20. EXPENSES
+Research
+and development costs can be analysed as follows:
+Three
+Months Ended
+Nine
+Months Ended
+September
+30,
+September
+30,
+2023
+2022
+2023
+2022
+Wages and benefits
+$ 1,074,549
+$ 1,042,347
+$ 3,221,450
+$ 2,990,224
+Subcontract fees
+314,296
+400,475
+1,632,010
+1,720,487
+Stock-based compensation
+406,536
+477,224
+1,109,171
+1,280,702
+Supplies
+654,419
+441,945
+1,543,232
+1,235,959
+$ 2,449,800
+$ 2,361,991
+$ 7,505,863
+$ 7,227,372
+Selling,
+marketing and administration costs can be analysed as follows:
+Stock-based compensation
+$ 845,112
+$ 403,572
+$ 2,042,185
+$ 1,567,196
+Wages and benefits
+640,241
+646,349
+1,973,231
+1,983,180
+General expenses
+387,183
+435,990
+1,375,911
+1,558,810
+Professional fees
+273,905
+203,778
+842,403
+743,075
+Depreciation and amortization
+508,484
+336,446
+1,416,271
+952,141
+Rent and facility costs
+42,274
+48,569
+123,021
+100,219
+$ 2,697,199
+$ 2,074,704
+$ 7,773,022
+$ 6,904,621
+21. REVENUE
+Disaggregated
+Revenues
+The
+Company disaggregates revenue by timing of revenue recognition, that is, at a point in time and revenue over time. During the three and
+nine months ended September 30, 2023, the Company recognized nil and $ 358,226 respectively (2022 - $ 232,928 and $ 353,189 ) from non-recurring
+engineering services. The revenue is recognized over time.
+22. SUBSEQUENT EVENTS
+On
+November 2, 2023, the Company commenced an underwritten public offering in the United States (the “U.S. Offering”). Concurrently,
+the Company also commenced an offering in Canada (the “LIFE Offering” and, together with the U.S. Offering, the
+“Offering”). The Offering consists of common shares of the Company and warrants to purchase common shares and is subject
+to market conditions.
+Page 19
+
+## Exhibit EX-99.2
+
+EX-99.2
+3
+ex99-2.htm
+Exhibit 99.2
+Management’s
+Discussion
+and
+Analysis
+For
+the Three and Nine Months Ended September 30, 2023
+POET
+Technologies Inc.
+Suite
+1107 – 120 Eglinton Avenue East
+Toronto,
+Ontario, Canada M4P 1E2
+Tel:
+(416) 368-9411 Fax: (416) 322-5075
+Management’s
+Discussion and Analysis
+For
+the Three and NINE Months Ended SEPTEMBER 30, 2023
+The
+following discussion and analysis of the operations, results, and financial position of POET Technologies Inc., (the “Company”
+or “POET”) for the three and nine months ended September 30, 2023 (the “Period”) should be read in conjunction
+with the Company’s condensed unaudited consolidated financial statements for the three and nine months ended September 30, 2023
+and the related notes thereto, both of which were prepared in accordance with International Financial Reporting Standards (“IFRS”).
+The effective date of this report is November 14, 2023. All financial figures are in United States dollars (“USD”) unless
+otherwise indicated. The abbreviation “U.S.” used throughout refers to the United States of America.
+Forward-Looking
+Statements
+This
+management discussion and analysis contains forward-looking statements that involve risks and uncertainties. It uses words such as “may”,
+“would”, “could”, “will”, “likely”, “expect”, “anticipate”, “believe”,
+“intend”, “plan”, “forecast”, “project”, “estimate”, and other similar expressions
+to identify forward-looking statements. Forward-looking statements are subject to a variety of risks and uncertainties which could cause
+actual events or results to differ from those reflected in the forward-looking statements, including, without limitation, risks and uncertainties
+relating to the early stage of the Company’s development and the possibility that future development of the Company’s technology
+and business will not be consistent with management’s expectations, difficulties in achieving commercial production or interruptions
+in such production if achieved, inherent risks of managing design and development operations in multiple countries, risks associated
+with supplier and sub-contractor delays and other operating uncertainties, the inherent uncertainty of cost estimates and the potential
+for unexpected costs and expenses, the uncertainty of profitability and cessation of business for failure to obtain adequate financing
+on a timely basis, amongst other factors. The Company undertakes no obligation to update forward-looking statements if circumstances
+or Management’s estimates or opinions should change, except to the extent required by law. The reader is cautioned not to place
+undue reliance on forward-looking statements.
+Joint
+Venture with Xiamen Sanan Integrated Circuit Co. Ltd.
+On
+October 21, 2020, the Company signed a Joint Venture Agreement (“JVA”) establishing a joint venture company, Super Photonics
+Xiamen Co., Ltd (“SPX”) with Xiamen Sanan Integrated Circuit Co. Ltd. (“Sanan IC”) whose purpose is to design,
+develop, manufacture and sell 100G, 200G and 400G optical engines based on POET’s proprietary Optical Interposer platform technology.
+SPX’S
+capitalization will consist of a combination of committed cash, capital equipment and intellectual property from Sanan IC and intellectual
+property and know-how from POET, with a combined estimated value of approximately US$50M. Capitalization is on-going and has not yet
+been completed. POET’s contribution of certain intellectual property and know-how was valued by an independent appraiser at $22.5M.
+Sanan IC will contribute cash of approximately $25M for capital equipment and operating expenses, with the expectation that the eventual
+ownership of the JV will be approximately 52% Sanan IC and 48% POET. SPX is an independent company and is operated as a true joint venture,
+so its financial results are not consolidated into POET’s but are reported as a gain in the value of the contribution to the JV
+and a gain or loss in the Company’s percentage ownership of the JV.
+1
+Sanan
+IC is a world-class wafer foundry service company with an advanced compound semiconductor technology platform, serving the optical, RF
+microelectronics and power electronics markets. Sanan IC is a wholly owned subsidiary of Sanan Optoelectronics Co., Ltd. (Shanghai Stock
+Exchange, SSE: 600703), the leading manufacturer of advanced ultra-high brightness LED epitaxial wafers and chips in the world.
+Significant
+progress on SPX included the registration of SPX, appointment of the board of directors and key personnel, hiring of 36 employees, completion
+of 5,000 square feet of temporary facilities, ordering of key capital equipment for installation and qualification and outflow of approximately
+US$7 million from Sanan IC to cover initial operating and capital expenditures to be contributed to the JV.
+While
+each joint venturer has appointed one member to the Board of Directors of SPX, the company has its own governance and management structure
+and is operated under the laws of the Peoples Republic of China.
+The
+Company has recognized a gain of $4,868,225 related to its contribution of intellectual property to SPX in accordance with IAS 28. The
+Company only recognizes a gain on the contribution of the intellectual property equivalent to the Sanan IC’s interest in SPX, the
+unrecognized gain of $17,631,775 will be applied against the investment and periodically realized as the Company’s ownership interest
+in SPX is reduced. As at September 30, 2023, Sanan IC’s and the Company’s ownership interests were approximately 21.6% and
+78.4% respectively.
+Summarized financial information of the joint venture is as follows:
+September 30,
+December 31,
+2023
+2022
+Current assets
+$ 1,315,146
+$ 1,951,654
+Intangible assets
+16,199,173
+18,708,065
+Liabilities
+(154,720 )
+(180,897 )
+Owners Equity
+(17,359,599 )
+(20,478,822 )
+Net loss for the nine months ended September 30, 2023 and 2022
+$ 2,914,956
+$ 1,329,525
+The Company recognizes its share of SPX’s profits or losses
+using the equity method. On a weighted average basis, the Company’s share of the net operating loss was 79.9% or $(2,329,103), however
+the Company recognized $(527,857) of the net operating loss of SPX for the nine months ended September 30, 2023 (2022 - 87.9% or $(1,555,650)).
+In accordance with IAS 28, the Company can only account for a loss to the extent that it carries a net investment in the joint venture
+on the consolidated statements of financial position.
+2
+BUSINESS
+Overview
+The
+Company is incorporated under the laws of the Province of Ontario. The Company’s shares trade under the symbol “POET”
+on the Nasdaq in the U.S and under the symbol “PTK” on the TSX Venture Exchange in Canada.
+POET
+Technologies is a design and development company offering photonic integrated packaging solutions based on the POET Optical Interposer™,
+a novel platform that allows the seamless integration of electronic and photonic devices onto a single chip using advanced wafer-level
+semiconductor manufacturing techniques. The semiconductor industry has adopted the term “Wafer-Level Chip-Scale Packaging”
+(or “WLCSP”) to describe similar approaches within the semiconductor industry. POET’s Optical Interposer eliminates
+costly components and labor-intensive assembly, alignment, and testing methods employed in conventional photonics. We believe the cost-efficient
+integration scheme and scalability of the POET Optical Interposer brings value to devices or systems that integrate electronics and photonics,
+including high-growth areas of communications and computing, such as high-speed networking for cloud service providers and data centers,
+5G networks, machine-to-machine communication, sometimes referred to as the “Internet of Things” (IoT), self-contained “Edge”
+computing applications, such as accelerators for Artificial Intelligence – Machine Learning (AI-ML) systems and sensing applications,
+such as LIDAR systems for autonomous vehicles and point-of-use health care products.
+POET
+targeted as the first application of the Optical Interposer the development of optical engines for optical transceivers used in internet-based
+data centers. Optical Engines include all the passive and active components related to the production, manipulation, and detection of
+light within an Optical Transceiver. Optical Transceivers plug into switches and servers within the data center and allow these network
+devices to send and receive data over fiber-optic cables. We chose this market because it is large in size, has established standards
+for device performance, and the unit volumes of devices shipped annually are exceptionally high. It is a market in which our advantages
+of cost, power consumption and ability to scale rapidly allow us to be competitive with other suppliers.
+The
+second market targeted by POET is the “remote light source” market, comprised of two segments: a) Artificial Intelligence
+– Machine Learning (AI-ML) accelerator chips; and b) data centers for replacement of lasers powering transceivers. Light-based
+AI-ML accelerator chips are a nascent market, but one that may exceed the size of the optical transceiver market within a few years.
+Each AI-ML device needs its own light source with multiple wavelengths, separated or combined, to power the optics. Within datacenters,
+as transceiver speeds have increased, lasers have required increasing amounts of power to transmit data effectively. Lasers generate
+more heat at higher power resulting in more frequent laser failures. Data center operators have begun to use “remote light sources”
+to make the retrofit of lasers in transceiver modules easier to accomplish in the field. In both the AI-ML and remote light source segments,
+cost and ability to scale to high volumes are vital. We believe that packaged light sources based on the POET Optical Interposer can
+meet industry need much more readily than conventional optics.
+3
+Research
+& Development
+Beginning
+in 2017, POET began designing lasers for data communications applications and directed DenseLight Semiconductors, Pte. Ltd., a former
+subsidiary of the Company, to build such lasers to be compatible with the Optical Interposer platform. In 2019, the Company decided to
+adopt a “fab light” strategy, common among semiconductor companies, and divested its fabrication operations through the sale
+of DenseLight in November of that year. From 2018 - 2020, virtually all the R&D spending in the Company was dedicated to design &
+development of the Optical Interposer as a versatile platform technology, replete with features that enhance its utility across a variety
+of application spaces.
+During
+the second half of 2021, the Company transitioned to product development by investing more than $2 million in the design & development
+of 100G and 200G optical engines in several configurations, including customized designs for specific customers and applications. Samples
+of these optical engines were made available and delivered to customers in 2022. In addition to its 100G and 200G optical engine product
+developments, the Company invested approximately $10 million in design, development and engineering programs related to its 400G and
+800G optical engine products, packaged light sources, co-packaged optics designs and fabrication techniques. The Company is expected
+to invest an additional $10 million in 2023 in ongoing development of these products.
+Target
+Markets
+Data
+Center Market
+To
+support the substantial increase in bandwidth consumption, internet data center operators are increasing the scale of their internet
+data centers and deploying infrastructure capable of higher data transmission rates. At the present time, much of the industry is moving
+from 100G to 400G and higher. In recent years, several leading internet companies have adopted more open data center architectures and
+consequently, these companies are more willing to work with non-traditional equipment and optical device vendors. As transceiver speeds
+have increased the cost and complexity of assembling optical modules has also increased, with few module makers having the ability to
+achieve economies of scale with conventional, non-semiconductor-based approaches. This market also includes co-packaged optics (CPO),
+which merge switch ASICs with photonics in the same package. We believe that products incorporating the Company’s unique technology
+will enable POET to capture a significant share of this large market, especially at the cutting edge of higher speeds, particularly as
+data centers transition from 400G to 800G and beyond.
+LightCounting 1
+estimates the value of the total shipments of ethernet transceivers at all speeds at approximately $5.7B in 2023, growing to $9.4B
+in 2027.
+AI-ML
+and Remote Light Source Markets
+In
+the AI-ML accelerator market, there are numerous established companies and start-ups addressing the need to lower power consumption of
+the electronic processors (GPUs), while increasing the speed for highly sought-after artificial intelligence software applications. To
+achieve lower power, several device makers are beginning to utilize light, instead of electrons to either perform certain computations,
+or to manage data traveling in and out of the chips. Using light offers significant advantages of speed and lower heat generation than
+comparable electronic-only GPUs. The AI-ML chip markets are already larger than the transceiver market and are growing at much higher
+rates.
+In
+Q3 2022, PitchBook 2 estimated the total market for AI chips to be approximately $23B growing to almost $55B by 2025. In
+an earlier report on the same subject, Pitchbook acknowledged the long-term potential for deployment of photonic processors as replacements
+for GPUs in data centers, but did not estimate the current or future market size for such chips. Celestial AI, a customer of POET, reported
+in its announcement of its Series A funding in February 2022 that its accelerator products serve an addressable market that is projected
+by Omdia to exceed $70B in 2025 3 . POET estimates that light source components of the AI-ML chip market will range between
+1% and 5% of the light-based portion of the AI chip market.
+1 LightCounting
+“Ethernet Transceivers Forecast” September 2022.
+2
+PitchBook Data Inc., “Emerging Tech Research” and “Q1 and Q3 2022 Artificial Intelligence & Machine Learning
+Reports”, Brendan Burke, Senior Analyst.
+3
+“Celestial AI Raises $56 Million Series A to Disrupt the Artificial Intelligence Chipset Industry with Novel Photonic-Electronic
+Technology Platform”, February 4, 2022, Businesswire.
+4
+Other
+Potential Photonics Markets
+Other
+markets for POET’s integrated photonics solutions include 5G interconnect markets, such as PON and GPON, edge computing for machine-to-machine
+communications, and selected sensing markets, including LIDAR, Optical Coherence Tomography for medical devices, and certain consumer
+products, such as virtual reality systems.
+Manufacturing
+To address the challenge of producing devices in the large quantities
+that are needed by customers in the high-volume data communications industry, POET entered into an agreement in late 2020 with Xiamen
+Sanan Integrated Circuit Co. Ltd. (“Sanan IC”), a subsidiary of Sanan Optoelectronics Xiamen Co. Ltd. to form a joint venture
+to assemble, test and sell POET-designed optical engines in high volumes. Sanan is the world’s largest manufacturer of compound
+semiconductor devices, producing over 25 million eight-inch wafers per year across a variety of substrate types and applications. The
+objective of the joint venture company, which is named “Super Photonics Xiamen” (“SPX”) is to assemble, test and
+sell optical engines based on the POET Optical Interposer, along with devices procured from various suppliers, including Sanan IC, into
+finished products. Optical engines for 100G and 200G applications will be sold exclusively world-wide by SPX. 400G optical engines will
+be sold by SPX in the China territory while the Company will sell 400G optical engines to customers in the United States, Europe and elsewhere
+outside the China territory. Volume production of optical engines and packaged light sources designed for specific customers with high
+volumes is expected to ramp in mid-2024.
+Our
+Strategy
+Our
+vision for the Company is to become a global leader in chip-scale photonic solutions by deploying products based on our Optical Interposer
+technology and optical engine designs over a broad range of vertical market applications. Our Mission for the Company is to establish
+an industry leadership position based on the full “semiconductorization” of the photonics industry, producing validated,
+disruptive, IP protected products globally.
+We
+recently refined our strategy to reflect our current thinking about how best to achieve our vision and mission for the Company:
+●
+Support
+Super Photonics Xiamen (SPX), a joint venture between POET and Sanan IC, as an independent company to drive growth in optical transceivers
+and deliver maximum cash flow to partners . POET’s designs for Optical Engines are assembled by SPX into samples
+that customers can test and are designed-in to modules supplied to end-users, such as network equipment companies and data center
+operators. POET’s shortest path to commercial success and its ability to generate profits over the longer term are directly
+influenced by the level of support that it can provide to the joint venture. Delivery of samples and subsequent sales of Optical
+Engines to customers in China, where virtually all optical transceiver module manufacturers are located, demonstrate the technological
+viability and market acceptance of POET’s designs. Sales and production by SPX further demonstrate an ability to rapidly scale
+volumes to meet customer demand. As SPX builds a revenue base it becomes an asset for generating cash in the form of dividends. Prior
+to a future planned exit on the Shanghai Exchange, opportunities to sell a portion of POET’s equity interest in SPX is also
+a possibility.
+5
+●
+Engage
+with industry leaders and incumbents. We will continue to promote the potential of the Optical Interposer and POET-designed
+Optical Engines to solve critical challenges with current approaches to data transfer in data center and telecom applications, both
+in pluggable transceivers and co-packaged optics . We believe that the size, performance and design flexibility of POET’s
+chiplet approach to integration is an enabling technology that will allow POET to enter markets where relatively few competitors
+will have the requisite technology to succeed.
+●
+Transition
+to making Optical Transceiver Modules for direct sales to end-users . In addition to adding features to the Optical
+Interposer, we have added essential electronic components, such as Trans Impedance Amplifiers (TIAs) and laser drivers to the interposer
+platform, which improves performance and lowers the cost of module assembly. We intend to add the necessary capabilities for design
+and development optical transceiver modules to our existent capabilities in Optical Interposer and Optical Engine design. Being most
+familiar with the unique capabilities of our technology, we believe that we are in a position to rapidly extend our expertise to
+complete optical modules. Doing so has the advantage of avoiding a lengthy sales and qualification cycle (i.e., selling to module
+makers who then sell to end users) and being able to sell directly to end users, showcasing our own branded products to network equipment
+suppliers and data center operators.
+●
+Establish
+additional fabrication and sales operations for advanced, high-speed transceiver modules and packaged light sources. Internally,
+we refer to this our “China plus One” strategy, which is only partially dictated by the current international political
+climate. We are planning to develop our advanced products as modules and packaged products that we will sell directly to end-users,
+which will require additional fabrication, assembly, marketing and sales operations. In addition, we expect that as we approach other
+vertical market applications outside of optical transceivers and packaged light sources, our strategy may include the formation additional
+partnerships in those market segments in order to develop appropriate strategies for the fabrication of devices whose functions will
+be materially different from those of transceivers and with correspondingly different distribution and sales. The form of such partnerships
+may also be different than what was established for transceivers.
+●
+Pursue
+complementary strategic alliance or acquisition opportunities for inorganic growth . We intend to evaluate and selectively
+pursue strategic alliances or acquisition opportunities for growth and vertical integration that we believe will accelerate our penetration
+of specific applications or vertical markets with our technology or products.
+●
+Explore
+technology licensing opportunities for growth in non-target sectors . It is not possible for the Company to pursue
+all potential applications for the POET Optical Interposer. We will carefully consider opportunities to license our technology to
+others when and if appropriate.
+6
+Our
+Products
+POET
+Optical Engine Products currently include the following:
+●
+100G LR4 Tx and Rx
+●
+200G FR4 Tx and Rx
+●
+400G FR4 Rx
+●
+400G/800G FR4 Rx with integrated TIA
+●
+400G/800G FR4 Tx with integrated Driver
+●
+1.6T 4xFR4 Rx with integrated TIA
+●
+LightBar: C-Band External Light Source
+●
+LightBar: O-Band External Light Source
+Several
+other Optical Engines are currently under development, including those capable of 200G per channel in both transmit and receive.
+Intellectual
+Property
+We
+have 74 issued patents and 17 patent applications pending, including three provisional patent applications. Of the 74 issued patents,
+26 are directly related to the Optical Interposer and include fundamental design and process patents. All 17 applications pending are
+Optical Interposer-related. Multiple additional applications are in various stages of preparation. The patents cover device structures,
+underlying technology related to the Optical Interposer, applications of the technology, and fabrication processes. We intend to continue
+to apply for additional patents in the future. We believe these patents provide a significant barrier to entry against competition along
+with company trade secrets and know-how. Currently, we are working on the design of integrated devices, manufacturing processes, assembly
+and packaging processes, and products for data communication applications in the data center market.
+MD&A
+Highlights
+Net loss for the nine months ended September 30, 2023 was $14,796,651.
+The net loss included $7,505,863 incurred for research and development activities directly related to the development and commercialization
+of the POET Optical Interposer and POET Optical Engine products. Research and development included non-cash costs of $1,109,171 related
+to stock-based compensation. $7,773,022 was incurred for selling, marketing and administration expenses which included non-cash costs
+of $2,042,185 related to stock-based compensation and $1,416,271 related to depreciation and amortization.
+The
+Company incurred $56,635 of interest expense, of which $40,067 was non-cash.
+The Company recorded a gain on contribution of intellectual property
+to joint venture of $527,857. Additionally, the Company’s share of loss in joint venture was limited to $527,827 as required by
+standards.
+The Company’s statement of financial position as of September
+30, 2023 reflects assets with a book value of $10,709,088 compared to $15,390,453 as of December 31, 2022. Forty six percent (46%) of
+the book value at September 30, 2023 was in current assets consisting primarily of cash and cash equivalents of $4,476,478 compared to
+sixty two percent (62%) of the book value as of December 31, 2022, which consisted primarily of cash and cash equivalents of $9,229,845.
+7
+Significant
+Events and Milestones for the Nine Months Ended September 30, 2023
+We
+achieved the following significant milestones during the nine months ended September 30, 2023:
+1)
+On January 10, 2023, the Company announced that it has released to production four optical engine products, an achievement that advances
+the Company’s commercialization goals. The small form factor optical engines with integrated directly modulated lasers (DMLs),
+optical multiplexer, high-speed photodiodes and optical demultiplexer enable low power, cost-efficient and highly scalable optical engines
+for pluggable transceivers for telecom and data center markets. The four products include100G CWDM4 TX and RX, 200G FR4 RX and 400G FR4
+RX.
+2)
+On
+January 18, 2023, the Company announced that it has developed multi-engine 100G CWDM4 and 100G LR4 chip-on-board solutions for its
+lead customer, ADVA Optical Networking SE. ADVA will use POET’s multi-engine transmit and receive chips in an innovative pluggable
+solution that packs the functionality of four independent 100Gbit/s interfaces into a single QSFP-DD housing.
+3)
+On
+January 23, 2023, the Company announced that the terms of 1,764,720 common share purchase warrants with an expiry date of February
+11, 2023 and an exercise price of C$11.50 were amended to expire on May 11, 2023 at an amended price of C$4.25.
+4)
+On
+February 2, 2023, the Company announced that it has started sampling 400G FR4 and 800G 2xFR4 receive optical engines (RXOEs). POET
+will partner with Luxshare Technology Co., Ltd. (“LuxshareTech”), a global technology provider for data-communication
+facilities and enterprise-level products to enable the sale of power-efficient and cost-optimized 400G and 800G transceiver solutions.
+5)
+On
+February 22, 2023, the Company announced that it had reached an agreement with Beijing FeiYunYi Technology (BFYY) to purchase of
+POET-designed custom optical engines from SPX for transceiver modules to be sold to the telecom industry. The agreement was valued
+at $1 million over a two-year period, and includes NRE for POET and a purchase order of 10,000 units from SPX.
+6)
+On
+March 2, 2023, the Company released “POET Infinity™”, a chiplet-based transmitter platform for 400G, 800G and 1.6T
+pluggable transceivers and co-packaged optics solutions.
+7)
+On
+March 6, 2023, the Company announced a collaboration with Vanguard Automation GmbH, to enable the integration of Micro-Lenses on
+the POET Optical Interposer to maximize coupling efficiency while maintaining POET’s wafer-level passive assembly process.
+8)
+On
+April 25, 2023, the Company released “POET Starlight™”, a packaged light source solution for AI applications. The
+Company also announced an agreement with Celestial AI, creators of the Photonic FabricTM, for development and production of POET
+Starlight packaged light sources and has received an advanced purchase order for initial production units.
+9)
+On
+June 14, 2023, the Company announced alpha sample readiness of “POET Infinity™”, a chiplet-based transmitter platform
+for 400G, 800G and 1.6T pluggable transceivers and co-packaged optics solutions. Two lead customers have agreed to partner with POET
+to test the alpha version of the Infinity chiplet.
+10)
+On
+June 29, 2023, the Company announced that it had entered into an equity distribution agreement (the “Equity Distribution Agreement”)
+with Craig-Hallum Capital Group LLC (“Craig-Hallum”) and Cormark Securities Inc. (“Cormark”, and together
+with Craig-Hallum, the “Agents”) as agents, pursuant to which the Company has established an at-the-market equity offering
+program (the “ATM Program”). Pursuant to the ATM Program, the Company may, at its discretion and from time-to-time during
+the term of the ATM Agreement, issue and sell, through the Agents, such number of common shares of the Company (“Common Shares”)
+as would result in aggregate gross proceeds to the Company of up to US$30 million.
+11)
+On July 26, 2023, the Company announced the sample readiness of 100G
+LR4 Transmit and 100G LR4 Receive optical engines that are part of “POET Legacy™” product family.
+12)
+On August 15, 2023, the Company announced the development of an optical
+interposer platform for 1.6T transceivers and beyond using 200G per lane technology for next generation data center and AI networks.
+13)
+Between September 6 th and 8 th , 2023, the Company
+showed live demonstrations of end-to-end optical solutions for 800G, 400G, and 200G optical transceivers using its highly integrated optical
+engines at the China International Optoelectronics Expo.
+8
+Summary
+of Quarterly Results
+Following
+are the highlights of financial data of the Company for the most recently completed eight quarters, which have been derived from the
+Company’s consolidated financial statements prepared in accordance with IFRS:
+Sep
+30/23
+Jun 30/23
+Mar 31/23
+Dec 31/22
+Sep 30/22
+Jun 30/22
+Mar 31/22
+Dec
+31/21
+Sales
+$ -
+$ 177,390
+$ 180,836
+$ 199,559
+$ 232,928
+$ 120,261
+$ -
+$ -
+Research and development
+2,043,264
+2,036,953
+2,316,475
+2,745,886
+1,884,767
+1,829,369
+2,232,534
+2,010,793
+Depreciation and amortization
+508,484
+462,743
+445,044
+341,017
+336,446
+313,677
+302,018
+281,178
+Professional fees
+273,905
+255,094
+313,404
+430,668
+203,778
+291,185
+248,112
+269,306
+Wages and benefits
+640,241
+655,066
+677,924
+665,682
+646,349
+728,313
+608,518
+610,428
+Impact of joint venture
+-
+-
+-
+405,471
+(116,747 )
+745,961
+430,321
+(1,022,417 )
+Stock-based compensation (1)
+1,251,648
+697,690
+1,202,018
+1,588,706
+880,796
+969,661
+997,441
+1,181,375
+General expense, rent and facility
+429,457
+502,707
+566,768
+359,062
+484,559
+552,410
+622,060
+377,223
+Interest expense
+34,890
+11,214
+10,531
+11,610
+11,707
+12,627
+13,794
+15,512
+Other (income), including interest
+(45,448 )
+(57,454 )
+(78,041 )
+(68,592 )
+(57,429 )
+(40,300 )
+(21,999 )
+(26,650 )
+Net loss, before taxes
+$ 5,136,441
+$ 4,386,623
+$ 5,273,287
+$ 6,279,951
+$ 4,041,298
+$ 5,282,642
+$ 5,432,799
+$ 3,696,748
+Net loss per share
+$ (0.13 )
+$ (0.11 )
+$ (0.14 )
+$ (0.17 )
+$ (0.11 )
+$ (0.14 )
+$ (0.15 )
+$ (0.10 )
+(1)
+Stock based compensation
+allocated between General & Administrative and Research & Development issuances are combined for MD&A purposes. For financial
+statement presentation purposes, stock-based compensation is split between General & Administrative and Research &
+Development .
+Explanation of Quarterly Results for the three months ended September
+30, 2023 (“Q3 2023”) compared to the same three-month period in the prior year (“Q3 2022”)
+Net loss for Q3 2023 was $5,136,441 compared to a net loss of $4,041,298
+in Q3 2022, an increase of $1,095,143 (27%). The following discusses the significant variances between Q3 2023 and Q3 2022.
+Non-recurring engineering revenue (“NRE”) was nil in Q3
+2023 compared to $232,928 in Q3 2022. The Company has been providing NRE services to multiple customers for unique projects that are being
+addressed utilizing the capabilities of the POET Optical Interposer. While the Company continues to provide services to these customers,
+no recognizable revenue services were provided to these customers in Q3 2023. The Company expects to recognize additional revenue in the
+coming quarters.
+R&D increased by $158,497 (8%) to $2,043,264 in Q3 2023 from $1,884,767
+in Q3 2022. R&D for a Company at this stage of development will vary from period to period based on the development cycle and the
+immediate product development needs of the Company. During Q3 2023, R&D supplies and sub-contractor fees were the drivers for the
+relatively small increase over the comparable period.
+Depreciation and amortization increased by $172,038 (51%) to $508,484
+in Q3 2023 from $336,446 in Q3 2022. In late 2019, the Company embarked on a “fab-light” strategy with a required test facilities
+situated in Singapore and China and design facility in Allentown, Pennsylvania. The increase in depreciation and amortization was a result
+of assets acquired for the new facilities.
+Impact of joint venture was nil in Q3 2023 compared to a net gain
+of $116,747 in Q3 2022. The impact of joint venture relates to the Company’s activity related to its investment in SPX. During Q3
+2023, the Company recorded a non cash gain on its contribution of IP to SPX of $527,857 compared to $496,115 in Q3 2022. The Company recognized
+its share of SPX’s losses using the equity method. The Company recognized approximately 79.9% or $(2,329,103) of the net operating
+loss of SPX for Q3 2023. Although the Company’s equity ownership of SPX approximated 78.4% at September 30, 2023, the Company only
+recognized $(527,857) of its share of loss in SPX in Q3 2023 because the value of its investment is carried at nil on the consolidated
+statements of financial position precluding further loss recognition under the standards.
+9
+Professional fees increased by $70,127 (34%) to $273,905
+in Q3 2023 from $203,778 in Q3 2022. During Q3 2023, the Company incurred legal fees related to the preparation of regulatory documents
+to support the at-the-market financing program.
+Non-cash stock-based compensation increased by $370,852
+(42%) to $1,251,648 in Q3 2023 from $880,796 in Q3 2022. The valuation of stock options is driven by a number of factors including the
+number of options granted, the strike price and the volatility of the Company’s stock. The stock option expense is dependent on
+the timing of the stock option grant and the amortization of the options as they vest. The stock options vest in accordance with the policies
+determined by the Board of Directors at the time of the grant consistent with the provisions of the Plan.
+General expenses and rent decreased by $55,102 (11%)
+to $429,457 in Q3 2023 to $484,559 in Q3 2022. The Company reduced the services of some investor relations providers in Q3 2023.
+Other (income), including interest decreased by $11,981 (21%) to $45,448
+in Q3 2023 from $57,429 in Q3 2022. The amounts recognized in both periods were all interest income earned on the Company’s cash
+reserves.
+Explanation of Results for the nine months ended September 30, 2023
+(the “period”) compared to the same nine-month period in the prior year (“2022”)
+Net loss for the period was $14,796,351 compared to
+a net loss of $14,756,739 in 2022, a decrease of $39,612. The following discusses the significant variances between the period and 2022.
+R&D increased by $450,022 (8%) to $6,396,692 in
+the period from $5,946,670 in 2022. The increase in R&D is a result of the new stage of the Company’s development where it is
+transitioning from technology development to product development. As the transition occurs, qualified engineers are needed to fill roles
+related to new product introduction and quality control. Wages and benefits component of R&D increased by $231,226 from $2,990,224
+in 2022 to $3,221,450 in the period.
+Depreciation and amortization increased by $464,130
+(49%) to $1,416,271 in the period from $952,141 in 2022. With the sale of DenseLight, the Company embarked on a “fab-light”
+strategy with a required test facility situated in Singapore and product development facility in China. The increase in depreciation and
+amortization was a result of assets acquired for these new facilities.
+Impact of joint venture was nil in the period compared
+to a net loss of $1,059,535 in 2022. The impact of joint venture relates to the Company’s activity related to its investment in
+SPX. During 2023, the Company recorded a non cash gain on its contribution of IP to SPX of $527,857 compared to $496,115 in 2022. The
+Company recognized its share of SPX’s losses using the equity method. The Company recognized approximately 79.9% or $(2,329,103)
+of the net operating loss of SPX for 2023 compared to $(1,555,650) or 87.9% in 2022. Although the Company’s equity ownership of
+SPX approximated 78.4% at September 30, 2023, the Company only recognized $(527,857) of its share of loss in SPX in 2023 because the value
+of its investment is carried at nil on the consolidated statements of financial position precluding further loss recognition under the
+standards.
+Professional fees increased by $99,328 (13%) to $842,403
+in 2023 from $743,075 in 2022. During 2023, the Company incurred legal fees related to the preparation of regulatory documents to support
+the at-the-market financing program.
+General expenses and rent decreased by $160,097 (10%)
+to $1,498,932 in the period from $1,659,029 in 2022. In 2022, the Company engaged with a firm to assist with a new shareholder outreach
+program at a cost of $73,280. Additionally, the Company paid $30,000 to the transfer agent in annual fees to manage to various trust agreements
+related to debenture warrants outstanding in 2022, there were no debentures outstanding in 2023. The Company also reduced the services
+of certain investor relations advisers in 2023.
+Non-cash stock-based compensation increased by $303,458
+(11%) to $3,151,356 in 2023 from $2,847,898 in 2022. The valuation of stock options is driven by a number of factors including the number
+of options granted, the strike price and the volatility of the Company’s stock. The stock option expense is dependent on the timing
+of the stock option grant and the amortization of the options as they vest. The stock options vest in accordance with the policies determined
+by the Board of Directors at the time of the grant consistent with the provisions of the Plan.
+Other (income), including interest increased by $61,215 (51%) to $180,943
+in the period from $119,728 in 2022. The increase in other (income), including interest was a result of interest income earned from short-term
+investments and cash equivalents during the period.
+10
+Explanation
+of Material Variations by Quarter for the Last Eight Quarters
+Q3 2023 compared to Q2 2023
+Net loss increased by $749,818 (17%) in Q3 2023 to
+$5,136,441 from 4,386,623 in Q2 2023.
+Non-recurring engineering revenue (“NRE”)
+was nil in Q3 2023 compared to $177,390 in Q2 2023. The Company has been providing NRE services to multiple customers for unique projects
+that are being addressed utilizing the capabilities of the POET Optical Interposer. While the Company continues to provide services to
+these customers, no recognizable revenue services were provided to these customers in Q3 2023. The Company expects to recognize additional
+revenue in the coming quarters.
+Depreciation and amortization increased by $45,741
+(10%) to $508,484 in Q3 2023 from $462,743 in Q2 2023. With the sale of DenseLight, the Company embarked on a “fab-light”
+strategy with a required test facility situated in Singapore and product development facility in China. The increase in depreciation and
+amortization was a result of assets acquired for these new facilities.
+Non-cash stock-based compensation increased by $553,958
+(79%) to $1,251,648 in Q3 2023 from $697,690 in Q2 2023. The valuation of stock options is driven by a number of factors including the
+number of options granted, the strike price and the volatility of the Company’s stock. The stock option expense is dependent on
+the timing of the stock option grant and the amortization of the options as they vest. The stock options vest in accordance with the policies
+determined by the Board of Directors at the time of the grant consistent with the provisions of the Plan.
+General expenses and rent decreased by $73,250 (15%) to $429,457 in
+Q3 2023 from $502,707 in Q2 2023. The Company reduced the services of some investor relations providers in Q3 2023.
+Q2
+2023 compared to Q1 2023
+Net
+loss decreased by $886,664 (17%) in Q2 2023 to $4,386,623 from $5,273,287 in Q1 2023.
+R&D
+decreased by $279,522 (12%) to $2,036,953 in Q2 2023 from $2,316,475 in Q1 2023. R&D for a Company at this stage of development will
+vary from period to period as variable expenses with contract manufacturers will fluctuate based on the development cycle and the immediate
+product development needs of the Company. During Q1 2023, the Company incurred higher subcontractor and supplier costs than Q2 2023.
+The higher costs were incurred in order to bring new products to market. The Company released multiple new products in 2023.
+Professional
+fees decreased by $58,310 (19%) to $255,094 in Q2 2023 from $313,404 in Q1 2023. Professional fees in Q1 2023 were higher than Q2 2023
+due to the professional fees incurred related to the preparation and filing of the Company’s annual reports.
+Non-cash
+stock-based compensation decreased by $504,328 (42%) to $697,690 in Q2 2023 from $1,202,018 in Q1 2023. The valuation of stock options
+is driven by a number of factors including the number of options granted, the strike price and the volatility of the Company’s
+stock. The stock option expense is dependent on the timing of the stock option grant and the amortization of the options as they vest.
+The stock options vest in accordance with the policies determined by the Board of Directors at the time of the grant consistent with
+the provisions of the Plan.
+General
+expenses and rent decreased by $64,061 (11%) to $502,707 in Q2 2023 from $566,768 in Q1 2023. During Q1 2023, the Company paid its annual
+fees associated with the Company’s exchange listings along with the filing fees for its annual reports.
+Q1
+2023 compared to Q4 2022
+Net
+loss decreased by $1,006,664 (16%) in Q1 2023 to $5,273,287 from $6,279,951 in Q4 2022.
+R&D
+decreased by $429,411 (16%) to $2,316,475 in Q1 2023 from $2,745,886 in Q4 2022. R&D for a Company at this stage of development will
+vary from period to period as variable expenses with contract manufacturers will fluctuate based on the development cycle and the immediate
+product development needs of the Company. During Q4 2022, the Company incurred higher subcontractor costs than Q1 2023 in order to bring
+new products to market. The Company released multiple new products in Q1 2023.
+Impact
+of joint venture was nil in Q1 2023 compared to a net loss of $405,471 in Q4 2022. The impact of joint venture relates to the Company’s
+activity related to its investment in SPX. The Company recognized its share of SPX’s losses using the equity method. The Company
+recognized approximately 80.7% or $405,471 of the net operating loss of SPX for Q4 2022. Although the Company’s equity ownership
+of SPX approximated 80.7% at March 31, 2023, the Company did not recognize its share of loss in SPX in Q1 2023 because the value of its
+investment is carried at nil on the consolidated statements of financial position precluding further loss recognition under the standards.
+Non-cash
+stock-based compensation decreased by $386,688 (24%) to $1,202,018 in Q1 2023 from $1,588,706 in Q4 2022. The valuation of stock options
+is driven by a number of factors including the number of options granted, the strike price and the volatility of the Company’s
+stock. The stock option expense is dependent on the timing of the stock option grant and the amortization of the options as they vest.
+The stock options vest in accordance with the policies determined by the Board of Directors at the time of the grant consistent with
+the provisions of the Plan.
+General
+expenses and rent increased by $207,706 (58%) to $566,768 in Q1 2023 from $359,062 in Q4 2022. The increase was a result of the annual
+fees associated with the Company’s exchange listings, various shareholder outreach programs and costs related to the Company’s
+presentation at the Optical Fiber Conference.
+Professional
+fees decreased by $117,264 (27%) to $313,404 in Q1 2023 from $430,668 in Q4 2022. Professional fees in Q4 2022 included accruals for
+auditing fees related to the 2022 Sarbanes Oxley audit of internal controls and legal fees incurred related to the amendments to certain
+warrants.
+Depreciation
+and amortization increased by $104,027 (31%) to $445,044 in Q1 2023 from $341,017 in Q4 2022. The increased depreciation and amortization
+are a result of the purchase of new equipment in 2022, some of which have been commissioned for use.
+11
+Q4
+2022 compared to Q3 2022
+Net
+loss increased by $2,238,653 (55%) in Q4 2022 to $6,279,951 from $4,041,298 in Q3 2022.
+R&D
+increased by $861,119 (46%) to $2,745,886 in Q4 2022 from $1,884,767 in Q3 2022. R&D for a Company at this stage of development will
+vary from period to period as expenses with contract manufacturers will fluctuate based on the development cycle and the immediate product
+development needs of the Company. The increase in Q4 2022 was a result of certain NRE commitments and the Company’s push to bring
+certain products to market in 2023.
+Professional
+fees increased by $226,890 (111%) to $430,668 in Q4 2022 from $203,778 in Q3 2022. Professional fees in Q4 2022 included accruals for
+auditing fees related to the 2022 Sarbanes Oxley audit of internal controls and legal fees incurred related to the amendments to certain
+warrants.
+Impact
+of joint venture decreased by $522,218 (447%) which resulted in a net loss of $405,471 in Q4 2022 compared to net gain of $116,747 in
+Q3 2022. The impact of joint venture relates to the Company’s activity related to its investment in SPX. The impact of joint venture
+in Q4 2022 included a non-cash gain of $1,250,872 which was offset by a non-cash share of the loss of SPX of $1,656,343. The impact of
+joint venture in Q3 2022 included a non-cash gain of $496,115 offset by a non-cash share of the loss of SPX of $379,368.
+Non-cash
+stock-based compensation increased by $707,910 (80%) to $1,588,706 in Q4 2022 from $880,796 in Q3 2022. The valuation of stock options
+is driven by a number of factors including the number of options granted, the strike price and the volatility of the Company’s
+stock. The stock option expense is dependent on the timing of the stock option grant and the amortization of the options as they vest.
+The stock options vest in accordance with the policies determined by the Board of Directors at the time of the grant consistent with
+the provisions of the Plan.
+General
+expenses and rent decreased by $125,497 (26%) to $359,062 in Q4 2022 from $484,559 in Q3 2022. The Company incurred regulator and annual
+meeting related costs in Q3 in which were not incurred in Q4 2022. The Company also incurred significant travel related to costs in Q3
+2022 as certain executives spent substantial time in Asia advancing the Company’s commercialization effort.
+Q3
+2022 compared to Q2 2022
+Net
+loss decreased by $1,241,344 (23%) in Q3 2022 to $4,041,298 from $5,282,642 in Q2 2022.
+Professional
+fees decreased by $87,407 (30%) to $203,778 in Q3 2022 from $291,185 in Q2 2022. Professional fees in Q2 2022 included auditing fees
+related to the Sarbanes Oxley audit of internal controls for fiscal 2021. The audit invoice was received in Q2 2022.
+Impact
+of joint venture increased by $862,708 (116%) which resulted in a net gain of $116,747 in Q3 2022 compared to loss of $745,961 in Q2
+2022. The impact of joint venture relates to the Company’s activity related to its investment in SPX. The impact of joint venture
+in Q3 2022 included a non-cash gain of $496,115 offset by a non-cash share of the loss of SPX of $379,368. The Company did not record
+a gain in Q2 2022. The Company records a gain on its contribution of intellectual property to the joint venture whenever SAIC increases
+its contributions to the joint venture.
+Other
+(income), including interest increased by $17,129 (43%) to $57,429 in Q3 2022 from $40,300 in Q2 2022. The increase in other (income),
+including interest was a result of interest income earned from short-term investments and cash equivalents during the period.
+General
+expenses and rent decreased by $67,851 (12%) to $484,559 in Q3 2022 from $552,410 in Q2 2022. The Company incurred regulatory fees in
+Q2 2022 related to its annual filings, filing fees related to its exchange membership fees. Similar filing fees were not incurred in
+Q3 2022.
+12
+Q2
+2022 compared to Q1 2022
+Net
+loss decreased by $150,157 (3%) in Q2 2022 to $5,282,642 from $5,432,799 in Q1 2022.
+R&D
+decreased by $403,165 (18%) to $1,829,369 in Q2 2022 from $2,232,534 in Q1 2022. R&D for a Company at this stage of development will
+vary from period to period as variable expenses with contract manufacturers will fluctuate based on the development cycle and the immediate
+product development needs of the Company. The decrease in Q2 2022 was partially a result of the supply chain challenges currently faced
+in the semiconductor industry.
+Professional
+fees increased by $43,073 (17%) to $291,185 in Q2 2022 from $248,112 in Q1 2022. The increase is a result of the auditing fee related
+to the Sarbanes Oxley audit of internal controls related to fiscal 2021. The audit invoice was received in Q2 2022.
+Wages
+and benefits increased by $119,795 (20%) to $728,313 in Q2 2022 from $608,518 in Q1 2022. The Company hired a new VP Product Line Management
+in Q2 2022. Additionally, the wages of the GM in China is now classified as administrative wages. Those wages were classified as R&D
+in Q1 2022.
+Impact
+of joint venture increased by $315,640 (73%) to $745,961 from $430,321 in Q1 2022. The impact of joint venture relates to the Company’s
+activity related to its investment in SPX. The increased loss is a function of the increased activity at SPX as the joint venture prepares
+for production activities later in 2022 and 2023. The Company recognized approximately 88.5% of the net operating loss of SPX for Q2
+2022 and Q1 2022.
+General
+expenses and rent decreased by $69,650 (11%) to $552,410 in Q2 2022 from $622,060 in Q1 2022. In Q1 2022, the Company incurred one-time
+costs associated with listing on the Nasdaq, costs associated with the new shareholder outreach program and costs related to the Company’s
+presentation at the Optical Fiber Conference. The Company did not have similar costs in Q2 2022. Those costs were however, offset by
+the increased D&O insurance in Q2 2022.
+Other
+(income), including interest increased by $18,301 (83%) to $40,300 in Q2 2022 from $21,999 in Q1 2022. The increase in other (income),
+including interest was a result of interest income earned from short-term investments and cash equivalents during the period.
+Q1
+2022 compared to Q4 2021
+Net
+loss increased by $1,736,051 (47%) in Q1 2022 to $5,432,799 from $3,696,748 in Q4 2021.
+R&D
+increased by $221,741 (11%) to $2,232,534 in Q1 2022 from $2,010,793 in Q4 2021. R&D for a Company at this stage of development will
+vary from period to period as variable expenses with contract manufacturers will fluctuate based on the development cycle and the immediate
+product development needs of the Company. The increase in Q1 2022 was a result of certain NRE commitments with large tier one industry
+suppliers established to manage the Company’s supply chain and associated risks.
+Impact
+of joint venture decreased by $1,452,738 (142%) to a loss of $(430,321) from a net gain of $1,022,417 in Q4 2021. The impact of joint
+venture relates to the Company’s activity related to its investment in SPX. During Q1 2022, the Company recognized its share of
+SPX’s losses using the equity method. The Company recognized approximately 88.5% or $430,321 of the net operating loss of SPX for
+Q1 2022 compared to approximately 92.8% or $507,583 of the net operating loss of SPX for Q4 2021. Additionally, in Q4 2021, the Company
+recognized a gain of $1,530,000 related to its contribution of intellectual property to SPX in accordance with IAS 28. The Company did
+not recognize a gain in Q1 2022.
+General
+expenses and rent increased by $244,837 (65%) to $622,060 in Q1 2022 from $377,223 in Q4 2021. The increase was a result of the fees
+associated with listing on the Nasdaq, costs associated with the new shareholder outreach program and costs related to the Company’s
+presentation at the Optical Fiber Conference.
+Non-cash
+stock-based compensation decreased by $183,934 (16%) to $997,441 in Q1 2022 from $1,181,375 in Q4 2021. The valuation of stock options
+is driven by a number of factors including the number of options granted, the strike price and the volatility of the Company’s
+stock. The stock option expense is dependent on the timing of the stock option grant and the amortization of the options as they vest.
+The stock options vest in accordance with the policies determined by the Board of Directors at the time of the grant consistent with
+the provisions of the Plan.
+13
+Segment
+Disclosure
+The
+Company and its subsidiaries operate in a single segment; the design, manufacture and sale of semiconductor products and services for
+commercial applications. The Company’s operating and reporting segment reflects the management reporting structure of the organization
+and the manner in which the chief operating decision maker regularly assesses information for decision making purposes, including the
+allocation of resources. A summary of the Company’s operations is below:
+OPEL,
+ODIS, POET Shenzhen and PTS
+OPEL,
+ODIS, POET Shenzhen and PTS are the designers and developers of the POET Optical Interposer platform and optical engines based on the
+POET Optical Interposer platform..
+BB
+Photonics
+BB
+Photonics developed photonic integrated components for the datacom and telecom markets utilizing embedded dielectric technology that
+enabled the partial integration of active and passive devices into photonic integrated circuits. BB Photonics’ operation is currently
+dormant.
+On
+a consolidated basis, the Company operates geographically in Singapore, China (collectively “Asia”), the United States and
+Canada. Geographical information is as follows:
+2023
+As of September 30,
+Asia
+US
+Canada
+Consolidated
+Current assets
+$ 165,961
+$ 417,624
+$ 4,355,815
+$ 4,939,400
+Property and equipment
+4,300,857
+579,393
+-
+4,880,250
+Patents and licenses
+-
+523,757
+-
+523,757
+Right of use assets
+242,168
+123,513
+-
+365,681
+Total Assets
+$ 4,708,986
+$ 1,644,287
+$ 4,355,815
+$ 10,709,088
+For the Nine Months Ended September 30,
+Asia
+US
+Canada
+Consolidated
+Revenue
+$ 358,226
+$ -
+$ -
+$ 358,226
+Selling, marketing and
+administration
+$ (2,025,536 )
+$ (4,542,054 )
+$ (1,205,432 )
+$ (7,773,022 )
+Research and development
+(4,646,713 )
+(2,739,509 )
+(119,641 )
+(7,505,863 )
+Interest expense
+(20,243 )
+(36,392 )
+-
+(56,635 )
+Share of loss in joint venture
+(527,857 )
+-
+-
+(527,857 )
+Gain from contribution of IP
+to joint venture
+527,857
+-
+-
+527,857
+Other income, including Interest
+-
+-
+180,943
+180,943
+Net loss
+$ (6,334,266 )
+$ (7,317,955 )
+$ (1,144,130 )
+$ (14,796,351 )
+2022
+As of December 31,
+Asia
+US
+Canada
+Consolidated
+Current assets
+$ 664,658
+$ 133,501
+$ 8,770,035
+$ 9,568,194
+Property and equipment
+4,496,734
+573,773
+-
+5,070,507
+Patents and licenses
+-
+510,705
+-
+510,705
+Right of use assets
+55,775
+185,272
+-
+241,047
+Total Assets
+$ 5,217,167
+$ 1,403,251
+$ 8,770,035
+$ 15,390,453
+For the Nine Months Ended September 30,
+Asia
+US
+Canada
+Consolidated
+Revenue
+$ 353,189
+$ -
+$ -
+$ 353,189
+Selling, marketing and administration
+$ (1,549,628 )
+$ (4,280,844 )
+$ (1,074,149 )
+$ (6,904,621 )
+Research and development
+(3,992,505 )
+(3,099,397 )
+(135,470 )
+(7,227,372 )
+Interest
+(14,429 )
+(23,699 )
+-
+(38,128 )
+Share of loss in joint venture
+(1,555,650 )
+-
+-
+(1,555,650 )
+Gain from contribution of IP to
+joint venture
+496,115
+-
+-
+496,115
+Other income, including interest
+-
+-
+119,728
+119,728
+Net loss
+$ (6,262,908 )
+$ (7,403,940 )
+$ (1,089,891 )
+$ (14,756,739 )
+14
+Liquidity
+and Capital Resources
+The Company had working capital of $3,284,450 on September 30, 2023
+compared to $5,751,101 on December 31, 2022. The Company’s statement of financial position as of September 30, 2023 reflects assets
+with a book value of $10,709,088 compared to $15,390,453 as of December 31, 2022. Forty six percent (46%) of the book value at September
+30, 2023 was in current assets consisting primarily of cash and cash equivalents of $4,476,478 compared to sixty two percent (62%) of
+the book value as of December 31, 2022, which consisted primarily of cash and cash equivalents of $9,229,845.
+During the period ended September 30, 2023, the Company had negative
+cash flows from operations of $12,486,310. The Company has prepared a cash flow forecast which indicates that it does not have sufficient
+cash to meet its minimum expenditure commitments and therefore needs to raise additional funds to continue as a going concern. As a result,
+there is substantial doubt about the Company’s ability to continue as a going concern for the next twelve months from the date of
+the unaudited condensed consolidated financial statements.
+To
+address the future funding requirements, management has undertaken the following initiatives:
+1.
+Initiated
+an at-the-market (“ATM”) equity offering program to raise capital by selling shares directly to the public in the open
+market.
+2.
+Raised
+gross proceeds of $983,194 from the sale of shares through the ATM.
+3.
+Established
+a strict budgetary process with a focus on maintaining an appropriate level of corporate overhead in line with the Company’s
+available cash resources.
+Although
+the Company has been successful in obtaining equity and similar financings in the past, there is no assurance that it will be able do
+so in the future. The Company does however, have a reasonable expectation that it will be able to manage its finances in order to continue
+its operations.
+Subsequent
+Events
+On
+November 1, 2023, the Company commenced an underwritten public offering in the United States (the “U.S. Offering”). Concurrently,
+the Company also commenced an offering in Canada (the “LIFE Offering” and, together with the U.S. Offering,
+the “Offering”). The Offering consists of common shares of the Company and warrants to purchase common shares and is subject
+to market conditions.
+15
+Related
+Party Transactions
+Compensation
+to key management personnel (Executive Chairman and CEO, CFO, VP Finance and administration, VP Product Line Management, President &
+General Manager of the Company, VP & General Manager of PTS, Senior VP & General Manager of Asia) for the nine months ended September
+30, 2023, was as follows:
+2023
+2022
+Salaries
+$ 1,505,341
+$ 1,472,296
+Share-based payments (1)
+1,386,341
+1,223,152
+Total
+$ 2,891,682
+$ 2,695,448
+(1)
+Share-based payments are the fair value of options granted to key management personnel and expensed during the various years as calculated
+using the Black-Scholes model.
+All
+transactions with related parties have occurred in the normal course of operations and are measured at the exchange amounts, which are
+the amounts of consideration established and agreed to by the related parties.
+Critical
+Accounting Estimates
+Property
+and equipment
+Property
+and equipment are recorded at cost. Depreciation is calculated based on the estimated useful life of the asset using the following method
+and useful lives:
+Machinery and equipment
+Straight Line, 5 years
+Leasehold improvements
+Straight Line, 5 years or life of the lease, whichever is
+less
+Office equipment
+Straight Line, 3 – 5 years
+Patents
+and licenses
+Patents
+and licenses are recorded at cost and amortized on a straight-line basis over 12 years. Ongoing maintenance costs are expensed as incurred.
+Stock-based
+Compensation
+Stock
+options and warrants awarded to non-employees are accounted for using the fair value of the instrument awarded or service provided, whichever
+is considered more reliable. Stock options and warrants awarded to employees are accounted for using the fair value method. The fair
+value of such stock options and warrants granted is recognized as an expense on a proportionate basis consistent with the vesting features
+of each tranche of the grant. The fair value is calculated using the Black-Scholes option-pricing model with assumptions applicable at
+the date of grant.
+Other
+stock-based payments
+The
+Company accounts for other stock-based payments based on the fair value of the equity instruments issued or service provided, whichever
+is more reliable.
+Cumulative
+Translation Adjustment
+IFRS
+requires certain gains and losses such as certain exchange gains and losses arising from the translation of the financial statements
+of a self-sustaining foreign operation to be included in comprehensive income.
+16
+Financial
+Instruments and Risk Management
+The
+Company’s financial instruments consist of cash and cash equivalents, short-term investments, covid-19 government support loans,
+contract liabilities and accounts payable and accrued liabilities. Unless otherwise noted, it is management’s opinion that the
+Company is not exposed to significant interest risk arising from these financial instruments. The Company estimates that carrying value
+of these instruments approximates fair value due to their short-term nature.
+The
+Company has classified financial assets and (liabilities) as follows:
+September 30,
+2023
+December 31,
+2022
+Cash and cash equivalents, measured at amortized cost:
+Cash and cash equivalents
+$ 4,476,478
+$ 9,229,845
+Accounts receivable, measured at amortized cost:
+Accounts receivable
+-
+62.842
+Other liabilities, measured at amortized cost:
+Accounts payable and accrued liabilities
+(1,353,208 )
+(3,362,430 )
+Contract liabilities
+(105,263 )
+(274,192 )
+Covid-19 government support loans
+(29,428 )
+(29,520 )
+Exchange
+Rate Risk
+The
+functional currency of each of the entities included in the accompanying consolidated financial statements is the local currency where
+the entity is domiciled. Functional currencies include the Chinese Yuan, US, Singapore and Canadian dollar. Most transactions within
+the entities are conducted in functional currencies. As such, none of the entities included in the consolidated financial statements
+engage in hedging activities. The Company is exposed to a foreign currency risk when its subsidiaries hold current assets or current
+liabilities in currencies other than its functional currency. A 10% change in foreign currencies held would increase or decrease other
+comprehensive loss by $8,200.
+Interest
+Rate Risk
+Cash
+equivalents bear interest at fixed rates, and as such, are subject to interest rate risk resulting from changes in fair value from market
+fluctuations in interest rates. The Company does not depend on interest from its investments to fund its operations.
+Credit
+Risk
+The
+Company is not exposed to credit risk at this point as all most all its services provided are paid in advance.
+World
+Economic Risk
+Like
+many other companies, the world economic climate could have an impact on the Company’s business and the business of many of its
+current and prospective customers. A slump in demand for electronic-based devices, due to a world economic crisis may impact any anticipated
+licensing revenue.
+17
+Obsolescence
+Risk
+The
+Company designs, manufactures and sells various highly technological optoelectronic products that could become obsolete should lower
+priced competitors or new technology enter the market. This would expose the company to obsolescence risk in the product offering. The
+redesign of the product offering could take significant time or could never occur.
+Liquidity
+Risk
+The
+Company predominately relies on equity funding for liquidity to meet current and foreseeable financial requirements. The Company currently
+does not maintain credit facilities. The Company’s existing cash and cash resources are not considered sufficient to fund operating
+and investing activities beyond one year from the issuance of its consolidated financial statements.
+Outstanding
+Share Data
+Common
+Shares
+Total
+common shares of the Company outstanding at September 30, 2023 and November 14, 2023 was 40,702,045.
+Stock
+Options, Warrants and Compensation Options
+Total
+warrants outstanding to purchase common shares of the Company at September 30, 2023 and November 14, 2023 was 563,318 priced at CA$4.95.
+Stock
+options outstanding as at September 30, 2023 and November 14, 2023 was 7,315,639 and 7,292,889 respectively priced between C$2.30 and
+C$11.90 per common share.
+Additional
+detailed share data information is available in the Company’s Notes to Consolidated Financial Statement.
+Off-Balance
+Sheet Arrangements
+The
+Company has not entered into any off-balance sheet arrangements.
+Impact
+of COVID-19 on Operations
+While
+COVID-19 has negatively affected the Company, its impact was limited and economically manageable. Our main priority remains the health
+and safety of our employees. We continue to monitor and take safety measures to protect our employees and support those employees who
+work from home so that they can be productive. Our offices in all geographic locations remain open to enable critical on-site business
+functions in accordance with local government guidelines.
+Due
+to the stage of the Company’s development, it was not exposed to any loss of revenue and the associated consequences of downsizing.
+In Singapore and the US, the Company benefited from government programs designed to financially assist Company’s that qualify for
+such assistance based on certain expenditure limits.
+The
+Company’s Canadian operations were unaffected by COVID-19 as its activities are primarily administrative.
+Many
+reports have documented the impact COVID-19 is having on the shortage of semiconductor chips in the market. The shortage is driven by
+the suppliers’ inability to keep pace with demand. The Company is reliant on many of these suppliers for products and services.
+The lack of supply in the industry has resulted in a delay of approximately three to six months in the Company’s product development
+cycle. While the delay has pushed out the Company’s timeline for its products to reach the market, it has not resulted in a material
+financial loss to the Company. It is not possible to quantify the potential impact of the delays on future sales. Management will continue
+to monitor the impacts of COVID-19 on operations and report such impacts to shareholders.
+18
+Controls
+and Procedures
+(a)
+Disclosure Controls
+and Procedures
+Disclosure
+controls and procedures are defined by Rules 13a-15(e) and 15d-15(e) under the Exchange Act as controls and other procedures that are
+designed to ensure that information required to be disclosed in the reports that we file or submit under the Exchange Act is recorded,
+processed, summarized and reported within the time periods specified by the SEC’s rules and forms. Disclosure controls and procedures
+include, without limitation, controls and procedures designed to ensure that information required to be disclosed in the reports that
+we file or submit under the Exchange Act is accumulated and communicated to our management, including our Chief Executive Officer and
+Chief Financial Officer, to allow timely decisions regarding required disclosures.
+We
+carried out an evaluation, under the supervision and with the participation of our management, including our Chief Executive Officer
+and Chief Financial Officer, of the effectiveness of our disclosure controls and procedures. Based on such evaluation, our Chief Executive
+Officer and Chief Financial Officer concluded that, as of December 31, 2022, the Company’s disclosure controls and procedures were
+effective.
+(b)
+Management’s Annual
+Report on Internal Control over Financial Reporting
+Our
+management, under the oversight of our Board of Directors (in particular its audit committee), is responsible for establishing and maintaining
+adequate internal control over financial reporting (as such term is defined in Rules 13a-15(f) and 15d-15(f) of the Exchange Act and
+as set forth in Section 404 of SOX). The Company’s internal control system was designed to provide reasonable assurance to management
+and the Board of Directors regarding the reliability of financial reporting and the preparation and fair presentation of its published
+consolidated financial statements. Under the SOX framework, our internal control over financial reporting is a process designed to provide
+reasonable assurance regarding the reliability of financial reporting and the preparation of consolidated financial statements for external
+purposes in accordance with International Financial Reporting Standards (“IFRS”) as issued by the International Accounting
+Standards Board. Our internal control over financial reporting includes those policies and procedures that (1) pertain to the maintenance
+of records that, in reasonable detail, accurately and fairly reflect the transactions and dispositions of our assets; (2) provide reasonable
+assurance that transactions are recorded as necessary to permit preparation of consolidated financial statements in accordance with IFRS,
+and that our receipts and expenditures are being made only in accordance with authorizations of our management and directors; and (3)
+provide reasonable assurance regarding prevention or timely detection of unauthorized acquisition, use or disposition of our assets that
+could have a material effect on our consolidated financial statements.
+All
+internal control systems, no matter how well designed, have inherent limitations. Therefore, even those systems determined to be effective
+may not prevent or detect misstatements and can provide only reasonable assurance with respect to financial statement preparation and
+presentation. Also, projections of any evaluation of effectiveness to future periods are subject to the risk that controls may become
+inadequate because of changes in conditions, or that the degree of compliance with the policies or procedures may deteriorate.
+Management
+assessed the effectiveness of the Company’s internal control over financial reporting as of December 31, 2022. In making this assessment,
+it used the criteria established in Internal Control—Integrated Framework (2013) issued by the Committee of Sponsoring Organizations
+of the Treadway Commission (COSO). Based on that assessment and those criteria, management concluded our internal controls over financial
+reporting was effective as of December 31, 2022.
+19
+(c)
+Attestation Report of
+Registered Public Accounting Firm
+Marcum
+LLP, an independent registered public accounting firm, has audited our internal control over financial reporting as of December 31, 2022,
+as stated in their report which appears herein.
+(d)
+Changes in Internal
+Controls over Financial Reporting
+There
+were no other changes in our internal controls over financial reporting that occurred during the year ended December 31, 2022 that have
+materially affected, or are reasonably likely to materially affect, our internal control over financial reporting
+Key
+Business Risks and Uncertainties
+We
+have a history of large operating losses. We may not be able to achieve or sustain profitability in the future and as a result we may
+not be able to maintain sufficient levels of liquidity.
+We
+have historically incurred losses and negative cash flows from operations since our inception. As of September 30, 2023, we had an accumulated
+deficit of $208,820,011.
+As
+of September 30, 2023, we held $4,476,478 in cash and cash equivalents. We had working capital of $3,284,450.
+The
+Company has prepared a cash flow forecast which indicates that it does not have sufficient cash to meet its minimum expenditure commitments
+and therefore needs to raise additional funds to continue as a going concern. As a result, there is substantial doubt about the Company’s
+ability to continue as a going concern for the next twelve months from the date of these audited consolidated financial statements.
+The
+optical data communications industry in which we have chosen to operate is subject to significant risks, including rapid growth and volatility,
+dependence on rapidly changing underling technologies, market and political risks and uncertainties and extreme competition. We cannot
+guarantee that we will be able to anticipate or overcome any or all of these risks and uncertainties, especially as a small company operating
+in an environment dominated by large, well-capitalized competitors with substantially more resources.
+The
+optical data communications industry is subject to significant operational fluctuations. In order to remain competitive, we incur substantial
+costs associated with research and development, qualification, prototype production capacity and sales and marketing activities in connection
+with products that may be purchased, if at all, long after we have incurred such costs. In addition, the rapidly changing industry in
+which we operate, the length of time between developing and introducing a product to market, frequent changing customer specifications
+for products, customer cancellations of products and general down cycles in the industry, among other things, make our prospects difficult
+to evaluate. As a result of these factors, it is possible that we may not (i) generate sufficient positive cash flow from operations;
+(ii) raise funds through the issuance of equity, equity-linked or convertible debt securities; or (iii) otherwise have sufficient capital
+resources to meet our future capital or liquidity needs. There are no guarantees we will be able to generate additional financial resources
+beyond our existing balances.
+20
+We
+divested our major operating asset, adopted a new “fab-light” strategy, and we plan to focus on the Optical Interposer as
+our main business. Any or all of these decisions if incorrect may have a material adverse effect on the results of our operations, financial
+position and cash flows, and pose further risks to the successful operation of our business over the short and long-term.
+There
+are substantial risks associated with our adoption of a “fab-light” strategy, including the loss of revenue associated with
+the divested operation, the loss of control over an internal development asset, and the loss of key technical knowledge available from
+personnel who will no longer be employed by the Company, many of whom we may have to replace.
+We
+have some previous experience with managing development without an internal development resource under a similar “fab-light”
+strategy which was not successful, and there is no guarantee that our new approach to operating a company with our chosen strategy will
+be successful. Further, our strategy will be solely dependent on the future market acceptance and sale of Optical Interposer-based solutions,
+which in some cases are neither fully developed nor in qualification stages. Customers are in the initial stages of committing to a production
+product.
+We
+have taken substantial measures to protect POET’s intellectual property in the Optical Interposer, including development and production
+with a separate third-party company which engaged no engineering personnel from our former subsidiary company DenseLight. We conducted
+development of component devices with a segregated team at our DenseLight facility and took measures to protect POET’s intellectual
+property on those developments as well. However, we cannot guarantee that all our measures to protect our intellectual property on either
+the POET Optical Interposer or its component devices have been totally effective. In addition, we cannot guarantee that DenseLight or
+any other third-party that we rely on to perform development, manufacturing, packaging or testing services will perform as expected and
+produce the devices we will need to grow our Optical Interposer business.
+There
+can be no assurance that we will be successful in addressing these or any other significant risks we may encounter in the divestment
+of DenseLight, the adoption of a “fab-light” strategy or the focus of our business solely on the Optical Interposer.
+We
+have contributed a portion of our intellectual property and exclusive assembly and sales rights for certain key initial products to a
+joint venture company that we have formed in China. Although we believe that the joint venture offers significant opportunities for growth
+that we might not otherwise have and solves several major known challenges, we also recognize that there are substantial risks and uncertainties
+associated with executing a major portion of our strategy through a joint venture, regardless of the intentions and capabilities of the
+parties involved. Further, joint venture accounting rules do not allow the Company to consolidate the revenue and expenses of the joint
+venture into its financials nor fully reflect the potential market value of the asset.
+On
+October 21, 2020, the Company signed a Joint Venture Agreement (“JVA”) with Sanan IC to form a joint venture company, Super
+Photonics Xiamen Co., Ltd. (“SPX”), which will eventually be owned 48% by the Company once SAIC is fully invested. SPX will
+assemble, test, package and sell certain optical engines on an exclusive basis globally and certain others on an exclusive basis in the
+territory of Greater China. Optical engines based on the POET Optical Interposer are expected to be a primary component of several types
+of optical transceivers used in data centers. The joint venture is based on the contribution by the Company of certain assembly and test
+know-how and other intellectual property and cash to be contributed by Sanan IC in stages, subject to meeting certain milestones, to
+cover all capital and operating expenses of SPX until it is self-sustaining. We cannot guarantee that SPX will meet each milestone or
+that Sanan IC will or will not contribute capital on schedule when and if such milestones are met, nor can we guarantee that SPX will
+be successful in assembling and testing optical engines, nor in the marketing and sales once the optical engines are tested and qualified
+by potential customers.
+Because
+no party to the joint venture, including the Company, has a control position, we are not able to consolidate revenue and expenses directly
+into the Company’s financial statements. The earnings or loss from the joint venture operations are included as a single line item
+in the financial statements and the gain or loss on the intellectual property contributed to the joint venture is reported on another.
+Further, even though the joint venture may appreciate in market value if successful, the Company will not be able to reflect any increase
+in fair value, other than adding or subtracting on a periodic basis the income or loss experienced by the joint venture in relation to
+the Company’s percentage ownership at the time.
+21
+The
+Company’s investment into “Super Photonics Xiamen” (“SPX”) is into an independent company operating as
+a true joint venture under the laws of the Peoples Republic of China (“PRC”). There are significant governance and operational
+risks associated with joint ventures and with companies operating in the PRC, in general. We cannot guarantee that we will be able to
+anticipate or overcome the risks and uncertainties of operating a joint venture company in China.
+Although
+SPX has its own governance structure to which both parties contribute directors, most major decisions must be unanimous, which means
+that such decisions will require the support of the management of SPX and both of the JV partners. Although the Company has sought the
+support of well-known and competent legal and other professional advisors and has had a major role in the recruitment of the senior management
+team of SPX, the Company has no prior experience with either the operation of a joint venture or with the operation of a JV company under
+the laws of the PRC, so we cannot guarantee that the joint venture will be successfully managed without substantial investment in time
+and effort by the Company’s current management team or at all.
+In
+order to qualify for listing on the Nasdaq, we consolidated our common shares on a 10-for-1 basis, thereby reducing the total number
+of our common shares which are outstanding on a post-consolidation basis. We cannot guarantee that the reduction in the number of our
+outstanding common shares as a result of the consolidation will not adversely affect the liquidity of our common shares or decrease the
+overall value of the Company in the future.
+On
+February 28, 2022, the Company completed a 10-for-1 consolidation of our outstanding common shares, resulting in a total of 36,496,456
+common shares of the Company outstanding on a post-consolidation basis. The reduced number of outstanding shares may reduce market liquidity
+of our common shares and/or affect investor perception of the value of the Company, and as a result shareholders may not be able to sell
+their shares on a timely basis, or at all.
+In
+order to attract a wider investor audience for our shares and thereby to achieve a higher market value, we have listed on the Nasdaq
+Capital Market.
+Our
+participation in this new market for our shares involves several levels of uncertainty and additional costs, in both capital and management
+time and attention. In addition, our Directors and Officers (D&O) liability insurance expense will increase dramatically, reflecting
+an increased prevalence of derivative shareholder lawsuits in the United States versus Canada. We cannot guarantee that listing on the
+Nasdaq will improve our stock price or liquidity, or attract a wider investor audience for our shares.
+We
+may not be able to obtain additional capital when desired, on favorable terms or at all.
+We
+operate in a market that makes our prospects difficult to evaluate and, to remain competitive, we will be required to make continued
+investments in capital equipment, facilities and technology. We expect that substantial capital will be required to continue technology
+and product development, to expand our contract manufacturing capacity if we need to do so and to fund working capital for anticipated
+growth. If we do not generate sufficient cash flow from operations or otherwise have the capital resources to meet our future capital
+needs, we may need additional financing to implement our business strategy.
+If
+we raise additional funds through the issuance of our common stock or convertible securities, the ownership interests of our stockholders
+could be significantly diluted. These newly issued securities may have rights, preferences or privileges senior to those of existing
+stockholders. Additional financing may not, however, be available on terms favorable to us, or at all, if and when needed, and our ability
+to fund our operations, take advantage of unanticipated opportunities, develop or enhance our infrastructure or respond to competitive
+pressures could be significantly limited. If we cannot raise required capital when needed we may be unable to continue technology and
+product development, meet the demands of existing and prospective customers, adversely affecting our sales and market opportunities and
+consequently our business, financial condition and results of operations.
+22
+The
+process of developing new, technologically advanced products in semiconductor manufacturing and photonics products is highly complex
+and uncertain, and we cannot guarantee a positive result.
+The
+development of new, technologically advanced products is a complex and uncertain process requiring frequent innovation, highly skilled
+engineering and development personnel and significant capital, as well as the accurate anticipation of technological and market trends.
+We cannot assure you that we will be able to identify, develop, manufacture, market or support new or enhanced products successfully
+or on a timely basis. Further, we cannot assure you that our new products will gain market acceptance or that we will be able to respond
+effectively to product introductions by competitors, technological changes or emerging industry standards. We also may not be able to
+develop the underlying core technologies necessary to create new products and enhancements, license these technologies from third parties,
+or remain competitive in our markets.
+If
+our customers do not qualify our products for use on a timely basis, our results of operations may suffer.
+Prior
+to the sale of new products, our customers typically require us to “qualify” our products for use in their applications.
+At the successful completion of this qualification process, we refer to the resulting sales opportunity as a “design win.”
+Additionally, new customers often audit our manufacturing facilities and perform other evaluations during this qualification process.
+The qualification process involves product sampling and reliability testing and collaboration with our product management and engineering
+teams in the design and manufacturing stages. If we are unable to accurately predict the amount of time required to qualify our products
+with customers, or are unable to qualify our products with certain customers at all, then our ability to generate revenue could be delayed
+or our revenue would be lower than expected and we may not be able to recover the costs associated with the qualification process or
+with our product development efforts, which would have an adverse effect on our results of operations.
+We
+have limited operating history in the data center market, and our business could be harmed if this market does not develop as we expect.
+The
+initial target market for our Optical Interposer-based optical engine is the data center market for data communications within the data
+center and beyond. We have limited experience in selling products in this market. We may not be successful in developing a product for
+this market and even if we do, it may never gain widespread acceptance by large data center operators. If our expectations for the growth
+of the data center / datacom market are not realized, our financial condition or results of operations may be adversely affected.
+Customer
+demand is difficult to forecast accurately and, as a result, we may be unable to match production with customer demand.
+We
+make planning and spending decisions, including determining the levels of business that we will seek and accept, production schedules,
+component procurement commitments, personnel needs and other resource requirements, based on our estimates of product demand and customer
+requirements. Our products are typically sold pursuant to individual purchase orders. While our customers may provide us with their demand
+forecasts, they are typically not contractually committed to buy any quantity of products beyond firm purchase orders. Furthermore, many
+of our customers may increase, decrease, cancel or delay purchase orders already in place without significant penalty. The short-term
+nature of commitments by our expected customers and the possibility of unexpected changes in demand for their products reduce our ability
+to accurately estimate future customer requirements. If any of our customers decrease, stop or delay purchasing our products for any
+reason, we will likely have excess manufacturing capacity or inventory and our business and results of operations would be harmed.
+23
+The
+markets in which we operate are highly competitive, which could result in lost sales and lower revenues.
+The
+market for optical components and modules is highly competitive and this competition could result in our existing customers moving their
+orders to our competitors. We are aware of a number of companies that have developed or are developing integrated optical products, including
+silicon photonics engines, remote light sources, pluggable components, modules and subsystems, photonic integrated circuits, among others,
+that compete (or may in the future compete) directly with our current and proposed product offerings.
+Some
+of our current competitors, as well as some of our potential competitors, have longer operating histories, greater name recognition,
+broader customer relationships and industry alliances and substantially greater financial, technical and marketing resources than we
+do. We may not be able to compete successfully with our competitors and aggressive competition in the market may result in lower prices
+for our products and/or decreased gross margins. Any such development could have a material adverse effect on our business, financial
+condition and results of operations.
+We
+depend on a limited number of suppliers and key contract manufacturers who could disrupt our business and technology development activities
+if they stopped, decreased, delayed or were unable to meet our demand for shipments of their products or manufacturing of our products.
+We
+depend on a limited number of suppliers of epitaxial wafers and contract manufacturers for our Indium Phosphide (“InP”) laser
+developments and optical interposer production activities. Some of these suppliers are sole source suppliers. We typically have not entered
+into long-term agreements with our suppliers. As a result, these suppliers generally may stop supplying us materials and other components
+at any time. Our reliance on a sole supplier or limited number of suppliers could result in delivery problems, reduced control over technology
+development, product development, pricing and quality, and an inability to identify and qualify another supplier in a timely manner.
+Some of our suppliers that may be small or under-capitalized may experience financial difficulties that could prevent them from supplying
+us materials and other components. In addition, our suppliers, including our sole source suppliers, may experience manufacturing delays
+or shutdowns due to circumstances beyond their control such as pandemics, earthquakes, floods, fires, labor unrest, political unrest
+or other natural disasters. A change in supplier could require technology transfer that could require multiple iterations of test wafers.
+This could result in significant delays in resumption of production.
+Any
+supply deficiencies relating to the quality or quantities of materials or equipment we use to manufacture our products could materially
+and adversely affect our ability to fulfill customer orders and our results of operations. Lead times for the purchase of certain materials
+and equipment from suppliers have increased and, in some cases, have limited our ability to rapidly respond to increased demand, and
+may continue to do so in the future. To the extent we introduce additional contract manufacturing partners, introduce new products with
+new partners and/or move existing internal or external production lines to new partners, we could experience supply disruptions during
+the transition process. In addition, due to our customers’ requirements relating to the qualification of our suppliers and contract
+manufacturing facilities and operations, we cannot quickly enter into alternative supplier relationships, which prevent us from being
+able to respond immediately to adverse events affecting our suppliers.
+Our
+international business and operations expose us to additional risks.
+We
+have significant tangible assets located outside the United States and Canada. Conducting business outside Canada and the United States
+subjects us to a number of additional risks and challenges, including:
+● periodic
+changes in a specific country’s or region’s economic conditions, such as recession;
+● licenses
+and other trade barriers;
+● the
+provision of services may require export licenses;
+● environmental
+regulations;
+● certification
+requirements;
+24
+● fluctuations
+in foreign currency exchange rates;
+● inadequate
+protection of intellectual property rights in some countries;
+● preferences
+of certain customers for locally produced products;
+● potential
+political, legal and economic instability, foreign conflicts, and the impact of regional
+and global infectious illnesses in the countries in which we and our customers, suppliers
+and contract manufacturers are located;
+● Canadian
+and U. S. and foreign anticorruption laws;
+● seasonal
+reductions in business activities in certain countries or regions; and
+● fluctuations
+in freight rates and transportation disruptions.
+These
+factors, individually or in combination, could impair our ability to effectively operate one or more of our foreign facilities or deliver
+our products, result in unexpected and material expenses, or cause an unexpected decline in the demand for our products in certain countries
+or regions. Our failure to manage the risks and challenges associated with our international business and operations could have a material
+adverse effect on our business.
+If
+we fail to attract and retain key personnel, our business could suffer.
+Our
+future success depends, in part, on our ability to attract and retain key personnel, including executive management. Competition for
+highly skilled technical personnel is extremely intense and we may face difficulty identifying and hiring qualified engineers in many
+areas of our business. We may not be able to hire and retain such personnel at compensation levels consistent with our existing compensation
+and salary structure. Our future success also depends on the continued contributions of our executive management team and other key management
+and technical personnel, each of whom would be difficult to replace. The loss of services of these or other executive officers or key
+personnel or the inability to continue to attract qualified personnel could have a material adverse effect on our business.
+Our
+predecessor company received subsidies and other types of funding from government agencies. The funding agreements stipulate that if
+we do not comply with various covenants, including eligibility requirements, and/or do not achieve certain pre-defined objectives, those
+government agencies may reclaim all or a portion of the funding provided. If they find that we were ineligible for such funding, then
+they may both reclaim the funds and add penalties and interest. If this were to occur, we would either not be in a position to repay
+the claimed amounts or would have to borrow large sums in order to do so or refinance with dilutive financing, which could adversely
+affect our financial condition.
+Our
+predecessor company, Opel Solar and an affiliated company, ODIS, now a wholly owned subsidiary, received research and development grants
+from the United States Air Force and from NASA. The rules for eligibility vary widely across government agencies, are complex and may
+be subject to different interpretations. We cannot guarantee that one or more agencies will not seek repayment of all or a portion of
+the funds provided or make claims that we were ineligible to receive such funds, and if this were to occur, we could have to borrow large
+sums or refinance with dilutive financing in order to make the repayments, which would adversely affect our financial condition.
+25
+If
+we fail to protect, or incur significant costs in defending our intellectual property and other proprietary rights, our business and
+results of operations could be materially harmed.
+Our
+success depends on our ability to protect our intellectual property and other proprietary rights. We rely on a combination of patent,
+trademark, copyright, trade secret and unfair competition laws, as well as license agreements and other contractual provisions, to establish
+and protect our intellectual property and other proprietary rights. We have applied for patent registrations in the U.S. and in foreign
+countries, some of which have been issued. We cannot guarantee that our pending applications will be approved by the applicable governmental
+authorities. Moreover, our existing and future patents and trademarks may not be sufficiently broad to protect our proprietary rights
+or may be held invalid or unenforceable in court. A failure to obtain patents or trademark registrations or a successful challenge to
+our registrations in the U.S. or foreign countries may limit our ability to protect the intellectual property rights that these applications
+and registrations intended to cover.
+Policing
+unauthorized use of our technology is difficult and we cannot be certain that the steps we have taken will prevent the misappropriation,
+unauthorized use or other infringement of our intellectual property rights. Further, we may not be able to effectively protect our intellectual
+property rights from misappropriation or other infringement in foreign countries where we have not applied for patent protections, and
+where effective patent, trademark, trade secret and other intellectual property laws may be unavailable or may not protect our proprietary
+rights as fully as Canadian or U.S. law. We may seek to secure comparable intellectual property protections in other countries. However,
+the level of protection afforded by patent and other laws in other countries may not be comparable to that afforded in Canada and the
+U.S.
+We
+also attempt to protect our intellectual property, including our trade secrets and know-how, through the use of trade secret and other
+intellectual property laws, and contractual provisions. We enter into confidentiality and invention assignment agreements with our employees
+and independent consultants. We also use non-disclosure agreements with other third parties who may have access to our proprietary technologies
+and information. Such measures, however, provide only limited protection, and there can be no assurance that our confidentiality and
+non-disclosure agreements will not be breached, especially after our employees end their employment, and that our trade secrets will
+not otherwise become known by competitors or that we will have adequate remedies in the event of unauthorized use or disclosure of proprietary
+information. Unauthorized third parties may try to copy or reverse engineer our products or portions of our products, otherwise obtain
+and use our intellectual property, or may independently develop similar or equivalent trade secrets or know-how. If we fail to protect
+our intellectual property and other proprietary rights, or if such intellectual property and proprietary rights are infringed or misappropriated,
+our business, results of operations or financial condition could be materially harmed.
+In
+the future, we may need to take legal actions to prevent third parties from infringing upon or misappropriating our intellectual property
+or from otherwise gaining access to our technology. Protecting and enforcing our intellectual property rights and determining their validity
+and scope could result in significant litigation costs and require significant time and attention from our technical and management personnel,
+which could significantly harm our business. We may not prevail in such proceedings, and an adverse outcome may adversely impact our
+competitive advantage or otherwise harm our financial condition and our business.
+We
+may be involved in intellectual property disputes in the future, which could divert management’s attention, cause us to incur significant
+costs and prevent us from selling or using the challenged technology.
+Participants
+in the markets in which we sell our products have experienced frequent litigation regarding patent and other intellectual property rights.
+There can be no assurance that third parties will not assert infringement claims against us, and we cannot be certain that our products
+would not be found infringing on the intellectual property rights of others. Regardless of their merit, responding to such claims can
+be time consuming, divert management’s attention and resources and may cause us to incur significant expenses. Intellectual property
+claims against us could result in a requirement to license technology from others, discontinue manufacturing or selling the infringing
+products, or pay substantial monetary damages, each of could result in a substantial reduction in our revenue and could result in losses
+over an extended period of time.
+26
+If
+we fail to obtain the right to use the intellectual property rights of others that are necessary to operate our business, and to protect
+their intellectual property, our business and results of operations will be adversely affected.
+From
+time to time, we may choose to or be required to license technology or intellectual property from third parties in connection with the
+development of our products. We cannot assure you that third party licenses will be available to us on commercially reasonable terms,
+if at all. Generally, a license, if granted, would include payments of up-front fees, ongoing royalties or both. These payments or other
+terms could have a significant adverse impact on our results of operations. Our inability to obtain a necessary third-party license required
+for our product offerings or to develop new products and product enhancements could require us to substitute technology of lower quality
+or performance standards, or of greater cost, either of which could adversely affect our business. If we are not able to obtain licenses
+from third parties, if necessary, then we may also be subject to litigation to defend against infringement claims from these third parties.
+Our competitors may be able to obtain licenses or cross-license their technology on better terms than we can, which could put us at a
+competitive disadvantage.
+Failure
+to comply with requirements to design, implement and maintain effective internal control over financial reporting could have a materially
+adverse impact on our financial reporting and our business. We are required to have our internal controls over financial reporting audited
+under Section 404(b) of the Sarbanes-Oxley Act.
+Preparing
+our consolidated financial statements involves a number of complex manual and automated processes, which are dependent upon individual
+data input or review and require significant management judgment. One or more of these elements may result in errors that may not be
+detected and could result in a material misstatement of our consolidated financial statements. The Sarbanes-Oxley Act in the U.S. requires,
+among other things, that as a publicly traded company we disclose whether our internal control over financial reporting and disclosure
+controls and procedures are effective. Until December 31, 2021 we qualified as an “emerging growth company” under the JOBS
+Act, and, as a result, were exempted from certain SEC reporting requirements, including those requiring registrants to include an auditor’s
+report regarding the Company’s internal controls as part of such registrant’s periodic reports. Our “emerging growth
+company” status expired on December 31, 2021. The report of our auditors regarding the effectiveness of our internal controls over
+disclosure and financial reporting as of December 31, 2022 is attached to our audited consolidated financial statements.
+Our
+internal control over financial reporting cannot guarantee that no accounting errors exist or that all accounting errors, no matter how
+immaterial, will be detected because a control system, no matter how well designed and operated, can provide only reasonable, but not
+absolute assurance that the control system’s objectives will be met. If we are unable to implement and maintain effective internal
+control over financial reporting, our ability to accurately and timely report our financial results could be adversely impacted. This
+could result in late filings of our annual and quarterly reports under the Securities Act (Ontario) and the Securities Exchange Act of
+1934 (the “Exchange Act”), restatements of our consolidated financial statements, a decline in our stock price, suspension
+or delisting of our common stock by the TSX Venture Exchange, or other material adverse effects on our business, reputation, results
+of operations or financial condition.
+The
+process of designing and implementing effective internal control over financial reporting is a continuous effort that requires us to
+anticipate and react to changes in our business and the economic and regulatory environments and to expend significant resources to maintain
+a system of internal control that is adequate to satisfy our reporting obligations as a public company. In addition, we are required,
+pursuant to Section 404(a) of the Sarbanes-Oxley Act, to furnish a report by management on, among other things, the effectiveness of
+our internal control over financial reporting. This assessment must include disclosure of any material weaknesses identified by our management
+in our internal control over financial reporting. The rules governing the standards that must be met for our management to assess our
+internal control over financial reporting are complex and require significant documentation, testing and possible remediation. Testing
+and maintaining our internal control over financial reporting may divert our management’s attention from other matters that are
+important to our business. In connection with the implementation of the necessary procedures and practices related to our internal control
+over financial reporting, we and/or our independent registered accounting firm may identify material weaknesses and other deficiencies
+that may require significant effort and expense to remediate. We may encounter problems or delays in completing the remediation of any
+such weaknesses or other deficiencies.
+If
+there is a change in conditions, or the degree of compliance with policies or procedure deteriorates, internal review of our internal
+control over financial reporting or the subsequent testing by our independent registered public accounting firm may reveal deficiencies
+in our internal control over financial reporting that are deemed material weaknesses. If this occurs, our consolidated financial statements
+or disclosures may contain material misstatements and we could be required to restate our financial results. Additionally, we may not
+be able to conclude on an ongoing basis that we have effective internal control over financial reporting or our independent registered
+public accounting firm may not in future issue an unqualified opinion, each of which could lead to investors losing confidence in our
+reported financial information, which could have a material adverse effect on the trading price of our common stock, and we may be unable
+to maintain compliance with applicable stock exchange listing requirements.
+27
+Our
+ability to use our net operating losses and certain other tax attributes may be limited.
+As
+of December 31, 2022, we had accumulated net operating losses (“NOLs”), of approximately $136 million. Varying jurisdictional
+tax codes have restrictions on the use of NOLs, if a corporation undergoes an “ownership change,” the Company’s ability
+to use its pre-change NOLs, R&D credits and other pre-change tax attributes to offset its post-change income may be limited. An ownership
+change is generally defined as a greater than 50% change in equity ownership. Based upon an analysis of our equity ownership, we do not
+believe that we have experienced such ownership changes and therefore our annual utilization of our NOLs is not limited. However, should
+we experience additional ownership changes, our NOL carry forwards may be limited.
+We
+are subject to governmental export and import controls that could subject us to liability or impair our ability to compete in international
+markets. Such controls have recently increased for companies in China under the US government’s “control list”, and
+may further limit or impair our ability to use certain sub-contractors or to sell directly to companies on the list
+We
+are subject to export and import control laws, trade regulations and other trade requirements that limit which raw materials and technology
+we can import or export and which products we sell and where and to whom we sell our products. Specifically, the Bureau of Industry and
+Security of the U.S. Department of Commerce is responsible for regulating the export of most commercial items that are so called dual-use
+goods that may have both commercial and military applications. A limited number of our products are exported by license under certain
+classifications. Export Control Classification requirements are dependent upon an item’s technical characteristics, the destination,
+the end-use, and the end-user, and other activities of the end-user. Should the regulations applicable to our products change, or the
+restrictions applicable to countries to which we ship our products change, then the export of our products to such countries could be
+restricted. As a result, our ability to export or sell our products to certain countries could be restricted, which could adversely affect
+our business, financial condition and results of operations. Changes in our products or any change in export or import regulations or
+related legislation, shift in approach to the enforcement or scope of existing regulations, or change in the countries, persons or technologies
+targeted by such regulations, could result in delayed or decreased sales of our products to existing or potential customers. In such
+event, our business and results of operations could be adversely affected.
+Our
+manufacturing operations are subject to environmental regulation that could limit our growth or impose substantial costs, adversely affecting
+our financial condition and results of operations.
+Our
+properties, operations and products are subject to the environmental laws and regulations of the jurisdictions in which we operate and
+sell products. These laws and regulations govern, among other things, air emissions, wastewater discharges, the management and disposal
+of hazardous materials, the contamination of soil and groundwater, employee health and safety and the content, performance, packaging
+and disposal of products. Our failure to comply with current and future environmental laws and regulations, or the identification of
+contamination for which we are liable, could subject us to substantial costs, including fines, cleanup costs, third-party property damages
+or personal injury claims, and make significant investments to upgrade our facilities or curtail our operations. Identification of presently
+unidentified environmental conditions, more vigorous enforcement by a governmental authority, enactment of more stringent legal requirements
+or other unanticipated events could give rise to adverse publicity, restrict our operations, affect the design or marketability of our
+products or otherwise cause us to incur material environmental costs, adversely affecting our financial condition and results of operations.
+28
+We
+are exposed to risks and increased expenses and business risk as a result of Restriction on Hazardous Substances, or RoHS directives,
+which have been amended but are still in effect.
+Following
+the lead of the European Union, or EU, various governmental agencies have either already put into place or are planning to introduce
+regulations that regulate the permissible levels of hazardous substances in products sold in various regions of the world. For example,
+the RoHS directive for EU took effect on July 1, 2006. The labeling provisions of similar legislation in China went into effect on March
+1, 2007 and is still in effect, as amended. Consequently, many suppliers of products sold into the EU have required their suppliers to
+be compliant with the new directive. We anticipate that our customers may adopt this approach and will require our full compliance, which
+will require a significant amount of resources and effort in planning and executing our RoHS program, it is possible that some of our
+products might be incompatible with such regulations. In such events, we could experience the following consequences: loss of revenue,
+damages reputation, diversion of resources, monetary penalties, and legal action.
+Failure
+to comply with the U.S. Foreign Corrupt Practices Act could subject us to penalties and other adverse consequences.
+We
+are subject to the U.S. Foreign Corrupt Practices Act, which generally prohibits companies operating in the U.S. from engaging in bribery
+or other prohibited payments to foreign officials for the purpose of obtaining or retaining business. In addition, we are required to
+maintain records that accurately and fairly represent our transactions and have an adequate system of internal accounting controls. Non-U.S.
+companies, including some that may compete with us, may not be subject to these prohibitions, and therefore may have a competitive advantage
+over us. If we are not successful in implementing and maintaining adequate preventative measures, we may be responsible for acts of our
+employees or other agents engaging in such conduct. We could suffer severe penalties and other consequences that may have a material
+adverse effect on our financial condition and results of operations.
+Natural
+disasters or other catastrophic events could harm our operations.
+Our
+operations in the U.S., Canada, Singapore and China could be subject to significant risk of natural disasters, including earthquakes,
+hurricanes, typhoons, flooding and tornadoes, as well as other catastrophic events, such as epidemics, terrorist attacks or wars. For
+example, our testing facility in Singapore is in an area that is susceptible to hurricanes. Any disruption in our facilities or those
+of our contractors and suppliers arising from these and other natural disasters or other catastrophic events could cause significant
+delays in the production or shipment of our products until we are able to arrange for third parties to manufacture our products. We may
+not be able to obtain alternate capacity on favorable terms or at all. Our property insurance coverage with respect to natural disaster
+is limited and is subject to deductible and coverage limits. Such coverage may not be adequate or continue to be available at commercially
+reasonable rates and terms. The occurrence of any of these circumstances may adversely affect our financial condition and results of
+operation.
+We
+may be subject to disruptions or failures in information technology systems and network infrastructures that could have a material adverse
+effect on our business and financial condition.
+We
+rely on the efficient and uninterrupted operation of complex information technology systems and network infrastructures to operate our
+business. A disruption, infiltration or failure of our information technology systems as a result of software or hardware malfunctions,
+system implementations or upgrades, computer viruses, third-party security breaches, employee error, theft or misuse, malfeasance, power
+disruptions, natural disasters or accidents could cause a breach of data security, loss of intellectual property and critical data and
+the release and misappropriation of sensitive competitive information and partner, customer, and employee personal data. Any of these
+events could harm our competitive position, result in a loss of customer confidence, cause us to incur significant costs to remedy any
+damages fand ultimately materially adversely affect our business and financial condition.
+29
+A
+significant disruption in, or breach in security of, our information technology systems or violations of data protection laws could materially
+adversely affect our business and reputation.
+In
+the ordinary course of business, we collect and store confidential information, including proprietary business information belonging
+to us, our customers, suppliers, business partners and other third parties and personally identifiable information of our employees.
+We rely on information technology systems to protect this information and to keep financial records, process orders, manage inventory,
+coordinate shipments to customers, and operate other critical functions. Our information technology systems may be susceptible to damage,
+disruptions or shutdowns due to power outages, hardware failures, telecommunication failures and user errors. If we experience a disruption
+in our information technology systems, it could result in the loss of sales and customers and significant incremental costs, which could
+materially adversely affect our business. We may also be subject to security breaches caused by computer viruses, illegal break-ins or
+hacking, sabotage, or acts of vandalism by disgruntled employees or third parties. The risk of a security breach or disruption, particularly
+through cyberattack or cyber intrusion, including by computer hackers, foreign governments and cyber terrorists, has increased as the
+number, intensity and sophistication of attempted attacks and intrusions from around the world have increased. Our information technology
+network and systems have been and, we believe, continue to be under constant attack. Accordingly, despite our security measures or those
+of our third-party service providers, a security breach may occur, including breaches that we may not be able to detect. Security breaches
+of our information technology systems could result in the misappropriation or unauthorized disclosure of confidential information. Such
+breaches could also result in legal action against us by third parties.
+The
+COVID-19 outbreak could delay our development activities and adversely affect our results of operations.
+The
+global outbreak of COVID-19 has resulted in Canada, the United States, Singapore, China and other countries halting or sharply curtailing
+the movement of people, goods and services. The curtailed activity has negatively affected many businesses, including the Company and
+other businesses that operate in our sector. The prolonged economic impact of COVID-19 remains uncertain. At this point, we believe the
+conditions may have a material adverse impact on our business, as our suppliers are experiencing major delays resulting from high backlogs
+of orders and an inability to operate at full capacity. Such delays have resulted in a four to six months delay or longer in the Company
+achieving certain development objectives. Given the rapidly changing developments we cannot accurately predict what effects these developments
+will have on our business going forward, which will depend on, among other factors, the ultimate geographic spread of the virus, governmental
+limitations, the duration of the outbreak, travel restrictions and business closures.
+The
+Company may experience these factors in the future and these factors may have a material adverse effect on the Company’s business,
+operating results and financial condition.
+Please
+refer to the Company’s Annual Information Forms filed on SEDAR+ for a detailed discussion of Risks and Uncertainties most recently
+filed on March 31, 2023.
+Additional
+Information
+Additional
+information relating to the Company is available on SEDAR+ at www.sedar.com including the information contained in the Company’s
+Annual Information Form filed on SEDAR+ on March 31, 2023.
+30
+POET
+Technologies, Inc. www.poet-technologies.com
+31
+
+## Exhibit EX-99.3
+
+EX-99.3
+4
+ex99-3.htm
+Exhibit
+99.3
+FORM
+52-109F2
+CERTIFICATION
+OF INTERIM FILINGS
+FULL
+CERTIFICATE
+I,
+Suresh Venkatesan, Chief Executive Officer of POET Technologies Inc. , certify the following:
+1. Review:
+I have reviewed the interim financial report and interim MD&A, (together, the
+“interim filings”) of POET Technologies Inc. (the “issuer”) for the
+period ended September 30, 2023.
+2. No
+misrepresentations: Based on my knowledge, having exercised reasonable diligence,
+the interim filings do not contain any untrue statement of a material fact or omit to state
+a material fact required to be stated or that is necessary to make a statement not misleading
+in light of the circumstances under which it was made, for the period covered by the interim
+filings.
+3. Fair
+presentation: Based on my knowledge, having exercised reasonable diligence, the interim
+financial report together with the other financial information included in the interim filings
+fairly present in all material respects the financial condition, results of operations and
+cash flows of the issuer, as of the date of and for the periods presented in the interim
+filings.
+4. Responsibility:
+The issuer’s other certifying officer(s) and I are responsible for establishing
+and maintaining disclosure controls and procedures (DC&P) and internal control over financial
+reporting (ICFR), as those terms are defined in National Instrument 52-109 Certification
+of Disclosure in Issuers’ Annual and Interim Filings , for the issuer.
+5. Design:
+Subject to the limitations, if any, described in paragraphs 5.2 and 5.3, the issuer’s
+other certifying officer(s) and I have, as at the end of the period covered by the interim
+filings:
+(a) designed
+DC&P, or caused it to be designed under our supervision, to provide reasonable assurance
+that:
+(i) material
+information relating to the issuer is made known to us by others, particularly during the
+period in which the interim filings are being prepared; and
+(ii) information
+required to be disclosed by the issuer in its annual filings, interim filings or other reports
+filed or submitted by it under securities legislation is recorded, processed, summarized
+and reported within the time periods specified in securities legislation; and
+(b) designed
+ICFR, or caused it to be designed under our supervision, to provide reasonable assurance
+regarding the reliability of financial reporting and the preparation of financial statements
+for external purposes in accordance with the issuer’s GAAP.
+5.1 Control
+framework: The control framework the issuer’s other certifying officer(s) and
+I used to design the issuer’s ICFR is the Internal Control – Integrated Framework
+(2013) (COSO Framework) as issued by the Committee of Sponsoring Organizations (COSO)
+of the Treadway Commission.
+5.2 ICFR:
+Not applicable
+5.3 Limitation
+on scope of design: Not applicable
+6. Reporting
+changes in ICFR: The issuer has disclosed in its interim MD&A any change in the
+issuer’s ICFR that occurred during the period beginning on January 1, 2023 and ended
+on September 30, 2023 that has materially affected, or is reasonably likely to materially
+affect, the issuer’s ICFR.
+Date:
+November 15, 2023
+By:
+/s/
+Suresh Venkatesan
+Suresh
+Venkatesan
+Chief
+Executive Officer
+
+## Exhibit EX-99.4
+
+EX-99.4
+5
+ex99-4.htm
+Exhibit
+99.4
+FORM
+52-109F2
+CERTIFICATION
+OF INTERIM FILINGS
+FULL
+CERTIFICATE
+I,
+Thomas Mika, Chief Financial Officer of POET Technologies Inc. , certify the following:
+1. Review:
+I have reviewed the interim financial report and interim MD&A, (together, the
+“interim filings”) of POET Technologies Inc. (the “issuer”) for the
+period ended September 30, 2023.
+2. No
+misrepresentations: Based on my knowledge, having exercised reasonable diligence,
+the interim filings do not contain any untrue statement of a material fact or omit to state
+a material fact required to be stated or that is necessary to make a statement not misleading
+in light of the circumstances under which it was made, for the period covered by the interim
+filings.
+3. Fair
+presentation: Based on my knowledge, having exercised reasonable diligence, the interim
+financial report together with the other financial information included in the interim filings
+fairly present in all material respects the financial condition, results of operations and
+cash flows of the issuer, as of the date of and for the periods presented in the interim
+filings.
+4. Responsibility:
+The issuer’s other certifying officer(s) and I are responsible for establishing
+and maintaining disclosure controls and procedures (DC&P) and internal control over financial
+reporting (ICFR), as those terms are defined in National Instrument 52-109 Certification
+of Disclosure in Issuers’ Annual and Interim Filings , for the issuer.
+5. Design:
+Subject to the limitations, if any, described in paragraphs 5.2 and 5.3, the issuer’s
+other certifying officer(s) and I have, as at the end of the period covered by the interim
+filings:
+(a) designed
+DC&P, or caused it to be designed under our supervision, to provide reasonable assurance
+that:
+(i) material
+information relating to the issuer is made known to us by others, particularly during the
+period in which the interim filings are being prepared; and
+(ii) information
+required to be disclosed by the issuer in its annual filings, interim filings or other reports
+filed or submitted by it under securities legislation is recorded, processed, summarized
+and reported within the time periods specified in securities legislation; and
+(b) designed
+ICFR, or caused it to be designed under our supervision, to provide reasonable assurance
+regarding the reliability of financial reporting and the preparation of financial statements
+for external purposes in accordance with the issuer’s GAAP.
+5.1 Control
+framework: The control framework the issuer’s other certifying officer(s) and
+I used to design the issuer’s ICFR is the Internal Control – Integrated Framework
+(2013) (COSO Framework) as issued by the Committee of Sponsoring Organizations (COSO)
+of the Treadway Commission.
+5.2 ICFR:
+Not applicable
+5.3 Limitation
+on scope of design: Not applicable
+6. Reporting
+changes in ICFR: The issuer has disclosed in its interim MD&A any change in the
+issuer’s ICFR that occurred during the period beginning on January 1, 2023 and ended
+on September 30, 2023 that has materially affected, or is reasonably likely to materially
+affect, the issuer’s ICFR.
+Date:
+November 15, 2023
+By:
+/s/
+Thomas Mika
+Thomas
+Mika
+Chief
+Financial Officer
+
+## Exhibit EX-99.5
+
+EX-99.5
+6
+ex99-5.htm
+Exhibit
+99.5
+POET
+Technologies Reports Third Quarter 2023 Financial Results
+TORONTO,
+Ontario, November 14, 2023 – POET Technologies Inc. (“ POET ” or the “ Company ”) (TSX Venture:
+PTK; NASDAQ: POET), the designer and developer of the POET Optical Interposer™, Photonic Integrated Circuits (PICs) and light sources
+for the data center, tele-communication and artificial intelligence markets, today reported its unaudited consolidated financial results
+for the third quarter ended September 30, 2023. The Company’s financial results as well as the Management Discussion and Analysis
+have been filed on SEDAR+ and are available on the SEC’s EDGAR website (www.sec.gov/EDGAR). All financial figures in this press
+release are in United States dollars unless otherwise indicated.
+Business
+Highlights since Second Quarter Results reported on August 11, 2023:
+●
+On
+August 9, 2023, the Company filed a registration statement on Form F-3 with the United States Securities and Exchange Commission
+(“SEC”). The Form F-3 replaces the Company’s expired Form F-10. Declared effective by the
+SEC on August 18, 2023, the Form F-3 may be used to sell securities registered under U.S. securities laws.
+●
+On
+August 15, 2023, the Company announced the development of an Optical Interposer platform specifically designed for pluggable1.6T
+transceivers, expandable to 3.2T, utilizing current industry form factors and employing 200G per lane technology for data centers
+running Artificial Intelligence networks.
+●
+On
+September 1, 2023, the Company announced a resumed ATM program in the United States with Craig-Hallum Capital Group LLC as its sales
+agent, replacing its previous ATM program in the United States and Canada (please refer to the press release of the same date that
+references the registration statement and shelf prospectus pertaining to the ATM program).
+●
+Between
+September 6th and 8th, 2023, the Company and its JV, Super Photonics Xiamen (SPX), showed live demonstrations of end-to-end optical
+solutions for 800G, 400G, and 200G transceivers using POET’s highly integrated optical engines at the China International Optoelectronics
+Expo (CIOE) in Shenzhen, China. The demonstrations also featured an 800G transceiver module incorporating a POET 800G receive engine
+that Luxshare-ICT intends to market globally. POET also showcased its own prototype 400G module at the event.
+●
+On
+September 12, 2023, POET reported on the success of its joint appearance at the CIOE with SPX and its engagement with multiple prospective
+customers for POET optical engines, ranging in speeds from 100G to 800G. POET’s optical engines enable module makers to lower
+both labor and capital costs, and provide a seamless path to higher speeds and more efficient network architectures, while reducing
+customers’ own in-house R&D efforts.
+●
+On
+October 5, 2023, POET reported that SPX had committed to expand production capacity needed to fulfill existing and expected customer
+orders. SPX is preparing to ramp production of POET’s optical engines.
+●
+On
+October 10, 2023, POET announced a collaboration with Yuanjie Semiconductor Technology Inc. (YST), to supply SPX with YST’s
+high-performance directly modulated lasers (DMLs) for use in the 100G and 200G optical engines being sold to module makers in China
+and the United States, including to ADVA, BFYY and Fibertop, and others to be announced.
+●
+On
+November 2, 2023, POET announced an underwritten public offering in the United States and a concurrent offering in Canada under the
+LIFE exemption (see press release of the same date for additional information).
+●
+On
+November 6, 2023, the Company provided a financial update that included preliminary, unaudited financial data in advance of this
+press release.
+Management
+Comments
+“The
+third quarter of 2023 has been particularly intensive with prospect meetings following CIOE, continued support of customers with module
+design and qualification, and our financing efforts” said Dr. Suresh Venkatesan, Chairman & CEO. “Supporting module design
+and assembly for optical engine customers in China has been the principal focus of much of our engineering resources, but soon those
+efforts will be behind us, and we can look forward to SPX fulfilling production orders with expanded capacity. In the US, we are sharply
+focused on the market for Artificial Intelligence hardware, which encompasses both leading-edge, high-speed 800G and 1.6T transceivers,
+and light sources for disaggregated network architectures in AI. These two market segments are expected to yield direct revenue to POET
+in the form of NRE for custom designs, sampling and initial module production, particularly in light sources for AI. We are confident
+in POET’s value proposition and competitive advantage in these market segments, especially in pluggables at 1.6T and 3.2T, high-performance
+light sources for light-enabled data transmission in AI servers, and for co-packaged optics. 2024 should set the stage for what we expect
+will be accelerated growth in 2025 and 2026, driven by a large projected demand in high-speed transceivers for AI, combined with our
+innovative product introduction roadmap.”
+This
+news release does not constitute an offer to sell or the solicitation of an offer to buy, nor shall there be any sale of common shares
+or warrants in any jurisdiction in which such offer, solicitation or sale would be unlawful prior to the registration or qualification,
+or an exemption from registration or qualification, under the securities laws of any such jurisdiction.
+Financial
+Summary
+The
+Company reported a net loss of $5.1 million, or ($0.13) per share, in the third quarter of 2023 compared with a net loss $4.0 million,
+or ($0.11) per share, for the same period in 2022 and a net loss of $4.4 million, or ($0.11) per share, in the second quarter of 2023.
+The net loss in the third quarter of 2023 included research and development costs of $2.0 million compared to $1.9 million for the same
+period in 2022 and $2.0 million in the second quarter of 2023. Fluctuations in R&D for a company of this size and this stage of growth
+is expected on a period-over-period basis as the Company transitions from technology development to product development.
+Non-cash
+expenses in the third quarter of 2023 included stock-based compensation of $1.3 million and depreciation and amortization of $0.5 million.
+Non-cash stock-based compensation and depreciation and amortization in the same period of 2022 were $0.9 million and $0.3 million, respectively.
+Second quarter 2023 stock-based compensation and depreciation and amortization were $0.7 million and $0.5 million, respectively. The
+Company had non-cash finance costs of $18,000 in the third quarter of 2023 compared to non-cash finance costs of $12,000 in the third
+quarter of 2022 and non-cash costs of $11,000 in the second quarter of 2023.
+The
+Company recognized other income, including interest of $45,000 in the third quarter of 2023, compared to $57,000 in the same period in
+2022 and $57,000 in the second quarter of 2023.
+Non-cash
+impact of the Company’s joint venture, Super Photonics Xiamen (“SPX”), in the third quarter of 2023 was nil, compared
+to a net gain of $0.1 million in the same period of 2022 and nil in the second quarter of 2023. The Company’s share of loss is
+approximately 78.4% of the loss of SPX in the third quarter of 2023, 86.3% in the third quarter of 2022 and 80.7% in the second quarter
+of 2023. The Company’s current share of the operating loss is a result of the high value of the Company’s initial contribution. Although
+the Company’s equity ownership of SPX was approximately 78.4% at September 30, 2023, the Company did not recognize a share of loss
+in SPX in the third quarter of 2023 because the value of its investment is carried at nil on the consolidated statements of financial
+position precluding further loss recognition under the relevant accounting standards.
+Cash
+flow from operating activities in the third quarter of 2023 was ($4.1) million, compared to ($2.5) million in the third quarter of 2022
+and ($4.0) million in the second quarter of 2023.
+From
+January 1, 2023 to date, the Company received net proceeds of $9.0 million from the sale of shares, including through the exercise of
+warrants and stock options.
+Summary
+of Financial Performance
+The
+following is a summary of the Company’s operations over the five quarters ending September 30, 2023. This information should be
+read in conjunction with the Company’s financial statements filed on SEDAR + on November 14, 2023.
+POET
+TECHNOLOGIES INC.
+SUMMARY
+PRESENTATION OF OPERATIONS
+(All
+figures are in U.S. Dollars)
+Sep
+30/23
+Jun
+30/23
+Mar
+31/23
+Dec
+31/22
+Sep
+30/22
+Sales
+$ -
+$ 177,390
+$ 180,836
+$ 199,559
+$ 232,928
+Research and development
+2,043,264
+2,036,953
+2,316,475
+2,745,886
+1,884,767
+Depreciation and amortization
+508,484
+462,743
+445,044
+341,017
+336,446
+Professional fees
+273,905
+255,094
+313,404
+430,668
+203,778
+Wages and benefits
+640,241
+655,066
+677,924
+665,682
+646,349
+Impact of joint venture
+-
+-
+-
+405,471
+(116,747 )
+Stock-based compensation
+1,251,648
+697,690
+1,202,018
+1,588,706
+880,796
+General expense, rent and facility
+429,457
+502,707
+566,768
+359,062
+484,559
+Interest expense
+34,890
+11,214
+10,531
+11,610
+11,707
+Other (income), including interest
+(45,448 )
+(57,454 )
+(78,041 )
+(68,592 )
+(57,429 )
+Net loss, before taxes
+$ 5,136,441
+$ 4,386,623
+$ 5,273,287
+$ 6,279,951
+$ 4,041,298
+Net loss per share
+$ (0.13 )
+$ (0.11 )
+$ (0.14 )
+$ (0.17 )
+$ (0.11 )
+About
+POET Technologies Inc.
+POET
+is a design and development company offering integration solutions based on the POET Optical Interposer™, a novel platform that
+allows the seamless integration of electronic and photonic devices into a single multi-chip module using advanced wafer-level semiconductor
+manufacturing techniques and packaging methods. POET’s Optical Interposer eliminates costly components and labor-intensive assembly,
+alignment, burn-in and testing methods employed in conventional photonics. The cost-efficient integration scheme and scalability of the
+POET Optical Interposer brings value to any device or system that integrates electronics and photonics, including some of the highest
+growth areas of computing, such as Artificial Intelligence (AI), the Internet of Things (IoT), autonomous vehicles and high-speed networking
+for cloud service providers and data centers. POET is headquartered in Toronto, with operations in Allentown, PA, Shenzhen, China and
+Singapore. More information may be obtained at www.poet-technologies.com.
+Forward-Looking
+Statements
+This
+press release contains “forward-looking information” (within the meaning of applicable Canadian securities laws) and “forward-looking
+statements” (within the meaning of the U.S. Private Securities Litigation Reform Act of 1995, including statements regarding expectations
+for growth in revenue). Such statements or information are identified with words such as “anticipate”, “believe”,
+“expect”, “plan”, “intend”, “potential”, “estimate”, “propose”, “project”,
+“outlook”, “foresee” or similar words suggesting future outcomes or statements regarding an outlook. Such information
+and statements include statements related to the Company’s most recently completed fiscal quarter and its expectations for commercializing
+its technology and products, the ongoing offering and efforts to enhance sales and customer acquisition and the other elements of its
+growth strategy.
+Such
+forward-looking information or statements are based on a number of risks, uncertainties and assumptions which may cause actual results
+or other expectations to differ materially from those anticipated and which may prove to be incorrect. Important factors that could affect
+performance and cause results to differ materially from those expressed or implied in the forward-looking information or statements are
+described in the “Risk Factors” section in the Company’s Annual Report on Form 20-F for the fiscal year ended December
+31, 2022, as updated from time to time in the Company’s filings with the U.S. Securities and Exchange Commission. These factors
+include, but are not limited to, the Company’s ability to raise capital (whether in the ongoing offering or otherwise), market
+conditions, the failure of the Company’s products to meet performance requirements, the failure to produce products on a timely
+basis or at all, the failure of the Company’s optical engine or light source products to be incorporated into its customers’
+products, the failure of its customers’ products to achieve market penetration, and operational risks including the ability to
+attract key personnel. Although the Company believes that the expectations reflected in the forward-looking information or statements
+are reasonable, prospective investors in the Company’s securities should not place undue reliance on forward-looking information
+and statements because the Company can provide no assurance that such expectations will prove to be correct. Forward-looking information
+and statements contained in this press release are as of the date of this press release and the Company assumes no obligation to update
+or revise this forward-looking information and statements except as required by law.
+Contacts:
+Media Relations Contact:
+Adrian
+Brijbassi
+adrian.brijbassi@poet-technologies.com
+Company
+Contact:
+Thomas
+R. Mika, EVP & CFO
+tm@poet-technologies.com
+Neither
+TSX Venture Exchange nor its Regulation Services Provider (as that term is defined in the policies of the TSX Venture Exchange) accepts
+responsibility for the adequacy or accuracy of this release.
+120
+Eglinton Avenue, East, Suite 1107, Toronto, ON, M4P 1E2- Tel: 416-368-9411 - Fax: 416-322-507
