@@ -157,6 +157,27 @@ for d in sorted(MANAGED.iterdir()):
         if not (d / req).is_file():
             err(f"missing: {rel(d)}/{req}")
 
+# --- 6. thesis files (notes/*/_thesis.md) -----------------------------------
+sys.path.insert(0, str(ROOT / "scripts"))
+try:
+    from thesis import thesis_io as _tio
+    for th in sorted((ROOT / "notes").glob("*/_thesis.md")):
+        checked += 1
+        try:
+            _fm = _tio.load(th.parent.name) or {}
+        except Exception as e:  # noqa: BLE001
+            err(f"thesis: {rel(th)}: unreadable ({type(e).__name__}: {e})")
+            continue
+        for e in _tio.validate(_fm):
+            err(f"thesis: {rel(th)}: {e}")
+        if _fm.get("ticker") != th.parent.name:
+            err(f"thesis: {rel(th)}: ticker {_fm.get('ticker')!r} != directory {th.parent.name}")
+    _missing = [t for t in _tio.universe() if not t.endswith(".pvt") and not (ROOT / "notes" / t / "_thesis.md").exists()]
+    if _missing:
+        print(f"WARN thesis: {len(_missing)} T1/T2 ticker(s) without _thesis.md: {', '.join(_missing)}")
+except ImportError as e:
+    print(f"WARN thesis: validation skipped ({e})")
+
 # --- report ----------------------------------------------------------------
 if errors:
     print(f"FAIL — {len(errors)} issue(s) across {checked} file(s):\n", file=sys.stderr)
