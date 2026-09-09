@@ -574,6 +574,25 @@ tier_4_ecosystem:
     edgar_coverage: false
     evidence_sources: [us_filer_mentions, news]
     notes: "Taiwan-based manufacturer of the critical fuel cell reaction/hot boxes for Bloom (operator-sourced). Operator notes Taiwan-based suppliers collectively handle roughly 30% of BE's system component manufacturing — a geographic concentration that is a thesis risk in its own right (Taiwan Strait exposure), and one BE's own filings are unlikely to frame that way. The 30% figure is operator-sourced and UNVERIFIED against a primary document."
+  # --- Bloom Energy (BE) competitor: distributed power ------------------------
+  # Operator-sourced 2026-09-08. Not a fuel-cell maker: Base Power sells
+  # behind-the-meter battery storage (home units aggregated into grid capacity),
+  # so it competes with BE for the same "power where the grid can't deliver"
+  # demand, not on SOFC technology. Private; evidence path is press + US-filer
+  # mentions only.
+  - id: base_power.us
+    name: "Base Power"
+    aliases: ["Base Power", "Base Power Company", "Base Power Co."]
+    listing: "private (Austin, Texas)"
+    verified: false                   # not yet confirmed via FactSet_EntityReference
+    country: United States
+    layer: distributed_power_storage
+    relation: competitor
+    affects: [BE]
+    edgar_coverage: false
+    evidence_sources: [us_filer_mentions, news]
+    notes: "Austin-based private energy-storage company founded 2023 (Zach Dell, Justin Lopas). Installs home battery systems that supply backup power and are dispatched to the grid at peak demand; raised ~$1B in Aug 2026 at a reported ~$13B valuation (press-sourced, UNVERIFIED). Operator frames it as a private competitor to Bloom Energy for distributed / behind-the-meter power. It is NOT a solid-oxide fuel-cell maker, so the overlap is on the demand side (on-site power for grid-constrained load) rather than the technology. Alias 'Base Power' is deliberately narrow — the two-word phrase is common in engineering prose, so entity resolution must match the proper name, not free text."
+
 
 tier_1_bctk:
   - ticker: 000660.KS
