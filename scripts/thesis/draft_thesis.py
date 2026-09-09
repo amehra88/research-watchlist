@@ -22,7 +22,7 @@ sys.path.insert(0, str(REPO / "scripts"))
 sys.path.insert(0, str(REPO / "scripts" / "chunking"))
 from lib import claude_p                        # noqa: E402
 from thesis import thesis_io as tio             # noqa: E402
-from thesis import STATE_DIR                    # noqa: E402
+from thesis import STATE_DIR, extract_json, save_failed_reply   # noqa: E402
 
 MODEL = "claude-sonnet-4-6"
 LEDGER = STATE_DIR / "_draft_progress.json"
@@ -113,8 +113,7 @@ Output JSON only: {{"assumptions": [{{"id": "...", "statement": "...", "derived_
 
 
 def parse_assumptions(text: str) -> list[dict]:
-    m = re.search(r"\{.*\}", text, re.S)
-    data = json.loads(m.group(0) if m else text)
+    data = extract_json(text)
     out = []
     for a in data["assumptions"]:
         if OVERREAD_RE.search(a["statement"]):
@@ -191,7 +190,11 @@ def draft_one(ticker: str, w: dict, force: bool = False, dry_run: bool = False) 
         assumptions, mode = imported, "imported"
     else:
         text, cost, _ = claude_p.run(build_prompt(i), system_prompt=SYSTEM, model=MODEL, cwd=str(REPO), timeout=600)
-        assumptions, mode = parse_assumptions(text), i["mode"]
+        try:
+            assumptions, mode = parse_assumptions(text), i["mode"]
+        except (json.JSONDecodeError, KeyError, TypeError, OverreadError):
+            save_failed_reply(ticker, text)
+            raise
     if existing and force:   # keep operator-touched assumptions
         keep = [a for a in existing["assumptions"] if not a.get("draft")]
         ids = {a["id"] for a in keep}

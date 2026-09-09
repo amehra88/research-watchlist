@@ -102,7 +102,7 @@ def news_since(ticker: str, since: date) -> list[Evidence]:
 
 def sec_since(ticker: str, since: date) -> list[Evidence]:
     q = """SELECT doc_id, section, event_date, text FROM chunks
-           WHERE kind='parent' AND doc_type='sec_filing' AND %s = ANY(tickers) AND event_date > %s
+           WHERE kind='parent' AND doc_type='sec_filing' AND %s = ANY(tickers) AND event_date >= %s
              AND (section LIKE 'Exhibit EX-99%%' OR section ILIKE 'Item %%Management%%' OR section LIKE '%%body')
            ORDER BY event_date"""
     with _pg() as conn, conn.cursor() as cur:
@@ -113,21 +113,22 @@ def sec_since(ticker: str, since: date) -> list[Evidence]:
 
 def entity_claims_since(ticker: str, since: date) -> list[Evidence]:
     q = """SELECT chunk_id, entity, claim, stance, confidence, event_date, extracted_at, subject, affects, doc_type
-           FROM entity_mentions WHERE (subject = %s OR %s = ANY(affects)) AND extracted_at > %s ORDER BY extracted_at"""
+           FROM entity_mentions WHERE (subject = %s OR %s = ANY(affects)) AND extracted_at >= %s ORDER BY extracted_at"""
     with _pg() as conn, conn.cursor() as cur:
         cur.execute(q, (ticker, ticker, since))
         rows = cur.fetchall()
     out = []
     for r in rows:
-        d = (r[5] or r[6].date()).isoformat()
-        out.append(Evidence("entity_claim", f"pg:em:{r[0]}:{r[1]}", ticker, d, f"{r[1]} ({r[3]}, {r[4]})",
+        d = r[6].date().isoformat()          # extraction date: what the collector filters/sorts on
+        ev_d = r[5].isoformat() if r[5] else "undated"
+        out.append(Evidence("entity_claim", f"pg:em:{r[0]}:{r[1]}", ticker, d, f"{r[1]} ({r[3]}, {r[4]}; event {ev_d})",
                             f"{r[1]}: {r[2]}", f"pg entity_mentions chunk_id={r[0]}", cross_ticker=(r[7] != ticker)))
     return out
 
 
 def commentary_since(ticker: str, since: date) -> list[Evidence]:
     q = """SELECT doc_id, doc_type, section, event_date, text FROM chunks
-           WHERE kind='parent' AND doc_type IN ('substack_post','podcast_summary') AND %s = ANY(tickers) AND event_date > %s
+           WHERE kind='parent' AND doc_type IN ('substack_post','podcast_summary') AND %s = ANY(tickers) AND event_date >= %s
            ORDER BY event_date"""
     with _pg() as conn, conn.cursor() as cur:
         cur.execute(q, (ticker, since))
@@ -154,7 +155,7 @@ def conference_since(ticker: str, since: date) -> list[Evidence]:
                 continue
             if r.get("ticker") != ticker or r.get("event_type") != "conference" or r.get("speaker_type") != "corprep":
                 continue
-            if (r.get("event_date") or "") <= since.isoformat():
+            if (r.get("event_date") or "") < since.isoformat():
                 continue
             out.append(Evidence("conference", f"exch:{r.get('vector_id') or r.get('id')}", ticker, r["event_date"],
                                 r.get("event_name") or "conference", (r.get("text") or "")[:TEXT_CAP],
@@ -167,7 +168,7 @@ def operator_notes_since(ticker: str, since: date) -> list[Evidence]:
     for p in sorted(glob.glob(str(REPO / "notes" / "inbox" / "*.summary.md"))):
         fm, body = _fm_and_body(Path(p))
         d = str(fm.get("processed_at") or fm.get("ingestion_date") or fm.get("event_date") or "")[:10]
-        if ticker not in (fm.get("tickers") or []) or d <= since.isoformat():
+        if ticker not in (fm.get("tickers") or []) or d < since.isoformat():
             continue
         rel = Path(p).relative_to(REPO).as_posix()
         out.append(Evidence("operator_note", rel, ticker, d, Path(p).stem, body[:8000], rel))
