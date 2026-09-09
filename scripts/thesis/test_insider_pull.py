@@ -22,6 +22,12 @@ def test_parse_rows_json_and_csv():
     csv_text = "ticker,insider_name,transaction_type,shares,value,transaction_date\nLITE,B,Sell,10,\"1,000\",2026-09-03\n"
     out = I.parse_rows(_transcript(csv_text))
     assert out and out[0]["ticker"] == "LITE"
+    live = ("ticker,entityname,mcap,sector,iacc,formtype,txnid,txndate,datefiled,code,acquired_disposed,rptcik,insider,pos_type,has_10b5,tenb5planid,shares,value,pctchange,notable_event,link\r\n"
+            "NVDA,NVIDIA,5450702310000,Technology,43725689,4,24696410,2026-09-04 00:00:00,2026-09-08 00:00:00,Sale,,1199039,Mark A. Stevens,Director,False,,1022239.0,235636867.411,-3.41,,https://x/\r\n")
+    out = I.parse_rows(_transcript(json.dumps({"result": live})))            # the real InsiderScore shape: {"result": "<CSV>"}
+    n = I.normalize(out[0])
+    assert n["ticker"] == "NVDA" and n["txn_type"] == "Sell" and n["insider"] == "Mark A. Stevens" and n["position"] == "Director"
+    assert n["date"] == "2026-09-04" and n["value"] == 235636867.411 and n["tenb5"] is False
 
 
 def test_normalize_key_variants():

@@ -58,14 +58,15 @@ def _num(v):
 
 
 def normalize(r: dict) -> dict:
-    tt = str(_pick(r, "txntype", "transactiontype", "txn_type", "type", "transaction", default="")).strip()
+    tt = str(_pick(r, "code", "txntype", "transactiontype", "txn_type", "type", "transaction", default="")).strip()
     tt = "Buy" if tt.lower().startswith(("b", "p")) else "Sell" if tt.lower().startswith("s") else tt
     return {"ticker": str(_pick(r, "ticker", "symbol", default="")).upper(),
             "insider": str(_pick(r, "insider", "insidername", "name", "rptname", "reportingname", "owner", "reportingowner", default="")),
-            "position": str(_pick(r, "position", "title", "role", "relationship", "officertitle", default="")),
+            "position": str(_pick(r, "pos_type", "position", "title", "role", "relationship", "officertitle", default="")),
+            "tenb5": str(_pick(r, "has_10b5", "tenb5", "is10b5", default="")).strip().lower() in ("true", "1", "yes", "y"),
             "txn_type": tt, "shares": _num(_pick(r, "shares", "qty", "quantity", "sharestraded")),
             "value": _num(_pick(r, "value", "amount", "dollarvalue", "txnvalue")),
-            "date": str(_pick(r, "date", "transactiondate", "txndate", "disclosuredate", "filingdate", default=""))[:10],
+            "date": str(_pick(r, "txndate", "date", "transactiondate", "disclosuredate", "datefiled", "filingdate", default=""))[:10],
             "notable": _pick(r, "notable", "notableevents", "events", "unusual", default=""), "_raw": r}
 
 
@@ -79,21 +80,41 @@ def _block_text(text: str) -> str:
     return text or ""
 
 
+def _csv_rows(body: str) -> list[dict]:
+    body = (body or "").strip()
+    head = body.splitlines()[0] if body else ""
+    if "," in head and any(w in head.lower() for w in ("ticker", "symbol")):
+        try:
+            return list(csv.DictReader(io.StringIO(body)))
+        except csv.Error:
+            return []
+    return []
+
+
 def parse_rows(stdout: str) -> list[dict]:
-    """tool_result → rows. JSON shapes via rows_of; CSV (InsiderScore tools also return CSV) via DictReader."""
+    """tool_result → rows. InsiderScore returns {"result": "<CSV>"} (verified live 2026-09-09);
+    JSON row shapes via rows_of; bare CSV via DictReader; spilled payloads followed to the file."""
     for text in reversed(_tool_result_blocks(stdout)):
-        rows = rows_of(resolve_payload(text))
+        obj = resolve_payload(text)
+        if isinstance(obj, dict) and isinstance(obj.get("result"), str):
+            inner = obj["result"]
+            try:
+                parsed = json.loads(inner)
+                rows = rows_of(parsed)
+                if rows is not None:
+                    return [r for r in rows if isinstance(r, dict)]
+            except json.JSONDecodeError:
+                pass
+            rows = _csv_rows(inner)
+            if rows:
+                return rows
+            continue
+        rows = rows_of(obj)
         if rows is not None:
             return [r for r in rows if isinstance(r, dict)]
-        body = _block_text(text).strip()
-        head = body.splitlines()[0] if body else ""
-        if "," in head and any(w in head.lower() for w in ("ticker", "symbol")):
-            try:
-                out = list(csv.DictReader(io.StringIO(body)))
-                if out:
-                    return out
-            except csv.Error:
-                pass
+        rows = _csv_rows(_block_text(text))
+        if rows:
+            return rows
     return []
 
 
@@ -151,7 +172,7 @@ def main(argv=None) -> int:
         got = [normalize(r) for r in parse_rows(stdout)]
         print(f"chunk {chunk[0]}..{chunk[-1]}: {len(got)} rows", flush=True)
         rows += got
-    rows = [r for r in rows if r["ticker"] in set(tickers) and r["txn_type"] in ("Buy", "Sell")]
+    rows = [r for r in rows if r["ticker"] in set(tickers) and r["txn_type"] in ("Buy", "Sell") and not r["tenb5"]]
     cl = clusters(rows)
     theses = {t: fm for t in tickers if (fm := tio.load(t))}
     ev = evidence_rows(cl, theses, end)

@@ -62,7 +62,7 @@
   - `recompute_pressure(fm, log_rows, today, window_days=90) -> dict` (mutates + returns fm; applies the status-proposal rule; returns list of changes in `fm["_changes"]`)
   - `universe() -> list[str]` re-exported from `scripts/chunking/ingest_metrics.universe`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # scripts/thesis/test_thesis_io.py
@@ -138,12 +138,12 @@ if __name__ == "__main__":
     print("OK test_thesis_io")
 ```
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `cd /root/research-watchlist && python3 scripts/thesis/test_thesis_io.py`
 Expected: `ModuleNotFoundError: No module named 'thesis'`
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 # scripts/thesis/__init__.py
@@ -330,12 +330,12 @@ def recompute_pressure(fm: dict, log_rows: list[dict], today: date, window_days:
     return fm
 ```
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `python3 scripts/thesis/test_thesis_io.py`
 Expected: `OK test_thesis_io`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/thesis/__init__.py scripts/thesis/thesis_io.py scripts/thesis/test_thesis_io.py
@@ -355,7 +355,7 @@ git commit -m "thesis: _thesis.md object — frontmatter round-trip, validation,
 - Consumes: `thesis_io.save/load/watchlist_scores/tier_of/universe`; `claude_p.run`; `pgconn.connect` (MD&A for thin mode); `docs/thesis-assumptions-draft.md` for COHR/LITE.
 - Produces: `notes/{T}/_thesis.md` per ticker; `state/thesis/_draft_progress.json` ledger `{ticker: {"status": "ok|failed|skipped", "mode": ..., "ts": ...}}`; functions `gather_inputs(ticker) -> dict(mode, scores, scoring_notes, earnings_notes[], mdna, news[])`, `build_prompt(inputs) -> str`, `parse_assumptions(text) -> list[dict]`, `import_draft_doc() -> dict[ticker, list[assumption]]`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # scripts/thesis/test_draft_thesis.py
@@ -402,9 +402,9 @@ if __name__ == "__main__":
     print("OK test_draft_thesis")
 ```
 
-- [ ] **Step 2: Run to verify it fails** — `python3 scripts/thesis/test_draft_thesis.py` → `ImportError`/`AttributeError`.
+- [x] **Step 2: Run to verify it fails** — `python3 scripts/thesis/test_draft_thesis.py` → `ImportError`/`AttributeError`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 # scripts/thesis/draft_thesis.py
@@ -633,14 +633,14 @@ if __name__ == "__main__":
 
 Also in `scripts/chunking/store.py` `_DOC_TYPE_WEIGHTS`: add `"thesis": 1.00,` with the comment `# operator thesis object — neutral weight`.
 
-- [ ] **Step 4: Run tests** — `python3 scripts/thesis/test_draft_thesis.py` → `OK test_draft_thesis` (Task 3's `sources.news_since` is only imported lazily in thin mode, so tests pass before Task 3 exists).
+- [x] **Step 4: Run tests** — `python3 scripts/thesis/test_draft_thesis.py` → `OK test_draft_thesis` (Task 3's `sources.news_since` is only imported lazily in thin mode, so tests pass before Task 3 exists).
 
-- [ ] **Step 5: Gold check + one real draft**
+- [x] **Step 5: Gold check + one real draft**
 
 Run: `python3 scripts/thesis/draft_thesis.py --ticker COHR --dry-run` → uses the imported doc; confirm `chinese_laser_capability` has `status_source: operator`, `draft: false`.
 Run: `python3 scripts/thesis/draft_thesis.py --ticker MRVL --dry-run` → mode `scores`, 3-6 assumptions, no OverreadError; read the statements against the MRVL scoring notes and reject anything the notes do not say.
 
-- [ ] **Step 6: Commit** — `git add scripts/thesis/draft_thesis.py scripts/thesis/test_draft_thesis.py scripts/chunking/store.py && git commit -m "thesis: drafter (scores/notes/thin modes) + COHR/LITE import from the assumptions draft"`
+- [x] **Step 6: Commit** — `git add scripts/thesis/draft_thesis.py scripts/thesis/test_draft_thesis.py scripts/chunking/store.py && git commit -m "thesis: drafter (scores/notes/thin modes) + COHR/LITE import from the assumptions draft"`
 
 - [ ] **Step 7: Batch run (after Task 3 lands, so thin mode works)** — orphan scan first, then `python3 scripts/thesis/draft_thesis.py --all 2>&1 | tee logs/draft_thesis.log`. Expected ≈90 files, ledger all `ok`. Spot-read NVDA, ANET, CBRS, INTC (mode notes), DPC (mode thin). Commit `notes/*/_thesis.md` + `state/thesis/_draft_progress.json` as "thesis: initial drafts for T1+T2".
 
@@ -656,7 +656,7 @@ Run: `python3 scripts/thesis/draft_thesis.py --ticker MRVL --dry-run` → mode `
 - Produces: `@dataclass Evidence(source: str, source_id: str, ticker: str, date: str, title: str, text: str, ref: str, cross_ticker: bool = False)` and collectors, each `(ticker, since: date) -> list[Evidence]`:
   `earnings_notes_since`, `news_since`, `sec_since`, `entity_claims_since`, `commentary_since` (substack+podcast), `conference_since` (conf notes + `state/transcripts/exchanges.jsonl` corprep conference rows), `operator_notes_since`; plus `collect_all(ticker, since) -> list[Evidence]` (concatenated, sorted by date, deduped on `source_id`). `source` values: `earnings_note | news | sec_filing | entity_claim | substack_post | podcast_summary | conference | operator_note`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # scripts/thesis/test_sources.py
@@ -694,9 +694,9 @@ if __name__ == "__main__":
     print("OK test_sources")
 ```
 
-- [ ] **Step 2: Run to verify it fails** — `ImportError`.
+- [x] **Step 2: Run to verify it fails** — `ImportError`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 # scripts/thesis/sources.py
@@ -861,9 +861,9 @@ def collect_all(ticker: str, since: date) -> list[Evidence]:
     return sorted(out, key=lambda e: e.date)
 ```
 
-- [ ] **Step 4: Run tests** — `python3 scripts/thesis/test_sources.py` → `OK test_sources`. If the entity test fails, check `SELECT count(*) FROM entity_mentions WHERE subject='COHR' OR 'COHR' = ANY(affects)` before touching code.
+- [x] **Step 4: Run tests** — `python3 scripts/thesis/test_sources.py` → `OK test_sources`. If the entity test fails, check `SELECT count(*) FROM entity_mentions WHERE subject='COHR' OR 'COHR' = ANY(affects)` before touching code.
 
-- [ ] **Step 5: Commit** — `git add scripts/thesis/sources.py scripts/thesis/test_sources.py && git commit -m "thesis: evidence collectors for all channels (disk news, pg filings/claims/commentary, conferences, inbox)"`
+- [x] **Step 5: Commit** — `git add scripts/thesis/sources.py scripts/thesis/test_sources.py && git commit -m "thesis: evidence collectors for all channels (disk news, pg filings/claims/commentary, conferences, inbox)"`
 
 ---
 
@@ -877,7 +877,7 @@ def collect_all(ticker: str, since: date) -> list[Evidence]:
 - Consumes: `sources.collect_all`, `thesis_io.load/save/recompute_pressure/watchlist_scores`, `claude_p.run`, `classify_llm._detect_session_limit`.
 - Produces: `state/thesis/evidence_log.jsonl` rows `{ts, ticker, source, source_id, ref, date, assumption_id|null, direction, strength, why, quote, cross_ticker}`; `state/thesis/watermarks.json` `{ticker: ISO date}`; `state/thesis/changes.jsonl` (status and proposed-score changes, `{ts, ticker, kind: "status"|"proposed_score", ...}`); functions `build_prompt(fm, evidence) -> str`, `parse_verdicts(text, evidence) -> list[dict]`, `lift_score_recs(evidence_note_text) -> dict[score_key, value]`, `run_ticker(ticker, since, today, dry_run) -> dict(stats)`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # scripts/thesis/test_match_evidence.py
@@ -934,9 +934,9 @@ if __name__ == "__main__":
     print("OK test_match_evidence")
 ```
 
-- [ ] **Step 2: Run to verify it fails** — `ImportError`.
+- [x] **Step 2: Run to verify it fails** — `ImportError`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 # scripts/thesis/match_evidence.py
@@ -1162,7 +1162,7 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-- [ ] **Step 4: Run tests** — `python3 scripts/thesis/test_match_evidence.py` → `OK test_match_evidence`.
+- [x] **Step 4: Run tests** — `python3 scripts/thesis/test_match_evidence.py` → `OK test_match_evidence`.
 
 - [ ] **Step 5: Backfill test on the gold names** — `python3 scripts/thesis/match_evidence.py --ticker COHR,LITE,AAOI --since 2026-08-01 --dry-run`. Expected: Accelink EML claims → `chinese_laser_capability` challenge; COHR demand language → `datacom_ramp_continues` confirm; nothing flips to `challenged` on one source. Then run without `--dry-run`; re-run → `rows: 0` for all three (idempotent).
 
@@ -1180,7 +1180,7 @@ if __name__ == "__main__":
 **Interfaces:**
 - Produces: `write_context(ticker) -> Path` in `cron_earnings_reviewer.py` writing `state/thesis/context/{TICKER}.md`; note section `## 4b. Assumption read` with lines `- {id}: Confirm|Challenge|Silent — evidence (location)`.
 
-- [ ] **Step 1: Failing test** (append to `scripts/test_cron_earnings_reviewer.py`, following its existing style):
+- [x] **Step 1: Failing test** (append to `scripts/test_cron_earnings_reviewer.py`, following its existing style):
 
 ```python
 def test_write_context_without_thesis(tmp_path):
@@ -1195,9 +1195,9 @@ def test_prompt_mentions_context():
     assert "state/thesis/context/NVDA.md" in C.build_prompt("NVDA")
 ```
 
-- [ ] **Step 2: Run** — `python3 scripts/test_cron_earnings_reviewer.py` → AttributeError.
+- [x] **Step 2: Run** — `python3 scripts/test_cron_earnings_reviewer.py` → AttributeError.
 
-- [ ] **Step 3: Implement in `cron_earnings_reviewer.py`**
+- [x] **Step 3: Implement in `cron_earnings_reviewer.py`**
 
 ```python
 CONTEXT_DIR = REPO_ROOT / "state" / "thesis" / "context"
@@ -1236,7 +1236,7 @@ def write_context(ticker: str) -> Path:
 ```
 In `run_earnings_reviewer`: call `write_context(ticker)` first (wrapped in try/except that logs `CONTEXT_FAILED` and continues), and replace the literal prompt with `build_prompt(ticker)`.
 
-- [ ] **Step 4: Agent prompt edits** (canonical file):
+- [x] **Step 4: Agent prompt edits** (canonical file):
   - Step 3: replace the glob sentence with: *Use Glob to list `notes/{TICKER}/????????-[1-4]Q??.md` (earnings notes are named `{YYYYMMDD}-{1QYY}.md`). Sort; read the two most recent. Also Read `notes/{TICKER}/_thesis.md` if it exists and `state/thesis/context/{TICKER}.md` if it exists.*
   - Step 5: add *For each assumption in `_thesis.md` (skip `retired`), classify Confirm / Challenge / Silent with evidence and transcript location. When the context file carries a guidance track record, Section 8 must state whether this quarter's guide fits the recorded pattern (hit rate, sandbag index).*
   - Output structure: insert after §4:
@@ -1250,7 +1250,7 @@ In `run_earnings_reviewer`: call `write_context(ticker)` first (wrapped in try/e
 
 - [ ] **Step 5: Run tests + one real dispatch** — `python3 scripts/test_cron_earnings_reviewer.py`; then replay: `cp state/transcripts/AMBA.json /tmp/AMBA.json.bak && python3 - <<'PY'\nimport json;p='state/transcripts/AMBA.json';d=json.load(open(p));d['last_iacc']='replay';json.dump(d,open(p,'w'))\nPY` and `python3 -c "import sys;sys.path.insert(0,'scripts');import cron_earnings_reviewer as C;from datetime import datetime,timezone;print(C.run_earnings_reviewer('AMBA', datetime.now(timezone.utc)))"`. Expected: STATUS new-note-written; the new note has §4b with every AMBA assumption id, §10 cites the context file, and Step 3 found the prior AMBA note without a dispatch override. Restore the state file if the replay must not count.
 
-- [ ] **Step 6: Commit** — `git add plugins/agent-plugins/earnings-reviewer/agents/earnings-reviewer.md scripts/cron_earnings_reviewer.py scripts/test_cron_earnings_reviewer.py && git commit -m "earnings-reviewer: thesis-aware (4b assumption read), prior-note glob fix, Store B context pre-stage"`
+- [x] **Step 6: Commit** — `git add plugins/agent-plugins/earnings-reviewer/agents/earnings-reviewer.md scripts/cron_earnings_reviewer.py scripts/test_cron_earnings_reviewer.py && git commit -m "earnings-reviewer: thesis-aware (4b assumption read), prior-note glob fix, Store B context pre-stage"`
 
 ---
 
@@ -1277,7 +1277,7 @@ Interface facts these tasks rely on (verified 2026-09-09):
 - Consumes: `thesis_io.load/universe/SCORE_KEYS`, `state/thesis/{evidence_log,changes}.jsonl` (row shapes from Task 4), `state/thesis/consensus_*.jsonl` (Task 8), `state/thesis/insiders_*.jsonl` (Task 7), `email_send.send`.
 - Produces: `notes/reports/thesis-delta-{YYYYMMDD}[-quarterly].md`, `state/thesis/ranking_{date}.json` (`{date, since, kind, ranking: [{ticker, tier, delta, why, rank_score_proposed, applied, proposed, n_assumptions, status_counts}]}`), `state/thesis/reports_sent.jsonl` (`{kind, date, since, path, questions_added, ts}`), `state/thesis/alerts_sent.jsonl` (`{id, ticker, ts}`), `state/thesis/questions.jsonl` (`{id, kind: draft_review|stale|score_proposal, ticker, assumption_id?, key?, value?, text, asked_at, answered_at, answer}` — consumed by Task 11), and functions `score_num`, `ticker_delta`, `rank_movers`, `ranking_rows`, `themes_rollup`, `pending_proposals`, `drafts_needing_eye`, `stale_assumptions`, `alert_events`, `quarterly_due`, `render(ctx, wiki)`, `run_report`, `run_alerts`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # FILE: scripts/thesis/test_thesis_report.py
@@ -1393,9 +1393,9 @@ if __name__ == "__main__":
     print("OK test_thesis_report")
 ```
 
-- [ ] **Step 2: Run to verify it fails** — `python3 scripts/thesis/test_thesis_report.py` → `ImportError: cannot import name 'thesis_report'`.
+- [x] **Step 2: Run to verify it fails** — `python3 scripts/thesis/test_thesis_report.py` → `ImportError: cannot import name 'thesis_report'`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 # FILE: scripts/thesis/thesis_report.py
@@ -1900,9 +1900,9 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-- [ ] **Step 4: Run tests** — `python3 scripts/thesis/test_thesis_report.py` → `OK test_thesis_report`.
-- [ ] **Step 5: Real dry-run** — `python3 scripts/thesis/thesis_report.py --weekly --since 2026-08-01 --dry-run` on the backfilled COHR/LITE/AAOI log: COHR/LITE in §1, §2 shows citations with dates/sources, §7 counts by source; run twice, `diff` of the two outputs is empty. Then `--alerts --dry-run` lists the backfill's status changes.
-- [ ] **Step 6: Commit** — `git add scripts/thesis/thesis_report.py scripts/thesis/test_thesis_report.py && git commit -m "thesis: weekly delta report + alerts + quarterly edition + ranking json + questions ledger"`
+- [x] **Step 4: Run tests** — `python3 scripts/thesis/test_thesis_report.py` → `OK test_thesis_report`.
+- [x] **Step 5: Real dry-run** — `python3 scripts/thesis/thesis_report.py --weekly --since 2026-08-01 --dry-run` on the backfilled COHR/LITE/AAOI log: COHR/LITE in §1, §2 shows citations with dates/sources, §7 counts by source; run twice, `diff` of the two outputs is empty. Then `--alerts --dry-run` lists the backfill's status changes.
+- [x] **Step 6: Commit** — `git add scripts/thesis/thesis_report.py scripts/thesis/test_thesis_report.py && git commit -m "thesis: weekly delta report + alerts + quarterly edition + ranking json + questions ledger"`
 
 
 ---
@@ -1917,7 +1917,7 @@ if __name__ == "__main__":
 - Consumes: `claude_p.run_mcp`, `factset_flows._tool_result_blocks/resolve_payload/rows_of/_SPILL_RE`, `thesis_io.load/save/recompute_pressure/universe`, `match_evidence.LOG/CHANGES/_append/_read_log`.
 - Produces: `state/thesis/insiders_{YYYY-MM-DD}.jsonl` rows `{ticker, insider, position, txn_type: Buy|Sell, shares, value, date, notable, _raw}` (read by `thesis_report.insiders_line`); evidence rows with `source: "insider"`, `source_id: "insider:{T}:{week_end}"`, strength 1 on investor-interest assumptions when ≥2 distinct insiders trade the same direction; functions `prompt`, `parse_rows`, `normalize`, `clusters`, `investor_assumptions`, `evidence_rows`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # FILE: scripts/thesis/test_insider_pull.py
@@ -1945,6 +1945,12 @@ def test_parse_rows_json_and_csv():
     csv_text = "ticker,insider_name,transaction_type,shares,value,transaction_date\nLITE,B,Sell,10,\"1,000\",2026-09-03\n"
     out = I.parse_rows(_transcript(csv_text))
     assert out and out[0]["ticker"] == "LITE"
+    live = ("ticker,entityname,mcap,sector,iacc,formtype,txnid,txndate,datefiled,code,acquired_disposed,rptcik,insider,pos_type,has_10b5,tenb5planid,shares,value,pctchange,notable_event,link\r\n"
+            "NVDA,NVIDIA,5450702310000,Technology,43725689,4,24696410,2026-09-04 00:00:00,2026-09-08 00:00:00,Sale,,1199039,Mark A. Stevens,Director,False,,1022239.0,235636867.411,-3.41,,https://x/\r\n")
+    out = I.parse_rows(_transcript(json.dumps({"result": live})))            # the real InsiderScore shape: {"result": "<CSV>"}
+    n = I.normalize(out[0])
+    assert n["ticker"] == "NVDA" and n["txn_type"] == "Sell" and n["insider"] == "Mark A. Stevens" and n["position"] == "Director"
+    assert n["date"] == "2026-09-04" and n["value"] == 235636867.411 and n["tenb5"] is False
 
 
 def test_normalize_key_variants():
@@ -1971,9 +1977,9 @@ if __name__ == "__main__":
     print("OK test_insider_pull")
 ```
 
-- [ ] **Step 2: Run to verify it fails** — `ImportError`.
+- [x] **Step 2: Run to verify it fails** — `ImportError`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 # FILE: scripts/thesis/insider_pull.py
@@ -2037,14 +2043,15 @@ def _num(v):
 
 
 def normalize(r: dict) -> dict:
-    tt = str(_pick(r, "txntype", "transactiontype", "txn_type", "type", "transaction", default="")).strip()
+    tt = str(_pick(r, "code", "txntype", "transactiontype", "txn_type", "type", "transaction", default="")).strip()
     tt = "Buy" if tt.lower().startswith(("b", "p")) else "Sell" if tt.lower().startswith("s") else tt
     return {"ticker": str(_pick(r, "ticker", "symbol", default="")).upper(),
             "insider": str(_pick(r, "insider", "insidername", "name", "rptname", "reportingname", "owner", "reportingowner", default="")),
-            "position": str(_pick(r, "position", "title", "role", "relationship", "officertitle", default="")),
+            "position": str(_pick(r, "pos_type", "position", "title", "role", "relationship", "officertitle", default="")),
+            "tenb5": str(_pick(r, "has_10b5", "tenb5", "is10b5", default="")).strip().lower() in ("true", "1", "yes", "y"),
             "txn_type": tt, "shares": _num(_pick(r, "shares", "qty", "quantity", "sharestraded")),
             "value": _num(_pick(r, "value", "amount", "dollarvalue", "txnvalue")),
-            "date": str(_pick(r, "date", "transactiondate", "txndate", "disclosuredate", "filingdate", default=""))[:10],
+            "date": str(_pick(r, "txndate", "date", "transactiondate", "disclosuredate", "datefiled", "filingdate", default=""))[:10],
             "notable": _pick(r, "notable", "notableevents", "events", "unusual", default=""), "_raw": r}
 
 
@@ -2058,21 +2065,41 @@ def _block_text(text: str) -> str:
     return text or ""
 
 
+def _csv_rows(body: str) -> list[dict]:
+    body = (body or "").strip()
+    head = body.splitlines()[0] if body else ""
+    if "," in head and any(w in head.lower() for w in ("ticker", "symbol")):
+        try:
+            return list(csv.DictReader(io.StringIO(body)))
+        except csv.Error:
+            return []
+    return []
+
+
 def parse_rows(stdout: str) -> list[dict]:
-    """tool_result → rows. JSON shapes via rows_of; CSV (InsiderScore tools also return CSV) via DictReader."""
+    """tool_result → rows. InsiderScore returns {"result": "<CSV>"} (verified live 2026-09-09);
+    JSON row shapes via rows_of; bare CSV via DictReader; spilled payloads followed to the file."""
     for text in reversed(_tool_result_blocks(stdout)):
-        rows = rows_of(resolve_payload(text))
+        obj = resolve_payload(text)
+        if isinstance(obj, dict) and isinstance(obj.get("result"), str):
+            inner = obj["result"]
+            try:
+                parsed = json.loads(inner)
+                rows = rows_of(parsed)
+                if rows is not None:
+                    return [r for r in rows if isinstance(r, dict)]
+            except json.JSONDecodeError:
+                pass
+            rows = _csv_rows(inner)
+            if rows:
+                return rows
+            continue
+        rows = rows_of(obj)
         if rows is not None:
             return [r for r in rows if isinstance(r, dict)]
-        body = _block_text(text).strip()
-        head = body.splitlines()[0] if body else ""
-        if "," in head and any(w in head.lower() for w in ("ticker", "symbol")):
-            try:
-                out = list(csv.DictReader(io.StringIO(body)))
-                if out:
-                    return out
-            except csv.Error:
-                pass
+        rows = _csv_rows(_block_text(text))
+        if rows:
+            return rows
     return []
 
 
@@ -2130,7 +2157,7 @@ def main(argv=None) -> int:
         got = [normalize(r) for r in parse_rows(stdout)]
         print(f"chunk {chunk[0]}..{chunk[-1]}: {len(got)} rows", flush=True)
         rows += got
-    rows = [r for r in rows if r["ticker"] in set(tickers) and r["txn_type"] in ("Buy", "Sell")]
+    rows = [r for r in rows if r["ticker"] in set(tickers) and r["txn_type"] in ("Buy", "Sell") and not r["tenb5"]]
     cl = clusters(rows)
     theses = {t: fm for t in tickers if (fm := tio.load(t))}
     ev = evidence_rows(cl, theses, end)
@@ -2163,9 +2190,9 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-- [ ] **Step 4: Run tests** — `python3 scripts/thesis/test_insider_pull.py` → `OK test_insider_pull`.
+- [x] **Step 4: Run tests** — `python3 scripts/thesis/test_insider_pull.py` → `OK test_insider_pull`.
 - [ ] **Step 5: One real dry-run** — `set -a && . /root/podcasts/.env && set +a && python3 scripts/thesis/insider_pull.py --ticker COHR,LITE,NVDA,AMD,AVGO --days 14 --dry-run` (one MCP call). Inspect `_raw` keys in the output; if `normalize` missed the real key names, add them to `_pick(...)` lists and re-run the unit test. Confirm no row carries a 10b5-1 marker.
-- [ ] **Step 6: Commit** — `git add scripts/thesis/insider_pull.py scripts/thesis/test_insider_pull.py && git commit -m "thesis: weekly InsiderScore pull (open-market, ex-10b5-1) → insiders_{date}.jsonl + strength-1 investor-interest evidence"`
+- [x] **Step 6: Commit** — `git add scripts/thesis/insider_pull.py scripts/thesis/test_insider_pull.py && git commit -m "thesis: weekly InsiderScore pull (open-market, ex-10b5-1) → insiders_{date}.jsonl + strength-1 investor-interest evidence"`
 
 ---
 
@@ -2179,7 +2206,7 @@ if __name__ == "__main__":
 - Consumes: `claude_p.run_mcp`, `factset_flows._tool_result_blocks/resolve_payload/rows_of`, existing `id_maps/build/get_metrics_store`.
 - Produces: refreshed `state/chunk_store/factset_raw/{METRIC}_{kind}.json` (`{"data": rows}`; previous copy at `.prev.json`), `state/thesis/consensus_{date}.jsonl` rows `{ticker, metric, period, fiscal_end, guidance_mid, consensus_at_guide, consensus_at_print, actual, as_of}` (read by `thesis_report.storeb_context`); functions `pull_prompt(ids, metric, kind, start, end)`, `mcp_runner(ids, metric, kind, start, end) -> list[dict]`, `pull_all(tickers, metrics, *, kinds, runner, start, end, log) -> dict[str, int]`, `consensus_snapshot(records, path) -> int`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # FILE: scripts/chunking/test_ingest_metrics_pull.py
@@ -2242,9 +2269,9 @@ if __name__ == "__main__":
     print("OK test_ingest_metrics_pull")
 ```
 
-- [ ] **Step 2: Run to verify it fails** — `AttributeError: module 'ingest_metrics' has no attribute 'pull_prompt'`.
+- [x] **Step 2: Run to verify it fails** — `AttributeError: module 'ingest_metrics' has no attribute 'pull_prompt'`.
 
-- [ ] **Step 3: Implement** — insert after `KINDS = ("guidance", "surprise")`:
+- [x] **Step 3: Implement** — insert after `KINDS = ("guidance", "surprise")`:
 
 ```python
 # --- weekly FactSet pull (thesis loop P5) -----------------------------------
@@ -2330,9 +2357,9 @@ def consensus_snapshot(records: list[dict], path: Path) -> int:
 
 In `main()`: add `ap.add_argument("--pull", action="store_true", help="refresh factset_raw via FactSet MCP, then build+report (no write unless --cron)")`, `ap.add_argument("--cron", action="store_true", help="weekly: pull + build + write pg + consensus snapshot")`, `ap.add_argument("--snapshot", action="store_true", help="also write state/thesis/consensus_{date}.jsonl")`. After `metrics = ...`: `if args.pull or args.cron: counts = pull_all(tickers, metrics); print("pulled:", json.dumps(counts))`. Change the dry-run guard to `if args.dry_run or (args.pull and not args.cron):` (a plain `--pull` never writes pg). After the store write: `if args.cron or args.snapshot: n = consensus_snapshot(records, SNAPSHOT_DIR / f"consensus_{date.today().isoformat()}.jsonl"); print(f"consensus snapshot: {n} rows")`.
 
-- [ ] **Step 4: Run tests** — `python3 scripts/chunking/test_ingest_metrics_pull.py` → `OK test_ingest_metrics_pull`.
-- [ ] **Step 5: Bounded real pull** — `set -a && . /root/podcasts/.env && set +a && python3 scripts/chunking/ingest_metrics.py --pull --tickers NVDA,AVGO,COHR --metrics SALES 2>&1 | tail -30` (2 MCP calls). Expect the coverage guard `✓` (AVGO's FY22Q2/FY23Q3 present), `SALES_guidance.json` rows for the 3 ids only — **then restore the full file**: `mv state/chunk_store/factset_raw/SALES_guidance.prev.json state/chunk_store/factset_raw/SALES_guidance.json` (same for surprise), because a partial-universe pull replaces the whole file. The full weekly `--cron` runs all 89 names (54 calls) and is left to the Sunday 08:00 cron; verify Monday with `SELECT max(as_of), count(*) FROM metrics`.
-- [ ] **Step 6: Commit** — `git add scripts/chunking/ingest_metrics.py scripts/chunking/test_ingest_metrics_pull.py && git commit -m "store-b: weekly FactSet pull via run_mcp (--pull/--cron) + consensus snapshots for drift"`
+- [x] **Step 4: Run tests** — `python3 scripts/chunking/test_ingest_metrics_pull.py` → `OK test_ingest_metrics_pull`.
+- [x] **Step 5: Bounded real pull** — `set -a && . /root/podcasts/.env && set +a && python3 scripts/chunking/ingest_metrics.py --pull --tickers NVDA,AVGO,COHR --metrics SALES 2>&1 | tail -30` (2 MCP calls). Expect the coverage guard `✓` (AVGO's FY22Q2/FY23Q3 present), `SALES_guidance.json` rows for the 3 ids only — **then restore the full file**: `mv state/chunk_store/factset_raw/SALES_guidance.prev.json state/chunk_store/factset_raw/SALES_guidance.json` (same for surprise), because a partial-universe pull replaces the whole file. The full weekly `--cron` runs all 89 names (54 calls) and is left to the Sunday 08:00 cron; verify Monday with `SELECT max(as_of), count(*) FROM metrics`.
+- [x] **Step 6: Commit** — `git add scripts/chunking/ingest_metrics.py scripts/chunking/test_ingest_metrics_pull.py && git commit -m "store-b: weekly FactSet pull via run_mcp (--pull/--cron) + consensus snapshots for drift"`
 
 ---
 
@@ -2347,7 +2374,7 @@ In `main()`: add `ap.add_argument("--pull", action="store_true", help="refresh f
 **Interfaces:**
 - Produces: `pdf_to_text(data: bytes, max_pages=60, max_chars=120_000) -> str`; `fetch_ex99(cik, accession, *, form: str = "8-K", items: list[str] | None = None)`; section header `## Exhibit EX-99.N (slides)`; CLI `--accession 0001104659-26-105234` (with `--ticker`) re-processes one known filing even if already in the watermark.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # FILE: scripts/v3_ingest/test_sec_pdf_exhibits.py
@@ -2411,9 +2438,9 @@ if __name__ == "__main__":
     print("OK test_sec_pdf_exhibits")
 ```
 
-- [ ] **Step 2: Run to verify it fails** — `AttributeError: module 'sec_filings' has no attribute 'pdf_to_text'`.
+- [x] **Step 2: Run to verify it fails** — `AttributeError: module 'sec_filings' has no attribute 'pdf_to_text'`.
 
-- [ ] **Step 3: Implement** — replace `fetch_ex99` with:
+- [x] **Step 3: Implement** — replace `fetch_ex99` with:
 
 ```python
 PDF_EXHIBIT_ITEMS = {"2.02", "7.01", "8.01"}   # 8-K items that carry decks (earnings, Reg FD, other events)
@@ -2473,9 +2500,9 @@ def fetch_ex99(cik: int, accession: str, *, form: str = "8-K", items: list[str] 
 
 In `process_filing`, change the call to `fetch_ex99(cik, filing["accession"], form=base_form, items=filing.get("items"))`. In `main()`: add `ap.add_argument("--accession", help="re-process this one accession for --ticker even if already in the watermark (testing/backfill)")`; in the per-ticker loop, right after `sel = select_filings(...)`: `if args.accession: sel = [f for f in filings if f["accession"] == args.accession]` (bypasses the processed-set skip; `filings` is the full fetched list).
 
-- [ ] **Step 4: Run tests** — `python3 scripts/v3_ingest/test_sec_pdf_exhibits.py` → `OK test_sec_pdf_exhibits`; also `python3 scripts/v3_ingest/test_sec_filings.py` if present (regression).
-- [ ] **Step 5: Real re-fetch** — `cd /root/research-watchlist && /usr/bin/time -v python3 scripts/v3_ingest/sec_filings.py --ticker GDS --accession 0001104659-26-105234 --skip-themes 2>&1 | grep -E "EX-99|Maximum resident|DONE|FAILED"`. Expect the GDS 2026-09-04 6-K note to gain `## Exhibit EX-99.1 (slides)`, chunk count > 0 in pg for that doc, and `Maximum resident set size` under 200 MB. (`--skip-themes` avoids a claude -p call while the drafter/matcher batches may still be running.)
-- [ ] **Step 6: Commit** — `git add scripts/v3_ingest/sec_filings.py scripts/v3_ingest/test_sec_pdf_exhibits.py && git commit -m "sec: ingest PDF EX-99 exhibits (6-K always, 8-K 2.02/7.01/8.01) streamed under the memory envelope; --accession re-fetch"`
+- [x] **Step 4: Run tests** — `python3 scripts/v3_ingest/test_sec_pdf_exhibits.py` → `OK test_sec_pdf_exhibits`; also `python3 scripts/v3_ingest/test_sec_filings.py` if present (regression).
+- [x] **Step 5: Real re-fetch** — `cd /root/research-watchlist && /usr/bin/time -v python3 scripts/v3_ingest/sec_filings.py --ticker GDS --accession 0001104659-26-105234 --skip-themes 2>&1 | grep -E "EX-99|Maximum resident|DONE|FAILED"`. Expect the GDS 2026-09-04 6-K note to gain `## Exhibit EX-99.1 (slides)`, chunk count > 0 in pg for that doc, and `Maximum resident set size` under 200 MB. (`--skip-themes` avoids a claude -p call while the drafter/matcher batches may still be running.)
+- [x] **Step 6: Commit** — `git add scripts/v3_ingest/sec_filings.py scripts/v3_ingest/test_sec_pdf_exhibits.py && git commit -m "sec: ingest PDF EX-99 exhibits (6-K always, 8-K 2.02/7.01/8.01) streamed under the memory envelope; --accession re-fetch"`
 
 
 ---
@@ -2491,7 +2518,7 @@ In `process_filing`, change the call to `fetch_ex99(cik, filing["accession"], fo
 - Consumes: `thesis_io.load/save/watchlist_scores`, `notes/*/_thesis.md` `proposed_scores`.
 - Produces: `proposals(tickers=None) -> list[{ticker, key, value, applied, since, source}]`, `patch_text(text, ticker, key, value) -> str` (raises `PatchError`), `apply(accept, key, write) -> int`. `check.py` reports `thesis: notes/X/_thesis.md: <error>` and prints `WARN thesis: N T1/T2 ticker(s) without _thesis.md`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # FILE: scripts/thesis/test_apply_scores.py
@@ -2551,9 +2578,9 @@ if __name__ == "__main__":
     print("OK test_apply_scores")
 ```
 
-- [ ] **Step 2: Run to verify it fails** — `ImportError`.
+- [x] **Step 2: Run to verify it fails** — `ImportError`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 # FILE: scripts/thesis/apply_scores.py
@@ -2723,9 +2750,9 @@ except ImportError as e:
     print(f"WARN thesis: validation skipped ({e})")
 ```
 
-- [ ] **Step 4: Run tests** — `python3 scripts/thesis/test_apply_scores.py` → OK; `python3 scripts/check.py` → `OK — N file(s) checked` (with the WARN line while the drafter is still filling in).
+- [x] **Step 4: Run tests** — `python3 scripts/thesis/test_apply_scores.py` → OK; `python3 scripts/check.py` → `OK — N file(s) checked` (with the WARN line while the drafter is still filling in).
 - [ ] **Step 5: Real diff, no write** — `python3 scripts/thesis/apply_scores.py --list` then `--accept <first ticker listed>` and read the unified diff: exactly one score line changes inside that ticker's T1/T2 block. Do NOT `--write` (operator's call).
-- [ ] **Step 6: Commit** — `git add scripts/thesis/apply_scores.py scripts/thesis/test_apply_scores.py scripts/check.py && git commit -m "thesis: apply_scores (operator-invoked watchlist patch) + check.py thesis validation"`
+- [x] **Step 6: Commit** — `git add scripts/thesis/apply_scores.py scripts/thesis/test_apply_scores.py scripts/check.py && git commit -m "thesis: apply_scores (operator-invoked watchlist patch) + check.py thesis validation"`
 
 ---
 
@@ -2739,7 +2766,7 @@ except ImportError as e:
 - Consumes: `state/thesis/questions.jsonl` (Task 6 shape), `thesis_io.load/save`.
 - Produces: `answer.py --list [--ticker T]`, `answer.py --id QID --action keep|retire|confirm|challenge|edit [--text ...]` (assumption questions) or `--action accept|reject` (score questions); `apply_answer(q, action, text) -> str`. Every operator action sets `status_source: operator`, `draft: false`, `reviewed_by_operator: true`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # FILE: scripts/thesis/test_answer.py
@@ -2786,9 +2813,9 @@ if __name__ == "__main__":
     print("OK test_answer")
 ```
 
-- [ ] **Step 2: Run to verify it fails** — `ImportError`.
+- [x] **Step 2: Run to verify it fails** — `ImportError`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 # FILE: scripts/thesis/answer.py
@@ -2940,8 +2967,8 @@ are never re-drafted by `draft_thesis.py --missing-only`, and that `--force` pre
 with `draft: false`.
 ```
 
-- [ ] **Step 4: Run tests** — `python3 scripts/thesis/test_answer.py` → `OK test_answer`; `python3 scripts/check.py` still OK (skills dir is outside its scope; confirm no new error).
-- [ ] **Step 5: Commit** — `git add scripts/thesis/answer.py scripts/thesis/test_answer.py .claude/skills/thesis-chat/SKILL.md && git commit -m "thesis: answer.py + thesis-chat skill (operator decisions recorded through thesis_io, never by hand)"`
+- [x] **Step 4: Run tests** — `python3 scripts/thesis/test_answer.py` → `OK test_answer`; `python3 scripts/check.py` still OK (skills dir is outside its scope; confirm no new error).
+- [x] **Step 5: Commit** — `git add scripts/thesis/answer.py scripts/thesis/test_answer.py .claude/skills/thesis-chat/SKILL.md && git commit -m "thesis: answer.py + thesis-chat skill (operator decisions recorded through thesis_io, never by hand)"`
 
 ---
 
@@ -2967,7 +2994,7 @@ with `draft: false`.
 
 The design's `0 9 * * 0 transcript_ingest --conferences --since-last` is NOT installed: `scripts/v3_ingest/transcript_ingest.py` has no such flags (its CLI is `--ticker/--window-months/--max-queries/...`) and belongs to the parked idea-surfacing extraction. Record as an open item in memory. Install with `crontab -l > /root/backups/crontab.pre_thesis_crons_<ts>.bak && (crontab -l; cat <lines>) | crontab -`, verify with `crontab -l | grep -c thesis_`, then `scripts/snapshot_crontab.sh`.
 
-- [ ] **Step 3: Docs** — `ARCHITECTURE.md`: §4 add the seven cron rows; §5 add `thesis-chat` skill + the reviewer's §4b/context pre-stage; §8 close "no thesis object" and open "transcript conference feed unscheduled". `docs/cost-model.md` §2: "thesis matcher ≈ up to 90 Sonnet lean calls/day (most tickers skip), weekly report 0 calls, drafter one-off ≈ 90 + weekly `--missing-only` ≈ 0-3, Store B weekly 54 MCP calls, insider pull 4 MCP calls/week". Commit "docs: thesis loop (architecture, cost model)".
+- [x] **Step 3: Docs** — `ARCHITECTURE.md`: §4 add the seven cron rows; §5 add `thesis-chat` skill + the reviewer's §4b/context pre-stage; §8 close "no thesis object" and open "transcript conference feed unscheduled". `docs/cost-model.md` §2: "thesis matcher ≈ up to 90 Sonnet lean calls/day (most tickers skip), weekly report 0 calls, drafter one-off ≈ 90 + weekly `--missing-only` ≈ 0-3, Store B weekly 54 MCP calls, insider pull 4 MCP calls/week". Commit "docs: thesis loop (architecture, cost model)".
 
 - [ ] **Step 4: Restore `auto_sync`** — `crontab -l | sed 's/^# PAUSED-BUILD-THESIS //' | crontab -`; verify `crontab -l | grep auto_sync` shows the live line; `diff <(crontab -l) /root/backups/crontab.pre_build_20260909_101534.bak` shows ONLY the seven thesis additions. Run `python3 scripts/auto_sync.py` once by hand and confirm `git status` clean and `git log origin/main -1` matches HEAD.
 
