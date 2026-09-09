@@ -23,6 +23,7 @@ import yaml
 # === Configuration ===
 
 REPO_ROOT = Path("/root/research-watchlist")
+CONTEXT_DIR = REPO_ROOT / "state" / "thesis" / "context"
 WATCHLIST_PATH = REPO_ROOT / "config" / "watchlist.yaml"  # symlink to /root/research/config/watchlist.yaml
 LOG_PATH = REPO_ROOT / "logs" / "cron-earnings-reviewer.log"
 WINDOW_HOURS = 24  # earnings calendar lookback window
@@ -215,6 +216,47 @@ def infer_outcome_from_artifacts(ticker: str, run_started_at: datetime) -> str |
         return None
     return f"STATUS: new-note-written ticker={ticker} period={period} iacc={iacc} path={note_path}"
 
+def build_prompt(ticker: str) -> str:
+    return (f"Use the earnings-reviewer agent to review {ticker}'s latest earnings call. "
+            f"Before Step 4, Read state/thesis/context/{ticker}.md if it exists — it carries the open thesis "
+            f"assumptions and the guidance track record for Section 4b and Section 8.")
+
+
+def write_context(ticker: str) -> Path:
+    """Pre-stage: the agent has no Bash/DB, so the wrapper hands it thesis + Store B facts as a file.
+
+    Queries `metrics` + `metrics_credibility` directly — never the `guidance_with_track_record`
+    view, which fans out to ~30k rows per ticker."""
+    CONTEXT_DIR.mkdir(parents=True, exist_ok=True)
+    lines = [f"# Context for {ticker} (generated {datetime.now(timezone.utc).isoformat(timespec='seconds')})", ""]
+    th = REPO_ROOT / "notes" / ticker / "_thesis.md"
+    if th.exists():
+        parts = th.read_text(encoding="utf-8").split("---\n", 2)
+        fm_text = parts[1] if len(parts) >= 2 else ""
+        lines += [f"## Open thesis assumptions (from notes/{ticker}/_thesis.md)", "```yaml", fm_text.rstrip(), "```", ""]
+    else:
+        lines += ["## Thesis", f"No thesis file for {ticker} (not a T1/T2 name or not yet drafted). Section 4b reads 'no thesis file'.", ""]
+    try:
+        sys.path.insert(0, str(REPO_ROOT / "scripts" / "chunking"))
+        from pgconn import connect
+        with connect() as conn, conn.cursor() as cur:
+            cur.execute("""SELECT metric, period, guidance_mid, consensus_at_guide, actual, consensus_at_print, beat_vs_guidance, beat_vs_guidance_pct
+                           FROM metrics WHERE ticker=%s AND (actual IS NOT NULL OR guidance_mid IS NOT NULL) ORDER BY fiscal_end DESC NULLS LAST LIMIT 12""", (ticker,))
+            rows = cur.fetchall()
+            cur.execute("SELECT metric, score FROM metrics_credibility WHERE ticker=%s", (ticker,))
+            cred = cur.fetchall()
+        lines += ["## Guidance track record (Store B, last 12 rows)", "| metric | period | guide mid | cons@guide | actual | cons@print | vs guide | % |", "|---|---|---|---|---|---|---|---|"]
+        lines += [f"| {r[0]} | {r[1]} | {r[2]} | {r[3]} | {r[4]} | {r[5]} | {r[6]} | {r[7]} |" for r in rows]
+        if not rows:
+            lines.append("| (no Store B rows for this ticker) | | | | | | | |")
+        lines += ["", "## Credibility scores"] + ([f"- {m}: {json.dumps(sc, default=str)}" for m, sc in cred] or ["- none"])
+    except Exception as e:  # noqa: BLE001 — context is best-effort; the review must not fail on pg
+        lines += ["## Guidance track record", f"unavailable: {type(e).__name__}: {e}"]
+    p = CONTEXT_DIR / f"{ticker}.md"
+    p.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return p
+
+
 def run_earnings_reviewer(ticker: str, run_started_at: datetime) -> str:
     """
     Invoke earnings-reviewer for one ticker. Returns the STATUS marker line.
@@ -224,7 +266,12 @@ def run_earnings_reviewer(ticker: str, run_started_at: datetime) -> str:
     for changes since this run started. This catches the case where the agent
     completed real work but skipped emitting the marker.
     """
-    prompt = f"Use the earnings-reviewer agent to review {ticker}'s latest earnings call."
+    try:
+        ctx = write_context(ticker)
+        log_write(f"  CONTEXT_WRITTEN {ctx.relative_to(REPO_ROOT)}")
+    except Exception as e:  # noqa: BLE001
+        log_write(f"  CONTEXT_FAILED {ticker} err={type(e).__name__}: {e}")
+    prompt = build_prompt(ticker)
     rc, stdout, stderr = run_claude(prompt, timeout_seconds=900)  # 15 minutes per ticker
 
     if rc != 0:

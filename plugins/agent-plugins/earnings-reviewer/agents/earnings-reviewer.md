@@ -99,7 +99,9 @@ Resolve the InsiderScore `earnings_transcript_info` tool via tool search (if MCP
 
 ### Step 3 — Read up to 2 most recent prior earnings notes
 
-Use Glob to list `notes/{TICKER}/*-earnings-*.md` (or any earnings-suffixed files in the directory). Sort by filename (filenames begin with `YYYYMMDD`, so alphabetical sort is chronological). Read the two most recent. These anchor the Confirm/Drift/Break classifications in trajectory rather than in isolation.
+Use Glob to list `notes/{TICKER}/????????-[1-4]Q??.md` (earnings notes are named `{YYYYMMDD}-{1QYY}.md`, e.g. `20260904-2Q27.md`). Sort by filename (filenames begin with `YYYYMMDD`, so alphabetical sort is chronological). Read the two most recent. These anchor the Confirm/Drift/Break classifications in trajectory rather than in isolation.
+
+Also Read `notes/{TICKER}/_thesis.md` if it exists (the ticker's thesis assumptions: frontmatter `assumptions[]` with `id`, `statement`, `challenged_by`, `confirmed_by`, `status`) and `state/thesis/context/{TICKER}.md` if it exists (written by the cron wrapper before dispatch: the same assumptions plus the Store B guidance track record and credibility scores). These feed Section 4b and Section 8.
 
 If no prior notes exist, treat this as a first observation and note that in the headline.
 
@@ -126,6 +128,10 @@ For each assigned theme, classify the call as one of:
 - **Break:** the call provides evidence that contradicts the thesis fundamentally
 
 Each classification requires: a piece of evidence (quote or paraphrase with location in the transcript), and an implication statement of 1-2 sentences.
+
+For each assumption in `_thesis.md` (skip any with `status: retired`), classify the call as **Confirm** / **Challenge** / **Silent** against that assumption's own `challenged_by` / `confirmed_by` conditions, with evidence and transcript location. Silent means the call did not bear on the condition — do not stretch. These lines are machine-read (Section 4b), so keep the exact line format given in the output structure.
+
+When the context file carries a guidance track record, Section 8 must state whether this quarter's guide fits the recorded pattern (hit rate against prior guides, sandbag index) rather than judging sandbagging from tone alone.
 
 For the three schema attributes:
 
@@ -173,7 +179,7 @@ If you find yourself wanting to add closing prose after the marker, STOP and rem
 
 ## Output structure
 
-Every note follows this structure exactly. All ten sections are present. If a section has no content (e.g. no Q&A flags worth surfacing), state "None this call" rather than omitting the section.
+Every note follows this structure exactly. All ten sections (plus 4b) are present. If a section has no content (e.g. no Q&A flags worth surfacing), state "None this call" rather than omitting the section.
 
     # {TICKER} — {Period} earnings read
 
@@ -207,6 +213,10 @@ Every note follows this structure exactly. All ten sections are present. If a se
     - **Status:** Confirm | Drift | Break
     - **Evidence:** [quote or paraphrase from the call, with location — prepared remarks, Q&A, or filing]
     - **Implication:** [1-2 sentences on what this means for the thesis as it stands]
+
+    ## 4b. Assumption read
+
+    [One line per assumption id from `_thesis.md` (skip `retired`), exactly: `- {id}: Confirm|Challenge|Silent — evidence (location)`. If no thesis file: "No thesis file for {TICKER}."]
 
     ## 5. AI positioning signal
 
@@ -247,6 +257,7 @@ Every note follows this structure exactly. All ten sections are present. If a se
     - **Filings consulted:** [list with form type and date]
     - **FactSet endpoints used:** [list]
     - **Prior notes referenced:** [list of paths, up to 2]
+    - **Thesis context read:** {notes/{TICKER}/_thesis.md and/or state/thesis/context/{TICKER}.md, or none}
     - **`[UNSOURCED]` figures:** [list, if any]
     - **`[STALE]` figures:** [list with date of source, if any]
     - **Schema gaps:** [list any watchlist schema attributes that were empty for this ticker]

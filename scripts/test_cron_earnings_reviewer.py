@@ -80,9 +80,39 @@ def test_persistent_failure_still_aborts():
     print("  ✓ persistent failure still aborts — retry adds resilience, not blindness")
 
 
+def test_write_context_without_thesis():
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    cer.CONTEXT_DIR = tmp
+    p = cer.write_context("ZZZZ")            # no _thesis.md, no metrics rows
+    text = p.read_text()
+    assert "No thesis file" in text and "ZZZZ" in text
+    assert "Guidance track record" in text
+    print("  ✓ context pre-stage handles a T3 name with no thesis file")
+
+
+def test_write_context_with_thesis_carries_assumptions():
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    cer.CONTEXT_DIR = tmp
+    if not (cer.REPO_ROOT / "notes" / "COHR" / "_thesis.md").exists():
+        print("  - COHR _thesis.md absent; skipped"); return
+    text = cer.write_context("COHR").read_text()
+    assert "chinese_laser_capability" in text and "```yaml" in text
+    print("  ✓ context pre-stage carries the thesis frontmatter")
+
+
+def test_prompt_mentions_context():
+    assert "state/thesis/context/NVDA.md" in cer.build_prompt("NVDA")
+    print("  ✓ dispatch prompt points the agent at its context file")
+
+
 if __name__ == "__main__":
     orig = cer.run_claude
     try:
+        test_write_context_without_thesis()
+        test_write_context_with_thesis_carries_assumptions()
+        test_prompt_mentions_context()
         test_timeout_has_headroom()
         test_retries_once_after_timeout()
         test_empty_result_is_not_a_failure()
