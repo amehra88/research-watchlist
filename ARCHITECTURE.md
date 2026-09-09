@@ -80,6 +80,20 @@ Two git repos cooperate:
   session — the dominant commit-flow shape.** Working pattern: *write → may be swept → follow-up
   commit if needed, never rewrite pushed history* (Mac/iPad are pull-only and would be clobbered by a
   force-push).
+- **Thesis loop (2026-09-09)** — every channel now terminates in `notes/{TICKER}/_thesis.md`
+  (machine-drafted, operator-correctable assumptions with confirm/challenge pressure) instead of an
+  email. Crons: `thesis_match` (15:00 daily, `scripts/thesis/match_evidence.py`: news/SEC/entity
+  claims/substack+podcast/conference/inbox evidence → `claude -p` Sonnet verdicts →
+  `state/thesis/evidence_log.jsonl` + status proposals), `thesis_alerts_am/pm` (06:20 / 15:45, thin
+  one-line-per-event email, announced once), `thesis_weekly` (Mon 06:15, `thesis_report.py --weekly
+  --auto-quarterly`: movers ranked by thesis delta, per-name detail, themes, pending score proposals,
+  drafts needing your eye, quiet names, coverage → Brevo + `notes/reports/thesis-delta-*.md` +
+  `state/thesis/ranking_*.json`), `thesis_draft` (Sun 07:00, `draft_thesis.py --missing-only`),
+  `store_b_weekly` (Sun 08:00, `ingest_metrics.py --cron`: FactSet EstimatesConsensus via
+  `run_mcp`, ~54 calls, + consensus snapshot), `insider_pull` (Sun 09:30, InsiderScore open-market
+  ex-10b5-1 → `state/thesis/insiders_*.jsonl`). `config/watchlist.yaml` stays operator-only:
+  proposals surface in the report and are applied by `scripts/thesis/apply_scores.py --write`.
+  Design: `docs/superpowers/specs/2026-09-09-thesis-loop-design.md`.
 - **`daily_digest` / `nport_*` / `watchlist_derive`** — adjacent pipelines (daily report email, NPORT
   weekly marks, BCTK-holdings derive) feeding/around the system.
 
@@ -118,7 +132,14 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
     podcasts, and direct FactSet fundamentals pulls are **stubbed** — current syntheses run from
     `notes/` + config only.
 - **`earnings-reviewer` / `earnings-reviewer-from-pdf`** — production agents behind the earnings cron
-  and operator-uploaded transcripts.
+  and operator-uploaded transcripts. **Thesis-aware since 2026-09-09:** Step 3 reads
+  `notes/{T}/_thesis.md` and the wrapper's pre-staged `state/thesis/context/{T}.md` (open
+  assumptions + Store B guidance track record); new **§4b Assumption read** gives one
+  machine-readable Confirm/Challenge/Silent line per assumption id (the matcher lifts these as
+  strength-3 evidence and the §5–7 score recommendations as `proposed_scores`).
+- **`thesis-chat`** (skill, `.claude/skills/thesis-chat/SKILL.md`) — weekly operator review: walks
+  `state/thesis/questions.jsonl` (drafts that got first evidence, stale assumptions, score
+  proposals), shows the evidence, records decisions through `scripts/thesis/answer.py`.
 - **`market-researcher`** — general market-research helper; may suggest ideas but never edits
   `watchlist.yaml` (tier changes are operator-only).
 
@@ -151,6 +172,15 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
 
 ## 8. Open architectural questions
 
+- **Thesis loop follow-ups (2026-09-09)** — (a) conference-transcript feed: the design wanted
+  `transcript_ingest.py --conferences --since-last` on a Sunday cron, but that script has no such
+  mode and belongs to the parked idea-surfacing extraction, so verbatim conference Q&A only reaches
+  the matcher via operator-emailed `-conf-` notes; (b) ETF context in the report is BCTK weight +
+  5-day flow only (no per-name days-of-ADV yet); (c) the quarterly "state of theses" edition
+  triggers off the earnings-note calendar on disk, not InsiderScore `future_earnings_dates`;
+  (d) InsiderScore row keys were verified on one live pull — extend `insider_pull.normalize` if a
+  new key shape appears.
+
 - **Autonomy direction** — operator wants to shift toward *agent-handles-it* (less turn-by-turn
   conversation). **Will revisit after ~1 week of digest output.** Data to collect during the week:
   digest volume; the fraction of HIGH items that genuinely warrant action vs. read-and-noted;
@@ -180,6 +210,14 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
   is the real generalizer.
 
 ## 9. Recent milestones (most recent first)
+
+- **2026-09-09** — **Thesis loop built end to end** (`scripts/thesis/`): `_thesis.md` object +
+  drafter (scores/notes/thin modes, COHR/LITE imported from the assumptions draft), evidence
+  collectors for every channel, daily matcher, thesis-aware earnings reviewer (§4b), weekly delta
+  report + alerts + quarterly edition + ranking json, InsiderScore weekly pull, Store B weekly
+  FactSet refresh via `run_mcp`, PDF EX-99 exhibits in the SEC channel (6-K always; the survey
+  found every PDF exhibit on 6-Ks), `apply_scores.py`, `check.py` thesis validation,
+  `thesis-chat` skill. Plan: `docs/superpowers/plans/2026-09-09-thesis-loop.md`.
 
 - **2026-06-03** — **Chunking/retrieval steps 3b + 4**: second gold note (GOOGL) clears
   generalization (combined recall@5 32/32); **Store-A pipeline built** (`scripts/chunking/`:

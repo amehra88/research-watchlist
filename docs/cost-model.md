@@ -40,6 +40,13 @@ _Last updated: 2026-06-09. Update when costs change or new channels added._
 - claude -p batch call: ~29.7K cache-creation tokens fixed overhead + per-task tokens (measured 2026-06-09 on podcast extraction prototype)
 - claude -p per-item call: ~$0.11 nominal value (subscription tokens), batched amortizes this overhead
 
+**Thesis loop (added 2026-09-09):** `thesis_match` is bounded at ≤3 Sonnet lean calls per ticker per
+day and skips tickers with no new evidence (most, most days) — worst case ~90 calls/day, typical
+~10–30; the weekly report, alerts, apply_scores and answer.py make **no** LLM calls; the drafter is a
+one-off ~90 Sonnet calls then ~0–3/week (`--missing-only`); Store B weekly = ~54 FactSet MCP calls
+(Sonnet mcp-lean, ~23K tokens each); insider pull = 4 MCP calls/week. Sunday jobs are spaced
+(07:00 / 08:00 / 09:30) so no two `claude -p` batches overlap.
+
 **Why subscription is the right path for current pipeline LLM use:**
 1. Already paid — marginal cost is zero unless bucket exhausted
 2. Quality on edge cases (ambiguous classification, subsidiary mentions, indirect ticker references) generally better than Gemini Flash
