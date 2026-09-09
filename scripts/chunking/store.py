@@ -59,6 +59,7 @@ _DOC_TYPE_WEIGHTS = {
     "operator_note":                 1.10,
     "conference_transcript":         1.10,
     "sec_filing":                    1.05,
+    "thesis":                        1.00,  # operator thesis object — neutral weight
     "conference_summary":            1.00,
     "podcast_summary":               1.00,
     "substack_post":                 1.00,
