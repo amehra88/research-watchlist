@@ -364,25 +364,58 @@ def fetch_exhibit_map(cik: int, accession: str) -> dict[str, str]:
     return out
 
 
-def fetch_ex99(cik: int, accession: str) -> list[tuple[str, str, str]]:
-    """All EX-99.* exhibits as [(ex_type, url, markdown)] (press releases / commentary)."""
+PDF_EXHIBIT_ITEMS = {"2.02", "7.01", "8.01"}   # 8-K items that carry decks (earnings, Reg FD, other events)
+PDF_MAX_PAGES = 60
+PDF_MAX_CHARS = 120_000
+
+
+def pdf_to_text(data: bytes, max_pages: int = PDF_MAX_PAGES, max_chars: int = PDF_MAX_CHARS) -> str:
+    """Deck/report text, streamed page by page with an early break on BOTH caps (a 374-page ADR annual
+    report must not be joined then sliced inside the 165 MB ingest envelope)."""
+    import io
+    import pypdf
+    reader = pypdf.PdfReader(io.BytesIO(data))
+    parts, used = [], 0
+    for i, page in enumerate(reader.pages):
+        if i >= max_pages or used >= max_chars:
+            break
+        try:
+            t = (page.extract_text() or "").strip()
+        except Exception:  # noqa: BLE001 — one bad page must not sink the deck
+            t = ""
+        if t:
+            parts.append(t)
+            used += len(t) + 2
+    return "\n\n".join(parts)[:max_chars]
+
+
+def fetch_ex99(cik: int, accession: str, *, form: str = "8-K", items: list[str] | None = None) -> list[tuple[str, str, str]]:
+    """All EX-99.* exhibits as [(ex_type, url, markdown)]. HTML always. PDF on every 6-K (ADR issuers
+    furnish reports/decks as PDF and 6-K has no item codes) and on 8-K items 2.02/7.01/8.01; a PDF
+    exhibit is labelled '(slides)' so its section header is distinguishable downstream."""
     exmap = fetch_exhibit_map(cik, accession)
     base = filing_base_url(cik, accession)
+    want_pdf = form == "6-K" or bool(PDF_EXHIBIT_ITEMS & set(items or []))
     out = []
     for etype in sorted(exmap):
         if not re.match(r"(?i)EX-99", etype):
             continue
         doc = exmap[etype]
-        if not re.search(r"\.html?$", doc, re.I):     # skip image/pdf exhibits
-            continue
+        is_html = bool(re.search(r"\.html?$", doc, re.I))
+        is_pdf = bool(re.search(r"\.pdf$", doc, re.I))
+        if not is_html and not (is_pdf and want_pdf):
+            continue     # images, and PDFs outside the presentation gate
         url = f"{base}/{doc}"
         try:
-            md = html_to_markdown(http_get(url).text)
+            if is_html:
+                md, label = html_to_markdown(http_get(url).text), etype
+            else:
+                md, label = pdf_to_text(http_get(url).content), f"{etype} (slides)"
         except Exception as e:  # noqa: BLE001
             log(f"    EX fetch failed {etype} {doc}: {type(e).__name__}: {e}")
             continue
         if md.strip():
-            out.append((etype, url, md))
+            out.append((label, url, md))
     return out
 
 
@@ -731,7 +764,7 @@ def process_filing(filing: dict, *, dry_run: bool, skip_themes: bool,
         parts = []
         if primary_md.strip():
             parts.append(f"## {filing['form']} body\n\n{primary_md}")
-        for etype, url, md in fetch_ex99(cik, filing["accession"]):
+        for etype, url, md in fetch_ex99(cik, filing["accession"], form=base_form, items=filing.get("items")):
             parts.append(f"## Exhibit {etype}\n\n{md}")
             if press_release_url is None and re.match(r"(?i)EX-99\.?1?$", etype):
                 press_release_url = url
@@ -821,6 +854,8 @@ def main() -> int:
     ap.add_argument("--ticker", help="restrict to one ticker (testing)")
     ap.add_argument("--form", help="restrict to one base form e.g. 8-K (testing)")
     ap.add_argument("--limit", type=int, help="cap total filings processed (testing)")
+    ap.add_argument("--accession", help="re-process this one accession for --ticker even if already "
+                                        "in the watermark (testing/backfill)")
     ap.add_argument("--print-coverage", action="store_true",
                     help="print CIK map + flagged tickers, then exit")
     args = ap.parse_args()
@@ -875,6 +910,8 @@ def main() -> int:
         # filings are reachable via --ticker/--form/--limit.
         sel = select_filings(filings, backfill=(args.backfill or is_first) and not args.dry_run,
                              processed=processed_set, today=today)
+        if args.accession:
+            sel = [f for f in filings if f["accession"] == args.accession]
         if args.form:
             sel = [f for f in sel if f["base_form"] == args.form]
         if not sel:
