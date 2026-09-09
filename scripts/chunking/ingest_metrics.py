@@ -52,6 +52,13 @@ REPO = Path("/root/research-watchlist")
 METRICS = ["SALES", "INC_GROSS", "EPS"]   # SALES + gross-income-$ + EPS (per operator decision)
 KINDS = ("guidance", "surprise")
 
+# --- weekly FactSet pull (thesis loop P5) -----------------------------------
+PULL_TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_EstimatesConsensus"
+PULL_MODEL = "claude-sonnet-4-6"
+PULL_START = "2020-01-01"        # full history every week: build() is unchanged and needs the whole series
+IDS_PER_CALL = 10                # keeps each response under the MCP size cap (spill handled anyway)
+SNAPSHOT_DIR = REPO / "state" / "thesis"
+
 
 # ---------------------------------------------------------------------------
 # Universe + identity (ticker <-> FactSet id)
@@ -227,15 +234,94 @@ def report(records, cred, offsets, derived_flags, tickers, metrics):
 
 
 # ---------------------------------------------------------------------------
+def pull_prompt(ids, metric: str, kind: str, start: str, end: str) -> str:
+    """One EstimatesConsensus call. guidance needs relativeFiscalStart (every stored row has
+    relativePeriod=1); surprise needs startDate/endDate + statistic. periodicity QTR + frequency AM
+    per the module docstring (AQ silently drops off-calendar quarters)."""
+    args = [f"  ids: {json.dumps(list(ids))}", f"  estimate_type: '{kind}'", f"  metrics: [\"{metric}\"]",
+            "  periodicity: 'QTR'", f"  startDate: '{start}'", f"  endDate: '{end}'", "  frequency: 'AM'"]
+    args += ["  relativeFiscalStart: 1", "  relativeFiscalEnd: 1"] if kind == "guidance" else ["  statistic: 'MEAN'"]
+    return ("Call the FactSet_EstimatesConsensus tool EXACTLY ONCE with these arguments:\n" + "\n".join(args) + "\n"
+            "Do NOT call the tool more than once. Do NOT paginate. Do NOT retry with different arguments.\n\n"
+            "Then reply with the single word DONE. Do NOT summarise, quote, reformat or repeat any of the data — "
+            "it is read directly from the tool output, not from your reply.")
+
+
+def mcp_runner(ids, metric: str, kind: str, start: str, end: str) -> list[dict]:
+    sys.path.insert(0, str(REPO / "scripts"))
+    from lib import claude_p
+    from etfflows.factset_flows import _tool_result_blocks, resolve_payload, rows_of
+    stdout = claude_p.run_mcp(pull_prompt(ids, metric, kind, start, end), mcp_tool=PULL_TOOL, model=PULL_MODEL,
+                              cwd=str(REPO), timeout=600)
+    for text in reversed(_tool_result_blocks(stdout)):
+        rows = rows_of(resolve_payload(text))
+        if rows is not None:
+            return [r for r in rows if isinstance(r, dict)]
+    raise ValueError(f"tool_result unusable for {metric}/{kind} {ids[0]}..: {stdout.strip()[-200:]}")
+
+
+def pull_all(tickers, metrics, *, kinds=KINDS, runner=mcp_runner, start: str = PULL_START,
+             end: str | None = None, log=print) -> dict[str, int]:
+    """Refresh RAW/{metric}_{kind}.json for the given tickers. A file is replaced only after every
+    id-chunk for it succeeded (previous copy kept as .prev.json); any failure raises and leaves the
+    old file in place, so a half-pull can never feed build()."""
+    end = end or date.today().isoformat()
+    tk_to_fid, _ = id_maps(tickers)
+    ids = [tk_to_fid[t] for t in tickers]
+    RAW.mkdir(parents=True, exist_ok=True)
+    counts: dict[str, int] = {}
+    for metric in metrics:
+        for kind in kinds:
+            rows: list[dict] = []
+            for i in range(0, len(ids), IDS_PER_CALL):
+                chunk = ids[i:i + IDS_PER_CALL]
+                got = runner(chunk, metric, kind, start, end)
+                log(f"  {metric}/{kind} {chunk[0]}..{chunk[-1]}: {len(got)} rows")
+                rows += got
+            p = RAW / f"{metric}_{kind}.json"
+            if p.exists():
+                p.replace(p.with_suffix(".prev.json"))
+            tmp = p.with_suffix(".tmp")
+            tmp.write_text(json.dumps({"data": rows}))
+            tmp.replace(p)
+            counts[f"{metric}_{kind}"] = len(rows)
+    return counts
+
+
+def consensus_snapshot(records: list[dict], path: Path) -> int:
+    """Latest fiscal period per (ticker, metric) → jsonl; the thesis report diffs consecutive
+    snapshots for consensus drift (consensus_at_print, else consensus_at_guide)."""
+    latest: dict[tuple, dict] = {}
+    for r in records:
+        k = (r["ticker"], r["metric"])
+        if r.get("fiscal_end") and (k not in latest or str(r["fiscal_end"]) > str(latest[k]["fiscal_end"])):
+            latest[k] = r
+    keys = ("ticker", "metric", "period", "fiscal_end", "guidance_mid", "consensus_at_guide", "consensus_at_print", "actual", "as_of")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w") as f:
+        for k in sorted(latest):
+            f.write(json.dumps({x: latest[k].get(x) for x in keys}, default=str) + "\n")
+    return len(latest)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tickers", help="comma list; default = T1+T2 universe")
     ap.add_argument("--metrics", help=f"comma list; default = {','.join(METRICS)}")
     ap.add_argument("--dry-run", action="store_true", help="build + report, do NOT write")
+    ap.add_argument("--pull", action="store_true",
+                    help="refresh factset_raw via FactSet MCP, then build+report (no pg write unless --cron)")
+    ap.add_argument("--cron", action="store_true",
+                    help="weekly: pull + build + write pg + consensus snapshot")
+    ap.add_argument("--snapshot", action="store_true",
+                    help="also write state/thesis/consensus_{date}.jsonl")
     args = ap.parse_args()
 
     tickers = args.tickers.split(",") if args.tickers else universe()
     metrics = args.metrics.split(",") if args.metrics else METRICS
+    if args.pull or args.cron:
+        counts = pull_all(tickers, metrics)
+        print("pulled:", json.dumps(counts))
     _, fid_to_tk = id_maps(tickers)
 
     offsets, derived_flags = derive_offsets(tickers, fid_to_tk)
@@ -258,13 +344,16 @@ def main():
         print("\n✓ coverage guard: no interior quarter gaps across "
               f"{len(tickers)} tickers × {len(METRICS)} metrics")
 
-    if args.dry_run:
+    if args.dry_run or (args.pull and not args.cron):
         print("\n[dry-run] no write performed.")
         return
     store = get_metrics_store()
     store.write(records, cred)
     print(f"\n=== wrote to {type(store).__name__} "
           f"(CHUNK_STORE_BACKEND): {len(records)} rows, {len(cred)} cred pairs ===")
+    if args.cron or args.snapshot:
+        n = consensus_snapshot(records, SNAPSHOT_DIR / f"consensus_{date.today().isoformat()}.jsonl")
+        print(f"consensus snapshot: {n} rows")
 
 
 if __name__ == "__main__":
