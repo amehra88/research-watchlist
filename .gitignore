@@ -124,3 +124,6 @@ state/topics/vectors.npy.tmp
 state/topics/ids.json
 state/topics/anchors.npy
 state/topics/mean.npy
+
+# P3b evidence side: regenerable from notes/sec by scripts/topics/mdna_evidence.py
+state/evidence/
