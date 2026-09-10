@@ -1,15 +1,15 @@
 ## Theme candidates — 2026-09-10
 
-Anchors: 62 themes; threshold 0.3 (held-out P 0.3074 / R 0.3735 on 1726 labelled chunks).
-Coverage: question register: 1452/3527 mapped (41%); evidence register: 4451/8303 mapped (54%); 0 rows skipped (operator/untyped speakers).
+Anchors: 62 themes; threshold 0.3 (by source: {'default': 0.3, 'exchange': 0.3, 'mdna': 0.4}) (held-out P 0.302 / R 0.38 on 1725 labelled chunks).
+Coverage: question register: 1452/3527 mapped (41%); evidence register: 6061/13589 mapped (45%); by source: exchange source: 5903/11830 mapped (50%), mdna source: 1610/5286 mapped (30%); 5347 rows skipped (operator/untyped speakers, acknowledgements, housekeeping).
 A unit maps when its cosine to a theme centroid clears the threshold; the rest are clustered and only clusters with >= 3 companies and >= 2 banks are listed. The system never edits `config/watchlist.yaml` — accept with `topic_map.py --accept <id> --name <slug>`, reject with `--reject <id>`.
 
 ### Pending candidates (2 of 41; 0 evidence-only listed below)
 
 | id | suggested | n_banks | n_companies | n_exch | first_seen | tickers | phrases |
 |---|---|---|---|---|---|---|---|
-| `cand:3355431-t_3355431-t_qna_28_0` | china_margin_disconnect | 4 | 3 | 4 | 2025-12-02 | AMAT, ASML, LRCX | gross margin; china; july; margins; follow-up |
-| `cand:3405694-t_qna_62_0` | sales_cycle_lengthening | 3 | 3 | 3 | 2026-03-05 | AXON, GWRE, HNGE | pipeline; longer; sales; half; driving |
+| `cand:3355431-t_3355431-t_qna_28_0` | china_margin_disconnect | 4 | 3 | 4 | 2025-12-02 | AMAT, ASML, LRCX | gross margin; china; margins; follow-up; july |
+| `cand:3405694-t_qna_62_0` | sales_cycle_lengthening | 3 | 3 | 3 | 2026-03-05 | AXON, GWRE, HNGE | pipeline; longer; half; driving; sales |
 
 #### `cand:3355431-t_3355431-t_qna_28_0` — china_margin_disconnect
 _Analysts probing whether margin strength reflects operational leverage or stems from geographic mix shift reducing China exposure._

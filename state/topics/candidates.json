@@ -7,10 +7,10 @@
    "supply",
    "thinking",
    "acute",
-   "lead times",
+   "lead",
    "chain",
    "pressure",
-   "ready"
+   "able"
   ],
   "register": "mixed",
   "n_exchanges": 13,
@@ -166,10 +166,10 @@
  },
  {
   "id": "cand:3359603-t_3359603-t_qna_14_0",
-  "label": "manufacturing capacity",
+  "label": "terms manufacturing",
   "ngrams": [
-   "manufacturing capacity",
    "terms manufacturing",
+   "manufacturing capacity",
    "production",
    "constraints",
    "ask",
@@ -244,8 +244,8 @@
    "agentic",
    "cpu tam",
    "tam billion",
-   "unit",
-   "cpus"
+   "cpus",
+   "unit"
   ],
   "register": "mixed",
   "n_exchanges": 13,
@@ -380,9 +380,9 @@
    "growth",
    "guidance",
    "capex",
-   "response",
+   "point",
    "year-on-year",
-   "point"
+   "response"
   ],
   "register": "mixed",
   "n_exchanges": 7,
@@ -445,12 +445,12 @@
   "label": "meet demand",
   "ngrams": [
    "meet demand",
-   "purchase commitments",
    "demand high",
+   "purchase commitments",
    "doubled",
-   "levels",
-   "component",
    "supply",
+   "component",
+   "levels",
    "chain"
   ],
   "register": "mixed",
@@ -510,9 +510,9 @@
   "ngrams": [
    "gross margin",
    "china",
-   "july",
    "margins",
-   "follow-up"
+   "follow-up",
+   "july"
   ],
   "register": "question",
   "n_exchanges": 4,
@@ -701,7 +701,7 @@
    "content",
    "starting",
    "market",
-   "compute"
+   "talking"
   ],
   "register": "mixed",
   "n_exchanges": 4,
@@ -759,11 +759,11 @@
   "ngrams": [
    "backlog",
    "ship",
-   "march",
    "comments",
    "guide",
    "lead",
    "ability",
+   "march",
    "months"
   ],
   "register": "mixed",
@@ -878,8 +878,8 @@
    "foundry",
    "packaging",
    "ability",
-   "supply",
-   "mean"
+   "mean",
+   "supply"
   ],
   "register": "question",
   "n_exchanges": 3,
@@ -935,9 +935,9 @@
   "ngrams": [
    "pipeline",
    "longer",
-   "sales",
    "half",
    "driving",
+   "sales",
    "products",
    "customers"
   ],
@@ -1000,7 +1000,7 @@
    "data center",
    "demand",
    "chain",
-   "power data"
+   "memory"
   ],
   "register": "mixed",
   "n_exchanges": 10,
@@ -1062,10 +1062,10 @@
  },
  {
   "id": "cand:3489856-t_qna_53_0",
-  "label": "privilege",
+  "label": "time",
   "ngrams": [
-   "privilege",
    "time",
+   "privilege",
    "wrap"
   ],
   "register": "mixed",
@@ -1189,12 +1189,12 @@
   "ngrams": [
    "supply chain",
    "working capital",
-   "gross margin",
    "expectations",
+   "gross margin",
    "feel",
    "past",
-   "long",
-   "great"
+   "great",
+   "long"
   ],
   "register": "mixed",
   "n_exchanges": 4,
@@ -1254,8 +1254,8 @@
    "ramp data center",
    "continue improve gross",
    "server cpu business",
-   "mix",
    "mi450",
+   "mix change",
    "embedded business"
   ],
   "register": "mixed",
@@ -1496,16 +1496,16 @@
  },
  {
   "id": "cand:3463943-t_qna_23_0",
-  "label": "working capital needs",
+  "label": "cash flow conversion",
   "ngrams": [
-   "working capital needs",
    "cash flow conversion",
+   "working capital needs",
    "free cash flow",
    "number",
-   "fiscal",
    "thinking",
+   "pretty",
    "given",
-   "pretty"
+   "take"
   ],
   "register": "mixed",
   "n_exchanges": 4,
@@ -1794,7 +1794,7 @@
    "training",
    "superintelligence",
    "llms",
-   "generative"
+   "compute"
   ],
   "register": "evidence_only",
   "n_exchanges": 6,
@@ -2080,8 +2080,8 @@
    "meaningful increase",
    "markets growing",
    "compute demand",
-   "wafer starts",
    "seeing",
+   "wafer starts",
    "stacy",
    "smartphones"
   ],
@@ -2139,13 +2139,13 @@
   "label": "heavy",
   "ngrams": [
    "heavy",
-   "infrastructure",
    "gig",
+   "infrastructure",
    "largely",
    "specifically",
    "running",
    "always",
-   "based"
+   "couple"
   ],
   "register": "evidence_only",
   "n_exchanges": 4,
@@ -2257,11 +2257,11 @@
    "make sure",
    "capacity",
    "customer",
-   "discussion",
    "project",
+   "discussion",
    "course",
    "excited",
-   "months"
+   "something"
   ],
   "register": "evidence_only",
   "n_exchanges": 4,
@@ -2314,12 +2314,12 @@
   "ngrams": [
    "agentic",
    "cpus",
-   "march",
-   "physical",
    "tam",
    "update",
+   "physical",
    "pace",
-   "inference"
+   "inference",
+   "market"
   ],
   "register": "evidence_only",
   "n_exchanges": 4,
