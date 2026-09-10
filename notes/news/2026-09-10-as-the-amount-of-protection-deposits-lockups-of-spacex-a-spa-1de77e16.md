@@ -12,11 +12,11 @@ lens_tags:
 - theme
 - macro
 confidence: medium
-rationale: SpaceX lockup expiry releasing shares into the market creates near-term
-  supply overhang risk for SPCX.
+rationale: SPCX lockup deposits releasing into market; supply event may affect share
+  price and passive index flows.
 summarized: false
 source_urls:
-- https://news.google.com/rss/articles/CBMiT0FVX3lxTFBIVEV3RzlPekxMTWRORFgzeW9ScnE4YzBXbkZTeG1fZ0ZlMEpDT01rWk5sRW9QeV9mdEdQNmlIQkZ6NFdRT0FrbVZEMm9ybzQ?oc=5
+- https://news.google.com/rss/articles/CBMiT0FVX3lxTE1pR25hTVBTcEVwSTc5TkFaczJRRzBGbEFKQXBFRHNJNzhrLXFFZE9lR3pxZy1BVVdmY3FBY09RYkpkVnlEQTI3bXJTTmEzOGM?oc=5
 cluster_headlines:
 - As the amount of protection deposits (lockups) of SpaceX, a space company, is being
   released into th..
@@ -29,6 +29,6 @@ extraction_source: v3 news-flow channel (news_digest.py), classified but below t
 
 ## As the amount of protection deposits (lockups) of SpaceX, a space company, is being released into th..
 
-SpaceX lockup expiry releasing shares into the market creates near-term supply overhang risk for SPCX.
+SPCX lockup deposits releasing into market; supply event may affect share price and passive index flows.
 
 - As the amount of protection deposits (lockups) of SpaceX, a space company, is being released into th..
