@@ -12,6 +12,7 @@
    "pressure",
    "ready"
   ],
+  "register": "mixed",
   "n_exchanges": 13,
   "n_companies": 10,
   "n_banks": 10,
@@ -96,6 +97,7 @@
    "unpack",
    "always"
   ],
+  "register": "mixed",
   "n_exchanges": 12,
   "n_companies": 8,
   "n_banks": 8,
@@ -175,6 +177,7 @@
    "end",
    "supply"
   ],
+  "register": "mixed",
   "n_exchanges": 7,
   "n_companies": 6,
   "n_banks": 5,
@@ -244,6 +247,7 @@
    "unit",
    "cpus"
   ],
+  "register": "mixed",
   "n_exchanges": 13,
   "n_companies": 3,
   "n_banks": 5,
@@ -315,6 +319,7 @@
    "seeing",
    "customer"
   ],
+  "register": "question",
   "n_exchanges": 5,
   "n_companies": 3,
   "n_banks": 5,
@@ -379,6 +384,7 @@
    "year-on-year",
    "point"
   ],
+  "register": "mixed",
   "n_exchanges": 7,
   "n_companies": 6,
   "n_banks": 4,
@@ -447,6 +453,7 @@
    "supply",
    "chain"
   ],
+  "register": "mixed",
   "n_exchanges": 5,
   "n_companies": 3,
   "n_banks": 4,
@@ -507,6 +514,7 @@
    "margins",
    "follow-up"
   ],
+  "register": "question",
   "n_exchanges": 4,
   "n_companies": 3,
   "n_banks": 4,
@@ -569,6 +577,7 @@
    "business thus allow",
    "cautious use company"
   ],
+  "register": "mixed",
   "n_exchanges": 6,
   "n_companies": 5,
   "n_banks": 3,
@@ -631,6 +640,7 @@
    "product",
    "continue"
   ],
+  "register": "mixed",
   "n_exchanges": 4,
   "n_companies": 4,
   "n_banks": 3,
@@ -693,6 +703,7 @@
    "market",
    "compute"
   ],
+  "register": "mixed",
   "n_exchanges": 4,
   "n_companies": 4,
   "n_banks": 3,
@@ -755,6 +766,7 @@
    "ability",
    "months"
   ],
+  "register": "mixed",
   "n_exchanges": 4,
   "n_companies": 3,
   "n_banks": 3,
@@ -810,6 +822,7 @@
    "concentration",
    "customer"
   ],
+  "register": "question",
   "n_exchanges": 3,
   "n_companies": 3,
   "n_banks": 3,
@@ -868,6 +881,7 @@
    "supply",
    "mean"
   ],
+  "register": "question",
   "n_exchanges": 3,
   "n_companies": 3,
   "n_banks": 3,
@@ -927,6 +941,7 @@
    "products",
    "customers"
   ],
+  "register": "question",
   "n_exchanges": 3,
   "n_companies": 3,
   "n_banks": 3,
@@ -987,6 +1002,7 @@
    "chain",
    "power data"
   ],
+  "register": "mixed",
   "n_exchanges": 10,
   "n_companies": 7,
   "n_banks": 2,
@@ -1052,6 +1068,7 @@
    "time",
    "wrap"
   ],
+  "register": "mixed",
   "n_exchanges": 8,
   "n_companies": 7,
   "n_banks": 2,
@@ -1115,6 +1132,7 @@
    "please raise hand",
    "pause audience please"
   ],
+  "register": "question",
   "n_exchanges": 5,
   "n_companies": 5,
   "n_banks": 2,
@@ -1178,6 +1196,7 @@
    "long",
    "great"
   ],
+  "register": "mixed",
   "n_exchanges": 4,
   "n_companies": 4,
   "n_banks": 2,
@@ -1239,6 +1258,7 @@
    "mi450",
    "embedded business"
   ],
+  "register": "mixed",
   "n_exchanges": 6,
   "n_companies": 3,
   "n_banks": 2,
@@ -1301,6 +1321,7 @@
    "continued forward certainly",
    "definitely seeing business"
   ],
+  "register": "mixed",
   "n_exchanges": 6,
   "n_companies": 3,
   "n_banks": 2,
@@ -1363,6 +1384,7 @@
    "debating terms scale",
    "deeper point christopher"
   ],
+  "register": "mixed",
   "n_exchanges": 5,
   "n_companies": 3,
   "n_banks": 2,
@@ -1424,6 +1446,7 @@
    "course sure biased",
    "debate laser wins"
   ],
+  "register": "mixed",
   "n_exchanges": 4,
   "n_companies": 3,
   "n_banks": 2,
@@ -1484,6 +1507,7 @@
    "given",
    "pretty"
   ],
+  "register": "mixed",
   "n_exchanges": 4,
   "n_companies": 3,
   "n_banks": 2,
@@ -1540,6 +1564,7 @@
    "margins",
    "product"
   ],
+  "register": "mixed",
   "n_exchanges": 3,
   "n_companies": 3,
   "n_banks": 2,
@@ -1592,6 +1617,7 @@
   "ngrams": [
    "supply chain constraints"
   ],
+  "register": "mixed",
   "n_exchanges": 3,
   "n_companies": 3,
   "n_banks": 2,
@@ -1648,6 +1674,7 @@
    "mentioned",
    "customers"
   ],
+  "register": "mixed",
   "n_exchanges": 3,
   "n_companies": 3,
   "n_banks": 2,
@@ -1693,5 +1720,812 @@
   "name": null,
   "suggested_name": "pricing_power",
   "suggested_why": "Debate over companies' ability to pass value through to customers via pricing, moving away from commoditized rates toward value-based pricing despite historically concentrated customer bases."
+ },
+ {
+  "id": "cand:3398918-t_3398918-t_qna_23_0",
+  "label": "cpo",
+  "ngrams": [
+   "cpo",
+   "indium phosphide",
+   "adoption multiple customers",
+   "backplane rack eventually",
+   "beyond scale starting",
+   "big impact scale",
+   "calendar scale ramp",
+   "cannibalization interesting depending"
+  ],
+  "register": "evidence_only",
+  "n_exchanges": 7,
+  "n_companies": 4,
+  "n_banks": 0,
+  "tickers": [
+   "COHR",
+   "FN",
+   "GLW",
+   "LITE"
+  ],
+  "firms": [],
+  "first_seen": "2026-03-02",
+  "members": [
+   "3398918-t_3398918-t_qna_23_0",
+   "3398918-t_qna_23_0",
+   "3404804-t_3404804-t_qna_13_0",
+   "3404804-t_qna_13_0",
+   "3422204-t_qna_9_0",
+   "3499742-t_qna_56_0",
+   "3507757-t_qna_65_0"
+  ],
+  "examples": [
+   {
+    "id": "3398918-t_3398918-t_qna_23_0",
+    "ticker": "LITE",
+    "date": "2026-03-02",
+    "firm": "Lumentum Holdings, Inc.",
+    "text": "CPO is clearly the highest volume. I think as we start, we're seeing big impact for us on scale out. But again, that's a cannibalization right? I think the interesting thing and again depending on how it hits and how it feathers in, scale-up is huge, right? This is all of the bac"
+   },
+   {
+    "id": "3398918-t_qna_23_0",
+    "ticker": "LITE",
+    "date": "2026-03-02",
+    "firm": "Lumentum Holdings, Inc.",
+    "text": "CPO is clearly the highest volume. I think as we start, we're seeing big impact for us on scale out. But again, that's a cannibalization right? I think the interesting thing and again depending on how it hits and how it feathers in, scale-up is huge, right? This is all of the bac"
+   },
+   {
+    "id": "3404804-t_3404804-t_qna_13_0",
+    "ticker": "COHR",
+    "date": "2026-03-17",
+    "firm": "Coherent Corp.",
+    "text": "On the first part of the discussion on CPO, and Julie, you can jump in, if you want. The way to think about it is the CPO covers scale out and scale up, right, that we talked about today. The first CPO will start to ramp in scale out, right, and we'll start to see the revenue fro"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "cpo_scaling_adoption",
+  "suggested_why": "Coherent pluggable optics ramping across multiple customers in data center scale-out with cannibalization timing as the key near-term valuation driver."
+ },
+ {
+  "id": "cand:3397579-t_qna_17_1",
+  "label": "inference",
+  "ngrams": [
+   "inference",
+   "customers creating",
+   "monetize",
+   "productize",
+   "training",
+   "superintelligence",
+   "llms",
+   "generative"
+  ],
+  "register": "evidence_only",
+  "n_exchanges": 6,
+  "n_companies": 4,
+  "n_banks": 0,
+  "tickers": [
+   "AVGO",
+   "DDOG",
+   "DOCN",
+   "GDS"
+  ],
+  "firms": [],
+  "first_seen": "2026-02-24",
+  "members": [
+   "3391245-t_qna_2_0",
+   "3397579-t_qna_17_1",
+   "3447958-t_qna_11_1",
+   "3452352-t_qna_4_1",
+   "3517678-t_qna_9_0",
+   "3542655-t_qna_17_0"
+  ],
+  "examples": [
+   {
+    "id": "3397579-t_qna_17_1",
+    "ticker": "DOCN",
+    "date": "2026-02-24",
+    "firm": "DigitalOcean Holdings, Inc.",
+    "text": "So, that's what is giving us the confidence to provide the outlook of 25%-plus exiting this year and 30% for next year. And also, our RPO has been going up steadily and that is one leading indicator. But also I should add the fact that inferencing is very different, right. I mean"
+   },
+   {
+    "id": "3391245-t_qna_2_0",
+    "ticker": "AVGO",
+    "date": "2026-03-04",
+    "firm": "Broadcom Inc.",
+    "text": "Well, what we see what we've seen over the last few months and continue to see even more is and it's really not so much talking about hyperscalers. Our customers, Blayne, is limited to those few players out there and some of them are hyperscalers, some of them are not hyperscaler"
+   },
+   {
+    "id": "3447958-t_qna_11_1",
+    "ticker": "DOCN",
+    "date": "2026-03-04",
+    "firm": "DigitalOcean Holdings, Inc.",
+    "text": "Now coming through your question, Mark, where do we see the most opportunity? We see the most opportunity as the inference provider for tech companies that are modernizing their application, injecting intelligence, that's number one. Number two, we see an entire ecosystem that ha"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "inference_monetization",
+  "suggested_why": "Enterprises beyond hyperscalers are productizing and monetizing inference-powered applications, creating recurring revenue growth and sustained infrastructure demand."
+ },
+ {
+  "id": "cand:3403970-t_qna_21_0",
+  "label": "ahead capacity customers",
+  "ngrams": [
+   "ahead capacity customers",
+   "capability investments making",
+   "capacity customers capability",
+   "customers capability investments",
+   "eps guess important",
+   "getting ahead capacity",
+   "guess important capability",
+   "important capability investments"
+  ],
+  "register": "evidence_only",
+  "n_exchanges": 6,
+  "n_companies": 4,
+  "n_banks": 0,
+  "tickers": [
+   "CIEN",
+   "FN",
+   "LRCX",
+   "MTRN"
+  ],
+  "firms": [],
+  "first_seen": "2026-03-03",
+  "members": [
+   "3403970-t_qna_21_0",
+   "3422204-t_3422204-t_qna_72_0",
+   "3422204-t_qna_72_0",
+   "3473212-t_qna_9_1",
+   "3513271-t_qna_26_2",
+   "3522777-t_qna_2_1"
+  ],
+  "examples": [
+   {
+    "id": "3403970-t_qna_21_0",
+    "ticker": "LRCX",
+    "date": "2026-03-03",
+    "firm": "Lam Research Corp.",
+    "text": "Probably as good as it's ever been. I mean, here's the nature of the conversation that's going on between us and our customers, which is we don't want to be what constrains their ability to output. And so the conversation we have with everybody is, tell us what you need. What's t"
+   },
+   {
+    "id": "3422204-t_3422204-t_qna_72_0",
+    "ticker": "FN",
+    "date": "2026-03-17",
+    "firm": "Fabrinet",
+    "text": "We've talked a lot about getting ahead on capacity of your customers. If I think about capability investments that you're making, you've talked about packaging, you've talked about EPS. I guess, what are the most important capability investments that you're making right now to st"
+   },
+   {
+    "id": "3422204-t_qna_72_0",
+    "ticker": "FN",
+    "date": "2026-03-17",
+    "firm": "Fabrinet",
+    "text": "We've talked a lot about getting ahead on capacity of your customers. If I think about capability investments that you're making, you've talked about packaging, you've talked about EPS. I guess, what are the most important capability investments that you're making right now to st"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "ahead_of_demand_capacity",
+  "suggested_why": "Supplier proactively invests in manufacturing capacity and advanced capabilities (packaging, process technology) to avoid constraining customer growth."
+ },
+ {
+  "id": "cand:3384540-t_3384540-t_qna_29_1",
+  "label": "believe good pricing",
+  "ngrams": [
+   "believe good pricing",
+   "businesses sherri comment",
+   "comment effects gross",
+   "continue opportunity optimize",
+   "effects gross margin",
+   "environment businesses sherri",
+   "environment demand strong",
+   "especially environment demand"
+  ],
+  "register": "evidence_only",
+  "n_exchanges": 5,
+  "n_companies": 4,
+  "n_banks": 0,
+  "tickers": [
+   "AMAT",
+   "COHR",
+   "MPWR",
+   "MTRN"
+  ],
+  "firms": [],
+  "first_seen": "2026-02-04",
+  "members": [
+   "3381359-t_qna_100_0",
+   "3384540-t_3384540-t_qna_29_1",
+   "3384540-t_qna_29_1",
+   "3385152-t_3385152-t_qna_67_0",
+   "3513271-t_qna_14_0"
+  ],
+  "examples": [
+   {
+    "id": "3384540-t_3384540-t_qna_29_1",
+    "ticker": "COHR",
+    "date": "2026-02-04",
+    "firm": "Coherent Corp.",
+    "text": "We continue to see opportunity to optimize pricing, especially in an environment where we're where demand is very strong. And so, we believe we're in a good pricing environment across all of our businesses. And maybe, Sherri, do you want to comment any more on the effects of gros"
+   },
+   {
+    "id": "3384540-t_qna_29_1",
+    "ticker": "COHR",
+    "date": "2026-02-04",
+    "firm": "Coherent Corp.",
+    "text": "We continue to see opportunity to optimize pricing, especially in an environment where we're where demand is very strong. And so, we believe we're in a good pricing environment across all of our businesses. And maybe, Sherri, do you want to comment any more on the effects of gros"
+   },
+   {
+    "id": "3381359-t_qna_100_0",
+    "ticker": "MPWR",
+    "date": "2026-02-05",
+    "firm": "Monolithic Power Systems, Inc.",
+    "text": "Let me add a little bit of color there. So, Michael said this earlier, when we look at all of the opportunities, we keep in mind what is the corporate model for gross margin, which is between 55% and 60%. And I've been fairly consistent over the course of the last four quarters t"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "demand_driven_pricing_power",
+  "suggested_why": "Strong demand environments enable companies to optimize pricing and expand gross margins across business segments."
+ },
+ {
+  "id": "cand:3450442-t_qna_65_0",
+  "label": "gross margin",
+  "ngrams": [
+   "gross margin",
+   "price",
+   "costs"
+  ],
+  "register": "evidence_only",
+  "n_exchanges": 4,
+  "n_companies": 4,
+  "n_banks": 0,
+  "tickers": [
+   "AMAT",
+   "AMD",
+   "CIEN",
+   "MPWR"
+  ],
+  "firms": [],
+  "first_seen": "2026-04-30",
+  "members": [
+   "3450442-t_qna_65_0",
+   "3469126-t_qna_53_2",
+   "3505197-t_qna_18_1",
+   "3528779-t_qna_17_1"
+  ],
+  "examples": [
+   {
+    "id": "3450442-t_qna_65_0",
+    "ticker": "MPWR",
+    "date": "2026-04-30",
+    "firm": "Monolithic Power Systems, Inc.",
+    "text": "And just to add to Michael, I think we're not looking at it as a broad based across the board. But there are places where input costs have gotten higher, people are asking for expedited supply chains, and things of that sort. And in those cases, yeah, you could see us raise price"
+   },
+   {
+    "id": "3469126-t_qna_53_2",
+    "ticker": "CIEN",
+    "date": "2026-06-04",
+    "firm": "Ciena Corp.",
+    "text": "So, I think we're looking across the entire scope of not just price in terms of gross margin, but how do we improve the foundation of the entirety of the business."
+   },
+   {
+    "id": "3505197-t_qna_18_1",
+    "ticker": "AMD",
+    "date": "2026-09-08",
+    "firm": "Advanced Micro Devices, Inc.",
+    "text": "And our gross margin really is important to us, but we're not going to increase the price just to expand the gross margin."
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "margin_through_efficiency",
+  "suggested_why": "Companies defending gross margins through operational improvements and cost discipline rather than raising prices amid cost pressures."
+ },
+ {
+  "id": "cand:3452572-t_qna_50_0",
+  "label": "everybody joining call",
+  "ngrams": [
+   "everybody joining call",
+   "appreciate"
+  ],
+  "register": "evidence_only",
+  "n_exchanges": 4,
+  "n_companies": 4,
+  "n_banks": 0,
+  "tickers": [
+   "CRDO",
+   "ENTG",
+   "GWRE",
+   "PANW"
+  ],
+  "firms": [],
+  "first_seen": "2026-04-30",
+  "members": [
+   "3452572-t_qna_50_0",
+   "3519659-t_qna_53_0",
+   "3526409-t_qna_42_0",
+   "3531617-t_qna_67_1"
+  ],
+  "examples": [
+   {
+    "id": "3452572-t_qna_50_0",
+    "ticker": "ENTG",
+    "date": "2026-04-30",
+    "firm": "Entegris, Inc.",
+    "text": "Thanks everybody for joining our call today and we look forward to discussing more with you in the coming quarters."
+   },
+   {
+    "id": "3519659-t_qna_53_0",
+    "ticker": "PANW",
+    "date": "2026-09-01",
+    "firm": "Palo Alto Networks, Inc.",
+    "text": "That concludes the Q&A portion of the call. I'll hand it back to Nikesh for any closing remarks."
+   },
+   {
+    "id": "3526409-t_qna_42_0",
+    "ticker": "CRDO",
+    "date": "2026-09-01",
+    "firm": "Credo Technology Group Holding Ltd.",
+    "text": "So, I guess with that, we'll wrap up the call. So, I really appreciate you all attending and thanks for the thoughtful questions."
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "call_closing_remarks",
+  "suggested_why": "These are standard procedural boilerplate (thank-yous and Q&A handoffs) rather than substantive business discussion\u2014not a viable research theme."
+ },
+ {
+  "id": "cand:3385152-t_3385152-t_qna_18_0",
+  "label": "passing pcs",
+  "ngrams": [
+   "passing pcs",
+   "meaningful increase",
+   "markets growing",
+   "compute demand",
+   "wafer starts",
+   "seeing",
+   "stacy",
+   "smartphones"
+  ],
+  "register": "evidence_only",
+  "n_exchanges": 8,
+  "n_companies": 3,
+  "n_banks": 0,
+  "tickers": [
+   "005930.KS",
+   "AMAT",
+   "AVGO"
+  ],
+  "firms": [],
+  "first_seen": "2026-02-12",
+  "members": [
+   "3385152-t_3385152-t_qna_18_0",
+   "3385152-t_3385152-t_qna_37_0",
+   "3391245-t_qna_2_1",
+   "3403420-t_3403420-t_qna_11_0",
+   "3456442-t_3456442-t_qna_12_0",
+   "3456442-t_3456442-t_qna_68_0",
+   "3502659-t_3502659-t_qna_3_1",
+   "3528780-t_qna_3_0"
+  ],
+  "examples": [
+   {
+    "id": "3385152-t_3385152-t_qna_18_0",
+    "ticker": "AMAT",
+    "date": "2026-02-12",
+    "firm": "Applied Materials, Inc.",
+    "text": "Stacy, the other thing I would add is, I've had many discussions with our largest customer, CEOs and R&D leaders. And I think this demand for AI data center is a significant wave that's going to last over a longer period of time. So, when I talk to them and when they're communica"
+   },
+   {
+    "id": "3385152-t_3385152-t_qna_37_0",
+    "ticker": "AMAT",
+    "date": "2026-02-12",
+    "firm": "Applied Materials, Inc.",
+    "text": "It's a good question. I think in the recent past, we've said more than 20% of leading-edge wafer starts have been directed towards data center and that has shifted, obviously, since that's growing much faster. So, this year, it's passing PCs from a consumption perspective of lead"
+   },
+   {
+    "id": "3391245-t_qna_2_1",
+    "ticker": "AVGO",
+    "date": "2026-03-04",
+    "firm": "Broadcom Inc.",
+    "text": "And that inference is driving a substantial amount of compute capacity, which is great for us because these all these players, this five, six customers of ours are on the path to creating their own custom accelerators and beyond that, their own design architecture of networking c"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "data_center_displacement",
+  "suggested_why": "Leading-edge wafer starts now exceed PC demand as AI inference workloads drive a structural reallocation of semiconductor capacity."
+ },
+ {
+  "id": "cand:3359603-t_3359603-t_qna_9_0",
+  "label": "heavy",
+  "ngrams": [
+   "heavy",
+   "infrastructure",
+   "gig",
+   "largely",
+   "specifically",
+   "running",
+   "always",
+   "based"
+  ],
+  "register": "evidence_only",
+  "n_exchanges": 4,
+  "n_companies": 3,
+  "n_banks": 0,
+  "tickers": [
+   "AAOI",
+   "ANET",
+   "MRVL"
+  ],
+  "firms": [],
+  "first_seen": "2025-12-09",
+  "members": [
+   "3328815-t_qna_35_0",
+   "3359603-t_3359603-t_qna_9_0",
+   "3462600-t_3462600-t_qna_27_0",
+   "3471872-t_qna_47_0"
+  ],
+  "examples": [
+   {
+    "id": "3359603-t_3359603-t_qna_9_0",
+    "ticker": "AAOI",
+    "date": "2025-12-09",
+    "firm": "Applied Optoelectronics, Inc.",
+    "text": "I would say AI in a vacuum doesn't really buy you much. I mean, having a wonderful large language model, running in an isolated environment with no way to communicate doesn't really help. So, there is a need throughout the data center infrastructure to facilitate other aspects of"
+   },
+   {
+    "id": "3328815-t_qna_35_0",
+    "ticker": "ANET",
+    "date": "2025-12-11",
+    "firm": "Arista Networks, Inc.",
+    "text": "I'll start by saying 2025 is done now. 2026 is probably the year of heavy 800-gig deployment, right, in AI. And I'm talking specifically AI. But I think it's even more important with AI to adopt the next gen as fast as you can. So, if we as a company can be first from a time to m"
+   },
+   {
+    "id": "3462600-t_3462600-t_qna_27_0",
+    "ticker": "AAOI",
+    "date": "2026-05-13",
+    "firm": "Applied Optoelectronics, Inc.",
+    "text": "So there's a couple of things. You know, first of all, the customer base that we have for 1.6T is going to be largely similar to our 800G customer base. So to some extent, you know, the process of getting qualified, it's there's always a process that you have to go through when t"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "ai_datacenter_optics",
+  "suggested_why": "800G\u21921.6T optical infrastructure deployment is emerging as the critical bottleneck and capex driver for AI data center scaling."
+ },
+ {
+  "id": "cand:3376441-t_qna_38_0",
+  "label": "deliver leverage",
+  "ngrams": [
+   "deliver leverage",
+   "management team",
+   "later",
+   "updated",
+   "model",
+   "frankly",
+   "least",
+   "fact"
+  ],
+  "register": "evidence_only",
+  "n_exchanges": 4,
+  "n_companies": 3,
+  "n_banks": 0,
+  "tickers": [
+   "DASH",
+   "HNGE",
+   "LRCX"
+  ],
+  "firms": [],
+  "first_seen": "2026-01-28",
+  "members": [
+   "3376441-t_qna_38_0",
+   "3439859-t_qna_22_0",
+   "3440317-t_qna_37_1",
+   "3502919-t_qna_35_1"
+  ],
+  "examples": [
+   {
+    "id": "3376441-t_qna_38_0",
+    "ticker": "LRCX",
+    "date": "2026-01-28",
+    "firm": "Lam Research Corp.",
+    "text": "Clearly, we're ahead of the model, right? I mean, that model had 28 kind of model, and we're run rating, at least on a percentage basis, what the model suggests we're going to be able to do. Ram and I and Tim were debating a little bit. We probably, later in the year, need to com"
+   },
+   {
+    "id": "3439859-t_qna_22_0",
+    "ticker": "LRCX",
+    "date": "2026-04-22",
+    "firm": "Lam Research Corp.",
+    "text": "First, let me talk about the spending trajectory for the year. Listen, I think at the end of the day, this management team likes to see the top line growing faster than spending so that we can deliver leverage. And that's absolutely how we're thinking about things this year. Havi"
+   },
+   {
+    "id": "3440317-t_qna_37_1",
+    "ticker": "HNGE",
+    "date": "2026-05-05",
+    "firm": "Hinge Health, Inc.",
+    "text": "We're already at the high end of that, and we're getting really close already to our operating margin. In fact, actually at 25%, we are at our operating margin target that we had, so well ahead of schedule. That is one of the topics we'll be addressing at the Investor Day, Moveme"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "model_beat",
+  "suggested_why": "Management executing faster on margin expansion and cost discipline than internal financial projections."
+ },
+ {
+  "id": "cand:3386656-t_qna_9_1",
+  "label": "make sure",
+  "ngrams": [
+   "make sure",
+   "capacity",
+   "customer",
+   "discussion",
+   "project",
+   "course",
+   "excited",
+   "months"
+  ],
+  "register": "evidence_only",
+  "n_exchanges": 4,
+  "n_companies": 3,
+  "n_banks": 0,
+  "tickers": [
+   "ASML",
+   "INDI",
+   "MTRN"
+  ],
+  "firms": [],
+  "first_seen": "2026-02-12",
+  "members": [
+   "3386656-t_qna_9_1",
+   "3445373-t_qna_2_0",
+   "3449468-t_qna_9_0",
+   "3500983-t_qna_22_0"
+  ],
+  "examples": [
+   {
+    "id": "3386656-t_qna_9_1",
+    "ticker": "MTRN",
+    "date": "2026-02-12",
+    "firm": "Materion Corp.",
+    "text": "In the meantime, we have the capacity that is needed to be able to support the volumes for 2026 and 2027. It will give us more, I would say, sustained long-term capacity increase and we're very excited about that. This is something that we've been working with the customer on for"
+   },
+   {
+    "id": "3449468-t_qna_9_0",
+    "ticker": "ASML",
+    "date": "2026-04-15",
+    "firm": "ASML Holding NV",
+    "text": "Well, I think 2028 is still quite far away. And I think a lot of the discussion we have with our customers today are still a bit about 2026. As Roger mentioned, we're still working hard even for 2026 with our customer to make sure we deliver what they need. And of course, a lot o"
+   },
+   {
+    "id": "3445373-t_qna_2_0",
+    "ticker": "INDI",
+    "date": "2026-05-07",
+    "firm": "indie Semiconductor, Inc.",
+    "text": "Well, I mean, first of all, we are super excited to receive the order, especially as it came in sort of one big discrete chunk and it underlines the commitment of our Tier-1 customer to the end customers that they have committed to them at this point. So we're super excited about"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "capacity_readiness",
+  "suggested_why": "Suppliers emphasizing expanded production capacity and multi-year confidence in fulfilling large discrete customer orders through 2026\u20132027."
+ },
+ {
+  "id": "cand:3438469-t_qna_59_0",
+  "label": "agentic",
+  "ngrams": [
+   "agentic",
+   "cpus",
+   "march",
+   "physical",
+   "tam",
+   "update",
+   "pace",
+   "inference"
+  ],
+  "register": "evidence_only",
+  "n_exchanges": 4,
+  "n_companies": 3,
+  "n_banks": 0,
+  "tickers": [
+   "AMD",
+   "ARM",
+   "INTC"
+  ],
+  "firms": [],
+  "first_seen": "2026-04-23",
+  "members": [
+   "3438469-t_qna_59_0",
+   "3444095-t_3444095-t_qna_5_0",
+   "3504922-t_qna_14_1",
+   "3505197-t_qna_1_0"
+  ],
+  "examples": [
+   {
+    "id": "3438469-t_qna_59_0",
+    "ticker": "INTC",
+    "date": "2026-04-23",
+    "firm": "Intel Corp.",
+    "text": "Just to add on to it, I think you have to think about the full stack. And so, you address some of these agentic AI and later on the physical AI, how the CPU optimize working together with the foundation models, how to optimize that, and using the data to really drive the massive "
+   },
+   {
+    "id": "3444095-t_3444095-t_qna_5_0",
+    "ticker": "AMD",
+    "date": "2026-06-02",
+    "firm": "Advanced Micro Devices, Inc.",
+    "text": "So that market expansion we saw it earlier, but we never estimate it's going to be so fast. The pace and the speed of agentic AI adoption has been tremendous. So, when you look at January, February, March, all the enterprise adoption started. You see Anthropic, OpenAI, their reve"
+   },
+   {
+    "id": "3504922-t_qna_14_1",
+    "ticker": "ARM",
+    "date": "2026-07-29",
+    "firm": "Arm Holdings Plc",
+    "text": "I think all of that is really being driven by the increase of overall compute capacity, which will be inference-based, and all of that inference-based compute is going to largely be running agentic workloads, and the agentic workloads are essentially capacity constrained in terms"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "agentic_inference_tam",
+  "suggested_why": "Analysts flag that enterprise agentic AI adoption pace (Jan\u2013Mar 2025 acceleration) is outpacing forecasts, driving outsized inference-compute infrastructure demand and forcing material TAM expansion u"
+ },
+ {
+  "id": "cand:3383478-t_qna_32_0",
+  "label": "cohort",
+  "ngrams": [
+   "cohort",
+   "labs",
+   "long-term",
+   "customers",
+   "mean",
+   "seeing",
+   "business"
+  ],
+  "register": "evidence_only",
+  "n_exchanges": 3,
+  "n_companies": 3,
+  "n_banks": 0,
+  "tickers": [
+   "ANET",
+   "CRWV",
+   "DDOG"
+  ],
+  "firms": [],
+  "first_seen": "2026-02-10",
+  "members": [
+   "3381875-t_qna_86_0",
+   "3383478-t_qna_32_0",
+   "3413900-t_qna_36_0"
+  ],
+  "examples": [
+   {
+    "id": "3383478-t_qna_32_0",
+    "ticker": "DDOG",
+    "date": "2026-02-10",
+    "firm": "Datadog, Inc.",
+    "text": "I mean, look, we've never been a like, we're not built as a business to be concentrated on a couple of customers. That's not how we've become successful. That's probably not how we'll be successful in the long-term. So, yes, I mean, we at the end of the day, it should be irration"
+   },
+   {
+    "id": "3381875-t_qna_86_0",
+    "ticker": "ANET",
+    "date": "2026-02-25",
+    "firm": "Arista Networks, Inc.",
+    "text": "Yeah, I mean and we've talked about potentially even one or two more 10% customers, right? So I think we are definitely seeing a diversity of customers coming to the table. But also, like, we're very happy like, Meta was referenced earlier. I mean, like, we're very happy with our"
+   },
+   {
+    "id": "3413900-t_qna_36_0",
+    "ticker": "CRWV",
+    "date": "2026-03-10",
+    "firm": null,
+    "text": "If you look out five years or so, how do you see the customer mix changing? And obviously, the big AI labs, hyperscale customers that are going to renew, add more capacity, but the long tail, what are you seeing in that cohort that kind of gives you confidence that mix is going t"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "long_tail_customer_emergence",
+  "suggested_why": "Companies are diversifying away from hyperscale AI lab concentration toward broader customer cohorts, reducing revenue dependency and expanding addressable market through long-tail adoption."
+ },
+ {
+  "id": "cand:3404809-t_qna_55_0",
+  "label": "mean",
+  "ngrams": [
+   "mean",
+   "demand"
+  ],
+  "register": "evidence_only",
+  "n_exchanges": 3,
+  "n_companies": 3,
+  "n_banks": 0,
+  "tickers": [
+   "FPS",
+   "INTC",
+   "MRVL"
+  ],
+  "firms": [],
+  "first_seen": "2026-03-04",
+  "members": [
+   "3404809-t_qna_55_0",
+   "3463943-t_qna_37_1",
+   "3471872-t_qna_57_0"
+  ],
+  "examples": [
+   {
+    "id": "3404809-t_qna_55_0",
+    "ticker": "INTC",
+    "date": "2026-03-04",
+    "firm": "Intel Corp.",
+    "text": "I mean, there's demand on I would say things are tight across all of our..."
+   },
+   {
+    "id": "3463943-t_qna_37_1",
+    "ticker": "FPS",
+    "date": "2026-05-14",
+    "firm": "Forgent Power Solutions, Inc.",
+    "text": "So for the most part, I think our supply and demand balance is just that. It's pretty balanced for where we sit at the moment."
+   },
+   {
+    "id": "3471872-t_qna_57_0",
+    "ticker": "MRVL",
+    "date": "2026-06-02",
+    "firm": "Marvell Technology, Inc.",
+    "text": "I mean, that's the worst kept secret out there. But having said that, I mean, just look at the upside we're driving this year and next year, so."
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "supply_demand_balance",
+  "suggested_why": "Operators discussing whether supply-demand equilibrium is tight or balanced across their operations, signaling capacity constraints and near-term growth headroom."
+ },
+ {
+  "id": "cand:3413799-t_3413799-t_qna_27_0",
+  "label": "long-term agreements",
+  "ngrams": [
+   "long-term agreements",
+   "commitment",
+   "better",
+   "customers",
+   "capacity",
+   "demand"
+  ],
+  "register": "evidence_only",
+  "n_exchanges": 3,
+  "n_companies": 3,
+  "n_banks": 0,
+  "tickers": [
+   "COHR",
+   "GLW",
+   "INTC"
+  ],
+  "firms": [],
+  "first_seen": "2026-03-03",
+  "members": [
+   "3413799-t_3413799-t_qna_27_0",
+   "3465909-t_qna_27_1",
+   "3499742-t_qna_16_0"
+  ],
+  "examples": [
+   {
+    "id": "3413799-t_3413799-t_qna_27_0",
+    "ticker": "COHR",
+    "date": "2026-03-03",
+    "firm": "Coherent Corp.",
+    "text": "And I think that that announcement yesterday certainly will catalyze more customers to go and do long-term agreements, right? Some have already done, put them in place. It will certainly catalyze more long-term agreements. And for us, we think that's a win-win for us and the cust"
+   },
+   {
+    "id": "3465909-t_qna_27_1",
+    "ticker": "INTC",
+    "date": "2026-06-02",
+    "firm": "Intel Corp.",
+    "text": "But largely, we're not driving our ASP decisions off of supply/demand imbalances. What we are doing is trying to drive more long-term agreements with customers. We're locking in a volume commitment. And then that enables us to do a better job of planning out our capacity and maki"
+   },
+   {
+    "id": "3499742-t_qna_16_0",
+    "ticker": "GLW",
+    "date": "2026-07-28",
+    "firm": "Corning, Inc.",
+    "text": "You can expect us to continue to increase the amount of long-term agreements that we enter into, because all of our significant capacity moves are backed by those type of agreements as we seek to appropriately share the risk and rewards of the incredibly strong growth in our capa"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "long_term_volume_locks",
+  "suggested_why": "Companies anchoring customer demand through multi-year commitments to justify major capacity expansions and reduce demand volatility risk."
  }
 ]

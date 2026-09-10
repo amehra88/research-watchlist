@@ -4,7 +4,7 @@ Anchors: 62 themes; threshold 0.3 (held-out P 0.3074 / R 0.3735 on 1726 labelled
 Coverage: question register: 1452/3527 mapped (41%); evidence register: 4451/8303 mapped (54%); 2174 rows skipped (operator/untyped speakers).
 A unit maps when its cosine to a theme centroid clears the threshold; the rest are clustered and only clusters with >= 3 companies and >= 2 banks are listed. The system never edits `config/watchlist.yaml` — accept with `topic_map.py --accept <id> --name <slug>`, reject with `--reject <id>`.
 
-### Pending candidates (27 of 27)
+### Pending candidates (27 of 41; 14 evidence-only listed below)
 
 | id | suggested | n_banks | n_companies | n_exch | first_seen | tickers | phrases |
 |---|---|---|---|---|---|---|---|
@@ -224,3 +224,22 @@ Banks: Goldman Sachs & Co. LLC, Wolfe Research LLC
 - **ASML 2026-07-15** (ASML Holding NV): Well, as I mentioned before, in the current environment where there is a lot of value for customers for what we bring them, we believe the potential to capture a larger share of that value, or at least to capture our share of that larger value, gives you better pricing power. So 
 - **CIEN 2026-09-03** (Wolfe Research LLC): I guess, I wanted to start just by, you mentioned value exchange on the call. Certainly, I think you mentioned prices as well as alignment of demand terms and conditions. Could you just talk a little bit more about what's going on there? Any sense for what price increases might l
 - **AMAT 2026-09-09** (Goldman Sachs & Co. LLC): Then one investor debate that I hear a lot is pricing and the ability for you to price to value you're creating in the market. Historically, that has been difficult because you got a concentrated customer base. Maybe talk to but I think some of your customers have publicly stated
+
+### Evidence-only clusters (14) — executives say it, no analyst has asked (spec §6.3 stage 1)
+
+| id | suggested | n_companies | n_exch | first_seen | tickers | phrases |
+|---|---|---|---|---|---|---|
+| `cand:3398918-t_3398918-t_qna_23_0` | cpo_scaling_adoption | 4 | 7 | 2026-03-02 | COHR, FN, GLW, LITE | cpo; indium phosphide; adoption multiple customers; backplane rack eventually; beyond scale starting |
+| `cand:3397579-t_qna_17_1` | inference_monetization | 4 | 6 | 2026-02-24 | AVGO, DDOG, DOCN, GDS | inference; customers creating; monetize; productize; training |
+| `cand:3403970-t_qna_21_0` | ahead_of_demand_capacity | 4 | 6 | 2026-03-03 | CIEN, FN, LRCX, MTRN | ahead capacity customers; capability investments making; capacity customers capability; customers capability investments; eps guess important |
+| `cand:3384540-t_3384540-t_qna_29_1` | demand_driven_pricing_power | 4 | 5 | 2026-02-04 | AMAT, COHR, MPWR, MTRN | believe good pricing; businesses sherri comment; comment effects gross; continue opportunity optimize; effects gross margin |
+| `cand:3450442-t_qna_65_0` | margin_through_efficiency | 4 | 4 | 2026-04-30 | AMAT, AMD, CIEN, MPWR | gross margin; price; costs |
+| `cand:3452572-t_qna_50_0` | call_closing_remarks | 4 | 4 | 2026-04-30 | CRDO, ENTG, GWRE, PANW | everybody joining call; appreciate |
+| `cand:3385152-t_3385152-t_qna_18_0` | data_center_displacement | 3 | 8 | 2026-02-12 | 005930.KS, AMAT, AVGO | passing pcs; meaningful increase; markets growing; compute demand; wafer starts |
+| `cand:3359603-t_3359603-t_qna_9_0` | ai_datacenter_optics | 3 | 4 | 2025-12-09 | AAOI, ANET, MRVL | heavy; infrastructure; gig; largely; specifically |
+| `cand:3376441-t_qna_38_0` | model_beat | 3 | 4 | 2026-01-28 | DASH, HNGE, LRCX | deliver leverage; management team; later; updated; model |
+| `cand:3386656-t_qna_9_1` | capacity_readiness | 3 | 4 | 2026-02-12 | ASML, INDI, MTRN | make sure; capacity; customer; discussion; project |
+| `cand:3438469-t_qna_59_0` | agentic_inference_tam | 3 | 4 | 2026-04-23 | AMD, ARM, INTC | agentic; cpus; march; physical; tam |
+| `cand:3383478-t_qna_32_0` | long_tail_customer_emergence | 3 | 3 | 2026-02-10 | ANET, CRWV, DDOG | cohort; labs; long-term; customers; mean |
+| `cand:3404809-t_qna_55_0` | supply_demand_balance | 3 | 3 | 2026-03-04 | FPS, INTC, MRVL | mean; demand |
+| `cand:3413799-t_3413799-t_qna_27_0` | long_term_volume_locks | 3 | 3 | 2026-03-03 | COHR, GLW, INTC | long-term agreements; commitment; better; customers; capacity |
