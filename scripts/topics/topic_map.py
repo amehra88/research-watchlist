@@ -138,17 +138,41 @@ def build_candidates(clusters, units, texts, df, n_docs, min_companies=MIN_COMPA
     return out
 
 
+def _containment(members: list, prior_members: list) -> float:
+    """Share of the PRIOR set still inside this cluster. Clusters grow week over week, so
+    Jaccard decays on a growing cluster and a rejected one would resurface."""
+    m, pm = set(members), set(prior_members or [])
+    return len(m & pm) / len(pm) if pm else 0.0
+
+
+def _best_prior(c: dict, priors: list, floor: float = 0.5):
+    best, best_s = None, 0.0
+    for d in priors:
+        s = _containment(c["members"], d.get("members"))
+        if s > best_s:
+            best, best_s = d, s
+    return best if best_s >= floor else None
+
+
 def reattach_decisions(cands: list, decisions: list) -> list:
     for c in cands:
-        best, best_j = None, 0.0
-        m = set(c["members"])
-        for d in decisions:
-            dm = set(d.get("members") or [])
-            j = len(m & dm) / len(m | dm) if m | dm else 0.0
-            if j > best_j:
-                best, best_j = d, j
-        if best and best_j >= 0.5:
+        best = _best_prior(c, decisions)
+        if best:
             c["status"], c["name"] = best["status"], best.get("name")
+    return cands
+
+
+def carry_suggestions(cands: list, previous: list) -> list:
+    """Keep last run's Haiku name suggestion for a cluster that persisted, so the weekly
+    run only spends calls on genuinely new clusters."""
+    for c in cands:
+        if c.get("suggested_name"):
+            continue
+        best = _best_prior(c, [p for p in previous if p.get("suggested_name")])
+        if best:
+            c["suggested_name"] = best["suggested_name"]
+            if best.get("suggested_why"):
+                c["suggested_why"] = best["suggested_why"]
     return cands
 
 
@@ -296,6 +320,8 @@ def run(args) -> int:
     rows, cands = map_units(units, store, names, A, thr, args.min_sim, args.min_companies, args.min_banks,
                             log_fn=log, mean=mean)
     cands = reattach_decisions(cands, _load_decisions())
+    if CANDIDATES.exists():
+        cands = carry_suggestions(cands, json.loads(CANDIDATES.read_text()))
     if args.suggest_names:
         cands = suggest_names(cands)
     STATE.mkdir(parents=True, exist_ok=True)

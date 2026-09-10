@@ -67,6 +67,27 @@ def test_build_candidates_applies_company_and_bank_floors_and_labels():
     assert sorted(c["members"]) == ["a1", "q1", "q2", "q3"] and len(c["examples"]) <= 3
 
 
+def test_reattach_decisions_survives_cluster_growth():
+    # a rejected moderator cluster grows every week; containment of the decided members
+    # (not Jaccard) is what keeps it rejected — Jaccard 3/10 would resurface it
+    cands = [{"id": "cand:m1", "members": [f"m{i}" for i in range(1, 11)], "status": "pending", "name": None}]
+    decisions = [{"id": "cand:m1", "members": ["m1", "m2", "m3"], "status": "rejected", "name": None, "ts": "t"}]
+    assert tm.reattach_decisions(cands, decisions)[0]["status"] == "rejected"
+    # but a decision whose members mostly left the cluster does not attach
+    decisions = [{"id": "cand:x", "members": ["m1", "z2", "z3", "z4"], "status": "rejected", "name": None, "ts": "t"}]
+    cands[0]["status"] = "pending"
+    assert tm.reattach_decisions(cands, decisions)[0]["status"] == "pending"
+
+
+def test_carry_suggestions_from_previous_candidates():
+    prev = [{"id": "cand:q1", "members": ["q1", "q2", "q3"], "suggested_name": "neocloud_demand", "suggested_why": "w"}]
+    cands = [{"id": "cand:q1", "members": ["q1", "q2", "q3", "q4", "q5"], "suggested_name": None},
+             {"id": "cand:z1", "members": ["z1", "z2"], "suggested_name": None}]
+    out = tm.carry_suggestions(cands, prev)
+    assert out[0]["suggested_name"] == "neocloud_demand" and out[0]["suggested_why"] == "w"
+    assert out[1]["suggested_name"] is None
+
+
 def test_reattach_decisions_by_member_overlap():
     cands = [{"id": "cand:q1", "members": ["q1", "q2", "q3", "a1"], "status": "pending", "name": None},
              {"id": "cand:q9", "members": ["q9"], "status": "pending", "name": None}]
