@@ -230,8 +230,9 @@ def _slug(s: str) -> str:
 
 def _default_runner(prompt: str) -> str:
     from lib import claude_p
+    # lean mode = system_prompt only (build_cmd adds --tools "" --setting-sources "" itself)
     text, _, _ = claude_p.run(prompt, system_prompt="You name investment research themes. Reply in the exact two-line format requested.",
-                              tools="", model="claude-haiku-4-5-20251001", timeout=120)
+                              model="claude-haiku-4-5-20251001", timeout=120)
     return text
 
 

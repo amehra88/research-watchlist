@@ -152,6 +152,22 @@ def test_suggest_names_only_for_pending_and_parses_slug():
     assert len(calls) == 1 and out[0]["suggested_name"] == "neocloud_gpu_demand" and out[1]["suggested_name"] is None
 
 
+def test_default_runner_uses_the_lean_wrapper_contract():
+    # 2026-09-10 first names pass: every call failed with "pass exactly one of system_prompt=
+    # (lean), tools= (mcp), ..." because tools="" was passed alongside system_prompt
+    from lib import claude_p
+    seen = {}
+    def fake_run(prompt, **kw):
+        seen.update(kw); return ("NAME: x\nWHY: y", 0.0, {})
+    orig = claude_p.run; claude_p.run = fake_run
+    try:
+        assert tm._default_runner("p").startswith("NAME:")
+    finally:
+        claude_p.run = orig
+    assert seen.get("system_prompt") and "tools" not in seen and "mcp_tool" not in seen
+    assert seen.get("model") == "claude-haiku-4-5-20251001"
+
+
 def test_write_report_leads_with_h2_and_prints_denominators():
     rows = [{"id": "q1", "register": "question", "themes": [{"theme": "a", "score": 0.9}], "candidate": None, "ticker": "X", "period_key": "FY2026-Q2", "firm": "F"},
             {"id": "q2", "register": "question", "themes": [], "candidate": "cand:q2", "ticker": "Y", "period_key": "FY2026-Q2", "firm": "G"},
