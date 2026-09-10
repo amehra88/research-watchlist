@@ -1,0 +1,1670 @@
+[
+ {
+  "id": "cand:3362309-t_qna_18_0",
+  "label": "capacity",
+  "ngrams": [
+   "capacity",
+   "supply",
+   "thinking",
+   "acute",
+   "lead times",
+   "chain",
+   "pressure",
+   "ready"
+  ],
+  "n_exchanges": 13,
+  "n_companies": 10,
+  "n_banks": 10,
+  "tickers": [
+   "AMAT",
+   "ANET",
+   "ASML",
+   "BE",
+   "DOCN",
+   "FN",
+   "HPE",
+   "INTC",
+   "LRCX",
+   "MSFT"
+  ],
+  "firms": [
+   "Bank of America Merrill Lynch",
+   "Barclays Capital, Inc.",
+   "Bernstein Research",
+   "Cantor Fitzgerald & Co.",
+   "Citigroup Global Markets Canada, Inc.",
+   "Evercore Group LLC",
+   "Morgan Stanley & Co. LLC",
+   "UBS Securities LLC",
+   "Wells Fargo Securities LLC",
+   "William Blair & Co. LLC"
+  ],
+  "first_seen": "2025-12-01",
+  "members": [
+   "3362309-t_qna_18_0",
+   "3363278-t_3363278-t_qna_18_0",
+   "3376441-t_qna_91_0",
+   "3403969-t_qna_16_0",
+   "3413748-t_qna_6_0",
+   "3438469-t_qna_6_2",
+   "3442937-t_qna_2_0",
+   "3444190-t_qna_62_0",
+   "3449468-t_qna_77_0",
+   "3450065-t_qna_8_0",
+   "3456442-t_3456442-t_qna_13_0",
+   "3483209-t_qna_45_0",
+   "3527182-t_qna_23_0"
+  ],
+  "examples": [
+   {
+    "id": "3362309-t_qna_18_0",
+    "ticker": "DOCN",
+    "date": "2025-12-01",
+    "firm": "UBS Securities LLC",
+    "text": "Maybe just when we think about supply constraints have been a big issue in the broader industry around bringing capacity online, can you just talk through how you were able to secure capacity, maybe any big constraints you see to bring in that capacity online and maybe how you're"
+   },
+   {
+    "id": "3363278-t_3363278-t_qna_18_0",
+    "ticker": "FN",
+    "date": "2025-12-10",
+    "firm": "Barclays Capital, Inc.",
+    "text": "Maybe we'll move over to capacity a little bit. You got the Building 10 coming on next year. You've talked about pulling forward a little, a portion of that capacity. So, maybe walk us through how you're thinking about capacity more broadly, and what the space is earmarked for. A"
+   },
+   {
+    "id": "3376441-t_qna_91_0",
+    "ticker": "LRCX",
+    "date": "2026-01-28",
+    "firm": "Wells Fargo Securities LLC",
+    "text": "Is there any area of your supply chain where you're pushing suppliers maybe that could be a potential area of shortage or do you feel like there's available capacity to continue to kind of support the growth you're talking about?"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3363278-t_qna_60_0",
+  "label": "gross",
+  "ngrams": [
+   "gross",
+   "margin",
+   "mix",
+   "value delivering",
+   "pricing",
+   "price increases",
+   "unpack",
+   "always"
+  ],
+  "n_exchanges": 12,
+  "n_companies": 8,
+  "n_banks": 8,
+  "tickers": [
+   "AAOI",
+   "CIEN",
+   "DDOG",
+   "FN",
+   "IOT",
+   "LITE",
+   "LRCX",
+   "MRVL"
+  ],
+  "firms": [
+   "Barclays Capital, Inc.",
+   "Bernstein Research",
+   "Goldman Sachs & Co. LLC",
+   "Jefferies LLC",
+   "KeyBanc Capital Markets, Inc.",
+   "Needham & Co. LLC",
+   "Raymond James",
+   "Wolfe Research LLC"
+  ],
+  "first_seen": "2025-12-10",
+  "members": [
+   "3363278-t_qna_60_0",
+   "3375096-t_qna_70_0",
+   "3383478-t_qna_65_0",
+   "3397351-t_qna_48_0",
+   "3403970-t_qna_27_0",
+   "3441104-t_qna_36_0",
+   "3462600-t_3462600-t_qna_158_0",
+   "3473230-t_qna_84_0",
+   "3505210-t_qna_18_0",
+   "3522275-t_qna_71_0",
+   "3522777-t_qna_3_0",
+   "3522777-t_qna_61_0"
+  ],
+  "examples": [
+   {
+    "id": "3363278-t_qna_60_0",
+    "ticker": "FN",
+    "date": "2025-12-10",
+    "firm": "Barclays Capital, Inc.",
+    "text": "And then I know you're not the CFO, but when we're thinking about the mix of all this stuff going on, is the model generally, maybe the gross margin doesn't move around much, but if you get incremental revenue growth, there's a little bit better leverage on that. Is that kind of "
+   },
+   {
+    "id": "3375096-t_qna_70_0",
+    "ticker": "CIEN",
+    "date": "2026-01-13",
+    "firm": "Needham & Co. LLC",
+    "text": "Couple of quick hitters on the finance side before we get some questions from the audience maybe. Gross margins, supply constraints, pricing power, lots of puts and takes. You've guided flat. Walk us through some of those puts and takes. Some would say, why can't you get better m"
+   },
+   {
+    "id": "3383478-t_qna_65_0",
+    "ticker": "DDOG",
+    "date": "2026-02-10",
+    "firm": "Jefferies LLC",
+    "text": "I think many gravitate back to that mid-20% margin you put up a couple of years ago and I know the last couple of years, including the guide, are looking at low 20%. Can you talk to maybe your true north, how you're thinking about that? Obviously growth being number one, but how "
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3359603-t_3359603-t_qna_14_0",
+  "label": "manufacturing capacity",
+  "ngrams": [
+   "manufacturing capacity",
+   "terms manufacturing",
+   "production",
+   "constraints",
+   "ask",
+   "grow",
+   "end",
+   "supply"
+  ],
+  "n_exchanges": 7,
+  "n_companies": 6,
+  "n_banks": 5,
+  "tickers": [
+   "AAOI",
+   "AVGO",
+   "BE",
+   "CBRS",
+   "COHR",
+   "LITE"
+  ],
+  "firms": [
+   "JPMorgan Securities LLC",
+   "Morgan Stanley & Co. LLC",
+   "Needham & Co. LLC",
+   "Raymond James & Associates, Inc.",
+   "UBS Securities LLC"
+  ],
+  "first_seen": "2025-12-09",
+  "members": [
+   "3359603-t_3359603-t_qna_14_0",
+   "3384162-t_qna_3_0",
+   "3469687-t_3469687-t_qna_36_0",
+   "3512929-t_qna_22_0",
+   "3513357-t_qna_3_0",
+   "3513357-t_qna_4_0",
+   "3519611-t_qna_1_0"
+  ],
+  "examples": [
+   {
+    "id": "3359603-t_3359603-t_qna_14_0",
+    "ticker": "AAOI",
+    "date": "2025-12-09",
+    "firm": "Raymond James & Associates, Inc.",
+    "text": "And you've laid out for the analysts in the past, but I'm just going to ask you to repeat it for everybody here who is maybe not following you as closely, the capacity plans. What in terms of where are you in capital raise? What's the sort of timeline for capacity for your produc"
+   },
+   {
+    "id": "3384162-t_qna_3_0",
+    "ticker": "BE",
+    "date": "2026-02-05",
+    "firm": "Morgan Stanley & Co. LLC",
+    "text": "And also some of your thoughts on further manufacturing capacity expansion. I was wondering, as you consider the potential for the next one, the next capacity expansion. Just curious, what are the milestones or triggers that you'd be watching for, and when do you think a decision"
+   },
+   {
+    "id": "3469687-t_3469687-t_qna_36_0",
+    "ticker": "LITE",
+    "date": "2026-05-18",
+    "firm": "JPMorgan Securities LLC",
+    "text": "Two parts. One would be how much do you think supply is going to increase in the industry in the next three years? And where is the limiting factor on your end? Are you finding there is going to be any supply constraints in terms of manufacturing? Is that even on the horizon or a"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3438469-t_qna_33_0",
+  "label": "server cpu",
+  "ngrams": [
+   "server cpu",
+   "asp",
+   "cpu market",
+   "agentic",
+   "cpu tam",
+   "tam billion",
+   "unit",
+   "cpus"
+  ],
+  "n_exchanges": 13,
+  "n_companies": 3,
+  "n_banks": 5,
+  "tickers": [
+   "AMD",
+   "ARM",
+   "INTC"
+  ],
+  "firms": [
+   "BofA Securities, Inc.",
+   "Cantor Fitzgerald & Co.",
+   "Citigroup Global Markets, Inc.",
+   "TD Cowen",
+   "UBS Securities LLC"
+  ],
+  "first_seen": "2026-04-23",
+  "members": [
+   "3438469-t_qna_33_0",
+   "3438469-t_qna_34_0",
+   "3444095-t_3444095-t_qna_22_0",
+   "3444095-t_3444095-t_qna_5_1",
+   "3444096-t_3444096-t_qna_15_0",
+   "3444096-t_3444096-t_qna_21_0",
+   "3465909-t_qna_11_0",
+   "3465909-t_qna_22_0",
+   "3500587-t_qna_42_0",
+   "3504922-t_qna_14_0",
+   "3505197-t_qna_11_0",
+   "3505197-t_qna_12_0",
+   "3505199-t_3505199-t_qna_16_0"
+  ],
+  "examples": [
+   {
+    "id": "3438469-t_qna_33_0",
+    "ticker": "INTC",
+    "date": "2026-04-23",
+    "firm": "BofA Securities, Inc.",
+    "text": "For the first one, I just wanted to understand the server CPU TAM growth this year. I think, Dave, you mentioned up double-digit. I was hoping you could help kind of tighten that. Is it 10%, 15%, 15%, 20%? And then, how much ASP expansion do you expect this year also, right? And "
+   },
+   {
+    "id": "3438469-t_qna_34_0",
+    "ticker": "INTC",
+    "date": "2026-04-23",
+    "firm": "Intel Corp.",
+    "text": "I mean, I think when we're talking about the market, we're generally talking about units. Six months ago, we certainly expected it well, I'd say probably at that point, we were thinking it would be up instead of down from a unit perspective. Now, obviously, it's going to be up me"
+   },
+   {
+    "id": "3444096-t_3444096-t_qna_15_0",
+    "ticker": "AMD",
+    "date": "2026-05-05",
+    "firm": "UBS Securities LLC",
+    "text": "I wanted to ask about units versus ASP for server CPU. If I look at the June guidance, it sort of implies up 25%, 30% for server CPU. And Lisa, you had mentioned second half of the year. It sort of implies that server CPU could grow like 70%, maybe a little more, this year. And s"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3388411-t_qna_10_0",
+  "label": "neocloud",
+  "ngrams": [
+   "neocloud",
+   "hyperscalers",
+   "follow-up",
+   "color",
+   "demand",
+   "seeing",
+   "customer"
+  ],
+  "n_exchanges": 5,
+  "n_companies": 3,
+  "n_banks": 5,
+  "tickers": [
+   "CBRS",
+   "CIEN",
+   "GLW"
+  ],
+  "firms": [
+   "BofA Securities, Inc.",
+   "Citigroup Global Markets, Inc.",
+   "Mizuho Securities USA LLC",
+   "Morgan Stanley & Co. LLC",
+   "Wolfe Research, LLC"
+  ],
+  "first_seen": "2026-03-03",
+  "members": [
+   "3388411-t_qna_10_0",
+   "3394768-t_qna_66_0",
+   "3469126-t_qna_35_0",
+   "3513357-t_qna_37_0",
+   "3522777-t_qna_15_0"
+  ],
+  "examples": [
+   {
+    "id": "3388411-t_qna_10_0",
+    "ticker": "GLW",
+    "date": "2026-03-03",
+    "firm": "Morgan Stanley & Co. LLC",
+    "text": "And then, I mean, just a question. You clearly have a lot of demand right now. So just how are you prioritizing hyperscalers, neoclouds? Just judging kind of what customer set kind of gets that prioritization."
+   },
+   {
+    "id": "3394768-t_qna_66_0",
+    "ticker": "CIEN",
+    "date": "2026-03-05",
+    "firm": "Citigroup Global Markets, Inc.",
+    "text": "And then, just as a follow-up, I was wondering if you could provide some more color on the momentum that you're seeing with neoscalers, maybe just in the relative size of the opportunities, is most of that falling in cloud direct versus MOFN?"
+   },
+   {
+    "id": "3469126-t_qna_35_0",
+    "ticker": "CIEN",
+    "date": "2026-06-04",
+    "firm": "Wolfe Research, LLC",
+    "text": "And then, what are you seeing on the neocloud side in terms of demand? How should we think about sizing that opportunity? It sounds like you guys are starting to see more traction there as well."
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3354107-t_qna_41_0",
+  "label": "capacity",
+  "ngrams": [
+   "capacity",
+   "bounds",
+   "growth",
+   "guidance",
+   "capex",
+   "response",
+   "year-on-year",
+   "point"
+  ],
+  "n_exchanges": 7,
+  "n_companies": 6,
+  "n_banks": 4,
+  "tickers": [
+   "AMAT",
+   "CIEN",
+   "DOCN",
+   "FN",
+   "IRTC",
+   "META"
+  ],
+  "firms": [
+   "Cantor Fitzgerald & Co.",
+   "Needham & Company",
+   "Northland Securities, Inc.",
+   "Wells Fargo Securities LLC"
+  ],
+  "first_seen": "2025-12-11",
+  "members": [
+   "3354107-t_qna_41_0",
+   "3397579-t_qna_51_0",
+   "3403420-t_3403420-t_qna_26_0",
+   "3508785-t_qna_3_0",
+   "3515610-t_qna_68_0",
+   "3526892-t_qna_62_0",
+   "3534202-t_qna_53_0"
+  ],
+  "examples": [
+   {
+    "id": "3354107-t_qna_41_0",
+    "ticker": "CIEN",
+    "date": "2025-12-11",
+    "firm": "Ciena Corp.",
+    "text": "A couple of things. One is, when we talked about the longer-term guides last quarter, we kind of took those off the table, just because in the medium term, we're not very good at calling the growth rates on the upside, right? So that 8% to 11%, I think, is off the table. We're no"
+   },
+   {
+    "id": "3397579-t_qna_51_0",
+    "ticker": "DOCN",
+    "date": "2026-02-24",
+    "firm": "Needham & Company",
+    "text": "Thanks for taking the questions here, guys, and congrats on the strong growth guardrails you're providing us. Matt, if I can just come back, and I know that the free cash flow topic has come up a couple of times here, but you can see as well as anybody just how sensitive the inve"
+   },
+   {
+    "id": "3403420-t_3403420-t_qna_26_0",
+    "ticker": "AMAT",
+    "date": "2026-03-10",
+    "firm": "Cantor Fitzgerald & Co.",
+    "text": "Now, maybe moving to service, you've guided for double-digit growth here in 2026. At the same time, we discussed earlier upgrades and customers at near peak utilizations. I guess, how are you thinking about the drivers this year? And is there potential, as we layer in maybe more "
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3328815-t_qna_49_0",
+  "label": "meet demand",
+  "ngrams": [
+   "meet demand",
+   "purchase commitments",
+   "demand high",
+   "doubled",
+   "levels",
+   "component",
+   "supply",
+   "chain"
+  ],
+  "n_exchanges": 5,
+  "n_companies": 3,
+  "n_banks": 4,
+  "tickers": [
+   "AMAT",
+   "ANET",
+   "LRCX"
+  ],
+  "firms": [
+   "Barclays Capital, Inc.",
+   "Citigroup Global Markets, Inc.",
+   "Goldman Sachs & Co. LLC",
+   "Morgan Stanley & Co. LLC"
+  ],
+  "first_seen": "2025-12-11",
+  "members": [
+   "3328815-t_qna_49_0",
+   "3376441-t_qna_92_0",
+   "3403970-t_qna_22_0",
+   "3504004-t_qna_23_0",
+   "3528779-t_qna_14_0"
+  ],
+  "examples": [
+   {
+    "id": "3328815-t_qna_49_0",
+    "ticker": "ANET",
+    "date": "2025-12-11",
+    "firm": "Barclays Capital, Inc.",
+    "text": "Company was early on with purchase commitments. And I don't know, five years ago, some of us were saying, wow, what, these numbers are massive, what are they doing. And they were needed and they're still needed. So, maybe talk to us about where you are in like capacity and compon"
+   },
+   {
+    "id": "3376441-t_qna_92_0",
+    "ticker": "LRCX",
+    "date": "2026-01-28",
+    "firm": "Lam Research Corp.",
+    "text": "Well, I think that we don't have any line of sight to significant problems at this point. I made a comment a couple times, that's clearly a lot of work given the accelerated nature of the demand and the high levels of demand and customer requests for pull-ins well within our norm"
+   },
+   {
+    "id": "3403970-t_qna_22_0",
+    "ticker": "LRCX",
+    "date": "2026-03-03",
+    "firm": "Morgan Stanley & Co. LLC",
+    "text": "I guess as we think about kind of your initiatives to not be the bottleneck in this industry, but your revenue essentially doubled from 2024 from I mean, I guess your revenue could double from 2024 to 2027. That probably takes a lot of building up supply to do. Like you're probab"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3355431-t_3355431-t_qna_28_0",
+  "label": "gross margin",
+  "ngrams": [
+   "gross margin",
+   "china",
+   "july",
+   "margins",
+   "follow-up"
+  ],
+  "n_exchanges": 4,
+  "n_companies": 3,
+  "n_banks": 4,
+  "tickers": [
+   "AMAT",
+   "ASML",
+   "LRCX"
+  ],
+  "firms": [
+   "Cantor Fitzgerald & Co.",
+   "JPMorgan Securities LLC",
+   "UBS Securities LLC",
+   "Wolfe Research LLC"
+  ],
+  "first_seen": "2025-12-02",
+  "members": [
+   "3355431-t_3355431-t_qna_28_0",
+   "3381168-t_qna_60_0",
+   "3456442-t_3456442-t_qna_4_0",
+   "3505210-t_qna_16_0"
+  ],
+  "examples": [
+   {
+    "id": "3355431-t_3355431-t_qna_28_0",
+    "ticker": "AMAT",
+    "date": "2025-12-02",
+    "firm": "UBS Securities LLC",
+    "text": "And that kind of dovetails into gross margin, which I wanted to talk about. That's been a real bright spot. I mean, at similar China portion of revenue in July of 2022, gross margin was 46.2% and you're guiding it to 48.5% with a similar contribution from China. So, if you try to"
+   },
+   {
+    "id": "3381168-t_qna_60_0",
+    "ticker": "ASML",
+    "date": "2026-01-28",
+    "firm": "Wolfe Research LLC",
+    "text": "My follow-up question is with regard to gross margins, and you spoke about that a bit. But perhaps you could clarify what are the headwinds and tailwinds with respect to gross margin for this year. I presume that China is one factor. But what are the factors that cause you to be "
+   },
+   {
+    "id": "3456442-t_3456442-t_qna_4_0",
+    "ticker": "AMAT",
+    "date": "2026-05-14",
+    "firm": "Cantor Fitzgerald & Co.",
+    "text": "As a quick follow-up, just on the gross margin side, great guide with, I'm assuming, depressed China. How should we think about gross margins beyond the July quarter, particularly as it appears as silicon will continue to grow sequentially well into 2027 and beyond?"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3453466-t_3453466-t_qna_68_1",
+  "label": "allocation decisions investments",
+  "ngrams": [
+   "allocation decisions investments",
+   "allow make capital",
+   "allows operating leverage",
+   "always world don",
+   "anything respond certainly",
+   "assets execute allows",
+   "business thus allow",
+   "cautious use company"
+  ],
+  "n_exchanges": 6,
+  "n_companies": 5,
+  "n_banks": 3,
+  "tickers": [
+   "DOCN",
+   "FN",
+   "GLW",
+   "INTC",
+   "IOT"
+  ],
+  "firms": [
+   "Bank of America Merrill Lynch",
+   "Cantor Fitzgerald & Co.",
+   "RBC Capital Markets LLC"
+  ],
+  "first_seen": "2026-05-04",
+  "members": [
+   "3453466-t_3453466-t_qna_68_1",
+   "3453466-t_qna_68_1",
+   "3464613-t_qna_31_0",
+   "3483209-t_qna_0_0",
+   "3500587-t_qna_45_0",
+   "3515951-t_qna_33_0"
+  ],
+  "examples": [
+   {
+    "id": "3453466-t_3453466-t_qna_68_1",
+    "ticker": "FN",
+    "date": "2026-05-04",
+    "firm": "Fabrinet",
+    "text": "So, we're very focused on making sure as we grow that we're very cautious with the use of the company's resources and the company's assets. But we also execute in a way that allows us to get that operating leverage that we've been delivering for quite some time. And certainly, th"
+   },
+   {
+    "id": "3453466-t_qna_68_1",
+    "ticker": "FN",
+    "date": "2026-05-04",
+    "firm": "Fabrinet",
+    "text": "So, we're very focused on making sure as we grow that we're very cautious with the use of the company's resources and the company's assets. But we also execute in a way that allows us to get that operating leverage that we've been delivering for quite some time. And certainly, th"
+   },
+   {
+    "id": "3483209-t_qna_0_0",
+    "ticker": "DOCN",
+    "date": "2026-06-03",
+    "firm": "Bank of America Merrill Lynch",
+    "text": "And maybe, if it's just getting reflected in the guidance that you provided, which you upped a few times now. And I guess, as you look over the last, call it, I don't know, six months or 90 days, like, what has really changed in what you're seeing in discussions with customers th"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3384162-t_qna_32_0",
+  "label": "inorganically",
+  "ngrams": [
+   "inorganically",
+   "balance sheet",
+   "investments",
+   "product",
+   "continue"
+  ],
+  "n_exchanges": 4,
+  "n_companies": 4,
+  "n_banks": 3,
+  "tickers": [
+   "BE",
+   "COHR",
+   "CRS",
+   "ENTG"
+  ],
+  "firms": [
+   "BTIG LLC",
+   "Mizuho Securities",
+   "Oppenheimer & Co., Inc."
+  ],
+  "first_seen": "2026-02-05",
+  "members": [
+   "3384162-t_qna_32_0",
+   "3413799-t_3413799-t_qna_57_0",
+   "3500994-t_qna_70_0",
+   "3508825-t_qna_52_0"
+  ],
+  "examples": [
+   {
+    "id": "3384162-t_qna_32_0",
+    "ticker": "BE",
+    "date": "2026-02-05",
+    "firm": "Oppenheimer & Co., Inc.",
+    "text": "And then, the follow-up here is really around any interest in potential M&A. Obviously, you've got a lot of wood to chop with the core product here. But with an augmented balance sheet and a very robust currency right now with the stock, Is there any reason or opportunities for y"
+   },
+   {
+    "id": "3413799-t_3413799-t_qna_57_0",
+    "ticker": "COHR",
+    "date": "2026-03-03",
+    "firm": "Coherent Corp.",
+    "text": "We're always looking at scanning the landscape for is there anything that we can inorganically add to the company that would accelerate our plan, right? So, we're clearly, we're making big investments on the organic business. If there's anything that we can add, either technology"
+   },
+   {
+    "id": "3500994-t_qna_70_0",
+    "ticker": "CRS",
+    "date": "2026-07-30",
+    "firm": "BTIG LLC",
+    "text": "And then I guess just longer-term capital deployment, I mean, you're almost at $900 million total liquidity now. I can only imagine by FY 2029, I'm not going to ask specifics, but like it, obviously the cash on hand will continue to grow as well. I'm curious, is M&A on the table "
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3433453-t_md_5_4",
+  "label": "automotive",
+  "ngrams": [
+   "automotive",
+   "physical",
+   "robotics",
+   "industrial",
+   "content",
+   "starting",
+   "market",
+   "compute"
+  ],
+  "n_exchanges": 4,
+  "n_companies": 4,
+  "n_banks": 3,
+  "tickers": [
+   "ARM",
+   "INDI",
+   "INTC",
+   "MPWR"
+  ],
+  "firms": [
+   "JPMorgan Securities LLC",
+   "Oppenheimer & Co., Inc.",
+   "UBS Securities LLC"
+  ],
+  "first_seen": "2026-03-24",
+  "members": [
+   "3433453-t_md_5_4",
+   "3450442-t_qna_32_0",
+   "3482964-t_qna_20_0",
+   "3504040-t_qna_21_0"
+  ],
+  "examples": [
+   {
+    "id": "3433453-t_md_5_4",
+    "ticker": "ARM",
+    "date": "2026-03-24",
+    "firm": "Arm Holdings Plc",
+    "text": "And that $25 billion a year, it's really not hard to kind of do the math on that. Physical AI space principally today is automotive platforms beginning to move to more autonomous platforms. 100 million-ish transportation vehicles, associated vehicles sold each year. So, you can k"
+   },
+   {
+    "id": "3450442-t_qna_32_0",
+    "ticker": "MPWR",
+    "date": "2026-04-30",
+    "firm": "Oppenheimer & Co., Inc.",
+    "text": "Obviously, it's getting a lot more people talking about it and seeing a lot more focus. I'm just curious if you could flesh out maybe a little more of your plans for that segment. I mean, you called out robotics a minute ago on the call, I mean, can that be a meaningful revenue c"
+   },
+   {
+    "id": "3482964-t_qna_20_0",
+    "ticker": "INTC",
+    "date": "2026-05-19",
+    "firm": "JPMorgan Securities LLC",
+    "text": "And we were talking about it last night I remember. When it comes to physical AI, a lot of the use cases are in areas like industrial, automotive, edge AI, and we were talking about it last night but we call these the embedded segments of the market, right? And in embedded, inter"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3381168-t_qna_36_0",
+  "label": "backlog",
+  "ngrams": [
+   "backlog",
+   "ship",
+   "march",
+   "comments",
+   "guide",
+   "lead",
+   "ability",
+   "months"
+  ],
+  "n_exchanges": 4,
+  "n_companies": 3,
+  "n_banks": 3,
+  "tickers": [
+   "ASML",
+   "FPS",
+   "MPWR"
+  ],
+  "firms": [
+   "Barclays Capital, Inc.",
+   "Loop Capital Markets LLC",
+   "Susquehanna Financial Group LLLP"
+  ],
+  "first_seen": "2026-01-28",
+  "members": [
+   "3381168-t_qna_36_0",
+   "3381359-t_qna_78_0",
+   "3463943-t_qna_1_0",
+   "3463943-t_qna_2_1"
+  ],
+  "examples": [
+   {
+    "id": "3381168-t_qna_36_0",
+    "ticker": "ASML",
+    "date": "2026-01-28",
+    "firm": "Susquehanna Financial Group LLLP",
+    "text": "And I want to go back to the comments in the transcript that was posted with the earning report. There was a comment that some of the booking would be shippable in 2027. So, the question that I have is, what would it take for you to hit the high-end of revenue guide for this year"
+   },
+   {
+    "id": "3381359-t_qna_78_0",
+    "ticker": "MPWR",
+    "date": "2026-02-05",
+    "firm": "Loop Capital Markets LLC",
+    "text": "As my follow-up, I wanted to ask about maybe some nuances in your increased visibility and comments regarding that. If I talked to you guys three months ago, I think you were thinking maybe the 2026 year was going to be a little more second-half weighted. Just given the stronger "
+   },
+   {
+    "id": "3463943-t_qna_1_0",
+    "ticker": "FPS",
+    "date": "2026-05-14",
+    "firm": "Barclays Capital, Inc.",
+    "text": "Maybe my question really is about the revenue outlook for kind of the next 12 months. And really to understand, when we look at the recent backlog and orders trends, they suggest very significant revenue growth in the year ahead. Is there anything you'd highlight to us on sort of"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3335314-t_3335314-t_qna_22_0",
+  "label": "concentration",
+  "ngrams": [
+   "concentration",
+   "customer"
+  ],
+  "n_exchanges": 3,
+  "n_companies": 3,
+  "n_banks": 3,
+  "tickers": [
+   "AMD",
+   "ANET",
+   "CRDO"
+  ],
+  "firms": [
+   "Raymond James & Associates, Inc.",
+   "TD Cowen",
+   "UBS Securities LLC"
+  ],
+  "first_seen": "2025-12-03",
+  "members": [
+   "3328855-t_qna_4_0",
+   "3335314-t_3335314-t_qna_22_0",
+   "3526409-t_qna_10_0"
+  ],
+  "examples": [
+   {
+    "id": "3335314-t_3335314-t_qna_22_0",
+    "ticker": "AMD",
+    "date": "2025-12-03",
+    "firm": "UBS Securities LLC",
+    "text": "And do you worry about customer concentration? Can you speak a little bit about breadth? If you look out in your forecast, how broad will your customer base be?"
+   },
+   {
+    "id": "3328855-t_qna_4_0",
+    "ticker": "ANET",
+    "date": "2025-12-09",
+    "firm": "Raymond James & Associates, Inc.",
+    "text": "So I think one of the things that sort of characterize your business is that the leading customers, and it's understandably a double-edged sword to have high concentration, but to have high concentration with companies that grow and spend a lot of money. How do we see the company"
+   },
+   {
+    "id": "3526409-t_qna_10_0",
+    "ticker": "CRDO",
+    "date": "2026-09-01",
+    "firm": "TD Cowen",
+    "text": "Maybe we could just get some blocking and tackling on the Dan, you mentioned that three to four customers will be greater than 10% and you're continuing to diversify. Wanted to ask specifically, maybe if you could do the rundown of what the stats were on those three or four in th"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3374273-t_3374273-t_qna_72_0",
+  "label": "wafer",
+  "ngrams": [
+   "wafer",
+   "foundry",
+   "packaging",
+   "ability",
+   "supply",
+   "mean"
+  ],
+  "n_exchanges": 3,
+  "n_companies": 3,
+  "n_banks": 3,
+  "tickers": [
+   "AAPL",
+   "AVGO",
+   "INDI"
+  ],
+  "firms": [
+   "Citigroup Global Markets, Inc.",
+   "The Benchmark Co. LLC",
+   "UBS Securities LLC"
+  ],
+  "first_seen": "2026-01-29",
+  "members": [
+   "3374273-t_3374273-t_qna_72_0",
+   "3445373-t_qna_5_0",
+   "3464036-t_qna_25_0"
+  ],
+  "examples": [
+   {
+    "id": "3374273-t_3374273-t_qna_72_0",
+    "ticker": "AAPL",
+    "date": "2026-01-29",
+    "firm": "Citigroup Global Markets, Inc.",
+    "text": "As my follow-up, there was a lot of discussion on supply constraints, and I'm surprised that you guys are constrained on advanced packaging as you generally get your share at the big foundry. How long will these supply impact your ability to ship to true demand?"
+   },
+   {
+    "id": "3445373-t_qna_5_0",
+    "ticker": "INDI",
+    "date": "2026-05-07",
+    "firm": "The Benchmark Co. LLC",
+    "text": "And you talked about wafer packaging, I mean, back in packaging, test and substrate availability and then your diversification of your foundry strategy. Can you just update us on the progress, what's left to be done? And is that now substantially behind you?"
+   },
+   {
+    "id": "3464036-t_qna_25_0",
+    "ticker": "AVGO",
+    "date": "2026-06-03",
+    "firm": "UBS Securities LLC",
+    "text": "I wanted to ask you about supply and kind of your ability to get incremental, volume of wafers and HBM. As I look at some of your competitors, I mean, they're kind of able to drop $20 billion out of thin air, and get incremental wafer supply. So, I'm wondering, do you feel pretty"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3405694-t_qna_62_0",
+  "label": "pipeline",
+  "ngrams": [
+   "pipeline",
+   "longer",
+   "sales",
+   "half",
+   "driving",
+   "products",
+   "customers"
+  ],
+  "n_exchanges": 3,
+  "n_companies": 3,
+  "n_banks": 3,
+  "tickers": [
+   "AXON",
+   "GWRE",
+   "HNGE"
+  ],
+  "firms": [
+   "Raymond James & Associates, Inc.",
+   "WR Securities LLC",
+   "William Blair & Co. LLC"
+  ],
+  "first_seen": "2026-03-05",
+  "members": [
+   "3405694-t_qna_62_0",
+   "3503122-t_qna_29_0",
+   "3513264-t_qna_33_0"
+  ],
+  "examples": [
+   {
+    "id": "3405694-t_qna_62_0",
+    "ticker": "GWRE",
+    "date": "2026-03-05",
+    "firm": "William Blair & Co. LLC",
+    "text": "I know there's a lot of commentary of the pipeline in the back half of the year, but just wanted to touch on maybe how should we think about the different products flowing through the funnel as customers increasingly want to land larger with longer duration? Has there been any sh"
+   },
+   {
+    "id": "3503122-t_qna_29_0",
+    "ticker": "HNGE",
+    "date": "2026-08-04",
+    "firm": "Raymond James & Associates, Inc.",
+    "text": "So I wanted to clarify on the selling season, it seems like this is the second year in a row where there's been really strong pipeline build, but the conversion is going to be back half weighted. Is that the new normal that we should expect? And do you think there's anything that"
+   },
+   {
+    "id": "3513264-t_qna_33_0",
+    "ticker": "AXON",
+    "date": "2026-08-05",
+    "firm": "WR Securities LLC",
+    "text": "In the past, you've talked about longer sales cycles for AI and OSP bundles. With the bigger price tags on those. Are those cycles shortening now that the products have been in the market for longer periods of time, customers might be more familiar, more used to AI or are you kin"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3335314-t_3335314-t_qna_33_0",
+  "label": "packaging",
+  "ngrams": [
+   "packaging",
+   "supply",
+   "advanced",
+   "power build-out",
+   "data center",
+   "demand",
+   "chain",
+   "power data"
+  ],
+  "n_exchanges": 10,
+  "n_companies": 7,
+  "n_banks": 2,
+  "tickers": [
+   "AMAT",
+   "AMD",
+   "ANET",
+   "BE",
+   "CBRS",
+   "LRCX",
+   "MRVL"
+  ],
+  "firms": [
+   "Morgan Stanley & Co. LLC",
+   "RBC Capital Markets LLC"
+  ],
+  "first_seen": "2025-12-03",
+  "members": [
+   "3335314-t_3335314-t_qna_33_0",
+   "3370861-t_qna_114_0",
+   "3397351-t_qna_43_0",
+   "3403420-t_3403420-t_qna_1_0",
+   "3442818-t_qna_1_0",
+   "3473212-t_qna_27_0",
+   "3489856-t_qna_25_0",
+   "3503139-t_qna_6_0",
+   "3505197-t_qna_15_0",
+   "3505198-t_3505198-t_qna_1_4"
+  ],
+  "examples": [
+   {
+    "id": "3335314-t_3335314-t_qna_33_0",
+    "ticker": "AMD",
+    "date": "2025-12-03",
+    "firm": "Advanced Micro Devices, Inc.",
+    "text": "Well, look, the great thing about the semiconductor market is, I think, we're used to expanding and expanding quickly. So, if you put aside sort of very temporal things, what are the most important things? It is advanced technology, sort of access to the most advanced wafers. It'"
+   },
+   {
+    "id": "3370861-t_qna_114_0",
+    "ticker": "MRVL",
+    "date": "2026-01-06",
+    "firm": "Marvell Technology, Inc.",
+    "text": "...including big investments in substrate supply, backend, CEO-CEO real strategic partnership. So, all that is now in place, right, and we got that some of that stuff set up through like 2030 and beyond, that's really helped us. But also just our proactive approach, how we manage"
+   },
+   {
+    "id": "3397351-t_qna_43_0",
+    "ticker": "MRVL",
+    "date": "2026-03-05",
+    "firm": "Marvell Technology, Inc.",
+    "text": "Look, we've been in a tight supply environment for anything that touches AI, advanced wafer fabrication, advanced packaging, large body substrates since the launch of ChatGPT. And against that backdrop to your point, we were still able to grow the company north of 40% in total re"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3489856-t_qna_53_0",
+  "label": "privilege",
+  "ngrams": [
+   "privilege",
+   "time",
+   "wrap"
+  ],
+  "n_exchanges": 8,
+  "n_companies": 7,
+  "n_banks": 2,
+  "tickers": [
+   "AMAT",
+   "AVGO",
+   "AXON",
+   "CBRS",
+   "HPQ",
+   "NXPI",
+   "UPST"
+  ],
+  "firms": [
+   "Citigroup Global Markets, Inc.",
+   "Goldman Sachs & Co. LLC"
+  ],
+  "first_seen": "2026-06-23",
+  "members": [
+   "3489532-t_qna_38_0",
+   "3489856-t_qna_53_0",
+   "3513263-t_qna_46_0",
+   "3523070-t_qna_53_0",
+   "3528779-t_qna_30_0",
+   "3528780-t_qna_36_0",
+   "3533560-t_qna_36_0",
+   "3542655-t_qna_22_0"
+  ],
+  "examples": [
+   {
+    "id": "3489856-t_qna_53_0",
+    "ticker": "CBRS",
+    "date": "2026-06-23",
+    "firm": "Cerebras Systems, Inc.",
+    "text": "And with that, I think we'll wrap up."
+   },
+   {
+    "id": "3513263-t_qna_46_0",
+    "ticker": "AXON",
+    "date": "2026-09-08",
+    "firm": "Goldman Sachs & Co. LLC",
+    "text": "It's been a privilege to have you on stage."
+   },
+   {
+    "id": "3523070-t_qna_53_0",
+    "ticker": "HPQ",
+    "date": "2026-09-08",
+    "firm": "Goldman Sachs & Co. LLC",
+    "text": "If there's any other questions from the audience, we have a couple of extra seconds here. It's been a privilege to have you."
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3505197-t_qna_16_0",
+  "label": "audience please raise",
+  "ngrams": [
+   "audience please raise",
+   "please raise hand",
+   "pause audience please"
+  ],
+  "n_exchanges": 5,
+  "n_companies": 5,
+  "n_banks": 2,
+  "tickers": [
+   "AMAT",
+   "AMD",
+   "HPQ",
+   "LRCX",
+   "NVMI"
+  ],
+  "firms": [
+   "Citigroup Global Markets, Inc.",
+   "Goldman Sachs & Co. LLC"
+  ],
+  "first_seen": "2026-09-08",
+  "members": [
+   "3505197-t_qna_16_0",
+   "3523070-t_qna_42_0",
+   "3526361-t_qna_28_0",
+   "3528779-t_qna_18_0",
+   "3534203-t_qna_44_0"
+  ],
+  "examples": [
+   {
+    "id": "3505197-t_qna_16_0",
+    "ticker": "AMD",
+    "date": "2026-09-08",
+    "firm": "Citigroup Global Markets, Inc.",
+    "text": "Let me pause and see if there are any questions in the audience. If you have a question, please raise your hand."
+   },
+   {
+    "id": "3523070-t_qna_42_0",
+    "ticker": "HPQ",
+    "date": "2026-09-08",
+    "firm": "Goldman Sachs & Co. LLC",
+    "text": "I'll see if there's any questions in the audience for Karen."
+   },
+   {
+    "id": "3526361-t_qna_28_0",
+    "ticker": "NVMI",
+    "date": "2026-09-08",
+    "firm": "Citigroup Global Markets, Inc.",
+    "text": "So, let me pause here and see if there are any questions in the audience. If you have a question, please raise your hand."
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3469126-t_qna_53_1",
+  "label": "supply chain",
+  "ngrams": [
+   "supply chain",
+   "working capital",
+   "gross margin",
+   "expectations",
+   "feel",
+   "past",
+   "long",
+   "great"
+  ],
+  "n_exchanges": 4,
+  "n_companies": 4,
+  "n_banks": 2,
+  "tickers": [
+   "ANET",
+   "CIEN",
+   "CRDO",
+   "INDI"
+  ],
+  "firms": [
+   "Craig-Hallum Capital Group LLC",
+   "Goldman Sachs & Co. LLC"
+  ],
+  "first_seen": "2026-06-04",
+  "members": [
+   "3469126-t_qna_53_1",
+   "3504004-t_qna_3_0",
+   "3504040-t_qna_13_0",
+   "3526409-t_qna_8_0"
+  ],
+  "examples": [
+   {
+    "id": "3469126-t_qna_53_1",
+    "ticker": "CIEN",
+    "date": "2026-06-04",
+    "firm": "Ciena Corp.",
+    "text": "And again, I would say the team is doing a wonderful job even on just getting more units into the door so that we can sell them because as soon as we get them they're going out the door, which has allowed us to meet and beat the revenue expectations for the year. On the gross mar"
+   },
+   {
+    "id": "3504040-t_qna_13_0",
+    "ticker": "INDI",
+    "date": "2026-08-06",
+    "firm": "Craig-Hallum Capital Group LLC",
+    "text": "And shifting gears, topic of gross margins in the past, you've talked about trying to get to or expecting to get to 55%-plus gross margins down the road. And I think not too long ago, you were hoping for 50% gross margins late this year. Where do you think that now shakes out? Yo"
+   },
+   {
+    "id": "3526409-t_qna_8_0",
+    "ticker": "CRDO",
+    "date": "2026-09-01",
+    "firm": "Credo Technology Group Holding Ltd.",
+    "text": "We're in a very dynamic market right now. And you're right from the supply side, it has been important that we have spent so much time even going back 18 to 24 months ago, when we knew that this was the direction that we're heading. And so you can see from Dan's update that worki"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3297800-t_3297800-t_qna_63_0",
+  "label": "gross margin",
+  "ngrams": [
+   "gross margin",
+   "data center business",
+   "ramp data center",
+   "continue improve gross",
+   "server cpu business",
+   "mix",
+   "mi450",
+   "embedded business"
+  ],
+  "n_exchanges": 6,
+  "n_companies": 3,
+  "n_banks": 2,
+  "tickers": [
+   "AMD",
+   "ANET",
+   "AVGO"
+  ],
+  "firms": [
+   "Bernstein Research",
+   "Rosenblatt Securities, Inc."
+  ],
+  "first_seen": "2025-11-11",
+  "members": [
+   "3297800-t_3297800-t_qna_63_0",
+   "3352590-t_qna_19_0",
+   "3504005-t_qna_45_0",
+   "3505197-t_qna_10_0",
+   "3505197-t_qna_10_1",
+   "3505199-t_3505199-t_qna_43_0"
+  ],
+  "examples": [
+   {
+    "id": "3297800-t_3297800-t_qna_63_0",
+    "ticker": "AMD",
+    "date": "2025-11-11",
+    "firm": "Advanced Micro Devices, Inc.",
+    "text": "Yeah, that the first thing I would say is if you look at our gross margin, we have been expanding our gross margin in 2025 each quarter. We are ramping MI350 actually steeply in second half of 2025. So, overall, from our gross margin profile perspective, we absolutely want to mak"
+   },
+   {
+    "id": "3352590-t_qna_19_0",
+    "ticker": "AVGO",
+    "date": "2025-12-11",
+    "firm": "Bernstein Research",
+    "text": "I wanted to touch on gross margins, and maybe it feeds into a little bit the prior question. So, I understand why the AI business is somewhat dilutive to gross margins. We have the HBM pass-through, and then presumably with the system sales, that will be more dilutive. And you've"
+   },
+   {
+    "id": "3505199-t_3505199-t_qna_43_0",
+    "ticker": "AMD",
+    "date": "2026-08-04",
+    "firm": "Advanced Micro Devices, Inc.",
+    "text": "I think overall, when we think about the gross margin for 2027, as I said earlier, it's really determined by both the pace of server CPU business ramp and the data center AI ramp. So I actually think overall, quarter-over-quarter, it could be different mix, could change different"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3366595-t_qna_16_0",
+  "label": "act together development",
+  "ngrams": [
+   "act together development",
+   "balancing needs given",
+   "biased towards emls",
+   "business coming calendar",
+   "business growth trend",
+   "certainly business coming",
+   "continued forward certainly",
+   "definitely seeing business"
+  ],
+  "n_exchanges": 6,
+  "n_companies": 3,
+  "n_banks": 2,
+  "tickers": [
+   "COHR",
+   "LITE",
+   "MRVL"
+  ],
+  "firms": [
+   "Barclays Capital, Inc.",
+   "Morgan Stanley & Co. LLC"
+  ],
+  "first_seen": "2025-12-10",
+  "members": [
+   "3366595-t_qna_16_0",
+   "3366595-t_qna_18_0",
+   "3374269-t_3374269-t_qna_56_0",
+   "3374269-t_qna_56_0",
+   "3413799-t_3413799-t_qna_23_0",
+   "3413799-t_qna_23_0"
+  ],
+  "examples": [
+   {
+    "id": "3366595-t_qna_16_0",
+    "ticker": "MRVL",
+    "date": "2025-12-10",
+    "firm": "Barclays Capital, Inc.",
+    "text": "And then as you shift to new speeds, 1.6T coming more in volume in 2026, still 800G, the vast majority of connections next year. But as you move to 1.6T, what does that share profile look like and how can you assure that you're in the same kind of position that you were in prior "
+   },
+   {
+    "id": "3366595-t_qna_18_0",
+    "ticker": "MRVL",
+    "date": "2025-12-10",
+    "firm": "Marvell Technology, Inc.",
+    "text": "And we said on our call, by the way, that we're seeing virtually exceptionally strong demand for 1.6T. To your point, 800-gig is growing and it's going to be very, very strong next year. I would suspect at this point in time we are probably the primary driver of 1.6T in the indus"
+   },
+   {
+    "id": "3374269-t_3374269-t_qna_56_0",
+    "ticker": "LITE",
+    "date": "2026-02-03",
+    "firm": "Lumentum Holdings, Inc.",
+    "text": "So one is the we have still very large market today. However, our market share at 1.6T as Michael talked about earlier is actually higher, so, we, kind of get our act together on the development side. So we definitely are seeing for our business 1.6T growth trend is lot stronger "
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3355794-t_3355794-t_qna_16_0",
+  "label": "cpo",
+  "ngrams": [
+   "cpo",
+   "business start ramping",
+   "cadence playing move",
+   "calendar half sense",
+   "curve playing cadence",
+   "customers working exciting",
+   "debating terms scale",
+   "deeper point christopher"
+  ],
+  "n_exchanges": 5,
+  "n_companies": 3,
+  "n_banks": 2,
+  "tickers": [
+   "COHR",
+   "FN",
+   "LITE"
+  ],
+  "firms": [
+   "JPMorgan Securities LLC",
+   "UBS Securities LLC"
+  ],
+  "first_seen": "2025-12-03",
+  "members": [
+   "3355794-t_3355794-t_qna_16_0",
+   "3355794-t_qna_16_0",
+   "3383013-t_3383013-t_qna_18_0",
+   "3383013-t_qna_18_0",
+   "3512929-t_qna_3_0"
+  ],
+  "examples": [
+   {
+    "id": "3355794-t_3355794-t_qna_16_0",
+    "ticker": "LITE",
+    "date": "2025-12-03",
+    "firm": "UBS Securities LLC",
+    "text": "So, let's just move to CPO, since you mentioned CPO. Obviously, that's I think a unique you have a unique position in CPO from a leadership perspective. The market, I think, is still kind of debating in terms of scale and scope of how big CPO from an industry perspective can be a"
+   },
+   {
+    "id": "3355794-t_qna_16_0",
+    "ticker": "LITE",
+    "date": "2025-12-03",
+    "firm": "UBS Securities LLC",
+    "text": "So, let's just move to CPO, since you mentioned CPO. Obviously, that's I think a unique you have a unique position in CPO from a leadership perspective. The market, I think, is still kind of debating in terms of scale and scope of how big CPO from an industry perspective can be a"
+   },
+   {
+    "id": "3383013-t_3383013-t_qna_18_0",
+    "ticker": "FN",
+    "date": "2026-02-02",
+    "firm": "Fabrinet",
+    "text": "We're in the ecosystem there. We haven't actually talked about exactly what we are doing. But certainly, CPO switches and a number of the products that our customers are working on are very exciting for us. We haven't really, like I said, we haven't really talked about the switch"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3355795-t_3355795-t_qna_27_0",
+  "label": "emls",
+  "ngrams": [
+   "emls",
+   "among different architectures",
+   "architectures answer industry",
+   "biased competitive forces",
+   "came ecoc show",
+   "competitive forces among",
+   "course sure biased",
+   "debate laser wins"
+  ],
+  "n_exchanges": 4,
+  "n_companies": 3,
+  "n_banks": 2,
+  "tickers": [
+   "AAOI",
+   "COHR",
+   "LITE"
+  ],
+  "firms": [
+   "Raymond James & Associates, Inc.",
+   "Wolfe Research LLC"
+  ],
+  "first_seen": "2025-12-08",
+  "members": [
+   "3355795-t_3355795-t_qna_27_0",
+   "3355795-t_qna_27_0",
+   "3359603-t_3359603-t_qna_9_1",
+   "3512929-t_qna_16_0"
+  ],
+  "examples": [
+   {
+    "id": "3355795-t_3355795-t_qna_27_0",
+    "ticker": "LITE",
+    "date": "2025-12-08",
+    "firm": "Raymond James & Associates, Inc.",
+    "text": "And there's been this, I think, long running debate about which laser wins, EML versus VCSELs versus CW. And I feel like one of the messages that came out of the ECOC show back in September was that CW and silicon photonics was taking over the market. Now, my theory is, you say t"
+   },
+   {
+    "id": "3355795-t_qna_27_0",
+    "ticker": "LITE",
+    "date": "2025-12-08",
+    "firm": "Raymond James & Associates, Inc.",
+    "text": "And there's been this, I think, long running debate about which laser wins, EML versus VCSELs versus CW. And I feel like one of the messages that came out of the ECOC show back in September was that CW and silicon photonics was taking over the market. Now, my theory is, you say t"
+   },
+   {
+    "id": "3359603-t_3359603-t_qna_9_1",
+    "ticker": "AAOI",
+    "date": "2025-12-09",
+    "firm": "Applied Optoelectronics, Inc.",
+    "text": "And so while there's been others that are producing 800G, a lot of that has been using EMLs or other technologies. As we move towards silicon photonics and certainly AOI's platform is silicon photonics based, as I mentioned, we think that that technology really starts to dominate"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3463943-t_qna_23_0",
+  "label": "working capital needs",
+  "ngrams": [
+   "working capital needs",
+   "cash flow conversion",
+   "free cash flow",
+   "number",
+   "fiscal",
+   "thinking",
+   "given",
+   "pretty"
+  ],
+  "n_exchanges": 4,
+  "n_companies": 3,
+  "n_banks": 2,
+  "tickers": [
+   "CRS",
+   "FPS",
+   "HPE"
+  ],
+  "firms": [
+   "Citigroup Global Markets Canada, Inc.",
+   "KeyBanc Capital Markets, Inc."
+  ],
+  "first_seen": "2026-05-14",
+  "members": [
+   "3463943-t_qna_23_0",
+   "3463943-t_qna_24_0",
+   "3500994-t_qna_47_0",
+   "3527183-t_qna_32_0"
+  ],
+  "examples": [
+   {
+    "id": "3463943-t_qna_23_0",
+    "ticker": "FPS",
+    "date": "2026-05-14",
+    "firm": "KeyBanc Capital Markets, Inc.",
+    "text": "It's good to see the cash flow flip positive. Just how should we be thinking about free cash flow conversion as we move into fiscal 2027? Just how are you thinking about working capital needs within that? And then I think you've put and you've stated kind of we're going to step d"
+   },
+   {
+    "id": "3463943-t_qna_24_0",
+    "ticker": "FPS",
+    "date": "2026-05-14",
+    "firm": "Forgent Power Solutions, Inc.",
+    "text": "Couple pieces there again, so one is, I would say from a macro standpoint, we're really pretty happy with how that current capital expansion plan is coming along. If you just think about what we said we were going to do in terms of the spend and what that is providing us and the "
+   },
+   {
+    "id": "3500994-t_qna_47_0",
+    "ticker": "CRS",
+    "date": "2026-07-30",
+    "firm": "Carpenter Technology Corp.",
+    "text": "It is we in 2026, and the number we provided for 2027, there are growth investments in the reported adjusted free cash flow. But when you look at those and say take the growth investments out, we've demonstrated that we can hit that 85% to 90% type conversion ratio both in 2026. "
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3384540-t_3384540-t_qna_28_0",
+  "label": "cost components",
+  "ngrams": [
+   "cost components",
+   "supply chain",
+   "margins",
+   "product"
+  ],
+  "n_exchanges": 3,
+  "n_companies": 3,
+  "n_banks": 2,
+  "tickers": [
+   "BE",
+   "CIEN",
+   "COHR"
+  ],
+  "firms": [
+   "Jefferies LLC",
+   "Tuohy Brothers Investment Research, Inc."
+  ],
+  "first_seen": "2026-02-04",
+  "members": [
+   "3384162-t_qna_50_0",
+   "3384540-t_3384540-t_qna_28_0",
+   "3394768-t_qna_29_1"
+  ],
+  "examples": [
+   {
+    "id": "3384540-t_3384540-t_qna_28_0",
+    "ticker": "COHR",
+    "date": "2026-02-04",
+    "firm": "Jefferies LLC",
+    "text": "Ezra Weener on for Blayne. Just the first one, obviously, component pricing is coming up for your externally sourced components, but at the same time, you guys are signing LTAs. Can you talk a little bit about pricing and how are you thinking about gross margins within that conte"
+   },
+   {
+    "id": "3384162-t_qna_50_0",
+    "ticker": "BE",
+    "date": "2026-02-05",
+    "firm": "Tuohy Brothers Investment Research, Inc.",
+    "text": "I wanted to ask about the product margins and the supply chain, and I was just wondering what your thoughts are on your visibility into your input cost for components. And I'm wondering if you there was any trend you're considering towards longer-term contracting or forward purch"
+   },
+   {
+    "id": "3394768-t_qna_29_1",
+    "ticker": "CIEN",
+    "date": "2026-03-05",
+    "firm": "Ciena Corp.",
+    "text": "I think our engineering and product teams are really looking at the cost components of the products and looking at different materials, different solutions, and trying to drive a lot of those costs out. And I'd also remind you that we've got the most vertically integrated supply "
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3385303-t_qna_20_0",
+  "label": "supply chain constraints",
+  "ngrams": [
+   "supply chain constraints"
+  ],
+  "n_exchanges": 3,
+  "n_companies": 3,
+  "n_banks": 2,
+  "tickers": [
+   "ANET",
+   "INDI",
+   "MRVL"
+  ],
+  "firms": [
+   "CJS Securities, Inc.",
+   "Morgan Stanley & Co. LLC"
+  ],
+  "first_seen": "2026-02-19",
+  "members": [
+   "3385303-t_qna_20_0",
+   "3397351-t_qna_41_0",
+   "3504004-t_qna_4_1"
+  ],
+  "examples": [
+   {
+    "id": "3385303-t_qna_20_0",
+    "ticker": "INDI",
+    "date": "2026-02-19",
+    "firm": "CJS Securities, Inc.",
+    "text": "And in regards to the supply chain constraints, can you add some more color on how you're thinking about the timeline to a full resolution?"
+   },
+   {
+    "id": "3397351-t_qna_41_0",
+    "ticker": "MRVL",
+    "date": "2026-03-05",
+    "firm": "Morgan Stanley & Co. LLC",
+    "text": "With all the growth that you're looking at here, I wonder if you see anything on the supply chain that could be challenging for you. My sense is you've come a long way in terms of supply chain management since a couple of years ago, but just any updates there would be great?"
+   },
+   {
+    "id": "3504004-t_qna_4_1",
+    "ticker": "ANET",
+    "date": "2026-09-08",
+    "firm": "Arista Networks, Inc.",
+    "text": "I think that we're not out of the woods, I don't think anyone in the industry is out of the woods for supply chain constraints. But if that gets a little bit more opened up, there could be some potential for upside."
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ },
+ {
+  "id": "cand:3500983-t_qna_62_0",
+  "label": "value",
+  "ngrams": [
+   "value",
+   "price",
+   "pricing",
+   "mentioned",
+   "customers"
+  ],
+  "n_exchanges": 3,
+  "n_companies": 3,
+  "n_banks": 2,
+  "tickers": [
+   "AMAT",
+   "ASML",
+   "CIEN"
+  ],
+  "firms": [
+   "Goldman Sachs & Co. LLC",
+   "Wolfe Research LLC"
+  ],
+  "first_seen": "2026-07-15",
+  "members": [
+   "3500983-t_qna_62_0",
+   "3522777-t_qna_1_0",
+   "3528780-t_qna_32_0"
+  ],
+  "examples": [
+   {
+    "id": "3500983-t_qna_62_0",
+    "ticker": "ASML",
+    "date": "2026-07-15",
+    "firm": "ASML Holding NV",
+    "text": "Well, as I mentioned before, in the current environment where there is a lot of value for customers for what we bring them, we believe the potential to capture a larger share of that value, or at least to capture our share of that larger value, gives you better pricing power. So "
+   },
+   {
+    "id": "3522777-t_qna_1_0",
+    "ticker": "CIEN",
+    "date": "2026-09-03",
+    "firm": "Wolfe Research LLC",
+    "text": "I guess, I wanted to start just by, you mentioned value exchange on the call. Certainly, I think you mentioned prices as well as alignment of demand terms and conditions. Could you just talk a little bit more about what's going on there? Any sense for what price increases might l"
+   },
+   {
+    "id": "3528780-t_qna_32_0",
+    "ticker": "AMAT",
+    "date": "2026-09-09",
+    "firm": "Goldman Sachs & Co. LLC",
+    "text": "Then one investor debate that I hear a lot is pricing and the ability for you to price to value you're creating in the market. Historically, that has been difficult because you got a concentrated customer base. Maybe talk to but I think some of your customers have publicly stated"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": null
+ }
+]
