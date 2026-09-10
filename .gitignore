@@ -117,3 +117,7 @@ state/etf_flows.jsonl
 state/fear_greed.json
 state/etf_lookthrough.json
 state/etf_flows_triggers.json
+state/topics/vectors.npy
+state/topics/vectors.npy.tmp
+state/topics/ids.json
+state/topics/anchors.npy
