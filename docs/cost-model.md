@@ -56,6 +56,12 @@ the model only places the call, its arguments are verified, and the page is read
 tool_result, so the model choice cannot change the data). A busy week adds ~1,500–2,500 verbatim
 exchanges to `exchanges.jsonl`.
 
+**Topic map (P2, added 2026-09-10):** `scripts/topics/topic_map.py --run` weekly (Sat 11:00) =
+one batched Gemini embedding call per 50 NEW exchanges (~$0.02/1K units; the first pass over
+~12K units was ~250 calls) + ≤40 Haiku lean calls for candidate name suggestions. Anchors are
+rebuilt only on demand (`anchors.py --build`, pg only, no API). Deliberately no per-unit LLM
+extraction: the 2026-08 branch measured that at ~8.9 s/unit → 21.5 h per pass.
+
 **Why subscription is the right path for current pipeline LLM use:**
 1. Already paid — marginal cost is zero unless bucket exhausted
 2. Quality on edge cases (ambiguous classification, subsidiary mentions, indirect ticker references) generally better than Gemini Flash

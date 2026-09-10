@@ -97,7 +97,14 @@ Two git repos cooperate:
   over a 3-day window — one page holds the whole event, where paging a whole-window corpus left
   gaps — → verbatim `corprep` rows in `state/transcripts/exchanges.jsonl`, read by the matcher's
   `conference_since`; Haiku mcp-lean, the placed tool arguments are verified against the
-  transcript and the page is read from the raw tool_result). `config/watchlist.yaml` stays operator-only:
+  transcript and the page is read from the raw tool_result), `topic_map` (Sat 11:00,
+  `scripts/topics/topic_map.py --run --suggest-names --email`: every exchange in
+  `exchanges.jsonl` — analyst = question register, corprep = evidence register — embedded once
+  (Gemini, float16 store) and scored against the 62 theme anchors = mean-centered pg centroids
+  of the labelled chunks, calibrated threshold from `state/topics/anchors_meta.json`; below-
+  threshold units are greedy-clustered and clusters with ≥3 companies and ≥2 banks become
+  candidates in `state/topics/candidates.json` + `notes/reports/theme-candidates.md`; the
+  operator names/rejects with `--accept/--reject`, never the system). `config/watchlist.yaml` stays operator-only:
   proposals surface in the report and are applied by `scripts/thesis/apply_scores.py --write`.
   Design: `docs/superpowers/specs/2026-09-09-thesis-loop-design.md`.
 - **`daily_digest` / `nport_*` / `watchlist_derive`** — adjacent pipelines (daily report email, NPORT
@@ -178,6 +185,15 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
 
 ## 8. Open architectural questions
 
+- **Idea surfacing / sub-sector timeliness (spec 2026-08-11)** — P1 transcript ingest built
+  (backfill 08-11, forward cron 09-10); **P2 topic_map built 2026-09-10** on main
+  (`scripts/topics/`, calibrated pg-centroid anchors, no per-unit LLM extraction). P3
+  foreign_evidence, P3b MD&A evidence, P4 diffusion/detectors, P5 renderers still open. NOTE: the
+  local branch `worktree-idea-surfacing-spec` (2026-08-19..22, never merged, never ran end to end)
+  holds an earlier P2 (claude -p phrase extraction, 21.5h serial) plus `mdna_evidence.py`
+  (P3b, 8,251 claims), `lifecycle.py` (Tier-0 lag measurement) and `evidence_store.py` — start
+  P3b/P4 from those files, and from `docs/superpowers/plans/2026-08-21-topic-space-findings.md`
+  (housekeeping filter; MD&A is rewritten each quarter so a diff is a filter, not a signal).
 - **Thesis loop follow-ups (2026-09-09)** — (a) ~~conference-transcript feed~~ CLOSED 2026-09-10:
   `transcript_ingest.py --conferences 8` on the Saturday cron (§4), calendar-driven; still open
   there: a session dated today is pulled with a window clamped to today and only completed by the
@@ -218,6 +234,12 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
 
 ## 9. Recent milestones (most recent first)
 
+- **2026-09-10** — **P2 topic_map** (`scripts/topics/`): theme anchors = pg centroids of the
+  labelled chunks, mean-centered (uncentered, every chunk sat within cosine 0.74 of every theme),
+  threshold calibrated on a held-out fifth (0.30: P 0.31 / R 0.37 / cov 0.80, top-1 0.55 vs the
+  chunker's own tags); exchanges embedded once into a float16 store (batched, 429-aware);
+  greedy-leader candidate clusters behind a 3-company/2-bank gate; operator decisions via CLI.
+  Cron Sat 11:00. Prior unmerged branch work recorded in §8.
 - **2026-09-10** — **Conference-transcript weekly feed** (`transcript_ingest.py --conferences`):
   ingester moved to the mcp-lean transport (~100K → ~22K tokens/call) and to Haiku (A/B vs Sonnet
   on 3 names: identical vectorIds; the model only places the call, and an argument-drift guard

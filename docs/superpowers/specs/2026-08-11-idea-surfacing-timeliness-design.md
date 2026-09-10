@@ -1,6 +1,6 @@
 # Idea surfacing & sub-sector timeliness — design
 
-**Status: SPEC, approved in brainstorming 2026-08-11. Nothing built.**
+**Status: SPEC, approved in brainstorming 2026-08-11. P1 built 2026-08-11 (forward conference cron 2026-09-10); P2 built 2026-09-10 (`scripts/topics/`, plan `docs/superpowers/plans/2026-09-10-topic-map.md`); P3/P3b/P4/P5 open — see ARCHITECTURE.md §8 for the unmerged 2026-08 branch to start P3b/P4 from.**
 
 Answers the operator's standing question: *"how do we surface new investment ideas, or the
 timeliness of a sub-sector we can invest against — and is it timely?"*
