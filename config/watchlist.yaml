@@ -51,6 +51,12 @@ themes:
     - nuclear_energy_buildout
     - pc_demand
     - sovereign_ai_deployments
+  # ---- added 2026-09-10 from the topic_map review (state/topics/decisions.jsonl): DEMAND themes analysts
+  # raised across >=3 companies / >=2 banks that no existing theme captured. No chunks carry them
+  # yet; the chunker tags forward, anchors grow with `scripts/topics/anchors.py --build`.
+    - neocloud_demand
+    - server_cpu_agentic_tam
+    - physical_ai_adoption
   # space_supply_chain (added 2026-08-19): BUILD-SIDE inputs to launch and spacecraft —
   # enabling materials (superalloys, titanium, beryllium), propulsion and structural components,
   # heat-shield and precision fabrication, avionics. Deliberately NARROWER than space_economy,
@@ -77,11 +83,23 @@ themes:
     - solar_supply_chain
     - space_supply_chain
     - thermal_management_cooling
+  # ---- added 2026-09-10 from the topic_map review (SUPPLY): packaging/substrate as the binding
+  # constraint; cross-sector capacity tightness; CPO ramp; EML vs VCSEL vs CW; LTAs replacing spot;
+  # 800G -> 1.6T mix shift.
+    - advanced_packaging_substrate_supply
+    - capacity_supply_tightness
+    - co_packaged_optics_ramp
+    - laser_architecture_competition
+    - long_term_supply_agreements
+    - optical_speed_transition_1_6t
   margins_pricing:
     - ai_inference_margin_compression
     - capex_vs_opex_shift
     - networking_margin_trajectory
     - software_seat_pricing_pressure
+  # ---- added 2026-09-10 from the topic_map review (MARGINS): value capture / price increases
+  # while demand outruns supply (ASML, AMAT, CIEN, COHR).
+    - pricing_power_in_shortage
   strategic:
     - agent_framework_landscape
     - agentic_commerce
