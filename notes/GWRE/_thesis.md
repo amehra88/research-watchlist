@@ -67,9 +67,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 - id: ai_not_primary_win_criterion
   statement: The overall competitive advantage score of 4 is premised on AI being
@@ -129,9 +129,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 - id: innovation_ai_addons_not_rearchitected
   statement: The innovation rate score of 3 is premised on AI products (ProNavigator,

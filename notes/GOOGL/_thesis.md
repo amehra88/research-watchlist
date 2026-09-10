@@ -108,9 +108,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 - id: q1_eps_beat_was_non_operating
   statement: The 1Q26 EPS beat of +90.5% versus consensus was driven by $37.7B in

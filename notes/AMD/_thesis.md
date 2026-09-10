@@ -40,10 +40,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 - id: rocm_materially_trails_cuda
   statement: Conditions at scoring — AMD's ROCm software ecosystem materially trails
@@ -67,10 +67,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 - id: cuda_gap_caps_inference_distribution
   statement: Conditions at scoring — the CUDA software gap caps AMD's GPU distribution
@@ -95,9 +95,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: mi450_demand_exceeds_2027_plan
   statement: Conditions at scoring — MI450 customer demand forecasts exceed AMD's
@@ -119,13 +119,13 @@ assumptions:
     data-center AI revenue guidance in a press release or subsequent earnings call
   - A named hyperscaler beyond Meta and OpenAI announcing a MI450 or Helios procurement
     in a capacity-expansion press release or SEC filing
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: meta_openai_sole_named_gpu_customers
   statement: At scoring, Meta (6GW deployment) and OpenAI are the only named large-scale

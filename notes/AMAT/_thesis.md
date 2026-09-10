@@ -36,10 +36,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 7.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: wfe_30pct_two_year_guide
   statement: At scoring, AMAT had publicly guided WFE market growth at 'more than
@@ -64,10 +64,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 5.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: hbm_expansion_drives_dram_wfe
   statement: At scoring, AMAT's DRAM revenue growth of +18% YoY and the advanced packaging
@@ -91,10 +91,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 11.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: china_no_incremental_restriction
   statement: At scoring, China represented approximately 24% of AMAT Semi Systems
@@ -176,10 +176,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 5.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 ---
 ## Rationale

@@ -36,13 +36,13 @@ assumptions:
   - A new multi-generation XPU supply agreement or design-win disclosure naming AVGO
     as co-design partner for a customer not previously named, filed as an 8-K or announced
     on an earnings call
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 8.0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: avgo_ai_networking_material_leg
   statement: AI networking (Tomahawk/Jericho switching, optical DSPs) is a material
@@ -89,10 +89,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 5.0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: avgo_google_2ndsrc_not_yet_material
   statement: As of the Q3'26 earnings note (2026-09-03), the Google second-sourcing
@@ -116,10 +116,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: avgo_ai_semi_majority_of_segment
   statement: AI semiconductor revenue constitutes a majority of AVGO's semiconductor
@@ -142,10 +142,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 ---
 ## Rationale

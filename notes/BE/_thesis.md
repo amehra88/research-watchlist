@@ -60,10 +60,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: no_dc_customer_substitution
   statement: At scoring, BE faced no active substitution of its technology by a competing
@@ -109,10 +109,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: investor_interest_not_deteriorated
   statement: Factors supporting investor interest trajectory at scoring have not deteriorated.
@@ -130,10 +130,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 ---
 ## Rationale

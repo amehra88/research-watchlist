@@ -36,9 +36,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 3.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: ai_native_customers_drive_consumption
   statement: AI-native customers constitute a meaningful share of DDOG's consumption-driven
@@ -62,10 +62,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: ddog_observability_market_leader
   statement: DDOG holds observability market leadership at scoring.
@@ -85,10 +85,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: ai_startup_concentration_adds_vol
   statement: AI-native startup customer concentration is sufficient at scoring to
@@ -112,9 +112,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: land_expand_over_cloud_native_base
   statement: DDOG's distribution operates through a land-and-expand motion over a
@@ -137,10 +137,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 6.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: growth_and_fcf_positive_at_scoring
   statement: DDOG's revenue growth rate and free cash flow are both positive in the
@@ -160,10 +160,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 ---
 ## Rationale

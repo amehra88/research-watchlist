@@ -57,9 +57,9 @@ assumptions:
   status_source: operator
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 21.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: false
 - id: datacom_ramp_continues
   statement: The 800G→1.6T datacenter ramp continues to pull COHR volume.
@@ -76,10 +76,10 @@ assumptions:
   status: open
   status_source: operator
   pressure:
-    confirm: 0
+    confirm: 8.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: false
 - id: customer_concentration_not_worsening
   statement: Datacom customer concentration exists and is already reflected in the
@@ -96,9 +96,9 @@ assumptions:
   status_source: operator
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 5.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: false
 - id: leverage_is_a_watch_item
   statement: Post-II-VI/Finisar balance-sheet leverage is a monitored risk, explicitly

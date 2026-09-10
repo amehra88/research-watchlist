@@ -34,10 +34,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 3.0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: axon_ai_product_cadence
   statement: At the time of scoring, AXON was releasing new AI products or material
@@ -60,10 +60,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 9.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: axon_ecosystem_lockin
   statement: At the time of scoring, TASER hardware and Evidence.com constituted the
@@ -88,10 +88,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: axon_expansion_segments
   statement: At the time of scoring, AXON had active go-to-market efforts in enterprise,
@@ -114,10 +114,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 12.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: axon_rule_of_40
   statement: At the time of scoring, AXON's reported revenue growth rate combined
@@ -139,10 +139,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: axon_dominant_platform_position
   statement: At the time of scoring, no single competitor controlled a comparable

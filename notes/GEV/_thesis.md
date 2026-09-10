@@ -144,9 +144,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: gev_fcf_inflection_at_scoring
   statement: At the time of scoring, GEV was generating positive or year-over-year-improving
@@ -165,10 +165,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 ---
 ## Rationale

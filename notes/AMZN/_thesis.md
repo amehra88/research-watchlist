@@ -37,10 +37,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 7.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: bedrock_anthropic_closes_model_gap
   statement: The Bedrock + Anthropic partnership closes the model-layer capability
@@ -62,10 +62,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 1.0
+    challenge: 2.5
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: logistics_prime_no_single_rival
   statement: No single competitor replicates the combined logistics network and Prime

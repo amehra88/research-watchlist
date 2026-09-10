@@ -34,10 +34,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: leading_edge_fab_euv_required
   statement: At scoring, no volume sub-3nm node had been demonstrated at a leading-edge
@@ -103,10 +103,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: high_na_ramp_sub2nm_at_scoring
   statement: At scoring, High-NA EUV tool ramp for sub-2nm node development was underway
@@ -126,10 +126,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 16.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: ai_demand_one_step_removed
   statement: At scoring, ASML's AI-driven revenue exposure was mediated entirely through

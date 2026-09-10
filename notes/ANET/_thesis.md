@@ -35,10 +35,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: supply_binding_not_demand
   statement: 'Conditions at scoring still hold: the binding constraint on ANET revenue
@@ -58,10 +58,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 11.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: concentration_not_eased_at_scoring
   statement: 'Conditions at scoring still hold: hyperscaler and AI-lab customer concentration
@@ -130,10 +130,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: ai_fabrics_target_supply_gated
   statement: 'Conditions at scoring still hold: the AI fabrics FY26 target of at least

@@ -63,10 +63,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 7.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: hbm_alloc_locking_ai_customers
   statement: At the time of scoring, HBM allocation to major AI customers was described
@@ -90,10 +90,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 1.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: dram_cyclicality_caps_inv_interest
   statement: At the time of scoring, commodity DRAM cyclicality constituted a material
@@ -117,10 +117,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 2.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: china_export_ctrl_not_escalated
   statement: China export-control exposure, flagged as a watch-item at the time of
@@ -167,10 +167,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 12.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 ---
 ## Rationale

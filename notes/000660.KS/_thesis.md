@@ -56,10 +56,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 32.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: hynix_first_to_market_hbm_gens
   statement: At scoring, SK Hynix had shipped each major HBM generation ahead of Samsung
@@ -78,10 +78,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 7.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: hynix_hbm_share_beyond_nvda
   statement: At scoring, SK Hynix held leading HBM share across the broad memory customer
@@ -103,10 +103,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: base_dram_commodity_pricing
   statement: At scoring, SK Hynix's non-HBM DRAM segments carried commodity-level
@@ -126,10 +126,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 - id: korea_listing_friction_unresolved
   statement: At scoring, no broadly accessible US-listed instrument eliminated Korea-listing
@@ -148,9 +148,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 10.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 ---
 ## Rationale

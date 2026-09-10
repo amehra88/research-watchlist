@@ -128,10 +128,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 - id: crwd_valuation_cap_pii_bound
   statement: The potential investor interest score of 4 rests on strong FCF and growth
@@ -162,9 +162,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 ---
 ## Rationale

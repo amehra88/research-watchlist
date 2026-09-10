@@ -37,10 +37,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 8.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: csbg_service_annuity_material
   statement: At scoring, LRCX's installed-base service revenue constituted a material
@@ -62,10 +62,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: lrcx_exec_vs_amat_klac
   statement: At scoring, LRCX's multi-cycle execution record — measured by gross margin
@@ -89,10 +89,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: hbm_capex_near_term_driver
   statement: At scoring, HBM capacity investment by memory producers constituted a
@@ -114,10 +114,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 - id: wfe_cycle_caps_not_comp_erosion
   statement: At scoring, the constraint on LRCX's investor-interest score reflected
@@ -141,10 +141,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 11.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: china_export_drag_at_scoring
   statement: At scoring, export-control restrictions on China-bound WFE reduced LRCX's

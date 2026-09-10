@@ -34,10 +34,10 @@ assumptions:
   status: open
   status_source: operator
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 18.0
+    challenge: 18.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: false
 - id: component_tier_is_why_innovation_is_3
   statement: LITE sits at the component tier rather than the systems tier, and that
@@ -56,9 +56,9 @@ assumptions:
   status_source: operator
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 8.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: false
 - id: datacom_recovery
   statement: The AI datacom cycle recovery is underway and is one of the named positives
@@ -73,10 +73,10 @@ assumptions:
   status: open
   status_source: operator
   pressure:
-    confirm: 0
+    confirm: 14.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: false
 - id: telecom_drag_no_worse
   statement: Legacy telecom weakness is ALREADY subtracting from the score — it is
@@ -127,10 +127,10 @@ assumptions:
   status: open
   status_source: operator
   pressure:
-    confirm: 0
+    confirm: 8.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: false
 ---
 ## Rationale
