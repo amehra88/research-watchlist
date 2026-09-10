@@ -210,6 +210,30 @@ def test_write_report_leads_with_h2_and_prints_denominators():
     assert "7 rows skipped" in text and "cand:q2" in text and "neocloud_demand" in text and "0.72" in text
 
 
+
+def test_units_from_claims_drops_housekeeping_and_short_blocks():
+    claims = [
+        {"claim_id": "c1", "ticker": "COHR", "first_evidence_date": "2026-05-06", "period_key": "2026Q2", "form_type": "10-Q",
+         "text": "Demand for our datacom transceivers continued to exceed our capacity as hyperscale customers accelerated deployments of AI clusters."},
+        {"claim_id": "c2", "ticker": "COHR", "first_evidence_date": "2026-05-06", "period_key": "2026Q2", "form_type": "10-Q",
+         "text": "Our 4.00% convertible senior notes due 2031 carry an aggregate principal amount that remains outstanding as of quarter end."},
+        {"claim_id": "c3", "ticker": "COHR", "first_evidence_date": "2026-05-06", "period_key": "2026Q2", "form_type": "10-Q",
+         "text": "Too short to count."},
+    ]
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "claims.jsonl"; p.write_text("\n".join(json.dumps(c) for c in claims) + "\n")
+        units, skipped = tm.units_from_claims(p)
+        assert tm.units_from_claims(Path(d) / "missing.jsonl") == ([], 0)
+    assert [u.id for u in units] == ["c1"] and skipped == 2
+    u = units[0]
+    assert u.register == "evidence" and u.source == "mdna" and u.firm is None
+    assert u.event_date == "2026-05-06" and u.period_key == "2026Q2" and u.event_type == "10-Q"
+
+
+def test_is_housekeeping_keeps_capex_prose():
+    assert tm.is_housekeeping("we recorded an impairment charge related to goodwill")
+    assert not tm.is_housekeeping("cash paid for property and equipment was $7.7 billion, reflecting data center capacity additions")
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     bad = 0

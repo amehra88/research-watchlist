@@ -91,6 +91,61 @@ def units_from_exchanges(path: Path = EXCHANGES, min_words: int = MIN_UNIT_WORDS
     return units, skipped
 
 
+CLAIMS = REPO / "state" / "evidence" / "claims.jsonl"
+
+# Findings R1 (2026-08-21): accounting/financing/legal prose is never a thesis topic, and because
+# every filer writes it the 3-company gate cannot filter it downstream. Cues are multi-word so
+# that capex prose survives (it scored 0.805 against ai_infrastructure_capex). Measured on the
+# branch: removes ~29% of MD&A claims.
+HOUSEKEEPING_CUES = (
+    "forward-looking statements", "safe harbor",
+    "critical accounting", "accounting policies", "accounting pronouncement",
+    "recently issued accounting", "revenue is recognized",
+    "revenue recognition", "effective tax rate", "uncertain tax positions",
+    "unrecognized tax benefits", "valuation allowance", "deferred tax",
+    "pension", "postretirement", "actuarial",
+    "convertible senior notes", "senior notes", "credit agreement",
+    "credit facility", "borrowing capacity", "revolving", "indenture",
+    "aggregate principal amount", "lease payments", "operating lease",
+    "right-of-use", "contractual obligations", "off-balance sheet",
+    "share-based compensation", "stock-based compensation",
+    "goodwill", "impairment charge", "intangible assets",
+    "marketable securities", "debt securities", "fair value measurement",
+    "prospectus", "selling stockholder", "registration statement",
+    "shelf registration", "corporate website", "available free of charge",
+    "incorporated by reference", "foreign exchange gain",
+    "foreign currency translation", "repurchase program", "treasury stock",
+    "dividends declared",
+)
+
+
+def is_housekeeping(text: str) -> bool:
+    """True when this block is accounting/financing/legal mechanics."""
+    low = " ".join((text or "").lower().split())
+    return any(cue in low for cue in HOUSEKEEPING_CUES)
+
+
+def units_from_claims(path: Path = CLAIMS, min_words: int = MIN_UNIT_WORDS):
+    """Evidence-register units from mdna_evidence's claims (P3b). Housekeeping prose is
+    dropped here, before it can cost an embedding or pass the company gate."""
+    units, skipped = [], 0
+    if not path.exists():
+        return units, skipped
+    for line in path.read_text(encoding="utf-8").splitlines():
+        try:
+            r = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        text = (r.get("text") or "").strip()
+        if len(text.split()) < min_words or is_housekeeping(text):
+            skipped += 1
+            continue
+        units.append(Unit(r["claim_id"], text, "evidence", r.get("ticker"), r.get("form_type") or "mdna",
+                          r.get("first_evidence_date"), r.get("period_key"), None,
+                          source=r.get("source") or "mdna"))
+    return units, skipped
+
+
 def calendar_quarter(date_iso: str | None) -> str | None:
     """CY quarter from the event date. The stored period_key is FISCAL on ~53% of the corpus
     (2026-08 branch measurement), so cross-register joins must key on this, not on period_key."""
@@ -278,16 +333,17 @@ def suggest_names(cands: list, max_calls: int = 40, runner=None) -> list:
 
 
 def write_report(rows: list, cands: list, meta: dict, skipped: int, path: Path = REPORT) -> str:
-    def share(reg):
-        r = [x for x in rows if x["register"] == reg]
+    def share(reg, key="register"):
+        r = [x for x in rows if x.get(key) == reg]
         m = sum(1 for x in r if x["themes"])
-        return f"{reg} register: {m}/{len(r)} mapped ({(m / len(r)):.0%})" if r else f"{reg} register: 0/0 mapped"
+        return f"{reg} {key}: {m}/{len(r)} mapped ({(m / len(r)):.0%})" if r else f"{reg} {key}: 0/0 mapped"
     cal = next((c for c in meta.get("calibration", []) if c["threshold"] == meta.get("threshold")), {})
     today = dt.date.today().isoformat()
     L = [f"## Theme candidates — {today}", "",
          f"Anchors: {len(meta.get('names', []))} themes; threshold {meta.get('threshold')} "
          f"(held-out P {cal.get('precision', '?')} / R {cal.get('recall', '?')} on {meta.get('n_test', '?')} labelled chunks).",
-         f"Coverage: {share('question')}; {share('evidence')}; {skipped} rows skipped (operator/untyped speakers).",
+         f"Coverage: {share('question')}; {share('evidence')}; by source: {share('exchange', 'source')}, "
+         f"{share('mdna', 'source')}; {skipped} rows skipped (operator/untyped speakers, acknowledgements, housekeeping).",
          "A unit maps when its cosine to a theme centroid clears the threshold; the rest are clustered and only "
          f"clusters with >= {MIN_COMPANIES} companies and >= {MIN_BANKS} banks are listed. The system never edits "
          "`config/watchlist.yaml` — accept with `topic_map.py --accept <id> --name <slug>`, reject with `--reject <id>`.", ""]
@@ -340,8 +396,14 @@ def run(args) -> int:
     names, A, mean, meta = load_anchors()
     thr = args.threshold if args.threshold is not None else meta["threshold"]
     units, skipped = units_from_exchanges(EXCHANGES)
+    n_ex = len(units)
+    if not args.no_claims:
+        cu, cs = units_from_claims(CLAIMS)
+        units += cu; skipped += cs
+        log(f"claims: {len(cu)} MD&A units ({cs} housekeeping/short dropped) from {CLAIMS.name}")
     log(f"units {len(units)} ({sum(u.register == 'question' for u in units)} question / "
-        f"{sum(u.register == 'evidence' for u in units)} evidence), {skipped} skipped; thr={thr} min_sim={args.min_sim}")
+        f"{sum(u.register == 'evidence' for u in units)} evidence; {n_ex} exchange / {len(units) - n_ex} mdna), "
+        f"{skipped} skipped; thr={thr} min_sim={args.min_sim}")
     store = EmbedStore(STATE)
     rows, cands = map_units(units, store, names, A, thr, args.min_sim, args.min_companies, args.min_banks,
                             log_fn=log, mean=mean)
@@ -373,6 +435,7 @@ def main(argv=None) -> int:
     ap.add_argument("--min-sim", type=float, default=MIN_SIM)
     ap.add_argument("--min-companies", type=int, default=MIN_COMPANIES)
     ap.add_argument("--min-banks", type=int, default=MIN_BANKS)
+    ap.add_argument("--no-claims", action="store_true", help="exchanges only (skip state/evidence/claims.jsonl)")
     ap.add_argument("--accept", metavar="ID"); ap.add_argument("--name")
     ap.add_argument("--reject", metavar="ID")
     ap.add_argument("--report", action="store_true", help="re-render the note from the saved state")
