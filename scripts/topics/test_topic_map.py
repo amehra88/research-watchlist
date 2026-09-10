@@ -85,6 +85,21 @@ def test_evidence_only_clusters_survive_the_gate_as_stage_one_candidates():
     assert mixed == []                                                # has questions -> bank test applies
 
 
+def test_mdna_only_clusters_are_not_review_candidates():
+    # 2026-09-10 first combined map: 104 MD&A-only evidence clusters — interest income, FX, non-GAAP,
+    # taxes, liquidity — buried the queue. Vocabulary grows from what analysts and executives SAY;
+    # filings are counted against it (spec §3/§4.2). A cluster needs at least one transcript member.
+    md = [tm.Unit(f"c{i}", f"interest income increased due to higher average balances in period {i} of the fiscal year", "evidence",
+                  t, "10-Q", "2026-05-0%d" % (i + 1), "2026Q2", None, "mdna") for i, t in enumerate(["AAPL", "MSFT", "GOOG", "META"])]
+    ex = tm.Unit("a1", "we are seeing neocloud customers commit to multi-year capacity agreements", "evidence",
+                 "CRWV", "conference", "2026-05-05", "CY2026-Q2", None, "exchange")
+    units = md + [ex]
+    texts = [u.text for u in units]; df = tm.tp.doc_frequencies(texts)
+    assert tm.build_candidates([[0, 1, 2, 3]], units, texts, df, len(texts)) == []
+    mixed = tm.build_candidates([[0, 1, 2, 3, 4]], units, texts, df, len(texts))
+    assert len(mixed) == 1 and mixed[0]["register"] == "evidence_only" and mixed[0]["n_companies"] == 5
+
+
 def test_calendar_quarter_from_event_date_on_every_row():
     assert tm.calendar_quarter("2026-09-08") == "CY2026-Q3" and tm.calendar_quarter("2026-01-31") == "CY2026-Q1"
     assert tm.calendar_quarter(None) is None

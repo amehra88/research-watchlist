@@ -206,6 +206,11 @@ def build_candidates(clusters, units, texts, df, n_docs, min_companies=MIN_COMPA
         register = "evidence_only" if n_q == 0 else ("question" if n_q == len(mem) else "mixed")
         if len(companies) < min_companies or (n_q and len(banks) < min_banks):
             continue
+        # Vocabulary grows from what analysts and executives SAY (spec §3); filings are counted
+        # against it. An MD&A-only cluster is results-of-operations boilerplate 100 times out of
+        # 104 (measured 2026-09-10) and would bury the one-person review queue.
+        if all(u.source == "mdna" for u in mem):
+            continue
         mem_sorted = sorted(mem, key=lambda u: (u.event_date or "9999", u.register != "question", u.id))  # questions lead
         ngr = tp.label_ngrams([texts[i] for i in idxs], df, n_docs)
         out.append({
