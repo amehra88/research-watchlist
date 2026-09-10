@@ -12,13 +12,18 @@ def _u(v):
 
 EXCH = [
     {"vector_id": "d1_q1", "ticker": "AAOI", "event_type": "earnings_call", "event_date": "2026-08-06",
-     "period_key": "FY2026-Q2", "speaker_type": "analyst", "speaker_firm": "Raymond James", "text": "Chinese laser competition?"},
+     "period_key": "FY2026-Q2", "speaker_type": "analyst", "speaker_firm": "Raymond James",
+     "text": "Can you talk about the new laser manufacturing capacity coming out of China and what it means for pricing?"},
     {"vector_id": "d1_a1", "ticker": "AAOI", "event_type": "earnings_call", "event_date": "2026-08-06",
-     "period_key": "FY2026-Q2", "speaker_type": "corprep", "speaker_firm": None, "text": "We see new lasers from China."},
+     "period_key": "FY2026-Q2", "speaker_type": "corprep", "speaker_firm": None,
+     "text": "We do see new laser suppliers emerging from China, although qualification cycles remain long for datacom."},
     {"vector_id": "d1_op", "ticker": "AAOI", "event_type": "earnings_call", "event_date": "2026-08-06",
      "period_key": "FY2026-Q2", "speaker_type": "operator", "speaker_firm": None, "text": "Next question."},
     {"vector_id": "d2_q1", "ticker": "LITE", "event_type": "conference", "event_date": "2026-06-09",
-     "period_key": "CY2026-Q2", "speaker_type": "analyst", "speaker_firm": "Mizuho", "text": "Chinese competitors in lasers?"},
+     "period_key": "CY2026-Q2", "speaker_type": "analyst", "speaker_firm": "Mizuho",
+     "text": "How do you think about Chinese competitors in lasers over the next couple of years and the risk to share?"},
+    {"vector_id": "d2_q2", "ticker": "LITE", "event_type": "conference", "event_date": "2026-06-09",
+     "period_key": "CY2026-Q2", "speaker_type": "analyst", "speaker_firm": "Mizuho", "text": "Great, thanks. That's helpful."},
 ]
 
 
@@ -27,7 +32,7 @@ def test_units_from_exchanges_types_registers_and_skips_operator():
         p = Path(d) / "exchanges.jsonl"
         p.write_text("\n".join(json.dumps(r) for r in EXCH) + "\n")
         units, skipped = tm.units_from_exchanges(p)
-    assert [u.id for u in units] == ["d1_q1", "d1_a1", "d2_q1"] and skipped == 1
+    assert [u.id for u in units] == ["d1_q1", "d1_a1", "d2_q1"] and skipped == 2   # operator turn + acknowledgement
     assert units[0].register == "question" and units[1].register == "evidence"
     assert units[0].firm == "Raymond James" and units[1].firm is None
     assert units[2].period_key == "CY2026-Q2"
@@ -76,6 +81,15 @@ class FakeStore:
     def __init__(self, vecs): self.v = vecs; self.ids = list(vecs)
     def ensure(self, items, **kw): return 0
     def matrix(self, ids): return np.vstack([self.v[i] for i in ids])
+
+
+def test_cluster_candidates_uses_centered_vectors_when_a_mean_is_given():
+    # two units that look alike only through the shared component must NOT cluster
+    common = np.array([10.0, 10.0, 0.0, 0.0], dtype=np.float32)
+    raw = np.vstack([common + [1, 0, 0, 0], common + [0, 1, 0, 0]])
+    V = np.vstack([_u(r) for r in raw])
+    assert tm.cluster_candidates(V, 0.9) == [[0, 1]]                                  # uncentered: same cluster
+    assert tm.cluster_candidates(tm.center(raw, raw.mean(axis=0)), 0.9) == [[0], [1]]   # mean on the raw scale
 
 
 def test_map_units_assigns_mapped_and_clusters_the_rest_deterministically():

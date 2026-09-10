@@ -12,8 +12,10 @@ TIMESTAMP_RE = re.compile(r"\(\d{1,2}:\d{2}(?::\d{2})?\)")
 SENT_SPLIT_RE = re.compile(r"(?<=[.?!])\s+")
 PLEASANTRY_RE = re.compile(
     r"\b(thank(s| you)|congrat\w*|good (morning|afternoon|evening)|taking my question|"
-    r"great quarter|nice quarter|appreciate (it|the)|hi\b|hey\b|hello\b|two questions?|"
-    r"couple of questions|follow[- ]up)\b", re.I)
+    r"great quarter|nice quarter|appreciate (it|the|that)|hi\b|hey\b|hello\b|two questions?|"
+    r"couple of questions|follow[- ]up|great|excellent|awesome|perfect|got it|understood|"
+    r"makes sense|(that'?s|very) helpful|fair enough|all right|okay|ok|yeah|yes|no|sure|"
+    r"abrupt (start|end)|that'?s (it|all)|everyone|guys)\b", re.I)
 PLEASANTRY_MAX_WORDS = 12
 
 STOPWORDS = set("""a about above after again against all also am an and any are as at be because been
@@ -38,6 +40,8 @@ def clean_text(text: str) -> str:
         if not s:
             continue
         if PLEASANTRY_RE.search(s) and len(s.split()) <= PLEASANTRY_MAX_WORDS:
+            continue
+        if len(WORD_RE.findall(s.lower())) <= 1:               # "Yeah.", "[Abrupt Start]"
             continue
         keep.append(s)
     return re.sub(r"\s{2,}", " ", " ".join(keep)).strip()

@@ -19,6 +19,14 @@ def test_clean_text_strips_timestamps_and_pleasantries():
     assert tp.clean_text(keep) == keep
 
 
+def test_clean_text_drops_acknowledgement_only_turns():
+    # measured 2026-09-10: 205/3,744 analyst turns are acknowledgements — they clustered as
+    # "great; almost time; excellent; awesome" and "appreciate; eric; everyone" candidates
+    for raw in ("Great, thanks Eric. That's helpful.", "Understood. Thank you.", "Perfect. Got it.",
+                "Okay, makes sense. Appreciate it, everyone.", "Yeah.", "[Abrupt Start]"):
+        assert tp.clean_text(raw) == "", raw
+
+
 def test_tokens_and_ngrams_drop_stopwords_and_numbers():
     toks = tp.tokens("The neocloud demand is up 40% in the datacom segment, and the")
     assert "the" not in toks and "40" not in toks and "neocloud" in toks

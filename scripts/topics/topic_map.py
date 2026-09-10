@@ -39,7 +39,11 @@ CANDIDATES = STATE / "candidates.json"
 DECISIONS = STATE / "decisions.jsonl"
 REPORT = REPO / "notes" / "reports" / "theme-candidates.md"
 
-MIN_SIM = 0.82           # candidate clustering cosine; empirical, see the run log in the plan
+MIN_SIM = 0.65           # candidate clustering cosine on CENTERED vectors. Measured 2026-09-10 on
+                         # 5,951 unmapped units: 0.45 -> 176 candidates (top cluster 210 units, "supply;
+                         # capacity; demand"), 0.55 -> 113, 0.65 -> 27 (top size 19), 0.75 -> 2.
+                         # One operator reviews this; 27 is a queue, 113 is not.
+MIN_UNIT_WORDS = 8       # below this there is no topic (205/3,744 analyst turns were acknowledgements)
 MIN_COMPANIES = 3
 MIN_BANKS = 2
 MAX_THEMES = 3
@@ -63,7 +67,15 @@ class Unit:
     source: str = "exchange"
 
 
-def units_from_exchanges(path: Path = EXCHANGES):
+def center(V: np.ndarray, mean: np.ndarray) -> np.ndarray:
+    """Remove the shared component, then re-normalise — the same transform the anchors use.
+    Uncentered, cosine 0.82 grouped 140 unrelated turns into one 'pricing; supply' cluster."""
+    Vc = np.asarray(V, dtype=np.float32) - np.asarray(mean, dtype=np.float32)
+    n = np.linalg.norm(Vc, axis=1, keepdims=True); n[n == 0] = 1.0
+    return Vc / n
+
+
+def units_from_exchanges(path: Path = EXCHANGES, min_words: int = MIN_UNIT_WORDS):
     units, skipped = [], 0
     for line in path.read_text(encoding="utf-8").splitlines():
         try:
@@ -71,8 +83,8 @@ def units_from_exchanges(path: Path = EXCHANGES):
         except json.JSONDecodeError:
             continue
         reg = REGISTER.get(r.get("speaker_type"))
-        if not reg or not (r.get("text") or "").strip():
-            skipped += 1
+        if not reg or len(tp.clean_text(r.get("text") or "").split()) < min_words:
+            skipped += 1                       # operator/untyped speaker, or no topic left after cleaning
             continue
         units.append(Unit(r["vector_id"], r["text"], reg, r.get("ticker"), r.get("event_type"),
                           r.get("event_date"), r.get("period_key"), r.get("speaker_firm") or None))
@@ -156,7 +168,8 @@ def map_units(units, store, names, anchors, thr, min_sim=MIN_SIM, min_companies=
             unmapped.append(i)
     cands = []
     if unmapped:
-        clusters = cluster_candidates(V[unmapped], min_sim)
+        Vu = center(V[unmapped], mean) if mean is not None else V[unmapped]
+        clusters = cluster_candidates(Vu, min_sim)
         clusters = [[unmapped[k] for k in cl] for cl in clusters]
         df = tp.doc_frequencies(texts)
         cands = build_candidates(clusters, units, texts, df, len(texts), min_companies, min_banks)
