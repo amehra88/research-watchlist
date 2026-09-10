@@ -79,8 +79,8 @@
     "text": "Is there any area of your supply chain where you're pushing suppliers maybe that could be a potential area of shortage or do you feel like there's available capacity to continue to kind of support the growth you're talking about?"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "capacity_supply_tightness",
   "suggested_name": "capacity_supply_tightness",
   "suggested_why": "Analysts questioning whether manufacturing/fab capacity can keep pace with demand growth and how quickly new capacity can come online to ease supply-chain pressure."
  },
@@ -159,8 +159,8 @@
     "text": "I think many gravitate back to that mid-20% margin you put up a couple of years ago and I know the last couple of years, including the guide, are looking at low 20%. Can you talk to maybe your true north, how you're thinking about that? Obviously growth being number one, but how "
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "pricing_power_in_shortage",
   "suggested_name": "pricing_mix_leverage",
   "suggested_why": "Analysts unpacking how companies expand gross margins through product mix shifts toward higher-margin offerings and pricing increases amid cost/competitive pressures."
  },
@@ -229,8 +229,8 @@
     "text": "Two parts. One would be how much do you think supply is going to increase in the industry in the next three years? And where is the limiting factor on your end? Are you finding there is going to be any supply constraints in terms of manufacturing? Is that even on the horizon or a"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "capacity_supply_tightness",
   "suggested_name": "capacity_expansion",
   "suggested_why": "Key question on manufacturing capex plans and whether production capacity will limit revenue growth."
  },
@@ -302,8 +302,8 @@
     "text": "I wanted to ask about units versus ASP for server CPU. If I look at the June guidance, it sort of implies up 25%, 30% for server CPU. And Lisa, you had mentioned second half of the year. It sort of implies that server CPU could grow like 70%, maybe a little more, this year. And s"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "server_cpu_agentic_tam",
   "suggested_name": "server_cpu_asp_dynamics",
   "suggested_why": "Analysts dissecting whether agentic AI grows server CPU TAM through incremental units or pricing power."
  },
@@ -366,8 +366,8 @@
     "text": "And then, what are you seeing on the neocloud side in terms of demand? How should we think about sizing that opportunity? It sounds like you guys are starting to see more traction there as well."
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "neocloud_demand",
   "suggested_name": "neocloud_demand_allocation",
   "suggested_why": "Analysts inquiring how vendors prioritize customer resources between established hyperscalers and emerging alternative cloud providers as neocloud opportunity accelerates."
  },
@@ -435,8 +435,8 @@
     "text": "Now, maybe moving to service, you've guided for double-digit growth here in 2026. At the same time, we discussed earlier upgrades and customers at near peak utilizations. I guess, how are you thinking about the drivers this year? And is there potential, as we layer in maybe more "
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "capacity_supply_tightness",
   "suggested_name": "capacity_constrained_guidance",
   "suggested_why": "Companies at or near peak utilization are withdrawing medium-term growth forecasts, citing difficulty predicting capex ROI and sustainable growth rates in capacity-limited environments."
  },
@@ -499,8 +499,8 @@
     "text": "I guess as we think about kind of your initiatives to not be the bottleneck in this industry, but your revenue essentially doubled from 2024 from I mean, I guess your revenue could double from 2024 to 2027. That probably takes a lot of building up supply to do. Like you're probab"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "capacity_supply_tightness",
   "suggested_name": "supply_capacity_race",
   "suggested_why": "Strong demand is outpacing production; companies must execute major capex and secure long-term purchase commitments to avoid capacity bottlenecks."
  },
@@ -625,7 +625,7 @@
     "text": "And maybe, if it's just getting reflected in the guidance that you provided, which you upped a few times now. And I guess, as you look over the last, call it, I don't know, six months or 90 days, like, what has really changed in what you're seeing in discussions with customers th"
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "disciplined_operating_leverage",
   "suggested_why": "Management focus on cautious capital allocation and asset efficiency enabling operating leverage delivery during growth phases."
@@ -685,7 +685,7 @@
     "text": "And then I guess just longer-term capital deployment, I mean, you're almost at $900 million total liquidity now. I can only imagine by FY 2029, I'm not going to ask specifics, but like it, obviously the cash on hand will continue to grow as well. I'm curious, is M&A on the table "
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "m_a_readiness",
   "suggested_why": "Strong balance sheet and liquidity enable inorganic growth to accelerate core product strategy alongside organic investments."
@@ -748,8 +748,8 @@
     "text": "And we were talking about it last night I remember. When it comes to physical AI, a lot of the use cases are in areas like industrial, automotive, edge AI, and we were talking about it last night but we call these the embedded segments of the market, right? And in embedded, inter"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "physical_ai_adoption",
   "suggested_name": "physical_ai_adoption",
   "suggested_why": "Automakers and industrial players ramping commercial deployment of AI-powered robots and autonomous systems as core revenue stream."
  },
@@ -810,7 +810,7 @@
     "text": "Maybe my question really is about the revenue outlook for kind of the next 12 months. And really to understand, when we look at the recent backlog and orders trends, they suggest very significant revenue growth in the year ahead. Is there anything you'd highlight to us on sort of"
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "backlog_conversion_timing",
   "suggested_why": "Analysts are probing whether substantial order backlogs can be shipped and recognized as revenue within expected guidance windows, questioning fulfillment capacity constraints."
@@ -865,7 +865,7 @@
     "text": "Maybe we could just get some blocking and tackling on the Dan, you mentioned that three to four customers will be greater than 10% and you're continuing to diversify. Wanted to ask specifically, maybe if you could do the rundown of what the stats were on those three or four in th"
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "customer_concentration",
   "suggested_why": "Investors assess whether revenue is overly dependent on a small number of customers and management's progress toward diversifying the customer base."
@@ -924,8 +924,8 @@
     "text": "I wanted to ask you about supply and kind of your ability to get incremental, volume of wafers and HBM. As I look at some of your competitors, I mean, they're kind of able to drop $20 billion out of thin air, and get incremental wafer supply. So, I'm wondering, do you feel pretty"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "advanced_packaging_substrate_supply",
   "suggested_name": "advanced_packaging_supply",
   "suggested_why": "Foundry and advanced packaging supply constraints limit companies' ability to secure incremental wafer volumes."
  },
@@ -1055,8 +1055,8 @@
     "text": "Look, we've been in a tight supply environment for anything that touches AI, advanced wafer fabrication, advanced packaging, large body substrates since the launch of ChatGPT. And against that backdrop to your point, we were still able to grow the company north of 40% in total re"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "advanced_packaging_substrate_supply",
   "suggested_name": "advanced_packaging_supply",
   "suggested_why": "Substrate and advanced packaging supply constraints for AI chips require multi-year strategic partnerships and backend infrastructure buildout through 2030+."
  },
@@ -1119,7 +1119,7 @@
     "text": "If there's any other questions from the audience, we have a couple of extra seconds here. It's been a privilege to have you."
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "session_closing_protocol",
   "suggested_why": "Recurrent moderator phrasing\u2014emphasizing time scarcity and engagement honor\u2014when concluding earnings calls and conferences, but carrying no material business content."
@@ -1178,7 +1178,7 @@
     "text": "So, let me pause here and see if there are any questions in the audience. If you have a question, please raise your hand."
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "call_moderation",
   "suggested_why": "Meta-procedural statements from earnings call moderators soliciting audience questions; not a substantive investment research topic."
@@ -1240,7 +1240,7 @@
     "text": "We're in a very dynamic market right now. And you're right from the supply side, it has been important that we have spent so much time even going back 18 to 24 months ago, when we knew that this was the direction that we're heading. And so you can see from Dan's update that worki"
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "margin_roadmap_reset",
   "suggested_why": "Analysts are monitoring how management revises gross margin targets against prior guidance and attributes the revised trajectory to supply-chain investments made over preceding quarters."
@@ -1303,7 +1303,7 @@
     "text": "I think overall, when we think about the gross margin for 2027, as I said earlier, it's really determined by both the pace of server CPU business ramp and the data center AI ramp. So I actually think overall, quarter-over-quarter, it could be different mix, could change different"
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "data_center_margin_dilution",
   "suggested_why": "Ramping MI350/MI450 data center AI products carry lower gross margin profiles than the established server CPU business, but management expects margin expansion as AI volumes scale and product mix norm"
@@ -1366,8 +1366,8 @@
     "text": "So one is the we have still very large market today. However, our market share at 1.6T as Michael talked about earlier is actually higher, so, we, kind of get our act together on the development side. So we definitely are seeing for our business 1.6T growth trend is lot stronger "
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "optical_speed_transition_1_6t",
   "suggested_name": "speed_tier_migration",
   "suggested_why": "Analysts tracking revenue and market-share transition from established speeds (800G) to next-generation optical tiers (1.6T) as a key growth and margin inflection point."
  },
@@ -1428,8 +1428,8 @@
     "text": "We're in the ecosystem there. We haven't actually talked about exactly what we are doing. But certainly, CPO switches and a number of the products that our customers are working on are very exciting for us. We haven't really, like I said, we haven't really talked about the switch"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "co_packaged_optics_ramp",
   "suggested_name": "cpo_production_ramp",
   "suggested_why": "Customers ramping co-packaged optical switch production as market debates adoption scope and cadence."
  },
@@ -1489,8 +1489,8 @@
     "text": "And so while there's been others that are producing 800G, a lot of that has been using EMLs or other technologies. As we move towards silicon photonics and certainly AOI's platform is silicon photonics based, as I mentioned, we think that that technology really starts to dominate"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "laser_architecture_competition",
   "suggested_name": "silicon_photonics_shift",
   "suggested_why": "Datacenter optical interconnects consolidating around silicon photonics and continuous-wave technology, displacing competing laser architectures (EML, VCSEL)."
  },
@@ -1550,7 +1550,7 @@
     "text": "It is we in 2026, and the number we provided for 2027, there are growth investments in the reported adjusted free cash flow. But when you look at those and say take the growth investments out, we've demonstrated that we can hit that 85% to 90% type conversion ratio both in 2026. "
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "working_capital_efficiency",
   "suggested_why": "Analysts are probing management's forward guidance on free cash flow conversion and working capital management as companies plan fiscal 2027 growth investments."
@@ -1606,7 +1606,7 @@
     "text": "I think our engineering and product teams are really looking at the cost components of the products and looking at different materials, different solutions, and trying to drive a lot of those costs out. And I'd also remind you that we've got the most vertically integrated supply "
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "supply_chain_cost_leverage",
   "suggested_why": "Management is actively negotiating component pricing through LTAs and engineering products for cheaper materials to protect and expand margins amid input cost uncertainty."
@@ -1659,8 +1659,8 @@
     "text": "I think that we're not out of the woods, I don't think anyone in the industry is out of the woods for supply chain constraints. But if that gets a little bit more opened up, there could be some potential for upside."
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "capacity_supply_tightness",
   "suggested_name": "supply_chain_normalization",
   "suggested_why": "Potential upside if/when bottlenecks ease; analysts probing visibility on timing and magnitude of constraint relief across the industry."
  },
@@ -1716,8 +1716,8 @@
     "text": "Then one investor debate that I hear a lot is pricing and the ability for you to price to value you're creating in the market. Historically, that has been difficult because you got a concentrated customer base. Maybe talk to but I think some of your customers have publicly stated"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "pricing_power_in_shortage",
   "suggested_name": "pricing_power",
   "suggested_why": "Debate over companies' ability to pass value through to customers via pricing, moving away from commoditized rates toward value-based pricing despite historically concentrated customer bases."
  },
@@ -1778,8 +1778,8 @@
     "text": "On the first part of the discussion on CPO, and Julie, you can jump in, if you want. The way to think about it is the CPO covers scale out and scale up, right, that we talked about today. The first CPO will start to ramp in scale out, right, and we'll start to see the revenue fro"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "co_packaged_optics_ramp",
   "suggested_name": "cpo_scaling_adoption",
   "suggested_why": "Coherent pluggable optics ramping across multiple customers in data center scale-out with cannibalization timing as the key near-term valuation driver."
  },
@@ -1839,7 +1839,7 @@
     "text": "Now coming through your question, Mark, where do we see the most opportunity? We see the most opportunity as the inference provider for tech companies that are modernizing their application, injecting intelligence, that's number one. Number two, we see an entire ecosystem that ha"
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "inference_monetization",
   "suggested_why": "Enterprises beyond hyperscalers are productizing and monetizing inference-powered applications, creating recurring revenue growth and sustained infrastructure demand."
@@ -1900,8 +1900,8 @@
     "text": "We've talked a lot about getting ahead on capacity of your customers. If I think about capability investments that you're making, you've talked about packaging, you've talked about EPS. I guess, what are the most important capability investments that you're making right now to st"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "capacity_supply_tightness",
   "suggested_name": "ahead_of_demand_capacity",
   "suggested_why": "Supplier proactively invests in manufacturing capacity and advanced capabilities (packaging, process technology) to avoid constraining customer growth."
  },
@@ -1960,8 +1960,8 @@
     "text": "Let me add a little bit of color there. So, Michael said this earlier, when we look at all of the opportunities, we keep in mind what is the corporate model for gross margin, which is between 55% and 60%. And I've been fairly consistent over the course of the last four quarters t"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "pricing_power_in_shortage",
   "suggested_name": "demand_driven_pricing_power",
   "suggested_why": "Strong demand environments enable companies to optimize pricing and expand gross margins across business segments."
  },
@@ -2014,7 +2014,7 @@
     "text": "And our gross margin really is important to us, but we're not going to increase the price just to expand the gross margin."
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "margin_through_efficiency",
   "suggested_why": "Companies defending gross margins through operational improvements and cost discipline rather than raising prices amid cost pressures."
@@ -2067,7 +2067,7 @@
     "text": "So, I guess with that, we'll wrap up the call. So, I really appreciate you all attending and thanks for the thoughtful questions."
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "call_closing_remarks",
   "suggested_why": "These are standard procedural boilerplate (thank-yous and Q&A handoffs) rather than substantive business discussion\u2014not a viable research theme."
@@ -2129,7 +2129,7 @@
     "text": "And that inference is driving a substantial amount of compute capacity, which is great for us because these all these players, this five, six customers of ours are on the path to creating their own custom accelerators and beyond that, their own design architecture of networking c"
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "data_center_displacement",
   "suggested_why": "Leading-edge wafer starts now exceed PC demand as AI inference workloads drive a structural reallocation of semiconductor capacity."
@@ -2187,7 +2187,7 @@
     "text": "So there's a couple of things. You know, first of all, the customer base that we have for 1.6T is going to be largely similar to our 800G customer base. So to some extent, you know, the process of getting qualified, it's there's always a process that you have to go through when t"
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "ai_datacenter_optics",
   "suggested_why": "800G\u21921.6T optical infrastructure deployment is emerging as the critical bottleneck and capex driver for AI data center scaling."
@@ -2245,7 +2245,7 @@
     "text": "We're already at the high end of that, and we're getting really close already to our operating margin. In fact, actually at 25%, we are at our operating margin target that we had, so well ahead of schedule. That is one of the topics we'll be addressing at the Investor Day, Moveme"
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "model_beat",
   "suggested_why": "Management executing faster on margin expansion and cost discipline than internal financial projections."
@@ -2303,8 +2303,8 @@
     "text": "Well, I mean, first of all, we are super excited to receive the order, especially as it came in sort of one big discrete chunk and it underlines the commitment of our Tier-1 customer to the end customers that they have committed to them at this point. So we're super excited about"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "capacity_supply_tightness",
   "suggested_name": "capacity_readiness",
   "suggested_why": "Suppliers emphasizing expanded production capacity and multi-year confidence in fulfilling large discrete customer orders through 2026\u20132027."
  },
@@ -2361,8 +2361,8 @@
     "text": "I think all of that is really being driven by the increase of overall compute capacity, which will be inference-based, and all of that inference-based compute is going to largely be running agentic workloads, and the agentic workloads are essentially capacity constrained in terms"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "server_cpu_agentic_tam",
   "suggested_name": "agentic_inference_tam",
   "suggested_why": "Analysts flag that enterprise agentic AI adoption pace (Jan\u2013Mar 2025 acceleration) is outpacing forecasts, driving outsized inference-compute infrastructure demand and forcing material TAM expansion u"
  },
@@ -2417,7 +2417,7 @@
     "text": "If you look out five years or so, how do you see the customer mix changing? And obviously, the big AI labs, hyperscale customers that are going to renew, add more capacity, but the long tail, what are you seeing in that cohort that kind of gives you confidence that mix is going t"
    }
   ],
-  "status": "pending",
+  "status": "rejected",
   "name": null,
   "suggested_name": "long_tail_customer_emergence",
   "suggested_why": "Companies are diversifying away from hyperscale AI lab concentration toward broader customer cohorts, reducing revenue dependency and expanding addressable market through long-tail adoption."
@@ -2468,8 +2468,8 @@
     "text": "I mean, that's the worst kept secret out there. But having said that, I mean, just look at the upside we're driving this year and next year, so."
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "capacity_supply_tightness",
   "suggested_name": "supply_demand_balance",
   "suggested_why": "Operators discussing whether supply-demand equilibrium is tight or balanced across their operations, signaling capacity constraints and near-term growth headroom."
  },
@@ -2523,8 +2523,8 @@
     "text": "You can expect us to continue to increase the amount of long-term agreements that we enter into, because all of our significant capacity moves are backed by those type of agreements as we seek to appropriately share the risk and rewards of the incredibly strong growth in our capa"
    }
   ],
-  "status": "pending",
-  "name": null,
+  "status": "accepted",
+  "name": "long_term_supply_agreements",
   "suggested_name": "long_term_volume_locks",
   "suggested_why": "Companies anchoring customer demand through multi-year commitments to justify major capacity expansions and reduce demand volatility risk."
  }
