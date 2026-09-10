@@ -1300,9 +1300,6 @@ tier_2_active_candidates:
     ai_positioning:
       score: "4"
       notes: "RadNet - owns the scanners, the images AND the outcomes that label them; DeepHealth sold as cash-pay upsell. Vertically integrated data/model/distribution. Rank #5."
-  - ticker: ROKU
-    themes: [ad_market_strength, ai_re_architected_incumbent]
-    added_date: 2026-05-09
   - ticker: SNOW
     themes: [enterprise_ai_adoption, ai_infrastructure_software, observability_competitive_landscape, ai_agent_monetization, ai_re_architected_incumbent]
     added_date: 2026-05-09
