@@ -93,6 +93,45 @@ def test_map_units_assigns_mapped_and_clusters_the_rest_deterministically():
     assert rows2 == rows and cands2 == cands                    # idempotent
 
 
+def test_record_decision_appends_with_members_and_updates_candidates():
+    with tempfile.TemporaryDirectory() as d:
+        cp, dp = Path(d) / "candidates.json", Path(d) / "decisions.jsonl"
+        cp.write_text(json.dumps([{"id": "cand:q1", "members": ["q1", "q2"], "status": "pending", "name": None}]))
+        dec = tm.record_decision("cand:q1", "accepted", "neocloud_demand", cp, dp)
+        assert dec["members"] == ["q1", "q2"] and dec["name"] == "neocloud_demand"
+        assert json.loads(cp.read_text())[0]["status"] == "accepted"
+        assert json.loads(dp.read_text().splitlines()[0])["id"] == "cand:q1"
+        try:
+            tm.record_decision("cand:nope", "rejected", None, cp, dp); assert False
+        except KeyError:
+            pass
+
+
+def test_suggest_names_only_for_pending_and_parses_slug():
+    cands = [{"id": "cand:q1", "status": "pending", "ngrams": ["neocloud demand"], "examples": [{"text": "x"}], "suggested_name": None, "name": None},
+             {"id": "cand:q2", "status": "rejected", "ngrams": ["y"], "examples": [], "suggested_name": None, "name": None}]
+    calls = []
+    def runner(prompt):
+        calls.append(prompt); return "NAME: Neocloud GPU Demand\nWHY: analysts ask about neocloud capacity"
+    out = tm.suggest_names(cands, runner=runner)
+    assert len(calls) == 1 and out[0]["suggested_name"] == "neocloud_gpu_demand" and out[1]["suggested_name"] is None
+
+
+def test_write_report_leads_with_h2_and_prints_denominators():
+    rows = [{"id": "q1", "register": "question", "themes": [{"theme": "a", "score": 0.9}], "candidate": None, "ticker": "X", "period_key": "FY2026-Q2", "firm": "F"},
+            {"id": "q2", "register": "question", "themes": [], "candidate": "cand:q2", "ticker": "Y", "period_key": "FY2026-Q2", "firm": "G"},
+            {"id": "a1", "register": "evidence", "themes": [], "candidate": None, "ticker": "X", "period_key": "FY2026-Q2", "firm": None}]
+    cands = [{"id": "cand:q2", "label": "neocloud", "ngrams": ["neocloud"], "n_exchanges": 1, "n_companies": 1, "n_banks": 1,
+              "tickers": ["Y"], "firms": ["G"], "first_seen": "2026-05-28", "members": ["q2"], "status": "pending", "name": None,
+              "suggested_name": "neocloud_demand", "examples": [{"id": "q2", "ticker": "Y", "date": "2026-05-28", "firm": "G", "text": "neoclouds?"}]}]
+    meta = {"threshold": 0.72, "names": ["a"], "n_test": 100, "calibration": [{"threshold": 0.72, "precision": 0.7, "recall": 0.5, "f1": 0.58, "coverage": 0.8}]}
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "r.md"
+        text = tm.write_report(rows, cands, meta, skipped=7, path=p)
+    assert text.startswith("## ") and "question register: 1/2 mapped" in text and "evidence register: 0/1 mapped" in text
+    assert "7 rows skipped" in text and "cand:q2" in text and "neocloud_demand" in text and "0.72" in text
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     bad = 0
