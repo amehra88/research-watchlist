@@ -117,7 +117,10 @@ state/etf_flows.jsonl
 state/fear_greed.json
 state/etf_lookthrough.json
 state/etf_flows_triggers.json
+# topics (P2 topic_map): small state committed, vectors not
+!state/topics/
 state/topics/vectors.npy
 state/topics/vectors.npy.tmp
 state/topics/ids.json
 state/topics/anchors.npy
+state/topics/mean.npy
