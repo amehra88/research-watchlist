@@ -104,7 +104,12 @@ Two git repos cooperate:
   of the labelled chunks, calibrated threshold from `state/topics/anchors_meta.json`; below-
   threshold units are greedy-clustered and clusters with ≥3 companies and ≥2 banks become
   candidates in `state/topics/candidates.json` + `notes/reports/theme-candidates.md`; the
-  operator names/rejects with `--accept/--reject`, never the system). `config/watchlist.yaml` stays operator-only:
+  operator names/rejects with `--accept/--reject`, never the system), `mdna_evidence` (daily 12:30,
+  `scripts/topics/mdna_evidence.py`: 10-Q Item 2 / 10-K Item 7 MD&A from `notes/sec/`, 9-month
+  window, quarter-over-quarter added prose diffed only within a form family, dated by `filed_date`
+  → `state/evidence/claims.jsonl` (gitignored, regenerable; ~8.5K claims / 73 filers); topic_map
+  reads them as evidence-register units after a housekeeping filter, so §6.2's disclosure count and
+  §6.3's `first_evidence_date` clock exist). `config/watchlist.yaml` stays operator-only:
   proposals surface in the report and are applied by `scripts/thesis/apply_scores.py --write`.
   Design: `docs/superpowers/specs/2026-09-09-thesis-loop-design.md`.
 - **`daily_digest` / `nport_*` / `watchlist_derive`** — adjacent pipelines (daily report email, NPORT
@@ -187,8 +192,9 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
 
 - **Idea surfacing / sub-sector timeliness (spec 2026-08-11)** — P1 transcript ingest built
   (backfill 08-11, forward cron 09-10); **P2 topic_map built 2026-09-10** on main
-  (`scripts/topics/`, calibrated pg-centroid anchors, no per-unit LLM extraction). P3
-  foreign_evidence, P3b MD&A evidence, P4 diffusion/detectors, P5 renderers still open. NOTE: the
+  (`scripts/topics/`, calibrated pg-centroid anchors, no per-unit LLM extraction); **P3b MD&A
+  evidence built 2026-09-10** (ported from the branch + within-family diff fix). P3
+  foreign_evidence, P4 diffusion/detectors, P5 renderers still open. NOTE: the
   local branch `worktree-idea-surfacing-spec` (2026-08-19..22, never merged, never ran end to end)
   holds an earlier P2 (claude -p phrase extraction, 21.5h serial) plus `mdna_evidence.py`
   (P3b, 8,251 claims), `lifecycle.py` (Tier-0 lag measurement) and `evidence_store.py` — start
@@ -234,6 +240,11 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
 
 ## 9. Recent milestones (most recent first)
 
+- **2026-09-10** — **P3b MD&A evidence** (`scripts/topics/{evidence_store,mdna_evidence}.py`, ported
+  from `worktree-idea-surfacing-spec`): windowed QoQ added-prose claims with `first_evidence_date`,
+  diffed only within a form family (the cross-type diff had reported ~1,100 annual blocks as new);
+  housekeeping prose filtered before mapping; claims flow through the same `topic_map` anchors as
+  transcript turns. Cron daily 12:30.
 - **2026-09-10** — **P2 topic_map** (`scripts/topics/`): theme anchors = pg centroids of the
   labelled chunks, mean-centered (uncentered, every chunk sat within cosine 0.74 of every theme),
   threshold calibrated on a held-out fifth (0.30: P 0.31 / R 0.37 / cov 0.80, top-1 0.55 vs the

@@ -62,6 +62,10 @@ one batched Gemini embedding call per 50 NEW exchanges (~$0.02/1K units; the fir
 rebuilt only on demand (`anchors.py --build`, pg only, no API). Deliberately no per-unit LLM
 extraction: the 2026-08 branch measured that at ~8.9 s/unit → 21.5 h per pass.
 
+**MD&A evidence (P3b, added 2026-09-10):** `mdna_evidence.py` daily = 0 LLM calls, 0 API calls
+(disk diff over `notes/sec/`, ~1 min). Its claims add ~6K evidence units to the weekly topic_map
+embedding store once (~120 batched Gemini calls), then only new filings' blocks.
+
 **Why subscription is the right path for current pipeline LLM use:**
 1. Already paid — marginal cost is zero unless bucket exhausted
 2. Quality on edge cases (ambiguous classification, subsidiary mentions, indirect ticker references) generally better than Gemini Flash
