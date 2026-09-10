@@ -1,5 +1,5 @@
 # snapshot of the live droplet crontab — written by scripts/snapshot_crontab.sh
-# snapshot taken: 2026-09-10T15:17:19-04:00
+# snapshot taken: 2026-09-10T16:15:57-04:00
 PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 0 7 * * * /root/bin/alert_on_failure.sh daily_digest /root/daily/run_daily.sh
 7 12 * * 0 /root/bin/alert_on_failure.sh nport_weekly /root/nport/run_weekly.sh >> /root/nport/data/cron.log 2>&1
@@ -49,3 +49,4 @@ PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 30 9 * * 0 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh insider_pull python3 scripts/thesis/insider_pull.py >> logs/insider_pull.log 2>&1
 0 9 * * 6 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh transcript_conferences python3 scripts/v3_ingest/transcript_ingest.py --conferences 8 >> logs/transcript_ingest_conferences.log 2>&1
 0 11 * * 6 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh topic_map python3 scripts/topics/topic_map.py --run --suggest-names --email >> logs/topic_map.log 2>&1
+30 12 * * * cd /root/research-watchlist && /root/bin/alert_on_failure.sh mdna_evidence python3 scripts/topics/mdna_evidence.py >> logs/mdna_evidence.log 2>&1
