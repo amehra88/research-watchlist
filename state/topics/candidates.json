@@ -80,7 +80,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "capacity_supply_tightness",
+  "suggested_why": "Analysts questioning whether manufacturing/fab capacity can keep pace with demand growth and how quickly new capacity can come online to ease supply-chain pressure."
  },
  {
   "id": "cand:3363278-t_qna_60_0",
@@ -158,7 +159,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "pricing_mix_leverage",
+  "suggested_why": "Analysts unpacking how companies expand gross margins through product mix shifts toward higher-margin offerings and pricing increases amid cost/competitive pressures."
  },
  {
   "id": "cand:3359603-t_3359603-t_qna_14_0",
@@ -226,7 +228,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "capacity_expansion",
+  "suggested_why": "Key question on manufacturing capex plans and whether production capacity will limit revenue growth."
  },
  {
   "id": "cand:3438469-t_qna_33_0",
@@ -297,7 +300,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "server_cpu_asp_dynamics",
+  "suggested_why": "Analysts dissecting whether agentic AI grows server CPU TAM through incremental units or pricing power."
  },
  {
   "id": "cand:3388411-t_qna_10_0",
@@ -359,7 +363,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "neocloud_demand_allocation",
+  "suggested_why": "Analysts inquiring how vendors prioritize customer resources between established hyperscalers and emerging alternative cloud providers as neocloud opportunity accelerates."
  },
  {
   "id": "cand:3354107-t_qna_41_0",
@@ -426,7 +431,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "capacity_constrained_guidance",
+  "suggested_why": "Companies at or near peak utilization are withdrawing medium-term growth forecasts, citing difficulty predicting capex ROI and sustainable growth rates in capacity-limited environments."
  },
  {
   "id": "cand:3328815-t_qna_49_0",
@@ -488,7 +494,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "supply_capacity_race",
+  "suggested_why": "Strong demand is outpacing production; companies must execute major capex and secure long-term purchase commitments to avoid capacity bottlenecks."
  },
  {
   "id": "cand:3355431-t_3355431-t_qna_28_0",
@@ -546,7 +553,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "china_margin_disconnect",
+  "suggested_why": "Analysts probing whether margin strength reflects operational leverage or stems from geographic mix shift reducing China exposure."
  },
  {
   "id": "cand:3453466-t_3453466-t_qna_68_1",
@@ -610,7 +618,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "disciplined_operating_leverage",
+  "suggested_why": "Management focus on cautious capital allocation and asset efficiency enabling operating leverage delivery during growth phases."
  },
  {
   "id": "cand:3384162-t_qna_32_0",
@@ -668,7 +677,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "m_a_readiness",
+  "suggested_why": "Strong balance sheet and liquidity enable inorganic growth to accelerate core product strategy alongside organic investments."
  },
  {
   "id": "cand:3433453-t_md_5_4",
@@ -729,7 +739,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "physical_ai_adoption",
+  "suggested_why": "Automakers and industrial players ramping commercial deployment of AI-powered robots and autonomous systems as core revenue stream."
  },
  {
   "id": "cand:3381168-t_qna_36_0",
@@ -789,7 +800,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "backlog_conversion_timing",
+  "suggested_why": "Analysts are probing whether substantial order backlogs can be shipped and recognized as revenue within expected guidance windows, questioning fulfillment capacity constraints."
  },
  {
   "id": "cand:3335314-t_3335314-t_qna_22_0",
@@ -842,7 +854,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "customer_concentration",
+  "suggested_why": "Investors assess whether revenue is overly dependent on a small number of customers and management's progress toward diversifying the customer base."
  },
  {
   "id": "cand:3374273-t_3374273-t_qna_72_0",
@@ -899,7 +912,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "advanced_packaging_supply",
+  "suggested_why": "Foundry and advanced packaging supply constraints limit companies' ability to secure incremental wafer volumes."
  },
  {
   "id": "cand:3405694-t_qna_62_0",
@@ -957,7 +971,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "sales_cycle_lengthening",
+  "suggested_why": "Pipelines are building strongly but conversions are back-half weighted, indicating sales cycles are extending as enterprise deal sizes and product complexity increase."
  },
  {
   "id": "cand:3335314-t_3335314-t_qna_33_0",
@@ -1026,7 +1041,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "advanced_packaging_supply",
+  "suggested_why": "Substrate and advanced packaging supply constraints for AI chips require multi-year strategic partnerships and backend infrastructure buildout through 2030+."
  },
  {
   "id": "cand:3489856-t_qna_53_0",
@@ -1088,7 +1104,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "session_closing_protocol",
+  "suggested_why": "Recurrent moderator phrasing\u2014emphasizing time scarcity and engagement honor\u2014when concluding earnings calls and conferences, but carrying no material business content."
  },
  {
   "id": "cand:3505197-t_qna_16_0",
@@ -1145,7 +1162,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "call_moderation",
+  "suggested_why": "Meta-procedural statements from earnings call moderators soliciting audience questions; not a substantive investment research topic."
  },
  {
   "id": "cand:3469126-t_qna_53_1",
@@ -1205,7 +1223,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "margin_roadmap_reset",
+  "suggested_why": "Analysts are monitoring how management revises gross margin targets against prior guidance and attributes the revised trajectory to supply-chain investments made over preceding quarters."
  },
  {
   "id": "cand:3297800-t_3297800-t_qna_63_0",
@@ -1266,7 +1285,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "data_center_margin_dilution",
+  "suggested_why": "Ramping MI350/MI450 data center AI products carry lower gross margin profiles than the established server CPU business, but management expects margin expansion as AI volumes scale and product mix norm"
  },
  {
   "id": "cand:3366595-t_qna_16_0",
@@ -1327,7 +1347,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "speed_tier_migration",
+  "suggested_why": "Analysts tracking revenue and market-share transition from established speeds (800G) to next-generation optical tiers (1.6T) as a key growth and margin inflection point."
  },
  {
   "id": "cand:3355794-t_3355794-t_qna_16_0",
@@ -1387,7 +1408,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "cpo_production_ramp",
+  "suggested_why": "Customers ramping co-packaged optical switch production as market debates adoption scope and cadence."
  },
  {
   "id": "cand:3355795-t_3355795-t_qna_27_0",
@@ -1446,7 +1468,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "silicon_photonics_shift",
+  "suggested_why": "Datacenter optical interconnects consolidating around silicon photonics and continuous-wave technology, displacing competing laser architectures (EML, VCSEL)."
  },
  {
   "id": "cand:3463943-t_qna_23_0",
@@ -1505,7 +1528,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "working_capital_efficiency",
+  "suggested_why": "Analysts are probing management's forward guidance on free cash flow conversion and working capital management as companies plan fiscal 2027 growth investments."
  },
  {
   "id": "cand:3384540-t_3384540-t_qna_28_0",
@@ -1559,7 +1583,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "supply_chain_cost_leverage",
+  "suggested_why": "Management is actively negotiating component pricing through LTAs and engineering products for cheaper materials to protect and expand margins amid input cost uncertainty."
  },
  {
   "id": "cand:3385303-t_qna_20_0",
@@ -1610,7 +1635,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "supply_chain_normalization",
+  "suggested_why": "Potential upside if/when bottlenecks ease; analysts probing visibility on timing and magnitude of constraint relief across the industry."
  },
  {
   "id": "cand:3500983-t_qna_62_0",
@@ -1665,6 +1691,7 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "pricing_power",
+  "suggested_why": "Debate over companies' ability to pass value through to customers via pricing, moving away from commoditized rates toward value-based pricing despite historically concentrated customer bases."
  }
 ]
