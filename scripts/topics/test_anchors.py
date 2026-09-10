@@ -45,6 +45,25 @@ def test_centering_removes_the_shared_component():
     assert S[0, 0] > 0.9 and S[0, 1] < 0.0
 
 
+def test_group_of_doc_type_and_per_group_thresholds():
+    assert an.group_of("earnings_transcript") == "transcript" and an.group_of("conference_transcript") == "transcript"
+    assert an.group_of("sec_filing") == "sec_filing" and an.group_of("news") == "news" and an.group_of("podcast_summary") == "other"
+    names = ["a", "b"]
+    A = np.vstack([_unit([1, 0, 0]), _unit([0, 1, 0])])
+    test = [("c1", ["a"], _unit([0.9, 0.1, 0]), "sec_filing"), ("c2", ["b"], _unit([0.1, 0.9, 0]), "sec_filing"),
+            ("c3", ["a"], _unit([0.95, 0.05, 0]), "news"), ("c4", ["a"], _unit([0, 0, 1]), "earnings_transcript")]
+    by = an.calibrate_by_group(A, names, test, thresholds=[0.5, 0.9])
+    assert set(by) == {"sec_filing", "news", "transcript"} and by["sec_filing"][0]["coverage"] == 1.0
+    # 4-tuples (with doc_type) and 3-tuples both calibrate
+    assert an.calibrate(A, names, [x[:3] for x in test], thresholds=[0.5])[0]["coverage"] == 0.75
+    thr = an.thresholds_by_source({"sec_filing": [{"threshold": 0.3, "precision": 0.22, "recall": 0.4, "f1": 0.29, "coverage": 0.97},
+                                                  {"threshold": 0.42, "precision": 0.39, "recall": 0.22, "f1": 0.28, "coverage": 0.83}],
+                                   "transcript": [{"threshold": 0.3, "precision": 0.9, "recall": 0.9, "f1": 0.9, "coverage": 0.9}]},
+                                  n_by_group={"sec_filing": 829, "transcript": 72}, global_thr=0.30)
+    assert thr["mdna"] == 0.42                        # sec_filing floor 0.35 -> the precise row wins
+    assert thr["exchange"] == 0.30                    # 72 transcript chunks < MIN_GROUP_TEST -> global
+
+
 def test_choose_threshold_falls_back_to_most_precise_when_floor_unmet():
     rows = [{"threshold": 0.5, "precision": 0.3, "recall": 0.9, "f1": 0.45, "coverage": 1.0},
             {"threshold": 0.8, "precision": 0.5, "recall": 0.2, "f1": 0.29, "coverage": 0.3}]

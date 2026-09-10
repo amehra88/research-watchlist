@@ -116,6 +116,16 @@ HOUSEKEEPING_CUES = (
     "incorporated by reference", "foreign exchange gain",
     "foreign currency translation", "repurchase program", "treasury stock",
     "dividends declared",
+    # 2026-09-10, first combined map: every MD&A-only candidate cluster was expense-line,
+    # cash-flow-statement, dividend or tax-legislation commentary — the results-of-operations
+    # walk that every filer writes in the same words
+    "research and development expense", "general and administrative", "sales and marketing expense",
+    "selling, general", "selling and marketing", "depreciation expense", "amortization expense",
+    "cash used in investing", "cash provided by operating", "cash used in operating",
+    "cash provided by financing", "cash used in financing", "investing activities", "financing activities",
+    "quarterly cash dividend", "stockholders of record", "shareholders of record",
+    "big beautiful bill", "obbba", "tax cuts and jobs act", "inflation reduction act",
+    "personnel costs", "personnel-related",
 )
 
 
@@ -153,6 +163,14 @@ def calendar_quarter(date_iso: str | None) -> str | None:
         return None
     y, m = int(date_iso[:4]), int(date_iso[5:7])
     return f"CY{y}-Q{(m - 1) // 3 + 1}"
+
+
+def thr_for(thr, source: str) -> float:
+    """`thr` is a float (everywhere) or {source: thr, 'default': thr} from anchors_meta —
+    MD&A prose needs a higher bar than a transcript turn (see anchors.MIN_PRECISION_BY_GROUP)."""
+    if isinstance(thr, dict):
+        return float(thr.get(source, thr.get("default")))
+    return float(thr)
 
 
 def assign(scores: np.ndarray, names: list, thr: float, top: int = MAX_THEMES) -> list:
@@ -254,8 +272,9 @@ def map_units(units, store, names, anchors, thr, min_sim=MIN_SIM, min_companies=
     S = score_matrix(V, anchors, mean=mean)
     rows, unmapped = [], []
     for i, u in enumerate(units):
-        themes = assign(S[i], names, thr)
-        rows.append({**asdict(u), "cal_quarter": calendar_quarter(u.event_date),
+        t_u = thr_for(thr, u.source)
+        themes = assign(S[i], names, t_u)
+        rows.append({**asdict(u), "cal_quarter": calendar_quarter(u.event_date), "threshold": t_u,
                      "themes": [{"theme": t, "score": s} for t, s in themes],
                      "best": round(float(S[i].max()), 4) if len(names) else None, "candidate": None})
         if not themes:
@@ -341,6 +360,7 @@ def write_report(rows: list, cands: list, meta: dict, skipped: int, path: Path =
     today = dt.date.today().isoformat()
     L = [f"## Theme candidates — {today}", "",
          f"Anchors: {len(meta.get('names', []))} themes; threshold {meta.get('threshold')} "
+         f"(by source: {meta.get('threshold_by_source') or 'n/a'}) "
          f"(held-out P {cal.get('precision', '?')} / R {cal.get('recall', '?')} on {meta.get('n_test', '?')} labelled chunks).",
          f"Coverage: {share('question')}; {share('evidence')}; by source: {share('exchange', 'source')}, "
          f"{share('mdna', 'source')}; {skipped} rows skipped (operator/untyped speakers, acknowledgements, housekeeping).",
@@ -394,7 +414,7 @@ def _load_decisions(path: Path = DECISIONS) -> list:
 
 def run(args) -> int:
     names, A, mean, meta = load_anchors()
-    thr = args.threshold if args.threshold is not None else meta["threshold"]
+    thr = args.threshold if args.threshold is not None else (meta.get("threshold_by_source") or meta["threshold"])
     units, skipped = units_from_exchanges(EXCHANGES)
     n_ex = len(units)
     if not args.no_claims:

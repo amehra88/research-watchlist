@@ -94,6 +94,20 @@ def test_calendar_quarter_from_event_date_on_every_row():
     assert rows[0]["cal_quarter"] == "CY2026-Q2" and rows[0]["period_key"] == "FY2027-Q1"
 
 
+def test_map_units_threshold_per_source():
+    names = ["a"]; A = np.vstack([_u([1, 0, 0, 0])])
+    v = _u([0.7, 0.714, 0, 0])                          # cosine ~0.70 to anchor a
+    ex = tm.Unit("x1", "eight words are needed for a unit to count here", "question", "X", "conference", "2026-06-09", "CY2026-Q2", "F", "exchange")
+    md = tm.Unit("m1", "eight words are needed for a unit to count here", "evidence", "X", "10-Q", "2026-06-09", "2026Q2", None, "mdna")
+    store = FakeStore({"x1": v, "m1": v})
+    rows, _ = tm.map_units([ex, md], store, names, A, thr={"exchange": 0.6, "mdna": 0.8, "default": 0.6})
+    by = {r["id"]: r for r in rows}
+    assert by["x1"]["themes"] and not by["m1"]["themes"]
+    assert by["x1"]["threshold"] == 0.6 and by["m1"]["threshold"] == 0.8
+    rows2, _ = tm.map_units([ex, md], store, names, A, thr=0.6)     # a float still works everywhere
+    assert all(r["themes"] for r in rows2)
+
+
 def test_reattach_decisions_survives_cluster_growth():
     # a rejected moderator cluster grows every week; containment of the decided members
     # (not Jaccard) is what keeps it rejected — Jaccard 3/10 would resurface it
@@ -228,6 +242,18 @@ def test_units_from_claims_drops_housekeeping_and_short_blocks():
     u = units[0]
     assert u.register == "evidence" and u.source == "mdna" and u.firm is None
     assert u.event_date == "2026-05-06" and u.period_key == "2026Q2" and u.event_type == "10-Q"
+
+
+def test_is_housekeeping_catches_expense_line_and_cash_flow_commentary():
+    # first combined map 2026-09-10: 12 MD&A-only candidate clusters were all of this kind
+    for txt in ("Research and development expenses increased $12.4 million for the six months ended June 30",
+                "General and administrative expenses increased primarily due to personnel costs",
+                "Sales and marketing expenses increased due to events and headcount",
+                "Net cash used in investing activities was $310 million for the nine months",
+                "We declared a quarterly cash dividend of $0.20 per share to stockholders of record on August 15",
+                "The One Big Beautiful Bill Act (OBBBA) was enacted in July with provisions affecting bonus depreciation",
+                "Depreciation expense increased due to capital expenditures placed in service"):
+        assert tm.is_housekeeping(txt), txt
 
 
 def test_is_housekeeping_keeps_capex_prose():

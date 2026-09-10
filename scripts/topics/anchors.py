@@ -62,19 +62,36 @@ def fetch_centroids(conn, names: list[str]) -> dict:
     return out
 
 
+DOC_GROUPS = {"earnings_transcript": "transcript", "conference_transcript": "transcript",
+              "sec_filing": "sec_filing", "news": "news"}
+# Measured 2026-09-10 per doc group (held-out, centered anchors): sec_filing prose maps to
+# SOMETHING 97% of the time at the global 0.30 with P 0.22 — generic MD&A sits near every
+# theme — while at 0.42 P is 0.39 with 83% still covered. Evidence COUNTS are the downstream
+# product (§5/§6), so filings get a higher precision floor. Transcript-language chunks in pg
+# are too few (72) to calibrate on their own -> exchanges keep the global threshold.
+MIN_PRECISION_BY_GROUP = {"sec_filing": 0.35}
+MIN_GROUP_TEST = 200                 # below this a group's sweep is reported but not used
+SOURCE_GROUP = {"exchange": "transcript", "mdna": "sec_filing"}
+
+
+def group_of(doc_type: str | None) -> str:
+    return DOC_GROUPS.get(doc_type or "", "other")
+
+
 def fetch_test(conn, names: list[str], per_theme: int = 30) -> list:
+    """-> [(chunk_id, labels, vec, doc_type)]; per-theme sample so rare themes are represented."""
     cur = conn.cursor()
     cur.execute("SELECT setseed(0.42)")            # reproducible held-out sample across builds
     seen, out = set(), []
     for t in names:
-        cur.execute(f"SELECT c.chunk_id, c.themes, c.embedding::text FROM chunks c "
+        cur.execute(f"SELECT c.chunk_id, c.themes, c.embedding::text, c.doc_type FROM chunks c "
                     f"WHERE {TEST_WHERE} AND %s = ANY(c.themes) ORDER BY random() LIMIT %s",
                     (t, per_theme))
-        for cid, themes, vec in cur.fetchall():
+        for cid, themes, vec, doc_type in cur.fetchall():
             if cid in seen:
                 continue
             seen.add(cid)
-            out.append((cid, [x for x in themes if x in names], parse_vec(vec)))
+            out.append((cid, [x for x in themes if x in names], parse_vec(vec), doc_type))
     return out
 
 
@@ -95,11 +112,12 @@ def calibrate(anchors: np.ndarray, names: list[str], test: list, thresholds=THRE
               mean: np.ndarray | None = None) -> list:
     if not test:
         return []
-    S = score_matrix(np.vstack([v for _, _, v in test]), anchors, mean=mean)
+    S = score_matrix(np.vstack([t[2] for t in test]), anchors, mean=mean)
     rows = []
     for thr in thresholds:
         tp = fp = fn = 0; covered = 0
-        for i, (_, labels, _) in enumerate(test):
+        for i, t in enumerate(test):
+            labels = t[1]
             pred = {names[j] for j in np.where(S[i] >= thr)[0]}
             lab = set(labels)
             tp += len(pred & lab); fp += len(pred - lab); fn += len(lab - pred)
@@ -118,6 +136,27 @@ MIN_PRECISION = 0.3   # measured 2026-09-10: the held-out labels are the chunker
                       # "false positive" there is usually a related theme the tagger omitted.
 
 
+def calibrate_by_group(anchors, names, test, thresholds=THRESHOLDS, mean=None) -> dict:
+    """The sweep per document group (4-tuples with doc_type); groups with no chunks are absent."""
+    groups = {}
+    for t in test:
+        groups.setdefault(group_of(t[3] if len(t) > 3 else None), []).append(t)
+    return {g: calibrate(anchors, names, sub, thresholds, mean=mean) for g, sub in groups.items()}
+
+
+def thresholds_by_source(rows_by_group: dict, n_by_group: dict, global_thr: float) -> dict:
+    """{'exchange': thr, 'mdna': thr, 'default': global}. A source takes its group's threshold
+    only when the group had >= MIN_GROUP_TEST held-out chunks; otherwise the global one."""
+    out = {"default": global_thr}
+    for source, group in SOURCE_GROUP.items():
+        rows = rows_by_group.get(group)
+        if rows and n_by_group.get(group, 0) >= MIN_GROUP_TEST:
+            out[source] = choose_threshold(rows, MIN_PRECISION_BY_GROUP.get(group, MIN_PRECISION))
+        else:
+            out[source] = global_thr
+    return out
+
+
 def choose_threshold(rows: list, min_precision: float = MIN_PRECISION) -> float:
     ok = [r for r in rows if r["precision"] >= min_precision]
     if ok:
@@ -128,8 +167,8 @@ def choose_threshold(rows: list, min_precision: float = MIN_PRECISION) -> float:
 def top1_accuracy(anchors, names, test, mean=None) -> float:
     if not test:
         return 0.0
-    S = score_matrix(np.vstack([v for _, _, v in test]), anchors, mean=mean)
-    hits = sum(names[int(np.argmax(S[i]))] in labels for i, (_, labels, _) in enumerate(test))
+    S = score_matrix(np.vstack([t[2] for t in test]), anchors, mean=mean)
+    hits = sum(names[int(np.argmax(S[i]))] in t[1] for i, t in enumerate(test))
     return round(hits / len(test), 4)
 
 
@@ -153,6 +192,11 @@ def build(per_theme: int, min_precision: float, dir: Path = STATE) -> dict:
     test = fetch_test(conn, names, per_theme)
     rows = calibrate(C, names, test, mean=mean)
     thr = choose_threshold(rows, min_precision)
+    by_group = calibrate_by_group(C, names, test, mean=mean)
+    n_by_group = {}
+    for t in test:
+        n_by_group[group_of(t[3])] = n_by_group.get(group_of(t[3]), 0) + 1
+    by_source = thresholds_by_source(by_group, n_by_group, thr)
     dir.mkdir(parents=True, exist_ok=True)
     np.save(dir / "anchors.npy", C)
     np.save(dir / "mean.npy", mean)
@@ -162,6 +206,8 @@ def build(per_theme: int, min_precision: float, dir: Path = STATE) -> dict:
             "names": names, "n_train": {t: cents[t][1] for t in names},
             "themes_without_labels": missing, "n_test": len(test), "per_theme_test": per_theme,
             "min_precision": min_precision, "threshold": thr, "centered": True,
+            "threshold_by_source": by_source, "n_test_by_group": n_by_group,
+            "calibration_by_group": by_group,
             "top1_accuracy": top1_accuracy(C, names, test, mean=mean), "calibration": rows}
     (dir / "anchors_meta.json").write_text(json.dumps(meta, indent=1))
     return meta
@@ -182,6 +228,7 @@ def main(argv=None) -> int:
     for r in meta["calibration"]:
         print(f"  thr {r['threshold']:.2f}  P {r['precision']:.3f}  R {r['recall']:.3f}  "
               f"F1 {r['f1']:.3f}  cov {r['coverage']:.3f}")
+    print(f"by source: {meta['threshold_by_source']} (held-out per group: {meta['n_test_by_group']})")
     return 0
 
 
