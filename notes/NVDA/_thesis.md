@@ -31,13 +31,13 @@ assumptions:
   confirmed_by:
   - A hyperscaler 10-K or earnings disclosure citing CUDA as the only approved runtime
     for production AI workloads
-  status: open
-  status_source: draft
+  status: challenged
+  status_source: evidence
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 2.5
+    challenge: 4.5
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 - id: roadmap_2yr_named_platforms
   statement: At scoring date, NVDA has publicly named successor platforms with disclosed
@@ -87,10 +87,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 - id: gm_compression_input_cost_not_pricing
   statement: At scoring date, the gross margin guide trough of 71-72% in Q4 FY27 is
@@ -143,9 +143,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 - id: fifty_pct_fcf_return_structural
   statement: At scoring date, the capital return posture of approximately 50% of FCF
@@ -169,9 +169,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 ---
 ## Rationale

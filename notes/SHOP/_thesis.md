@@ -111,10 +111,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: growth_reaccel_fcf_in_financials
   statement: At scoring, both revenue growth reacceleration and positive FCF/margin

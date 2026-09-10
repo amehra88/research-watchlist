@@ -56,10 +56,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 - id: orbital_dc_active_initiative
   statement: SPCX's orbital data center program was an active capital allocation initiative
@@ -81,10 +81,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-07'
   draft: true
 ---
 ## Rationale
