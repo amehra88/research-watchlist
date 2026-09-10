@@ -67,6 +67,33 @@ def test_build_candidates_applies_company_and_bank_floors_and_labels():
     assert sorted(c["members"]) == ["a1", "q1", "q2", "q3"] and len(c["examples"]) <= 3
 
 
+def test_evidence_only_clusters_survive_the_gate_as_stage_one_candidates():
+    # spec §6.3 stage 1 = evidence exists, zero analyst questions. A bank test would discard
+    # exactly that signal (learning from the 2026-08 branch, "silence IS stage 1")
+    ev = [tm.Unit(f"a{i}", f"we are ramping co-packaged optics with customer {i} this year", "evidence",
+                  t, "earnings_call", "2026-05-0%d" % (i + 1), "FY2026-Q2", None, "exchange")
+          for i, t in enumerate(["COHR", "LITE", "FN"])]
+    qs = [tm.Unit(f"q{i}", f"how are you thinking about pricing this year for segment {i}", "question",
+                  t, "earnings_call", "2026-05-0%d" % (i + 1), "FY2026-Q2", "OneBank", "exchange")
+          for i, t in enumerate(["AMD", "ARM", "INTC"])]
+    units = ev + qs
+    texts = [u.text for u in units]; df = tm.tp.doc_frequencies(texts)
+    cands = tm.build_candidates([[0, 1, 2], [3, 4, 5]], units, texts, df, len(texts), min_companies=3, min_banks=2)
+    assert [c["register"] for c in cands] == ["evidence_only"]        # 3 companies, 0 banks -> kept
+    assert cands[0]["n_banks"] == 0 and cands[0]["n_companies"] == 3  # the question cluster (1 bank) is not
+    mixed = tm.build_candidates([[0, 1, 2, 3, 4, 5]], units, texts, df, len(texts), min_companies=3, min_banks=2)
+    assert mixed == []                                                # has questions -> bank test applies
+
+
+def test_calendar_quarter_from_event_date_on_every_row():
+    assert tm.calendar_quarter("2026-09-08") == "CY2026-Q3" and tm.calendar_quarter("2026-01-31") == "CY2026-Q1"
+    assert tm.calendar_quarter(None) is None
+    names = ["a"]; A = np.vstack([_u([1, 0, 0, 0])])
+    units = [tm.Unit("q1", "eight words are needed for a unit to count", "question", "X", "conference", "2026-06-09", "FY2027-Q1", "F", "exchange")]
+    rows, _ = tm.map_units(units, FakeStore({"q1": _u([1, 0, 0, 0])}), names, A, thr=0.5)
+    assert rows[0]["cal_quarter"] == "CY2026-Q2" and rows[0]["period_key"] == "FY2027-Q1"
+
+
 def test_reattach_decisions_survives_cluster_growth():
     # a rejected moderator cluster grows every week; containment of the decided members
     # (not Jaccard) is what keeps it rejected — Jaccard 3/10 would resurface it

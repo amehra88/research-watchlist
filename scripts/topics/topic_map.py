@@ -91,6 +91,15 @@ def units_from_exchanges(path: Path = EXCHANGES, min_words: int = MIN_UNIT_WORDS
     return units, skipped
 
 
+def calendar_quarter(date_iso: str | None) -> str | None:
+    """CY quarter from the event date. The stored period_key is FISCAL on ~53% of the corpus
+    (2026-08 branch measurement), so cross-register joins must key on this, not on period_key."""
+    if not date_iso or len(date_iso) < 7:
+        return None
+    y, m = int(date_iso[:4]), int(date_iso[5:7])
+    return f"CY{y}-Q{(m - 1) // 3 + 1}"
+
+
 def assign(scores: np.ndarray, names: list, thr: float, top: int = MAX_THEMES) -> list:
     idx = [int(j) for j in np.argsort(-scores) if scores[j] >= thr][:top]
     return [(names[j], round(float(scores[j]), 4)) for j in idx]
@@ -118,7 +127,11 @@ def build_candidates(clusters, units, texts, df, n_docs, min_companies=MIN_COMPA
         mem = [units[i] for i in idxs]
         companies = {u.ticker for u in mem if u.ticker}
         banks = {u.firm for u in mem if u.register == "question" and u.firm}
-        if len(companies) < min_companies or len(banks) < min_banks:
+        n_q = sum(u.register == "question" for u in mem)
+        # spec §6.3 stage 1 is "evidence exists, zero analyst questions": an evidence-only
+        # cluster has no banks by definition, so the bank test applies only once questions exist
+        register = "evidence_only" if n_q == 0 else ("question" if n_q == len(mem) else "mixed")
+        if len(companies) < min_companies or (n_q and len(banks) < min_banks):
             continue
         mem_sorted = sorted(mem, key=lambda u: (u.event_date or "9999", u.register != "question", u.id))  # questions lead
         ngr = tp.label_ngrams([texts[i] for i in idxs], df, n_docs)
@@ -126,6 +139,7 @@ def build_candidates(clusters, units, texts, df, n_docs, min_companies=MIN_COMPA
             "id": f"cand:{mem_sorted[0].id}",
             "label": ngr[0] if ngr else mem_sorted[0].id,
             "ngrams": ngr,
+            "register": register,
             "n_exchanges": len(mem), "n_companies": len(companies), "n_banks": len(banks),
             "tickers": sorted(companies), "firms": sorted(banks),
             "first_seen": mem_sorted[0].event_date,
@@ -186,7 +200,8 @@ def map_units(units, store, names, anchors, thr, min_sim=MIN_SIM, min_companies=
     rows, unmapped = [], []
     for i, u in enumerate(units):
         themes = assign(S[i], names, thr)
-        rows.append({**asdict(u), "themes": [{"theme": t, "score": s} for t, s in themes],
+        rows.append({**asdict(u), "cal_quarter": calendar_quarter(u.event_date),
+                     "themes": [{"theme": t, "score": s} for t, s in themes],
                      "best": round(float(S[i].max()), 4) if len(names) else None, "candidate": None})
         if not themes:
             unmapped.append(i)
@@ -276,8 +291,9 @@ def write_report(rows: list, cands: list, meta: dict, skipped: int, path: Path =
          "A unit maps when its cosine to a theme centroid clears the threshold; the rest are clustered and only "
          f"clusters with >= {MIN_COMPANIES} companies and >= {MIN_BANKS} banks are listed. The system never edits "
          "`config/watchlist.yaml` — accept with `topic_map.py --accept <id> --name <slug>`, reject with `--reject <id>`.", ""]
-    pending = [c for c in cands if c["status"] == "pending"]
-    L.append(f"### Pending candidates ({len(pending)} of {len(cands)})")
+    pending = [c for c in cands if c["status"] == "pending" and c.get("register") != "evidence_only"]
+    ev_only = [c for c in cands if c["status"] == "pending" and c.get("register") == "evidence_only"]
+    L.append(f"### Pending candidates ({len(pending)} of {len(cands)}; {len(ev_only)} evidence-only listed below)")
     L.append("")
     L.append("| id | suggested | n_banks | n_companies | n_exch | first_seen | tickers | phrases |")
     L.append("|---|---|---|---|---|---|---|---|")
@@ -292,6 +308,15 @@ def write_report(rows: list, cands: list, meta: dict, skipped: int, path: Path =
         L.append(f"Banks: {', '.join(c['firms'])}")
         for e in c["examples"]:
             L.append(f"- **{e['ticker']} {e['date']}** ({e.get('firm') or 'corprep'}): {e['text']}")
+        L.append("")
+    if ev_only:
+        L.append(f"### Evidence-only clusters ({len(ev_only)}) — executives say it, no analyst has asked (spec §6.3 stage 1)")
+        L.append("")
+        L.append("| id | suggested | n_companies | n_exch | first_seen | tickers | phrases |")
+        L.append("|---|---|---|---|---|---|---|")
+        for c in ev_only:
+            L.append(f"| `{c['id']}` | {c.get('suggested_name') or ''} | {c['n_companies']} | {c['n_exchanges']} | "
+                     f"{c['first_seen']} | {', '.join(c['tickers'][:8])} | {'; '.join(c['ngrams'][:5])} |")
         L.append("")
     decided = [c for c in cands if c["status"] != "pending"]
     if decided:
