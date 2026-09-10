@@ -70,3 +70,14 @@ if __name__ == "__main__":
               test_tool_was_called):
         t()
     print("\nALL PASS")
+
+
+def test_tool_use_input_returns_the_placed_arguments_or_none():
+    use = {"type": "assistant", "message": {"content": [
+        {"type": "tool_use", "name": "mcp__x__T", "input": {"ids": ["A-US"], "offset": 0}}]}}
+    other = {"type": "assistant", "message": {"content": [
+        {"type": "tool_use", "name": "ToolSearch", "input": {"query": "T"}}]}}
+    out = "\n".join(json.dumps(x) for x in (other, use))
+    assert claude_p.tool_use_input(out, "mcp__x__T") == {"ids": ["A-US"], "offset": 0}
+    assert claude_p.tool_use_input(out, "mcp__x__Z") is None
+    assert claude_p.tool_use_input("", "mcp__x__T") is None

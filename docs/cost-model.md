@@ -47,6 +47,15 @@ one-off ~90 Sonnet calls then ~0–3/week (`--missing-only`); Store B weekly = ~
 (Sonnet mcp-lean, ~23K tokens each); insider pull = 4 MCP calls/week. Sunday jobs are spaced
 (07:00 / 08:00 / 09:30) so no two `claude -p` batches overlap.
 
+**Conference transcript feed (added 2026-09-10):** `transcript_ingest.py --conferences 8` weekly
+(Sat 09:00) = 3 FactSet CalendarEvents calls (50 symbols each) + one UnstructuredContent pull per
+(name, conference day) the calendar lists — a busy week (Goldman Communacopia + Citi TMT,
+2026-09-08..10) is ~60–90 pulls, a quiet week a handful — all **Haiku** mcp-lean at ~22K tokens
+(the ingester was moved off the full-harness transport, ~100K/call, and off Sonnet the same day:
+the model only places the call, its arguments are verified, and the page is read from the
+tool_result, so the model choice cannot change the data). A busy week adds ~1,500–2,500 verbatim
+exchanges to `exchanges.jsonl`.
+
 **Why subscription is the right path for current pipeline LLM use:**
 1. Already paid — marginal cost is zero unless bucket exhausted
 2. Quality on edge cases (ambiguous classification, subsidiary mentions, indirect ticker references) generally better than Gemini Flash

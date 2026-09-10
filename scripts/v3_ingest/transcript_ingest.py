@@ -13,7 +13,16 @@ design turns on: analyst Q&A is unscripted, filings and news are IR-authored.
     python3 scripts/v3_ingest/transcript_ingest.py --ticker AAOI --max-queries 1 --dry-run
     python3 scripts/v3_ingest/transcript_ingest.py --ticker AAOI --max-queries 2
     python3 scripts/v3_ingest/transcript_ingest.py                    # full backfill
-    python3 scripts/v3_ingest/transcript_ingest.py --window-months 1  # forward cron
+    python3 scripts/v3_ingest/transcript_ingest.py --conferences 8    # weekly forward cron
+    python3 scripts/v3_ingest/transcript_ingest.py --start 2026-09-02 --end 2026-09-10 --query "..."
+
+CONFERENCE MODE (2026-09-10). `--conferences DAYS` is the forward feed: trailing
+window, one generic query per resolved name (themes not required), ledger entries
+keyed `id|query|offset|start..end`. The window in the key is what makes a forward
+run work at all — the 9-month backfill keyed on (id, query, offset) alone, so a
+`--window-months 1` run found every offset-0 page already "ok" and fetched nothing.
+Downstream, thesis/sources.conference_since reads the corprep rows straight from
+exchanges.jsonl, so the daily matcher sees a conference the run after it lands.
 
 WHAT WAS PROBED LIVE (2026-08-11) AND IS THEREFORE LOAD-BEARING HERE
   - Conference chunks carry financialYear but NO financialQuarter key at all.
@@ -26,19 +35,16 @@ WHAT WAS PROBED LIVE (2026-08-11) AND IS THEREFORE LOAD-BEARING HERE
   - FactSet's own `themes` field is an ESG taxonomy misfiring on tech. Unused.
 
 TRANSPORT. The FactSet MCP server is a claude.ai workspace connector, so Python
-cannot call it directly; the established repo pattern (newsdigest/factset_news.py,
-cron_earnings_reviewer.py) is `claude -p` with the MCP tool allowed. Verbatim
-fidelity matters more here than it does for news headlines, so:
-  1. limit=50 responses are large enough that the harness spills the raw tool
-     result to a file and hands the model the path. The model is asked to reply
-     with ONLY that path; this script reads the JSON itself and the model never
-     retypes a word (payload_source="file").
-  2. Small responses stay inline, so the model echoes the raw JSON
-     (payload_source="model_text"). Every chunk is then checked against the API's
-     own textLength field; a single mismatch fails the whole page rather than
-     admitting a paraphrase into the corpus.
-If the harness stops spilling to files, path 2 still works — slower and costlier,
-never silently lossy.
+cannot call it directly; the call goes through `claude -p`. Since 2026-09-10 this
+is the repo's mcp-lean transport (scripts/lib/claude_p.run_mcp, as factset_news /
+factset_flows / insider_pull): a data-retrieval system prompt, `--tools ToolSearch`,
+stream-json, and the page is read from the raw tool_result block (following a
+spill-to-file if the harness made one) — ~22K tokens per call instead of ~100K, and
+no word ever passes through the model (payload_source="tool_result"). Every chunk is
+still checked against the API's own textLength; a failing chunk is dropped, the page
+is not failed, because nothing was retyped. The legacy path (model echoes the JSON,
+payload_source="model_text", all-or-nothing fidelity) is kept in accept_payload for
+the rows already on disk and for the ledger's history.
 
 FAILURE MARKING (the b1c351aa lesson). The ledger records ok / empty / failed as
 three distinct states. `empty` means the API answered with nothing and the work
@@ -57,7 +63,6 @@ import argparse
 import datetime as dt
 import hashlib
 import json
-import os
 import re
 import subprocess
 import sys
@@ -71,6 +76,9 @@ import yaml
 # ───────────────────────────── Configuration ─────────────────────────────
 
 REPO_ROOT = Path("/root/research-watchlist")
+sys.path.insert(0, str(REPO_ROOT / "scripts"))              # lib.claude_p, etfflows.factset_flows
+from lib import claude_p                                     # noqa: E402  shared -p wrapper (mcp-lean)
+from etfflows.factset_flows import _tool_result_blocks, _unwrap, resolve_payload  # noqa: E402
 WATCHLIST_YAML = REPO_ROOT / "config" / "watchlist.yaml"
 IDENTITY_YAML = REPO_ROOT / "config" / "ticker_identity.yaml"
 # supply-chain lives in the sibling research repo, NOT under this repo's config/
@@ -85,7 +93,10 @@ NO_COVERAGE_PATH = STATE_DIR / "_no_coverage.json"
 RAW_DIR = STATE_DIR / "raw"                       # gitignored payload cache
 
 TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_UnstructuredContent"
-MODEL = "claude-sonnet-4-6"                       # matches the other v3 wrappers
+MODEL = "claude-haiku-4-5-20251001"               # 2026-09-10: the model only places one tool call
+                                                  # (arguments verified against the transcript, page read
+                                                  # from the tool_result); Haiku A/B vs Sonnet on 3 names =
+                                                  # identical vectorIds. Sonnet only for the legacy echo path.
 CLAUDE_TIMEOUT_S = 420
 
 WINDOW_MONTHS = 9                                 # spec §3, operator's call
@@ -93,6 +104,25 @@ PAGE_LIMIT = 50                                   # FactSet max
 MAX_PAGES = 3                                     # 150 chunks per (company, query)
 MAX_QUERIES_PER_COMPANY = 6
 DEFAULT_WORKERS = 3
+
+# Conference mode (2026-09-10): a trailing window, ONE generic query per resolved name
+# (themes not required — a themeless name still presents at conferences), ledger keyed
+# by the window so successive weekly runs never collide with the 9-month backfill's
+# (id, query, offset) entries. Paging until a short page returns every chunk FactSet
+# holds for the name in the window, so one query is complete, not a sample.
+CONFERENCE_QUERY = "What did the executives say at the conference?"
+CONFERENCE_WINDOW_DAYS = 8                        # weekly cron with one day of overlap
+ABORT = threading.Event()                         # set on ToolUnavailableError: stop all workers
+
+# Calendar-driven conference mode (2026-09-10). Measured on AVGO (Goldman session + Q3 call
+# in one 8-day window): pages at offset 0 and 50 of the same query overlapped on 22 of 50
+# chunks — most chunks tie at the 0.01 similarity floor and FactSet orders ties arbitrarily
+# per request, so paging over a whole-window corpus leaves gaps (30 of 44 documents were
+# missing Q&A turns). ONE event over a 3-day window fits a single 50-chunk page, which is
+# returned in full — so the feed asks the calendar where to look and pulls per event.
+CAL_TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_CalendarEvents"
+CAL_SYMBOLS_PER_CALL = 50
+EVENT_WINDOW_DAYS = 2                             # storyDateTime = publication, up to 2 days after the session
 
 # tool contract: letters, digits and  space , % & / - ?
 QUERY_CHARSET_RE = re.compile(r"[A-Za-z0-9 ,%&/\-?]+")
@@ -244,9 +274,13 @@ def theme_to_query(theme: str) -> str:
     return f"What are executives and analysts discussing about {phrase}?"
 
 
-def queries_for(entry: UniverseEntry, max_queries: int = MAX_QUERIES_PER_COMPANY) -> list:
+def queries_for(entry: UniverseEntry, max_queries: int = MAX_QUERIES_PER_COMPANY,
+                override: list | None = None) -> list:
     """Themes in operator-authored order, capped. A name with no assigned themes
-    yields no queries — inventing one would contaminate the vocabulary."""
+    yields no queries — inventing one would contaminate the vocabulary.
+    `override` (conference mode / --query) replaces the theme queries for every name."""
+    if override:
+        return list(override)[:max_queries]
     return [theme_to_query(t) for t in entry.themes[:max_queries]]
 
 
@@ -441,25 +475,28 @@ class Ledger:
                 log(f"WARNING: unreadable ledger at {self.path}; starting a fresh one")
 
     @staticmethod
-    def key(factset_id: str, query: str, offset: int) -> str:
-        return f"{factset_id}|{query}|{offset}"
+    def key(factset_id: str, query: str, offset: int, window: tuple | None = None) -> str:
+        """Legacy (windowless) key for the backfill; `|start..end` appended when the run
+        has an explicit window, so a forward window never reads as already fetched."""
+        k = f"{factset_id}|{query}|{offset}"
+        return f"{k}|{window[0]}..{window[1]}" if window else k
 
-    def status(self, factset_id, query, offset) -> str | None:
-        e = self.data["entries"].get(self.key(factset_id, query, offset))
+    def status(self, factset_id, query, offset, window=None) -> str | None:
+        e = self.data["entries"].get(self.key(factset_id, query, offset, window))
         return e.get("status") if e else None
 
-    def done(self, factset_id, query, offset) -> bool:
-        s = self.status(factset_id, query, offset)
+    def done(self, factset_id, query, offset, window=None) -> bool:
+        s = self.status(factset_id, query, offset, window)
         return bool(s and (s == "ok" or s == "empty" or s.startswith("ok")))
 
     def record(self, factset_id, query, offset, status, n_chunks,
-               raw_returned=None, terminal=False) -> None:
+               raw_returned=None, terminal=False, window=None) -> None:
         """`n_chunks` is what survived validation; `raw_returned` is what the API
         actually returned. Both are needed: the stop decision keys on the raw count,
         so without it a resumed run cannot tell a short page from a page where
         validation dropped chunks, and would re-fetch every terminated query."""
         with self._lock:
-            self.data["entries"][self.key(factset_id, query, offset)] = {
+            self.data["entries"][self.key(factset_id, query, offset, window)] = {
                 "status": status,
                 "n_chunks": n_chunks,
                 "raw_returned": raw_returned,
@@ -467,10 +504,10 @@ class Ledger:
                 "ts": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
             }
 
-    def terminated(self, factset_id, query, offset) -> bool:
+    def terminated(self, factset_id, query, offset, window=None) -> bool:
         """True when this page already ended the query's paging — so a resumed run
         skips the offsets beyond it instead of paying for them again."""
-        e = self.data["entries"].get(self.key(factset_id, query, offset))
+        e = self.data["entries"].get(self.key(factset_id, query, offset, window))
         return bool(e and e.get("terminal"))
 
     def save(self) -> None:
@@ -521,13 +558,11 @@ def page_offsets(limit: int = PAGE_LIMIT, max_pages: int = MAX_PAGES) -> list:
 
 # ───────────────────────────── FactSet fetch ─────────────────────────────
 
-def _claude_env() -> dict:
-    return {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
-
 
 def _fetch_prompt(factset_id, query, start, end, limit, offset) -> str:
+    # mcp-lean: the model only places the call; the page is read from the tool_result.
     return (
-        f"Call the {TOOL.split('__')[-1]} tool exactly once with these arguments, "
+        f"Call the {TOOL.split('__')[-1]} tool exactly once with exactly these arguments, "
         "changing nothing:\n"
         f"  sources=['ALL_TRANSCRIPTS']\n"
         f"  ids=['{factset_id}']\n"
@@ -536,64 +571,89 @@ def _fetch_prompt(factset_id, query, start, end, limit, offset) -> str:
         f"  limit={limit}\n"
         f"  offset={offset}\n"
         f"  query='{query}'\n\n"
-        "Do not modify the query text. Do not call any other tool. Do not summarise, "
-        "analyse, review or read anything.\n\n"
-        "THEN REPLY IN EXACTLY ONE OF TWO WAYS:\n"
-        "1. If the tool result was too large and was saved to a file, reply with ONLY "
-        "that absolute file path — no other words, and do not open the file.\n"
-        "2. Otherwise reply with ONLY the tool's raw JSON response, copied character "
-        "for character, with no code fences, no commentary and nothing omitted."
+        "Do not modify the query text. Do not call any other tool. Do not open any file. "
+        "Then reply DONE."
     )
 
 
-def _extract_json_object(text: str):
-    text = (text or "").strip()
-    text = re.sub(r"^```(?:json)?|```$", "", text, flags=re.MULTILINE).strip()
-    start, end = text.find("{"), text.rfind("}")
-    if start == -1 or end == -1 or end < start:
-        return None
-    try:
-        return json.loads(text[start:end + 1])
-    except json.JSONDecodeError:
-        return None
+
+class CalendarError(RuntimeError):
+    """The calendar pull failed — there is no plan to run, so the run stops loudly."""
+
+
+def _arg_norm(v):
+    if isinstance(v, (list, tuple)):
+        return sorted(str(x) for x in v)
+    return str(v)
+
+
+def argument_drift(placed: dict | None, expected: dict, optional=("sources",)) -> list:
+    """Names of expected arguments the model did not place as given. Cosmetic differences
+    (int vs str, list order/tuple) are not drift; an omitted key in `optional` is not."""
+    if placed is None:
+        return ["<no tool_use>"]
+    bad = []
+    for k, want in expected.items():
+        if k not in placed:
+            if k in optional:
+                continue
+            bad.append(k)
+        elif _arg_norm(placed[k]) != _arg_norm(want):
+            bad.append(k)
+    return bad
+
+
+def _page_args(factset_id, query, start, end, limit, offset) -> dict:
+    return {"sources": ["ALL_TRANSCRIPTS"], "ids": [factset_id], "startDate": start,
+            "endDate": end, "limit": limit, "offset": offset, "query": query}
 
 
 def fetch_page(factset_id, query, start, end, offset, limit=PAGE_LIMIT,
-               timeout=CLAUDE_TIMEOUT_S, raw_dir: Path | None = None):
-    """-> (chunks, status, payload_source). Never raises; the caller records the status."""
-    cmd = ["claude", "-p", _fetch_prompt(factset_id, query, start, end, limit, offset),
-           "--output-format", "json", "--allowedTools", TOOL, "--model", MODEL]
+               timeout=CLAUDE_TIMEOUT_S, raw_dir: Path | None = None, model: str | None = None):
+    """-> (chunks, status, payload_source). Never raises; the caller records the status.
+
+    mcp-lean transport (scripts/lib/claude_p.run_mcp, 2026-09-10; previously the full
+    harness at ~100K tokens/call): the model's only job is to place the call, and the
+    page is read from the raw tool_result in the stream-json transcript — no word passes
+    through the model (payload_source="tool_result", so accept_payload drops a bad chunk
+    instead of failing the page). A spilled tool_result is followed by resolve_payload.
+    ToolUnavailableError means the connector is not loaded — identical for every name —
+    so it sets ABORT and the other workers stop rather than paying for N more failures.
+    """
+    if ABORT.is_set():
+        return [], "failed: aborted (tool unavailable earlier in this run)", None
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout,
-                              cwd=str(REPO_ROOT), env=_claude_env())
+        stdout = claude_p.run_mcp(_fetch_prompt(factset_id, query, start, end, limit, offset),
+                                  mcp_tool=TOOL, model=model or MODEL, cwd=str(REPO_ROOT),
+                                  timeout=timeout)
+    except claude_p.ToolUnavailableError as e:
+        ABORT.set()
+        return [], f"failed: tool unavailable ({str(e)[:120]})", None
     except subprocess.TimeoutExpired:
         return [], "failed: timeout", None
     except Exception as e:                                   # noqa: BLE001
-        return [], f"failed: {type(e).__name__}: {e}", None
+        return [], f"failed: {type(e).__name__}: {str(e)[:160]}", None
 
-    if proc.returncode != 0:
-        return [], f"failed: rc={proc.returncode} {(proc.stdout or proc.stderr or '')[:160]}", None
-    try:
-        env = json.loads(proc.stdout)
-    except json.JSONDecodeError:
-        return [], "failed: unparseable claude envelope", None
-    if env.get("is_error"):
-        return [], f"failed: claude is_error {str(env.get('result'))[:160]}", None
+    # The model is the only thing between us and the API. Whatever it placed is what
+    # the page answers; a drifted argument is a different page under the same ledger key.
+    placed = claude_p.tool_use_input(stdout, TOOL)
+    drift = argument_drift(placed, _page_args(factset_id, query, start, end, limit, offset))
+    if drift:
+        shown = {k: (placed or {}).get(k) for k in drift}
+        return [], f"failed: argument drift in {', '.join(drift)}: placed {shown!r}", None
 
-    text = (env.get("result") or "").strip()
-    payload, payload_source = None, None
-    candidate = text.strip().strip("`").strip()
-    if candidate.startswith("/") and "\n" not in candidate and len(candidate) < 500:
-        try:
-            payload = json.loads(Path(candidate).read_text())
-            payload_source = "file"
-        except (OSError, json.JSONDecodeError) as e:
-            return [], f"failed: unreadable spill file ({type(e).__name__})", None
+    blocks = _tool_result_blocks(stdout)
+    payload, payload_source = None, "tool_result"
+    for text in reversed(blocks):
+        # a spilled page (>~70KB, i.e. most full 50-chunk pages) comes back as the MCP
+        # content-block wrapper [{"type":"text","text":"{...}"}]; _unwrap opens it
+        cand = _unwrap(resolve_payload(text))
+        if isinstance(cand, dict) and "data" in cand:
+            payload = cand
+            break
     if payload is None:
-        payload = _extract_json_object(text)
-        payload_source = "model_text"
-    if payload is None:
-        return [], "failed: no JSON in reply", None
+        tail = (blocks[-1] if blocks else stdout).strip()[-160:]
+        return [], f"failed: no FactSet payload in tool_result: {tail!r}", None
 
     chunks = payload.get("data")
     if not isinstance(chunks, list):
@@ -682,6 +742,93 @@ def window_bounds(months: int, today: dt.date | None = None):
     return dt.date(y, m, day).isoformat(), end.isoformat()
 
 
+def conference_window(days: int, today: dt.date | None = None):
+    """Trailing window for the forward (conference) cron: [today - days, today]."""
+    end = today or dt.date.today()
+    return (end - dt.timedelta(days=days)).isoformat(), end.isoformat()
+
+
+def event_window(event_datetime: str, today: dt.date | None = None):
+    """[event day, min(event day + EVENT_WINDOW_DAYS, today)]: storyDateTime is the
+    publication moment (CRWV's 8-Sep session carried 9-Sep 09:26), so the window trails
+    the session — but never past today: FactSet rejects a future endDate outright
+    ("Invalid date/dateTime ... not in the future", measured 2026-09-10 on NOW). A
+    clamped window has its own ledger key, so next week's unclamped window is re-pulled
+    and the late-published turns land then (vectorId dedup absorbs the overlap)."""
+    today = today or dt.date.today()
+    day = dt.date.fromisoformat(event_datetime[:10])
+    end = min(day + dt.timedelta(days=EVENT_WINDOW_DAYS), today)
+    return day.isoformat(), end.isoformat()
+
+
+def _calendar_prompt(symbols: list, start: str, end: str) -> str:
+    end_excl = (dt.date.fromisoformat(end) + dt.timedelta(days=1)).isoformat()
+    return (
+        f"Call the {CAL_TOOL.split('__')[-1]} tool exactly once with exactly these arguments, "
+        "changing nothing:\n"
+        f"  symbols={symbols!r}\n"
+        "  universeType='Tickers'\n"
+        "  eventTypes=['Conference']\n"
+        f"  startDateTime='{start}T00:00:00Z'\n"
+        f"  endDateTime='{end_excl}T00:00:00Z'\n\n"
+        "Do not call any other tool. Do not open any file. Then reply DONE."
+    )
+
+
+def fetch_calendar(entries: list, start: str, end: str, timeout=CLAUDE_TIMEOUT_S,
+                   model: str | None = None) -> list:
+    """Conference events for every resolved name in [start, end], CAL_SYMBOLS_PER_CALL
+    symbols per MCP call. Raises CalendarError on any failure: without the calendar
+    there is no plan, and a silent empty plan would read as a quiet week."""
+    symbols = [e.factset_id for e in entries]
+    events = []
+    for i in range(0, len(symbols), CAL_SYMBOLS_PER_CALL):
+        chunk = symbols[i:i + CAL_SYMBOLS_PER_CALL]
+        try:
+            stdout = claude_p.run_mcp(_calendar_prompt(chunk, start, end), mcp_tool=CAL_TOOL,
+                                      model=model or MODEL, cwd=str(REPO_ROOT), timeout=timeout)
+        except (claude_p.ToolUnavailableError, RuntimeError, subprocess.TimeoutExpired) as e:
+            raise CalendarError(f"calendar pull {chunk[0]}..{chunk[-1]}: "
+                                f"{type(e).__name__}: {str(e)[:200]}") from e
+        payload = None
+        for text in reversed(_tool_result_blocks(stdout)):
+            cand = _unwrap(resolve_payload(text))
+            if isinstance(cand, dict) and isinstance(cand.get("data"), list):
+                payload = cand
+                break
+        if payload is None:
+            raise CalendarError(f"calendar pull {chunk[0]}..{chunk[-1]}: no data array in "
+                                f"tool_result: {stdout.strip()[-200:]!r}")
+        events.extend(payload["data"])
+    return events
+
+
+def plan_from_events(entries: list, events: list, today: dt.date | None = None) -> list:
+    """(entry, CONFERENCE_QUERY, (start, end)) per (name, event day), matched on the
+    event's requestId (our factset_id; `identifier` may be the primary listing, e.g.
+    TSM-US -> 2330-TW). Two sessions on one day are one pull. An event dated after
+    today is deferred: the next trailing-window run sees it."""
+    today = today or dt.date.today()
+    by_id = {e.factset_id: e for e in entries}
+    seen, plan = set(), []
+    for ev in events:
+        if not isinstance(ev, dict) or ev.get("eventType") != "Conference":
+            continue
+        entry = by_id.get(ev.get("requestId")) or by_id.get(ev.get("identifier"))
+        when = ev.get("eventDateTime") or ""
+        if entry is None or len(when) < 10:
+            continue
+        w = event_window(when, today)
+        if w[0] > w[1]:
+            continue                                   # not happened yet
+        if (entry.ticker, w) in seen:
+            continue
+        seen.add((entry.ticker, w))
+        plan.append((entry, CONFERENCE_QUERY, w))
+    plan.sort(key=lambda t: (t[0].ticker, t[2]))
+    return plan
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="P1 transcript ingest (spec §4.1)")
     ap.add_argument("--ticker", action="append", help="restrict to these tickers (repeatable)")
@@ -694,7 +841,27 @@ def main(argv=None) -> int:
     ap.add_argument("--dry-run", action="store_true", help="print planned calls, call nothing")
     ap.add_argument("--retry-failed", action="store_true", default=True)
     ap.add_argument("--no-raw-cache", action="store_true")
+    ap.add_argument("--start", help="explicit window start YYYY-MM-DD (with --end); "
+                                    "ledger entries are scoped to the window")
+    ap.add_argument("--end", help="explicit window end YYYY-MM-DD (with --start)")
+    ap.add_argument("--conferences", type=int, metavar="DAYS",
+                    help="forward mode: trailing DAYS window, one generic query per resolved "
+                         f"name, themes not required (weekly cron: {CONFERENCE_WINDOW_DAYS}). "
+                         "Calendar-driven: one pull per (name, conference day) from "
+                         "CalendarEvents, each over a 3-day window that fits one page")
+    ap.add_argument("--scan", action="store_true",
+                    help="with --conferences: page the whole trailing window per name instead "
+                         "of asking the calendar (the 2026-09-10 first run; leaves gaps)")
+    ap.add_argument("--model", default=MODEL,
+                    help=f"claude -p model for the MCP calls (default {MODEL}); the model only "
+                         "places the call and its arguments are verified against the transcript")
+    ap.add_argument("--query", action="append",
+                    help="replace the theme queries with this sentence (repeatable)")
     args = ap.parse_args(argv)
+    if bool(args.start) != bool(args.end):
+        ap.error("--start and --end go together")
+    if args.conferences and args.start:
+        ap.error("--conferences sets its own window; drop --start/--end")
 
     watchlist = load_yaml(WATCHLIST_YAML)
     identity = load_yaml(IDENTITY_YAML)
@@ -706,27 +873,47 @@ def main(argv=None) -> int:
         entries = [e for e in entries if e.ticker in wanted]
 
     entries.sort(key=lambda e: e.ticker)
-    start, end = window_bounds(args.window_months)
+    if args.conferences:
+        start, end = conference_window(args.conferences)
+        window, override = (start, end), (args.query or [CONFERENCE_QUERY])
+    elif args.start:
+        start, end = args.start, args.end
+        window, override = (start, end), args.query
+    else:
+        start, end = window_bounds(args.window_months)
+        window, override = None, args.query           # legacy ledger keys: the backfill
 
-    log(f"window {start} -> {end}; universe {len(entries)} names, "
-        f"{len(unresolved)} unresolved")
+    log(f"window {start} -> {end}{' (ledger-scoped)' if window else ''}; universe "
+        f"{len(entries)} names, {len(unresolved)} unresolved"
+        + (f"; query override: {override}" if override else ""))
     for e in entries:
         log(f"  {e.ticker:<14} {e.factset_id:<12} themes={len(e.themes)} "
-            f"[{'; '.join(e.reasons)}]" + ("  NO THEMES -> no queries" if not e.themes else ""))
+            f"[{'; '.join(e.reasons)}]"
+            + ("  NO THEMES -> no queries" if not e.themes and not override else ""))
     for u in unresolved:
         log(f"  UNRESOLVED {u['ticker']}: {u['reason']} (via {u['route']})")
     if args.print_universe:
         return 0
 
-    plan = []
-    for e in entries:
-        for q in queries_for(e, args.max_queries):
-            plan.append((e, q))
-    log(f"planned: {len(plan)} (company, query) pairs x up to {args.max_pages} pages")
+    # plan items: (entry, query, (start, end), ledger window-key or None)
+    if args.conferences and not args.scan:
+        try:
+            events = fetch_calendar(entries, start, end, model=args.model)
+        except CalendarError as e:
+            log(f"ABORT: {e}")
+            return 1
+        plan = [(e, q, w, w) for e, q, w in plan_from_events(entries, events)]
+        n_conf = sum(1 for ev in events if isinstance(ev, dict) and ev.get("eventType") == "Conference")
+        log(f"calendar: {len(events)} events ({n_conf} Conference) for {len(entries)} names "
+            f"-> {len(plan)} (name, day) pulls")
+    else:
+        plan = [(e, q, (start, end), window) for e in entries
+                for q in queries_for(e, args.max_queries, override=override)]
+    log(f"planned: {len(plan)} (company, query, window) items x up to {args.max_pages} pages")
 
     if args.dry_run:
-        for e, q in plan:
-            log(f"  DRY {e.ticker} [{e.factset_id}] {q}")
+        for e, q, (s0, e0), _ in plan:
+            log(f"  DRY {e.ticker} [{e.factset_id}] {s0}..{e0} {q}")
         return 0
 
     STATE_DIR.mkdir(parents=True, exist_ok=True)
@@ -742,15 +929,18 @@ def main(argv=None) -> int:
     queried, produced, failed_names = set(), set(), set()
 
     def work(item):
-        entry, query = item
+        entry, query, (w_start, w_end), wkey = item
         queried.add(entry.ticker)
         for offset in page_offsets(args.limit, args.max_pages):
-            if ledger.done(entry.factset_id, query, offset):
-                if ledger.terminated(entry.factset_id, query, offset):
+            if ABORT.is_set():
+                return                     # connector unavailable: same for every name
+            if ledger.done(entry.factset_id, query, offset, window=wkey):
+                if ledger.terminated(entry.factset_id, query, offset, window=wkey):
                     return                 # this query already ran out of results
                 continue
-            chunks, status, source = fetch_page(entry.factset_id, query, start, end,
-                                                offset, args.limit, raw_dir=raw_dir)
+            chunks, status, source = fetch_page(entry.factset_id, query, w_start, w_end,
+                                                offset, args.limit, raw_dir=raw_dir,
+                                                model=args.model)
             if status == "ok":
                 kept, status = accept_payload(chunks, source or "model_text")
             else:
@@ -758,7 +948,7 @@ def main(argv=None) -> int:
             terminal = not status.startswith("failed") and should_stop_paging(
                 len(chunks), args.limit)
             ledger.record(entry.factset_id, query, offset, status, len(kept),
-                          raw_returned=len(chunks), terminal=terminal)
+                          raw_returned=len(chunks), terminal=terminal, window=wkey)
 
             if status.startswith("failed"):
                 stats["pages_failed"] += 1

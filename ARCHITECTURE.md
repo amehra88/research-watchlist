@@ -91,7 +91,13 @@ Two git repos cooperate:
   `state/thesis/ranking_*.json`), `thesis_draft` (Sun 07:00, `draft_thesis.py --missing-only`),
   `store_b_weekly` (Sun 08:00, `ingest_metrics.py --cron`: FactSet EstimatesConsensus via
   `run_mcp`, ~54 calls, + consensus snapshot), `insider_pull` (Sun 09:30, InsiderScore open-market
-  ex-10b5-1 → `state/thesis/insiders_*.jsonl`). `config/watchlist.yaml` stays operator-only:
+  ex-10b5-1 → `state/thesis/insiders_*.jsonl`), `transcript_conferences` (Sat 09:00,
+  `scripts/v3_ingest/transcript_ingest.py --conferences 8`: FactSet CalendarEvents lists the
+  week's Conference sessions per name, then one UnstructuredContent pull per (name, session day)
+  over a 3-day window — one page holds the whole event, where paging a whole-window corpus left
+  gaps — → verbatim `corprep` rows in `state/transcripts/exchanges.jsonl`, read by the matcher's
+  `conference_since`; Haiku mcp-lean, the placed tool arguments are verified against the
+  transcript and the page is read from the raw tool_result). `config/watchlist.yaml` stays operator-only:
   proposals surface in the report and are applied by `scripts/thesis/apply_scores.py --write`.
   Design: `docs/superpowers/specs/2026-09-09-thesis-loop-design.md`.
 - **`daily_digest` / `nport_*` / `watchlist_derive`** — adjacent pipelines (daily report email, NPORT
@@ -172,10 +178,11 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
 
 ## 8. Open architectural questions
 
-- **Thesis loop follow-ups (2026-09-09)** — (a) conference-transcript feed: the design wanted
-  `transcript_ingest.py --conferences --since-last` on a Sunday cron, but that script has no such
-  mode and belongs to the parked idea-surfacing extraction, so verbatim conference Q&A only reaches
-  the matcher via operator-emailed `-conf-` notes; (b) ETF context in the report is BCTK weight +
+- **Thesis loop follow-ups (2026-09-09)** — (a) ~~conference-transcript feed~~ CLOSED 2026-09-10:
+  `transcript_ingest.py --conferences 8` on the Saturday cron (§4), calendar-driven; still open
+  there: a session dated today is pulled with a window clamped to today and only completed by the
+  next week's run, and names FactSet's calendar does not list are not pulled at all (`--scan`
+  keeps the whole-window fallback); (b) ETF context in the report is BCTK weight +
   5-day flow only (no per-name days-of-ADV yet); (c) the quarterly "state of theses" edition
   triggers off the earnings-note calendar on disk, not InsiderScore `future_earnings_dates`;
   (d) InsiderScore row keys were verified on one live pull — extend `insider_pull.normalize` if a
@@ -211,6 +218,13 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
 
 ## 9. Recent milestones (most recent first)
 
+- **2026-09-10** — **Conference-transcript weekly feed** (`transcript_ingest.py --conferences`):
+  ingester moved to the mcp-lean transport (~100K → ~22K tokens/call) and to Haiku (A/B vs Sonnet
+  on 3 names: identical vectorIds; the model only places the call, and an argument-drift guard
+  fails a page whose tool_use input differs from the request); window-scoped ledger keys so
+  forward runs never collide with the backfill; calendar-driven per-event pulls after the
+  whole-window scan measured 22/50 overlapping chunks between pages of one query; FactSet
+  rejects future end dates, so event windows clamp to today. Cron Sat 09:00.
 - **2026-09-09** — **Thesis loop built end to end** (`scripts/thesis/`): `_thesis.md` object +
   drafter (scores/notes/thin modes, COHR/LITE imported from the assumptions draft), evidence
   collectors for every channel, daily matcher, thesis-aware earnings reviewer (§4b), weekly delta

@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-08-21T09:26:06+00:00",
+ "generated_at": "2026-09-10T17:48:00+00:00",
  "window": {
-  "start": "2025-11-21",
-  "end": "2026-08-21"
+  "start": "2026-09-02",
+  "end": "2026-09-10"
  },
  "no_factset_id": [
   {
@@ -12,6 +12,11 @@
   },
   {
    "ticker": "source_photonics.cn",
+   "reason": "no factset_id in tier_4 entry",
+   "route": "tier_4"
+  },
+  {
+   "ticker": "base_power.us",
    "reason": "no factset_id in tier_4 entry",
    "route": "tier_4"
   }
@@ -201,30 +206,37 @@
   }
  ],
  "no_results": [
-  "AWS"
+  "ADI",
+  "AWS",
+  "BABA",
+  "BIDU",
+  "DE",
+  "DPC",
+  "GH",
+  "HSAI",
+  "INIO",
+  "NTES",
+  "PLAB",
+  "RDNT",
+  "SE",
+  "SEI",
+  "TSEM",
+  "TTWO"
  ],
  "incomplete": [
+  "A000660",
   "MU",
   "NET",
-  "NOW",
-  "NVDA",
-  "NXPI",
   "PLTR",
   "POET",
   "PWR",
-  "RBRK",
-  "RDDT",
   "RKLB",
-  "ROKU",
   "SHOP",
-  "SNOW",
   "SNPS",
   "SPCX",
-  "SPOT",
   "TSLA",
   "TXN",
   "WELL",
-  "ZS",
   "accelink.cn",
   "eoptolink.cn",
   "hgtech.cn",

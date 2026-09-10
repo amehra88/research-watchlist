@@ -1,5 +1,5 @@
 # snapshot of the live droplet crontab — written by scripts/snapshot_crontab.sh
-# snapshot taken: 2026-09-08T13:30:01-04:00
+# snapshot taken: 2026-09-10T13:49:06-04:00
 PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 0 7 * * * /root/bin/alert_on_failure.sh daily_digest /root/daily/run_daily.sh
 7 12 * * 0 /root/bin/alert_on_failure.sh nport_weekly /root/nport/run_weekly.sh >> /root/nport/data/cron.log 2>&1
@@ -38,3 +38,13 @@ PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 # 40 of 256 stories. The 07:00 --report step (in run_daily.sh) makes ZERO LLM calls.
 # 05:30 is verified, not assumed: at 05:05 ET the prior day's flows were already published.
 30 5 * * 1-5 /root/bin/alert_on_failure.sh etf_flows_fetch /root/research-watchlist/scripts/etf_flows.py --fetch
+
+# thesis loop (2026-09-09): match daily, thin alerts twice daily, weekly delta report, Sunday drafter/Store B/insiders (spaced: no two claude -p batches overlap)
+0 15 * * * cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh thesis_match python3 scripts/thesis/match_evidence.py >> logs/thesis_match.log 2>&1
+20 6 * * * cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh thesis_alerts_am python3 scripts/thesis/thesis_report.py --alerts >> logs/thesis_report.log 2>&1
+45 15 * * * cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh thesis_alerts_pm python3 scripts/thesis/thesis_report.py --alerts >> logs/thesis_report.log 2>&1
+15 6 * * 1 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh thesis_weekly python3 scripts/thesis/thesis_report.py --weekly --auto-quarterly >> logs/thesis_report.log 2>&1
+0 7 * * 0 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh thesis_draft python3 scripts/thesis/draft_thesis.py --missing-only >> logs/draft_thesis.log 2>&1
+0 8 * * 0 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh store_b_weekly python3 scripts/chunking/ingest_metrics.py --cron >> logs/store_b_weekly.log 2>&1
+30 9 * * 0 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh insider_pull python3 scripts/thesis/insider_pull.py >> logs/insider_pull.log 2>&1
+0 9 * * 6 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh transcript_conferences python3 scripts/v3_ingest/transcript_ingest.py --conferences 8 >> logs/transcript_ingest_conferences.log 2>&1

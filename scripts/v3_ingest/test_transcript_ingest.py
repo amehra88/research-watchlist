@@ -445,6 +445,226 @@ def test_window_bounds_walks_back_whole_months():
 
 # ───────────────────────── runner ─────────────────────────
 
+# ───────────────────────── conference mode (2026-09-10) ─────────────────────────
+import datetime as dt  # noqa: E402
+
+def test_ledger_key_is_unchanged_without_a_window_and_scoped_with_one():
+    # the August backfill keyed on (id, query, offset) with no window: those entries
+    # must still be found, and an explicit window must NOT collide with them —
+    # otherwise a forward run finds every offset-0 page already "ok" and fetches nothing
+    assert ti.Ledger.key("AMD-US", "q", 0) == "AMD-US|q|0"
+    assert ti.Ledger.key("AMD-US", "q", 0, window=("2026-09-02", "2026-09-10")) \
+        == "AMD-US|q|0|2026-09-02..2026-09-10"
+    with tempfile.TemporaryDirectory() as d:
+        led = ti.Ledger(Path(d) / "_progress.json")
+        led.record("AMD-US", "q", 0, "ok", 50, raw_returned=50, terminal=True)
+        w = ("2026-09-02", "2026-09-10")
+        assert led.done("AMD-US", "q", 0) is True
+        assert led.done("AMD-US", "q", 0, window=w) is False
+        led.record("AMD-US", "q", 0, "empty", 0, window=w)
+        assert led.done("AMD-US", "q", 0, window=w) is True
+        assert led.coverage("AMD-US") == "covered"        # prefix match still spans both
+
+
+def test_conference_window_and_query_override():
+    assert ti.conference_window(8, dt.date(2026, 9, 10)) == ("2026-09-02", "2026-09-10")
+    e = ti.UniverseEntry("AMD-US".split("-")[0], "AMD-US", ["ai_accelerators", "pc"], ["tier_1"])
+    assert ti.queries_for(e, 6, override=[ti.CONFERENCE_QUERY]) == [ti.CONFERENCE_QUERY]
+    assert ti.QUERY_CHARSET_RE.fullmatch(ti.CONFERENCE_QUERY)
+    themeless = ti.UniverseEntry("X", "X-US", [], ["tier_2"])
+    # conference mode asks every resolved name, themes or not
+    assert ti.queries_for(themeless, 6, override=[ti.CONFERENCE_QUERY]) == [ti.CONFERENCE_QUERY]
+
+
+def _page_args(factset_id, query, start, end, offset=0, limit=50):
+    return {"sources": ["ALL_TRANSCRIPTS"], "ids": [factset_id], "startDate": start,
+            "endDate": end, "limit": limit, "offset": offset, "query": query}
+
+
+def _fake_transcript(payload, tool=ti.TOOL, input=None):
+    use = {"type": "assistant", "message": {"content": [
+        {"type": "tool_use", "name": tool, "input": input or {}}]}}
+    res = {"type": "user", "message": {"content": [
+        {"type": "tool_result", "content": json.dumps(payload)}]}}
+    return "\n".join(json.dumps(x) for x in (use, res, {"type": "result", "result": "DONE"}))
+
+
+def test_fetch_page_reads_the_raw_tool_result():
+    payload = {"data": CONFERENCE, "meta": {"pagination": {"total": len(CONFERENCE)}}}
+    calls = []
+    def fake(prompt, **kw):
+        calls.append((prompt, kw))
+        return _fake_transcript(payload, input=_page_args("LITE-US", "q?", "2026-09-02", "2026-09-10"))
+    orig = ti.claude_p.run_mcp
+    ti.claude_p.run_mcp = fake
+    try:
+        chunks, status, source = ti.fetch_page("LITE-US", "q?", "2026-09-02", "2026-09-10", 0, 50)
+    finally:
+        ti.claude_p.run_mcp = orig
+    assert status == "ok" and source == "tool_result"
+    assert [c["vectorId"] for c in chunks] == [c["vectorId"] for c in CONFERENCE]
+    prompt, kw = calls[0]
+    assert kw["mcp_tool"] == ti.TOOL
+    for frag in ("ids=['LITE-US']", "startDate='2026-09-02'", "endDate='2026-09-10'", "offset=0", "limit=50"):
+        assert frag in prompt, frag
+    # a raw tool_result was never retyped: per-chunk fidelity drops, never a page failure
+    kept, st = ti.accept_payload(chunks, "tool_result")
+    assert st == "ok" and len(kept) == len(CONFERENCE)
+
+
+def test_fetch_page_tool_unavailable_is_a_failure_that_aborts_the_run():
+    def fake(prompt, **kw):
+        raise ti.claude_p.ToolUnavailableError("no tool_use")
+    orig = ti.claude_p.run_mcp
+    ti.claude_p.run_mcp = fake
+    ti.ABORT.clear()
+    try:
+        chunks, status, source = ti.fetch_page("AMD-US", "q?", "2026-09-02", "2026-09-10", 0, 50)
+    finally:
+        ti.claude_p.run_mcp = orig
+    assert chunks == [] and status.startswith("failed") and "unavailable" in status
+    assert ti.ABORT.is_set()
+    ti.ABORT.clear()
+
+
+def test_fetch_page_opens_the_content_block_wrapper_of_a_spilled_page():
+    # measured 2026-09-10 (HTFL, 30 chunks / 71KB): the harness persists a large
+    # tool_result to a file whose JSON is [{"type":"text","text":"{\"data\":[...]}"}],
+    # not the bare FactSet dict — the first run marked 3 such pages failed
+    inner = json.dumps({"data": CONFERENCE, "meta": {"pagination": {"total": len(CONFERENCE)}}})
+    wrapped = [{"type": "text", "text": inner}]
+    orig = ti.claude_p.run_mcp
+    ti.claude_p.run_mcp = lambda prompt, **kw: _fake_transcript(
+        wrapped, input=_page_args("HTFL-US", "q?", "2026-09-02", "2026-09-10"))
+    try:
+        chunks, status, source = ti.fetch_page("HTFL-US", "q?", "2026-09-02", "2026-09-10", 0, 50)
+    finally:
+        ti.claude_p.run_mcp = orig
+    assert status == "ok" and source == "tool_result", status
+    assert len(chunks) == len(CONFERENCE)
+
+
+def test_fetch_page_fails_when_the_model_drifted_the_call_arguments():
+    # the model is the only thing between us and the API; a smaller model that "helps"
+    # (rewords the query, drops the offset) returns a different page under the same
+    # ledger key. The tool_use input in the transcript is the ground truth — compare it.
+    payload = {"data": CONFERENCE, "meta": {"pagination": {"total": len(CONFERENCE)}}}
+    drifted = _page_args("LITE-US", "What did executives say?", "2026-09-02", "2026-09-10")
+    orig = ti.claude_p.run_mcp
+    ti.claude_p.run_mcp = lambda prompt, **kw: _fake_transcript(payload, input=drifted)
+    try:
+        chunks, status, source = ti.fetch_page("LITE-US", "q?", "2026-09-02", "2026-09-10", 0, 50)
+    finally:
+        ti.claude_p.run_mcp = orig
+    assert chunks == [] and status.startswith("failed") and "argument" in status, status
+    assert "query" in status                      # names the field that drifted
+
+
+def test_fetch_page_tolerates_cosmetic_argument_differences():
+    # ids as a tuple/ordering, integer-vs-string offset, an omitted default `sources`
+    payload = {"data": CONFERENCE, "meta": {"pagination": {"total": len(CONFERENCE)}}}
+    placed = _page_args("LITE-US", "q?", "2026-09-02", "2026-09-10")
+    placed["offset"] = "0"; placed["limit"] = "50"
+    orig = ti.claude_p.run_mcp
+    ti.claude_p.run_mcp = lambda prompt, **kw: _fake_transcript(payload, input=placed)
+    try:
+        chunks, status, source = ti.fetch_page("LITE-US", "q?", "2026-09-02", "2026-09-10", 0, 50)
+    finally:
+        ti.claude_p.run_mcp = orig
+    assert status == "ok", status
+
+
+# ───────────────────── calendar-driven conference mode ─────────────────────
+# Measured 2026-09-10 on AVGO (Goldman session + Q3 call in one window): pages at
+# offset 0 and 50 of the same query overlapped on 22 of 50 chunks — most chunks tie at
+# the 0.01 similarity floor and FactSet orders ties arbitrarily per request, so paging
+# over a whole-window corpus leaves gaps (30 of 44 documents had missing Q&A turns).
+# The corpus of ONE event over a 3-day window fits in a single 50-chunk page, which
+# is returned in full — so the conference feed asks the calendar where to look.
+
+CAL = [
+    {"requestId": "AMD-US", "identifier": "AMD-US", "eventType": "Conference",
+     "description": "Citi Global TMT Conference", "eventDateTime": "2026-09-08T13:30:00Z"},
+    {"requestId": "AMD-US", "identifier": "AMD-US", "eventType": "Conference",
+     "description": "Goldman Sachs Communacopia + Technology Conference", "eventDateTime": "2026-09-11T00:00:00Z"},
+    {"requestId": "TSM-US", "identifier": "2330-TW", "eventType": "Conference",
+     "description": "Goldman Sachs Communacopia + Technology Conference", "eventDateTime": "2026-09-08T15:10:00Z"},
+    {"requestId": "NOW-US", "identifier": "NOW-US", "eventType": "Conference",
+     "description": "Goldman Sachs Communacopia + Technology Conference", "eventDateTime": "2026-09-09T17:50:00Z"},
+    {"requestId": "NOW-US", "identifier": "NOW-US", "eventType": "Conference",
+     "description": "Citi Global TMT Conference", "eventDateTime": "2026-09-09T17:15:00Z"},
+    {"requestId": "ZZZ-US", "identifier": "ZZZ-US", "eventType": "Conference",
+     "description": "Not in universe", "eventDateTime": "2026-09-09T17:15:00Z"},
+]
+
+
+def test_event_window_is_event_day_plus_two_publication_days():
+    # storyDateTime is the publication moment (CRWV's 8-Sep session carried 9-Sep 09:26)
+    today = dt.date(2026, 9, 13)
+    assert ti.event_window("2026-09-08T13:30:00Z", today) == ("2026-09-08", "2026-09-10")
+    assert ti.event_window("2026-09-11T00:00:00Z", today) == ("2026-09-11", "2026-09-13")
+
+
+def test_event_window_never_ends_in_the_future():
+    # measured 2026-09-10 (NOW, session 09-09): endDate=2026-09-11 -> FactSet
+    # "[Missing/Invalid Parameters] Invalid date/dateTime ... not in the future"
+    assert ti.event_window("2026-09-09T17:50:00Z", dt.date(2026, 9, 10)) == ("2026-09-09", "2026-09-10")
+    assert ti.event_window("2026-09-10T13:00:00Z", dt.date(2026, 9, 10)) == ("2026-09-10", "2026-09-10")
+
+
+def test_plan_from_events_clamps_to_today_and_defers_future_events():
+    entries = [ti.UniverseEntry("AMD", "AMD-US", ["x"], ["tier_1"]),
+               ti.UniverseEntry("NOW", "NOW-US", [], ["tier_2"])]
+    plan = ti.plan_from_events(entries, CAL, today=dt.date(2026, 9, 10))
+    keys = sorted((e.ticker, w) for e, q, w in plan)
+    # AMD's 09-11 session has not happened: next week's trailing window picks it up
+    assert keys == [("AMD", ("2026-09-08", "2026-09-10")), ("NOW", ("2026-09-09", "2026-09-10"))]
+
+
+def test_plan_from_events_maps_by_request_id_and_dedups_same_day():
+    entries = [ti.UniverseEntry("AMD", "AMD-US", ["x"], ["tier_1"]),
+               ti.UniverseEntry("TSM", "TSM-US", [], ["tier_1"]),
+               ti.UniverseEntry("NOW", "NOW-US", [], ["tier_2"])]
+    plan = ti.plan_from_events(entries, CAL, today=dt.date(2026, 9, 13))
+    keys = sorted((e.ticker, w) for e, q, w in plan)
+    assert keys == [("AMD", ("2026-09-08", "2026-09-10")), ("AMD", ("2026-09-11", "2026-09-13")),
+                    ("NOW", ("2026-09-09", "2026-09-11")),          # two sessions, one day, one pull
+                    ("TSM", ("2026-09-08", "2026-09-10"))]          # identifier 2330-TW, matched on requestId
+    assert all(q == ti.CONFERENCE_QUERY for _, q, _ in plan)
+    assert not [e for e, _, _ in plan if e.ticker == "ZZZ"]
+
+
+def test_fetch_calendar_reads_the_tool_result_and_chunks_symbols():
+    calls = []
+    def fake(prompt, **kw):
+        calls.append((prompt, kw)); return _fake_transcript({"data": CAL}, tool=ti.CAL_TOOL)
+    orig = ti.claude_p.run_mcp
+    ti.claude_p.run_mcp = fake
+    try:
+        entries = [ti.UniverseEntry(f"T{i}", f"T{i}-US", [], ["tier_1"]) for i in range(120)]
+        events = ti.fetch_calendar(entries, "2026-09-02", "2026-09-10")
+    finally:
+        ti.claude_p.run_mcp = orig
+    assert len(calls) == 3 and all(kw["mcp_tool"] == ti.CAL_TOOL for _, kw in calls)   # 50 symbols per call
+    assert "eventTypes=['Conference']" in calls[0][0] and "2026-09-02T00:00:00Z" in calls[0][0]
+    assert len(events) == 3 * len(CAL)
+
+
+def test_fetch_calendar_failure_is_loud():
+    def fake(prompt, **kw):
+        raise ti.claude_p.ToolUnavailableError("no tool_use")
+    orig = ti.claude_p.run_mcp
+    ti.claude_p.run_mcp = fake
+    try:
+        try:
+            ti.fetch_calendar([ti.UniverseEntry("AMD", "AMD-US", [], ["tier_1"])], "2026-09-02", "2026-09-10")
+            assert False, "expected CalendarError"
+        except ti.CalendarError:
+            pass
+    finally:
+        ti.claude_p.run_mcp = orig
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items())
            if k.startswith("test_") and callable(v)]

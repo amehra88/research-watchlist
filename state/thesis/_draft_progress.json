@@ -380,8 +380,8 @@
  },
  "NTES": {
   "status": "ok",
-  "result": "written:notes",
-  "ts": "2026-09-10T01:54:47.292899+00:00"
+  "result": "skipped-exists",
+  "ts": "2026-09-10T13:39:32.013105+00:00"
  },
  "NVMI": {
   "status": "ok",
@@ -420,8 +420,8 @@
  },
  "WMT": {
   "status": "ok",
-  "result": "written:notes",
-  "ts": "2026-09-10T01:58:39.868666+00:00"
+  "result": "skipped-exists",
+  "ts": "2026-09-10T13:39:32.034237+00:00"
  },
  "PLTR": {
   "status": "ok",

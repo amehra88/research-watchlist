@@ -236,6 +236,30 @@ def tool_was_called(stdout: str, tool_name: str) -> bool:
     return False
 
 
+def tool_use_input(stdout: str, tool_name: str) -> dict | None:
+    """The `input` of the first tool_use block naming `tool_name`, or None if absent.
+
+    This is the ground truth of what the model actually asked the API for. Callers that
+    hand the model exact arguments compare against it: a model that "helps" (rewords a
+    query, drops an offset) returns a well-formed page for a different request, and
+    nothing downstream can tell — except this block.
+    """
+    for line in (stdout or "").splitlines():
+        try:
+            ev = json.loads(line.strip())
+        except (json.JSONDecodeError, ValueError):
+            continue
+        content = (ev.get("message") or {}).get("content") if isinstance(ev, dict) else None
+        if not isinstance(content, list):
+            continue
+        for block in content:
+            if isinstance(block, dict) and block.get("type") == "tool_use" \
+                    and block.get("name") == tool_name:
+                inp = block.get("input")
+                return inp if isinstance(inp, dict) else {}
+    return None
+
+
 def run_mcp(prompt: str, *, mcp_tool: str, system_prompt: str = MCP_SYSTEM_PROMPT,
             model: str | None = None, cwd: str | None = None,
             timeout: int = DEFAULT_TIMEOUT_S) -> str:
