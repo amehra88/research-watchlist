@@ -174,16 +174,14 @@
    "constraints",
    "ask",
    "grow",
-   "end",
-   "supply"
+   "end"
   ],
   "register": "mixed",
-  "n_exchanges": 7,
-  "n_companies": 6,
+  "n_exchanges": 6,
+  "n_companies": 5,
   "n_banks": 5,
   "tickers": [
    "AAOI",
-   "AVGO",
    "BE",
    "CBRS",
    "COHR",
@@ -203,8 +201,7 @@
    "3469687-t_3469687-t_qna_36_0",
    "3512929-t_qna_22_0",
    "3513357-t_qna_3_0",
-   "3513357-t_qna_4_0",
-   "3519611-t_qna_1_0"
+   "3513357-t_qna_4_0"
   ],
   "examples": [
    {
@@ -309,10 +306,10 @@
  },
  {
   "id": "cand:3388411-t_qna_10_0",
-  "label": "neocloud",
+  "label": "hyperscalers",
   "ngrams": [
-   "neocloud",
    "hyperscalers",
+   "neocloud",
    "follow-up",
    "color",
    "demand",
@@ -563,6 +560,81 @@
   "name": null,
   "suggested_name": "china_margin_disconnect",
   "suggested_why": "Analysts probing whether margin strength reflects operational leverage or stems from geographic mix shift reducing China exposure."
+ },
+ {
+  "id": "cand:3335314-t_3335314-t_qna_33_0",
+  "label": "supply",
+  "ngrams": [
+   "supply",
+   "packaging",
+   "demand",
+   "advanced",
+   "data center",
+   "power build-out",
+   "chain",
+   "memory"
+  ],
+  "register": "mixed",
+  "n_exchanges": 12,
+  "n_companies": 8,
+  "n_banks": 3,
+  "tickers": [
+   "AMAT",
+   "AMD",
+   "ANET",
+   "BE",
+   "CBRS",
+   "LRCX",
+   "MRVL",
+   "NVDA"
+  ],
+  "firms": [
+   "Goldman Sachs & Co. LLC",
+   "Morgan Stanley & Co. LLC",
+   "RBC Capital Markets LLC"
+  ],
+  "first_seen": "2025-12-03",
+  "members": [
+   "3335314-t_3335314-t_qna_33_0",
+   "3370861-t_qna_114_0",
+   "3397351-t_qna_43_0",
+   "3403420-t_3403420-t_qna_1_0",
+   "3442818-t_qna_1_0",
+   "3473212-t_qna_27_0",
+   "3489856-t_qna_25_0",
+   "3503139-t_qna_6_0",
+   "3505197-t_qna_15_0",
+   "3505198-t_3505198-t_qna_1_4",
+   "3517308-t_qna_20_0",
+   "3517308-t_qna_2_2"
+  ],
+  "examples": [
+   {
+    "id": "3335314-t_3335314-t_qna_33_0",
+    "ticker": "AMD",
+    "date": "2025-12-03",
+    "firm": "Advanced Micro Devices, Inc.",
+    "text": "Well, look, the great thing about the semiconductor market is, I think, we're used to expanding and expanding quickly. So, if you put aside sort of very temporal things, what are the most important things? It is advanced technology, sort of access to the most advanced wafers. It'"
+   },
+   {
+    "id": "3370861-t_qna_114_0",
+    "ticker": "MRVL",
+    "date": "2026-01-06",
+    "firm": "Marvell Technology, Inc.",
+    "text": "...including big investments in substrate supply, backend, CEO-CEO real strategic partnership. So, all that is now in place, right, and we got that some of that stuff set up through like 2030 and beyond, that's really helped us. But also just our proactive approach, how we manage"
+   },
+   {
+    "id": "3397351-t_qna_43_0",
+    "ticker": "MRVL",
+    "date": "2026-03-05",
+    "firm": "Marvell Technology, Inc.",
+    "text": "Look, we've been in a tight supply environment for anything that touches AI, advanced wafer fabrication, advanced packaging, large body substrates since the launch of ChatGPT. And against that backdrop to your point, we were still able to grow the company north of 40% in total re"
+   }
+  ],
+  "status": "accepted",
+  "name": "advanced_packaging_substrate_supply",
+  "suggested_name": "advanced_packaging_supply",
+  "suggested_why": "Substrate and advanced packaging supply constraints for AI chips require multi-year strategic partnerships and backend infrastructure buildout through 2030+."
  },
  {
   "id": "cand:3453466-t_3453466-t_qna_68_1",
@@ -988,77 +1060,6 @@
   "name": null,
   "suggested_name": "sales_cycle_lengthening",
   "suggested_why": "Pipelines are building strongly but conversions are back-half weighted, indicating sales cycles are extending as enterprise deal sizes and product complexity increase."
- },
- {
-  "id": "cand:3335314-t_3335314-t_qna_33_0",
-  "label": "packaging",
-  "ngrams": [
-   "packaging",
-   "supply",
-   "advanced",
-   "power build-out",
-   "data center",
-   "demand",
-   "chain",
-   "memory"
-  ],
-  "register": "mixed",
-  "n_exchanges": 10,
-  "n_companies": 7,
-  "n_banks": 2,
-  "tickers": [
-   "AMAT",
-   "AMD",
-   "ANET",
-   "BE",
-   "CBRS",
-   "LRCX",
-   "MRVL"
-  ],
-  "firms": [
-   "Morgan Stanley & Co. LLC",
-   "RBC Capital Markets LLC"
-  ],
-  "first_seen": "2025-12-03",
-  "members": [
-   "3335314-t_3335314-t_qna_33_0",
-   "3370861-t_qna_114_0",
-   "3397351-t_qna_43_0",
-   "3403420-t_3403420-t_qna_1_0",
-   "3442818-t_qna_1_0",
-   "3473212-t_qna_27_0",
-   "3489856-t_qna_25_0",
-   "3503139-t_qna_6_0",
-   "3505197-t_qna_15_0",
-   "3505198-t_3505198-t_qna_1_4"
-  ],
-  "examples": [
-   {
-    "id": "3335314-t_3335314-t_qna_33_0",
-    "ticker": "AMD",
-    "date": "2025-12-03",
-    "firm": "Advanced Micro Devices, Inc.",
-    "text": "Well, look, the great thing about the semiconductor market is, I think, we're used to expanding and expanding quickly. So, if you put aside sort of very temporal things, what are the most important things? It is advanced technology, sort of access to the most advanced wafers. It'"
-   },
-   {
-    "id": "3370861-t_qna_114_0",
-    "ticker": "MRVL",
-    "date": "2026-01-06",
-    "firm": "Marvell Technology, Inc.",
-    "text": "...including big investments in substrate supply, backend, CEO-CEO real strategic partnership. So, all that is now in place, right, and we got that some of that stuff set up through like 2030 and beyond, that's really helped us. But also just our proactive approach, how we manage"
-   },
-   {
-    "id": "3397351-t_qna_43_0",
-    "ticker": "MRVL",
-    "date": "2026-03-05",
-    "firm": "Marvell Technology, Inc.",
-    "text": "Look, we've been in a tight supply environment for anything that touches AI, advanced wafer fabrication, advanced packaging, large body substrates since the launch of ChatGPT. And against that backdrop to your point, we were still able to grow the company north of 40% in total re"
-   }
-  ],
-  "status": "accepted",
-  "name": "advanced_packaging_substrate_supply",
-  "suggested_name": "advanced_packaging_supply",
-  "suggested_why": "Substrate and advanced packaging supply constraints for AI chips require multi-year strategic partnerships and backend infrastructure buildout through 2030+."
  },
  {
   "id": "cand:3489856-t_qna_53_0",

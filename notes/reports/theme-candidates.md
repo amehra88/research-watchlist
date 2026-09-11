@@ -1,7 +1,7 @@
-## Theme candidates — 2026-09-10
+## Theme candidates — 2026-09-11
 
 Anchors: 62 themes; threshold 0.3 (by source: {'default': 0.3, 'exchange': 0.3, 'mdna': 0.4}) (held-out P 0.302 / R 0.38 on 1725 labelled chunks).
-Coverage: question register: 1452/3527 mapped (41%); evidence register: 6061/13589 mapped (45%); by source: exchange source: 5903/11830 mapped (50%), mdna source: 1610/5286 mapped (30%); 5347 rows skipped (operator/untyped speakers, acknowledgements, housekeeping).
+Coverage: question register: 1453/3535 mapped (41%); evidence register: 6112/13666 mapped (45%); by source: exchange source: 5936/11881 mapped (50%), mdna source: 1629/5320 mapped (31%); 5387 rows skipped (operator/untyped speakers, acknowledgements, housekeeping).
 A unit maps when its cosine to a theme centroid clears the threshold; the rest are clustered and only clusters with >= 3 companies and >= 2 banks are listed. The system never edits `config/watchlist.yaml` — accept with `topic_map.py --accept <id> --name <slug>`, reject with `--reject <id>`.
 
 ### Pending candidates (2 of 41; 0 evidence-only listed below)
@@ -33,13 +33,13 @@ Banks: Raymond James & Associates, Inc., WR Securities LLC, William Blair & Co. 
 - `cand:3388411-t_qna_10_0` accepted as `neocloud_demand`
 - `cand:3354107-t_qna_41_0` accepted as `capacity_supply_tightness`
 - `cand:3328815-t_qna_49_0` accepted as `capacity_supply_tightness`
+- `cand:3335314-t_3335314-t_qna_33_0` accepted as `advanced_packaging_substrate_supply`
 - `cand:3453466-t_3453466-t_qna_68_1` rejected
 - `cand:3384162-t_qna_32_0` rejected
 - `cand:3433453-t_md_5_4` accepted as `physical_ai_adoption`
 - `cand:3381168-t_qna_36_0` rejected
 - `cand:3335314-t_3335314-t_qna_22_0` rejected
 - `cand:3374273-t_3374273-t_qna_72_0` accepted as `advanced_packaging_substrate_supply`
-- `cand:3335314-t_3335314-t_qna_33_0` accepted as `advanced_packaging_substrate_supply`
 - `cand:3489856-t_qna_53_0` rejected
 - `cand:3505197-t_qna_16_0` rejected
 - `cand:3469126-t_qna_53_1` rejected
