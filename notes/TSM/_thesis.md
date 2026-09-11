@@ -37,13 +37,13 @@ assumptions:
     TSMC as sole source in earnings commentary, 20-F filings, or supply disclosures
   - TSMC earnings disclosures show AI-related advanced-node utilization at or above
     prior-period levels with no competitive displacement noted
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 6.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: cowos_no_qualified_alternative
   statement: At scoring date, no alternative CoWoS-equivalent advanced-packaging source
@@ -68,10 +68,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 2.0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: every_fabless_ai_routes_tsm
   statement: At scoring date, every major fabless AI chip design targeting leading-edge
@@ -95,10 +95,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 6.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: n2_a16_process_leadership
   statement: At scoring date, TSMC held process node leadership on the N2/A16 roadmap
@@ -124,10 +124,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 4.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: geopolitical_risk_conditions_hold
   statement: The Taiwan/China geopolitical risk level — cited at scoring as the single

@@ -37,10 +37,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 1.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: hbm4_catchup_unconfirmed_at_scoring
   statement: Samsung's HBM4 development had not produced a customer qualification
@@ -62,9 +62,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 3.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: foundry_lags_tsmc_leading_edge
   statement: Samsung foundry held lower leading-edge capacity utilization and fewer
@@ -87,10 +87,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 1.0
+    challenge: 9.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: samsung_no1_dram_nand_volume
   statement: Samsung held the largest global volume share in both DRAM and NAND at
@@ -114,9 +114,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: governance_access_friction_present
   statement: A conglomerate governance discount and Korea-listing access friction

@@ -56,10 +56,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: backlog_buffers_capex_pause
   statement: The $8.5B backlog at the 3Q26 print, with management targeting greater
@@ -109,10 +109,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: hyperrail_single_anchor_at_2q26
   statement: RLS Hyper-Rail revenue expected in 2027 was anchored by a single lead

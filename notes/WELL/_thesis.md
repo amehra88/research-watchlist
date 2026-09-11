@@ -114,10 +114,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: well_snr_housing_ops_strong_at_scoring
   statement: Senior-housing operating performance conditions characterized as strong
