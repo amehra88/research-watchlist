@@ -32,13 +32,13 @@ assumptions:
   - 3Q26 10-Q reports active power at or above the implied step-up trajectory toward
     1.85GW
   - 3Q26 earnings commentary confirms no change to the power delivery schedule
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: crwv_debt_cost_conditions_held
   statement: The financing conditions that produced a ~300bps year-over-year reduction
@@ -60,10 +60,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 5.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: crwv_vera_rubin_margin_premium
   statement: At 2Q26 close, CRWV's first-to-market position on NVIDIA Vera Rubin NVL72
@@ -145,10 +145,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: crwv_gaap_gm_gap_da_not_price
   statement: The approximately 27-percentage-point gap between as-reported GAAP gross
