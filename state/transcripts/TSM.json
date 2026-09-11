@@ -1,0 +1,8 @@
+{
+  "ticker": "TSM",
+  "last_iacc": "43523653",
+  "last_period": "2Q26",
+  "last_processed_at": "2026-09-11T06:47:00Z",
+  "last_note_path": "notes/TSM/20260716-2Q26.md",
+  "note": "last_iacc is the 2Q26 results 6-K (acc. 0001046179-26-000451), not a transcript iacc: InsiderScore has no transcript coverage for TSM; transcript sourced from FactSet CallStreet documentID 3498673-t via earnings-reviewer-from-pdf"
+}
