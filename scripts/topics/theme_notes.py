@@ -245,3 +245,68 @@ def write_ticker_index(ticker: str, entries: list, path: Path) -> bool:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(new, encoding="utf-8")
     return True
+
+
+# ───────────────────────── CLI ─────────────────────────
+
+def affects_map(watchlist_path: Path = WATCHLIST) -> dict:
+    wl = yaml.safe_load(watchlist_path.read_text()) or {}
+    return {e["ticker"]: list(e.get("themes") or []) for e in (wl.get("tier_1_bctk") or []) if e.get("ticker")}
+
+
+def run(args) -> int:
+    snap = json.loads(DIFFUSION.read_text())
+    if "pairs" not in snap:
+        log("diffusion.json has no pairs — re-run diffusion.py --run"); return 2
+    as_of = args.as_of
+    rows, ex, cl = load_sources()
+    amap = affects_map()
+    themes = sorted({c["theme"] for c in snap["metrics"]})
+    gated = [t for t in themes if clears_gate([c for c in snap["metrics"] if c["theme"] == t])]
+    log(f"{len(themes)} themes with metrics, {len(gated)} clear the gate (banks>={MIN_BANKS}&companies>={MIN_COMPANIES} "
+        f"or disclosing>={MIN_DISCLOSING}); quarters {snap['quarters']}")
+    by_ticker: dict = {}
+    n_created = n_changed = 0
+    for theme in gated:
+        st = theme_state(theme, snap, amap)
+        secs = []
+        for cq in snap["quarters"]:
+            if not any(c["theme"] == theme and c["cal_quarter"] == cq for c in snap["metrics"]):
+                continue
+            closed = is_closed(cq, as_of)
+            secs.append((cq, render_section(theme, cq, snap, citations_for(theme, cq, rows, ex, cl), as_of, closed), closed))
+        path = THEMES_DIR / f"{theme}.md"
+        if args.dry_run:
+            log(f"  would write {path.name}: stage {st['stage']}, {len(secs)} sections, tickers {len(st['tickers'])}")
+        else:
+            r = upsert_note(path, render_frontmatter(st, as_of), secs)
+            n_created += r["created"]; n_changed += bool(r["appended"] or r["replaced"])
+            if r["appended"] or r["replaced"]:
+                log(f"  {path.name}: +{r['appended']} ~{r['replaced']}")
+        for p in snap["pairs"]:
+            if p["theme"] == theme:
+                open_lag = lc.open_lag_days(p, as_of)
+                by_ticker.setdefault(p["ticker"], []).append({"theme": theme, "stage": p["stage"], "lag_days": p["lag_days"],
+                                                             "open_lag_days": open_lag})
+    n_idx = 0
+    if not args.dry_run:
+        for ticker, entries in by_ticker.items():
+            if (NOTES / ticker).is_dir():                       # only names that already have a vault folder
+                n_idx += write_ticker_index(ticker, entries, NOTES / ticker / "_themes.md")
+    log(f"theme notes: {len(gated)} gated, {n_created} created, {n_changed} changed; ticker indexes changed: {n_idx}")
+    return 0
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description="P5 theme notes (spec §7.1)")
+    ap.add_argument("--run", action="store_true")
+    ap.add_argument("--as-of", default=dt.date.today().isoformat())
+    ap.add_argument("--dry-run", action="store_true")
+    a = ap.parse_args(argv)
+    if a.run:
+        return run(a)
+    ap.print_help(); return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
