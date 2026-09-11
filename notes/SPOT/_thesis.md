@@ -87,10 +87,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: spot_price_hike_no_net_sub_loss
   statement: As of scoring, price increases executed on Spotify subscription tiers
@@ -111,10 +111,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: spot_gross_margin_expanding
   statement: As of scoring, Spotify's gross margin had expanded quarter-over-quarter

@@ -35,10 +35,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: custom_inference_silicon_active
   statement: At scoring, Tesla's custom inference silicon was in active production
@@ -110,10 +110,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 2.0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: auto_base_under_financial_pressure
   statement: At scoring, conditions of pricing pressure or delivery volume softness
@@ -136,10 +136,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: robotaxi_optimus_narrative_primary
   statement: At scoring, the robotaxi/Optimus narrative — not auto-segment fundamentals
@@ -162,10 +162,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 2.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 ---
 ## Rationale
