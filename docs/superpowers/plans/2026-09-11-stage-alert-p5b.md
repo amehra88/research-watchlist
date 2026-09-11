@@ -64,7 +64,7 @@
 - Produces `plan_from_events(entries, events, today=None, event_type="Conference", queries=(CONFERENCE_QUERY,)) -> list[(entry, query, (start, end))]` — one item per (name, event day, query).
 - CLI: `--earnings DAYS` mutually exclusive with `--conferences`; both refuse `--start/--end`.
 
-- [ ] **Step 1: Failing tests** — append to `scripts/v3_ingest/test_transcript_ingest.py` (follow its `_entry`/fixture helpers; if none, build an entry with `ti.Entry(ticker="NVDA", factset_id="NVDA-US", themes=[], reasons=[])` — check the dataclass name with `grep -n "class .*Entry" scripts/v3_ingest/transcript_ingest.py` first):
+- [x] **Step 1: Failing tests** — append to `scripts/v3_ingest/test_transcript_ingest.py` (follow its `_entry`/fixture helpers; if none, build an entry with `ti.Entry(ticker="NVDA", factset_id="NVDA-US", themes=[], reasons=[])` — check the dataclass name with `grep -n "class .*Entry" scripts/v3_ingest/transcript_ingest.py` first):
 
 ```python
 def test_earnings_plan_makes_two_query_pulls_per_event():
@@ -94,9 +94,9 @@ def test_earnings_queries_are_tool_legal_and_distinct():
 ```
 Register the three in the file's `__main__` runner list.
 
-- [ ] **Step 2: Run** `python3 scripts/v3_ingest/test_transcript_ingest.py` → expect `TypeError: plan_from_events() got an unexpected keyword argument 'event_type'` (or `AttributeError: EARNINGS_QUERIES`).
+- [x] **Step 2: Run** `python3 scripts/v3_ingest/test_transcript_ingest.py` → expect `TypeError: plan_from_events() got an unexpected keyword argument 'event_type'` (or `AttributeError: EARNINGS_QUERIES`).
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 Constants (next to `CONFERENCE_QUERY`):
 ```python
@@ -131,9 +131,9 @@ validation: `if args.earnings and args.conferences: ap.error("--earnings and --c
 ```
 Planning block: `if feed and not args.scan:` → `fetch_calendar(entries, start, end, model=args.model, event_types=(feed,))`, `plan_from_events(entries, events, event_type=feed, queries=tuple(feed_queries))`, and the log line counts `ev.get("eventType") == feed`. Default `--max-pages` stays; the per-event window with `limit=50` returns one page per query (short page → terminal).
 
-- [ ] **Step 4: Run** the test file → all ✓ (existing conference tests unchanged).
+- [x] **Step 4: Run** the test file → all ✓ (existing conference tests unchanged).
 
-- [ ] **Step 5: Live validation on one known call** (3 Haiku calls). NVDA reported 2026-08-27; its call is already in `exchanges.jsonl` from the backfill.
+- [x] **Step 5: Live validation on one known call** (3 Haiku calls). NVDA reported 2026-08-27; its call is already in `exchanges.jsonl` from the backfill.
 ```bash
 python3 - <<'EOF'
 import json
@@ -148,7 +148,7 @@ python3 scripts/v3_ingest/transcript_ingest.py --earnings 16 --ticker NVDA 2>&1 
 ```
 Expected: dry run lists exactly two `DRY NVDA [NVDA-US] 2026-08-27..2026-08-29` lines; the live run logs `calendar: N events (1 Earnings)`, two `kept=` lines, `written=0` or small (dedup), and `no_coverage` unchanged. Then count how many of the run's returned vector_ids (from `state/transcripts/raw/` cache for the two windowed keys, or the `kept=` totals) were already in the backfill set — record the coverage % in the commit message. If coverage of the backfill's analyst chunks is < 80%, add a third query `"What were the questions about demand, pricing, capacity and competition?"` and re-measure.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 ```bash
 git add scripts/v3_ingest/transcript_ingest.py scripts/v3_ingest/test_transcript_ingest.py
 git commit -m "transcript_ingest: --earnings DAYS daily feed (calendar-driven, two queries per call)"
@@ -167,7 +167,7 @@ git commit -m "transcript_ingest: --earnings DAYS daily feed (calendar-driven, t
 - Produces `is_session_limit(marker: str) -> bool` — True when a `STATUS: error` marker's detail contains `429` or `session limit` or `usage limit` (case-insensitive).
 - Batch behaviour: on the first session-limit marker, the remaining tickers are logged `SKIPPED_SESSION_LIMIT {ticker}` and the run exits 1.
 
-- [ ] **Step 1: Failing tests**
+- [x] **Step 1: Failing tests**
 ```python
 def test_ticker_flag_bypasses_calendar_and_filters_watchlist():
     calls = []
@@ -195,9 +195,9 @@ def test_session_limit_stops_the_batch():
 ```
 Save/restore the patched functions in the runner (`orig = (cer.query_calendar, cer.run_earnings_reviewer, cer.load_watchlist_tickers)` … `finally:` restore).
 
-- [ ] **Step 2: Run** → `TypeError: main() takes 0 positional arguments`.
+- [x] **Step 2: Run** → `TypeError: main() takes 0 positional arguments`.
 
-- [ ] **Step 3: Implement** — in `main(argv=None)`: `import argparse`; `ap.add_argument("--ticker", action="append")`; after loading the watchlist:
+- [x] **Step 3: Implement** — in `main(argv=None)`: `import argparse`; `ap.add_argument("--ticker", action="append")`; after loading the watchlist:
 ```python
     if args.ticker:
         reported = [t.upper() for t in args.ticker]
@@ -222,9 +222,9 @@ def is_session_limit(marker: str) -> bool:
 ```
 `if __name__ == "__main__": sys.exit(main())` unchanged (argv=None → sys.argv).
 
-- [ ] **Step 4: Run** the test file → all ✓ (9 prior + 2).
+- [x] **Step 4: Run** the test file → all ✓ (9 prior + 2).
 
-- [ ] **Step 5: Commit** `git commit -m "earnings_reviewer: --ticker backfill entry point; stop the batch on a session limit"`.
+- [x] **Step 5: Commit** `git commit -m "earnings_reviewer: --ticker backfill entry point; stop the batch on a session limit"`.
 
 ---
 
@@ -246,7 +246,7 @@ def is_session_limit(marker: str) -> bool:
   - Regressions and births at 1/2/4 produce nothing.
 - `event_id(ev) -> str`: `stage2:{theme}`, `stage3:{theme}:{ticker}`, `stage4:{theme}`, `gate:{theme}`.
 
-- [ ] **Step 1: Failing tests** (`scripts/topics/test_stage_alert.py`, direct-run, same style as `test_diffusion.py`):
+- [x] **Step 1: Failing tests** (`scripts/topics/test_stage_alert.py`, direct-run, same style as `test_diffusion.py`):
 ```python
 #!/usr/bin/env python3
 import json, sys, tempfile
@@ -294,9 +294,9 @@ if __name__ == "__main__":
     print("\nALL PASS")
 ```
 
-- [ ] **Step 2: Run** `python3 scripts/topics/test_stage_alert.py` → `ModuleNotFoundError: stage_alert`.
+- [x] **Step 2: Run** `python3 scripts/topics/test_stage_alert.py` → `ModuleNotFoundError: stage_alert`.
 
-- [ ] **Step 3: Implement** `scripts/topics/stage_alert.py` (module docstring: spec §7.3, the four kinds, seed rule, ledger):
+- [x] **Step 3: Implement** `scripts/topics/stage_alert.py` (module docstring: spec §7.3, the four kinds, seed rule, ledger):
 ```python
 #!/usr/bin/env python3
 """P5b stage-transition alert (spec §7.3). See docs/superpowers/plans/2026-09-11-stage-alert-p5b.md."""
@@ -358,8 +358,8 @@ def event_id(e) -> str:
 ```
 (`run`/`render`/CLI come in Task 4; leave a `if __name__ == "__main__": sys.exit(main())` only once `main` exists.)
 
-- [ ] **Step 4: Run** tests → ALL PASS.
-- [ ] **Step 5: Commit** `git add scripts/topics/stage_alert.py scripts/topics/test_stage_alert.py && git commit -m "topics: stage_alert diff/gate/seed primitives (P5b)"`.
+- [x] **Step 4: Run** tests → ALL PASS.
+- [x] **Step 5: Commit** `git add scripts/topics/stage_alert.py scripts/topics/test_stage_alert.py && git commit -m "topics: stage_alert diff/gate/seed primitives (P5b)"`.
 
 ---
 
@@ -380,7 +380,7 @@ def event_id(e) -> str:
 - `sent_ids(path=LEDGER) -> set`; `append_ledger(path, events, ts)`.
 - `run(args) -> int`: no snapshot → log + 2; `prior is None` → seed, log `seeded {n} pairs, {g} gated themes; no email`, 0; snapshot mtime ≤ stages mtime and not `--force` → log "no new snapshot", 0; else events = diff − ledger; render; `--dry-run` prints; else email `Theme stage alert — {as_of} ({k} event(s))` only when k > 0; append ledger; save state (always, so regressions are absorbed).
 
-- [ ] **Step 1: Failing tests** (append; use `tempfile.TemporaryDirectory` and monkeypatch `sa.DIFFUSION/STAGES/LEDGER`; patch `sa.send = lambda subj, body: sent.append((subj, body))` and `sa.load_sources = lambda: (rows, ex, {})`):
+- [x] **Step 1: Failing tests** (append; use `tempfile.TemporaryDirectory` and monkeypatch `sa.DIFFUSION/STAGES/LEDGER`; patch `sa.send = lambda subj, body: sent.append((subj, body))` and `sa.load_sources = lambda: (rows, ex, {})`):
 ```python
 def test_render_stage2_line_matches_spec_shape():
     snap = {"as_of": "2026-09-11", "current_quarter": "CY2026-Q3", "metrics": [],
@@ -417,13 +417,13 @@ def test_run_seeds_silently_then_emails_once_and_absorbs_regressions():
     print("  ✓ seed is silent; transitions email once; regressions update state silently")
 ```
 
-- [ ] **Step 2: Run** → `AttributeError: module 'stage_alert' has no attribute 'render'`.
+- [x] **Step 2: Run** → `AttributeError: module 'stage_alert' has no attribute 'render'`.
 
-- [ ] **Step 3: Implement** the interfaces above. Notes: `parse(argv)` is the argparse wrapper (`--run`, `--email`, `--dry-run`, `--force`, `--as-of` default today) so tests can build args; `from newsdigest.email_send import send` at module top guarded by `try/except ImportError: send = None` — `run` raises a clear error if `--email` and `send is None`. Days-ago = `(date(as_of) - date(fe)).days`. Covered n = number of the theme's pairs; k = pairs with `first_question_date`. Ledger record: `{"id", "kind", "theme", "ticker", "ts", "as_of"}`.
+- [x] **Step 3: Implement** the interfaces above. Notes: `parse(argv)` is the argparse wrapper (`--run`, `--email`, `--dry-run`, `--force`, `--as-of` default today) so tests can build args; `from newsdigest.email_send import send` at module top guarded by `try/except ImportError: send = None` — `run` raises a clear error if `--email` and `send is None`. Days-ago = `(date(as_of) - date(fe)).days`. Covered n = number of the theme's pairs; k = pairs with `first_question_date`. Ledger record: `{"id", "kind", "theme", "ticker", "ts", "as_of"}`.
 
-- [ ] **Step 4: Run** the test file → ALL PASS.
+- [x] **Step 4: Run** the test file → ALL PASS.
 
-- [ ] **Step 5: First real run = seed** (auto_sync is paused, so this is safe to commit deliberately):
+- [x] **Step 5: First real run = seed** (auto_sync is paused, so this is safe to commit deliberately):
 ```bash
 cd /root/research-watchlist && python3 scripts/topics/stage_alert.py --run
 python3 -c "import json;d=json.load(open('state/topics/stages.json'));print(len(d['pairs']), d['gated'][:5], len(d['gated']))"
@@ -431,7 +431,7 @@ python3 -c "import json;d=json.load(open('state/topics/stages.json'));print(len(
 Expected: `seeded 595 pairs, 36 gated themes; no email` (36 = the P5 note count; if it differs, explain why in the commit — the gate here is current-quarter-only, P5 is any-quarter, so ≤ 36 is expected; say which).
 Then `python3 scripts/topics/stage_alert.py --run --dry-run --force` → "no events".
 
-- [ ] **Step 6: Commit** `git add scripts/topics/stage_alert.py scripts/topics/test_stage_alert.py state/topics/stages.json && git commit -m "topics: stage_alert — §7.3 daily stage-transition alert, seeded"`.
+- [x] **Step 6: Commit** `git add scripts/topics/stage_alert.py scripts/topics/test_stage_alert.py state/topics/stages.json && git commit -m "topics: stage_alert — §7.3 daily stage-transition alert, seeded"`.
 
 ---
 
@@ -441,7 +441,7 @@ Then `python3 scripts/topics/stage_alert.py --run --dry-run --force` → "no eve
 - Create: `scripts/topics/daily_chain.sh`
 - Modify: crontab (via `crontab -l | … | crontab -`), `docs/architecture.md` (status table row), `docs/cost-model.md` (one line), memory files.
 
-- [ ] **Step 1: Chain script**
+- [x] **Step 1: Chain script**
 ```bash
 #!/bin/bash
 # P5b weekday chain (2026-09-11): sequential so diffusion never sees a map older than its inputs.
@@ -457,9 +457,9 @@ $A stage_alert         python3 scripts/topics/stage_alert.py --run --email      
 ```
 `chmod +x`. Each step pages on failure but the chain continues (a failed earnings pull must not block an MD&A-driven alert; diffusion's own staleness guard refuses if the map is stale).
 
-- [ ] **Step 2: Time the daily topic_map** once by hand before scheduling: `time python3 scripts/topics/topic_map.py --run` (no `--suggest-names`, no `--email`; all units cached → expect well under 5 min; log the number). Then `python3 scripts/topics/diffusion.py --run` and `python3 scripts/topics/stage_alert.py --run --dry-run` → "no events" (same day as the seed).
+- [x] **Step 2: Time the daily topic_map** once by hand before scheduling: `time python3 scripts/topics/topic_map.py --run` (no `--suggest-names`, no `--email`; all units cached → expect well under 5 min; log the number) — MEASURED 2026-09-11: topic_map 397s / 850 MB, diffusion 2s, stage_alert 597 vs 595 pairs, 0 events. Then `python3 scripts/topics/diffusion.py --run` and `python3 scripts/topics/stage_alert.py --run --dry-run` → "no events" (same day as the seed).
 
-- [ ] **Step 3: Crons** (ET). Append under the topic block:
+- [x] **Step 3: Crons** (ET). Append under the topic block:
 ```
 45 12 * * 1-5 /root/research-watchlist/scripts/topics/daily_chain.sh
 45 12 * * 6 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh stage_alert python3 scripts/topics/stage_alert.py --run --email >> logs/stage_alert.log 2>&1
@@ -469,9 +469,9 @@ Backfill one-shots (self-removing; marker is a shell no-op inside the command):
 0 14 12 9 * : ONESHOT_BACKFILL_1; cd /root/research-watchlist && /root/bin/alert_on_failure.sh earnings_backfill_1 python3 scripts/cron_earnings_reviewer.py --ticker BE --ticker CLS --ticker GLW --ticker KLAC --ticker NXPI --ticker SWKS --ticker UMC --ticker WELL --ticker MSFT --ticker META --ticker QCOM; crontab -l | grep -v ONESHOT_BACKFILL_1 | crontab -
 0 13 13 9 * : ONESHOT_BACKFILL_2; cd /root/research-watchlist && /root/bin/alert_on_failure.sh earnings_backfill_2 python3 scripts/cron_earnings_reviewer.py --ticker ARM --ticker LRCX --ticker AAPL --ticker AMZN --ticker MPWR --ticker PWR --ticker RDDT --ticker SOLS --ticker SONY; crontab -l | grep -v ONESHOT_BACKFILL_2 | crontab -
 ```
-Sat 2026-09-12 14:00 (after the chain, before nothing) and Sun 2026-09-13 13:00 (after nport 12:07; thesis_draft/store_b/insider are 07:00–09:30). `crontab -l | grep -c ONESHOT_BACKFILL` → 2.
+Sat 2026-09-12 14:00 (after the chain, before nothing) and Sun 2026-09-13 13:00 (after nport 12:07; thesis_draft/store_b/insider are 07:00–09:30). INSTALLED at 16:00 both days instead: a ~2.5 h batch from 14:00/13:00 would overlap thesis_match 15:00 (claude -p). Also installed: `ONESHOT_EARNINGS_CATCHUP` Fri 2026-09-11 20:00 `--earnings 32` (40 calls / 80 Haiku pulls missing since the 08-11 backfill). `crontab -l | grep -c ONESHOT_BACKFILL` → 2.
 
-- [ ] **Step 4: Docs** — `docs/architecture.md`: add the P5b row (daily chain, files, cron) next to the P4/P5 rows; `docs/cost-model.md`: "+ weekday earnings pull: 2–3 Haiku calendar calls + 2 Haiku pulls per reporting name (mcp-lean, ~23K tok each); zero LLM elsewhere in the chain". Spec §8 table: mark P5b delivered (one word, date).
+- [x] **Step 4: Docs** — `docs/architecture.md`: add the P5b row (daily chain, files, cron) next to the P4/P5 rows; `docs/cost-model.md`: "+ weekday earnings pull: 2–3 Haiku calendar calls + 2 Haiku pulls per reporting name (mcp-lean, ~23K tok each); zero LLM elsewhere in the chain". Spec §8 table: mark P5b delivered (one word, date).
 
 - [ ] **Step 5: Commit + push + restore**
 ```bash

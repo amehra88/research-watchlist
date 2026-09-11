@@ -109,7 +109,15 @@ Two git repos cooperate:
   window, quarter-over-quarter added prose diffed only within a form family, dated by `filed_date`
   → `state/evidence/claims.jsonl` (gitignored, regenerable; ~8.5K claims / 73 filers); topic_map
   reads them as evidence-register units after a housekeeping filter, so §6.2's disclosure count and
-  §6.3's `first_evidence_date` clock exist). `config/watchlist.yaml` stays operator-only:
+  §6.3's `first_evidence_date` clock exist), `daily_chain` (weekdays 12:45,
+  `scripts/topics/daily_chain.sh`, P5b 2026-09-11: sequential `transcript_ingest.py --earnings 3`
+  (the day-after earnings-call pull, same per-event contract as the conference feed, two semantic
+  queries per call because a call is ~52 chunks and a page holds 50) → `topic_map.py --run` →
+  `diffusion.py --run` → `stage_alert.py --run --email`; Sat 12:45 runs `stage_alert` alone after
+  the weekly chain), `stage_alert` (spec §7.3: diffs `diffusion.json` pairs against
+  `state/topics/stages.json`, emails one line per forward stage move or first breadth-gate
+  crossing, announce-once via `state/topics/alerts_sent.jsonl`, regressions absorbed silently,
+  no LLM). `config/watchlist.yaml` stays operator-only:
   proposals surface in the report and are applied by `scripts/thesis/apply_scores.py --write`.
   Design: `docs/superpowers/specs/2026-09-09-thesis-loop-design.md`.
 - **`daily_digest` / `nport_*` / `watchlist_derive`** — adjacent pipelines (daily report email, NPORT
@@ -199,11 +207,13 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
   Tier-0 lag run on MD&A evidence only — corprep speech mis-paired 3/5 spot-checked stage-2 rows;
   first Tier-0 read: 53 pairs, median lag −4d, evidence-led 40%, left-censored). Open: P3
   foreign_evidence (the China-laser gold test §11.2/11.3 needs it and an anchor for
-  `laser_architecture_competition`), P5b daily transition alert, §6.4 novel
-  names, §7.2 quarterly digest. **P5 theme notes built 2026-09-10** (`scripts/topics/theme_notes.py`,
+  `laser_architecture_competition`), §6.4 novel names, §7.2 quarterly digest. **P5 theme notes built 2026-09-10** (`scripts/topics/theme_notes.py`,
   cron Sat 12:30; `notes/themes/*.md` = §7.1 living notes, 36 on first run, gated on breadth;
   `notes/{T}/_themes.md` ticker index; closed quarters append-only, open quarter replaced in place
-  until quarter end + 14d; frontmatter = state, rewritten weekly). These are the first
+  until quarter end + 14d; frontmatter = state, rewritten weekly). **P5b stage alert built
+  2026-09-11** (`scripts/topics/stage_alert.py` + weekday `daily_chain.sh` 12:45 with a daily
+  earnings-call pull; seeded from 595 pairs / 30 gated themes (current-quarter gate; P5 counts any quarter, 36), first live compare Mon 2026-09-14;
+  plan `docs/superpowers/plans/2026-09-11-stage-alert-p5b.md`). These are the first
   machine-appended files in the vault — they land in generic Auto-sync commits, expected. NOTE: the
   local branch `worktree-idea-surfacing-spec` (2026-08-19..22, never merged, never ran end to end)
   holds an earlier P2 (claude -p phrase extraction, 21.5h serial) plus `mdna_evidence.py`

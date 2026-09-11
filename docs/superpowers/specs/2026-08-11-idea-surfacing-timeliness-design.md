@@ -1,6 +1,6 @@
 # Idea surfacing & sub-sector timeliness — design
 
-**Status: SPEC, approved in brainstorming 2026-08-11. P1 built 2026-08-11 (forward conference cron 2026-09-10); P2 built 2026-09-10 (`scripts/topics/`, plan `docs/superpowers/plans/2026-09-10-topic-map.md`); P3b built 2026-09-10 (plan `docs/superpowers/plans/2026-09-10-mdna-evidence-p3b.md`); P4 built 2026-09-10 (plan `docs/superpowers/plans/2026-09-10-diffusion-p4.md`; `challenging_rate` dropped, verified adjacency only, stages/lag on MD&A evidence only); P5 theme notes built 2026-09-10 (plan `docs/superpowers/plans/2026-09-10-theme-notes-p5.md`; hybrid open quarter, `_themes.md` ticker index); P3, P5b (alert) and the §7.2 quarterly digest open.**
+**Status: SPEC, approved in brainstorming 2026-08-11. P1 built 2026-08-11 (forward conference cron 2026-09-10); P2 built 2026-09-10 (`scripts/topics/`, plan `docs/superpowers/plans/2026-09-10-topic-map.md`); P3b built 2026-09-10 (plan `docs/superpowers/plans/2026-09-10-mdna-evidence-p3b.md`); P4 built 2026-09-10 (plan `docs/superpowers/plans/2026-09-10-diffusion-p4.md`; `challenging_rate` dropped, verified adjacency only, stages/lag on MD&A evidence only); P5 theme notes built 2026-09-10 (plan `docs/superpowers/plans/2026-09-10-theme-notes-p5.md`; hybrid open quarter, `_themes.md` ticker index); P5b stage alert built 2026-09-11 (plan `docs/superpowers/plans/2026-09-11-stage-alert-p5b.md`; weekday chain with a daily earnings-call pull); P3 and the §7.2 quarterly digest open.**
 
 Answers the operator's standing question: *"how do we surface new investment ideas, or the
 timeliness of a sub-sector we can invest against — and is it timely?"*
@@ -579,7 +579,7 @@ exclusions.
 | **P3b** | `mdna_evidence.py` — QoQ MD&A diff → `claims.jsonl` | **P2** for topic mapping (§4.2); the diff itself has no dependency |
 | **P4** | `diffusion.py` — metrics, detectors, lifecycle staging | P2, P3, P3b |
 | **P5** | Theme-note writer (§7.1) + quarterly digest (§7.2) + cron | P4 |
-| **P5b** | Stage-transition alert (§7.3) — daily check, emit on change | P5 (needs stored prior stage to diff against) |
+| **P5b** | Stage-transition alert (§7.3) — daily check, emit on change — **delivered 2026-09-11** | P5 (needs stored prior stage to diff against) |
 
 P1 and P3 are independent and can proceed concurrently.
 

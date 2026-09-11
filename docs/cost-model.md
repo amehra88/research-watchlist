@@ -66,6 +66,13 @@ extraction: the 2026-08 branch measured that at ~8.9 s/unit → 21.5 h per pass.
 (disk diff over `notes/sec/`, ~1 min). Its claims add ~6K evidence units to the weekly topic_map
 embedding store once (~120 batched Gemini calls), then only new filings' blocks.
 
+**Stage alert + daily earnings feed (P5b, added 2026-09-11):** weekday chain 12:45 =
+`transcript_ingest.py --earnings 3` (2–3 Haiku CalendarEvents calls + 2 Haiku mcp-lean pulls per
+name that reported in the trailing 3 days, ~23K tokens each; a busy reporting day is ~10 names,
+most days 0–2) → `topic_map.py --run` (one batched Gemini call per 50 new units, no name
+suggestions) → `diffusion.py --run` → `stage_alert.py` — **zero LLM calls** in the last three
+steps. One-shot catch-up 2026-09-11 20:00: `--earnings 32` = 40 missed calls → 80 Haiku pulls.
+
 **Why subscription is the right path for current pipeline LLM use:**
 1. Already paid — marginal cost is zero unless bucket exhausted
 2. Quality on edge cases (ambiguous classification, subsidiary mentions, indirect ticker references) generally better than Gemini Flash
