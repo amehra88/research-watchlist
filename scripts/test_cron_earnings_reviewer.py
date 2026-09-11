@@ -107,6 +107,26 @@ def test_prompt_mentions_context():
     print("  ✓ dispatch prompt points the agent at its context file")
 
 
+def test_non_us_symbols_do_not_abort_the_run():
+    """2026-07-29/31 and 09-10: one dotted or digit-bearing symbol (UMG.AS, 2308.TW,
+    000660.KS) made the whole array unparseable, so AAPL/AMZN/KLAC/NXPI... were never
+    reviewed. The watchlist filter downstream is what drops foreign names, not the regex."""
+    _patch(lambda prompt, timeout_seconds=None, model=None:
+           (0, '["SONY", "AAPL", "MPWR", "UMG.AS", "2308.TW", "000660.KS"]\n', ""))
+    got = cer.query_calendar(["AAPL", "MPWR"])
+    assert got == ["SONY", "AAPL", "MPWR", "UMG.AS", "2308.TW", "000660.KS"], got
+    print("  ✓ dotted / digit-bearing symbols no longer abort the calendar parse")
+
+
+def test_array_inside_prose_still_parses():
+    """2026-07-30: the cheap model prefixed the array with its reasoning."""
+    _patch(lambda prompt, timeout_seconds=None, model=None:
+           (0, 'Filtering into the window (excluding SK hynix, 000660.KS):\n\n["MSFT", "META", "BRK.B"]', ""))
+    got = cer.query_calendar(["MSFT", "META"])
+    assert got == ["MSFT", "META", "BRK.B"], got
+    print("  ✓ a prose-wrapped array is still found")
+
+
 if __name__ == "__main__":
     orig = cer.run_claude
     try:
@@ -117,6 +137,8 @@ if __name__ == "__main__":
         test_retries_once_after_timeout()
         test_empty_result_is_not_a_failure()
         test_persistent_failure_still_aborts()
+        test_non_us_symbols_do_not_abort_the_run()
+        test_array_inside_prose_still_parses()
     finally:
         cer.run_claude = orig
     print("\nALL PASS — calendar query has headroom and survives one slow call.")

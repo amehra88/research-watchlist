@@ -159,7 +159,10 @@ def query_calendar(watchlist_tickers: list[str]) -> list[str] | None:
         if attempt == CALENDAR_ATTEMPTS:
             return None
     # Find the JSON array in the response. Strip whitespace and any leading/trailing prose.
-    match = re.search(r"\[\s*(?:\"[A-Z]+\"\s*,?\s*)*\]", stdout)
+    # Symbols may carry digits, dots or dashes (2308.TW, 000660.KS, UMG.AS, BRK.B): a single
+    # such entry used to make the whole array unmatchable and abort the run (2026-07-29/31,
+    # 09-10). The watchlist filter in main() is what drops non-watchlist names, not this regex.
+    match = re.search(r"\[\s*(?:\"[A-Z0-9.\-]+\"\s*,?\s*)*\]", stdout)
     if not match:
         log_write(f"  CALENDAR_QUERY_UNPARSEABLE response={stdout[:300]!r}")
         return None
