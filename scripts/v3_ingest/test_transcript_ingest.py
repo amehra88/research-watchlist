@@ -9,6 +9,7 @@ KeyError trap the spec calls out.
 No pytest in this env — run directly:
     python3 scripts/v3_ingest/test_transcript_ingest.py
 """
+import datetime as dt
 import json
 import os
 import sys
@@ -663,6 +664,39 @@ def test_fetch_calendar_failure_is_loud():
             pass
     finally:
         ti.claude_p.run_mcp = orig
+
+
+# ───────────────────────── earnings mode (P5b, 2026-09-11) ─────────────────────────
+
+def test_earnings_plan_makes_two_query_pulls_per_event():
+    e = ti.UniverseEntry("NVDA", "NVDA-US", [], ["tier_1"])
+    events = [{"eventType": "Earnings", "requestId": "NVDA-US", "eventDateTime": "2026-08-27T20:00:00Z"},
+              {"eventType": "Conference", "requestId": "NVDA-US", "eventDateTime": "2026-08-28T15:00:00Z"}]
+    plan = ti.plan_from_events([e], events, today=dt.date(2026, 9, 11),
+                               event_type="Earnings", queries=ti.EARNINGS_QUERIES)
+    assert [(p[0].ticker, p[1], p[2]) for p in plan] == [
+        ("NVDA", ti.EARNINGS_QUERIES[0], ("2026-08-27", "2026-08-29")),
+        ("NVDA", ti.EARNINGS_QUERIES[1], ("2026-08-27", "2026-08-29"))], plan
+
+
+def test_conference_plan_default_is_unchanged():
+    e = ti.UniverseEntry("LITE", "LITE-US", [], ["tier_1"])
+    events = [{"eventType": "Conference", "requestId": "LITE-US", "eventDateTime": "2026-09-08T15:00:00Z"},
+              {"eventType": "Earnings", "requestId": "LITE-US", "eventDateTime": "2026-09-09T20:00:00Z"}]
+    plan = ti.plan_from_events([e], events, today=dt.date(2026, 9, 11))
+    assert [(p[0].ticker, p[1], p[2]) for p in plan] == [("LITE", ti.CONFERENCE_QUERY, ("2026-09-08", "2026-09-10"))], plan
+
+
+def test_calendar_prompt_carries_the_event_type():
+    p = ti._calendar_prompt(["NVDA-US"], "2026-09-08", "2026-09-11", event_types=("Earnings",))
+    assert "eventTypes=['Earnings']" in p and "Conference" not in p, p
+    assert "eventTypes=['Conference']" in ti._calendar_prompt(["NVDA-US"], "2026-09-08", "2026-09-11")
+
+
+def test_earnings_queries_are_tool_legal_and_distinct():
+    assert len(set(ti.EARNINGS_QUERIES)) == 2
+    for q in ti.EARNINGS_QUERIES:
+        assert ti.QUERY_CHARSET_RE.fullmatch(q), q
 
 
 if __name__ == "__main__":

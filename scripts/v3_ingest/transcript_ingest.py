@@ -112,6 +112,15 @@ DEFAULT_WORKERS = 3
 # holds for the name in the window, so one query is complete, not a sample.
 CONFERENCE_QUERY = "What did the executives say at the conference?"
 CONFERENCE_WINDOW_DAYS = 8                        # weekly cron with one day of overlap
+
+# Earnings mode (2026-09-11, P5b): the same calendar-driven per-event pull with
+# eventTypes=['Earnings']. A call is ~52 chunks (median over 136 backfilled events,
+# p75 64) and a page holds 50, and paging over ties leaves gaps — so two semantic
+# queries per event, one page each: analyst Q&A first (the register topic_map keys on),
+# prepared remarks second. vector_id dedup absorbs the overlap.
+EARNINGS_QUERIES = ("What did analysts ask in the question and answer session?",
+                    "What did management say in prepared remarks about results and guidance?")
+EARNINGS_WINDOW_DAYS = 3                          # weekday cron with two days of overlap
 ABORT = threading.Event()                         # set on ToolUnavailableError: stop all workers
 
 # Calendar-driven conference mode (2026-09-10). Measured on AVGO (Goldman session + Q3 call
@@ -761,14 +770,14 @@ def event_window(event_datetime: str, today: dt.date | None = None):
     return day.isoformat(), end.isoformat()
 
 
-def _calendar_prompt(symbols: list, start: str, end: str) -> str:
+def _calendar_prompt(symbols: list, start: str, end: str, event_types=("Conference",)) -> str:
     end_excl = (dt.date.fromisoformat(end) + dt.timedelta(days=1)).isoformat()
     return (
         f"Call the {CAL_TOOL.split('__')[-1]} tool exactly once with exactly these arguments, "
         "changing nothing:\n"
         f"  symbols={symbols!r}\n"
         "  universeType='Tickers'\n"
-        "  eventTypes=['Conference']\n"
+        f"  eventTypes={list(event_types)!r}\n"
         f"  startDateTime='{start}T00:00:00Z'\n"
         f"  endDateTime='{end_excl}T00:00:00Z'\n\n"
         "Do not call any other tool. Do not open any file. Then reply DONE."
@@ -776,7 +785,7 @@ def _calendar_prompt(symbols: list, start: str, end: str) -> str:
 
 
 def fetch_calendar(entries: list, start: str, end: str, timeout=CLAUDE_TIMEOUT_S,
-                   model: str | None = None) -> list:
+                   model: str | None = None, event_types=("Conference",)) -> list:
     """Conference events for every resolved name in [start, end], CAL_SYMBOLS_PER_CALL
     symbols per MCP call. Raises CalendarError on any failure: without the calendar
     there is no plan, and a silent empty plan would read as a quiet week."""
@@ -785,7 +794,7 @@ def fetch_calendar(entries: list, start: str, end: str, timeout=CLAUDE_TIMEOUT_S
     for i in range(0, len(symbols), CAL_SYMBOLS_PER_CALL):
         chunk = symbols[i:i + CAL_SYMBOLS_PER_CALL]
         try:
-            stdout = claude_p.run_mcp(_calendar_prompt(chunk, start, end), mcp_tool=CAL_TOOL,
+            stdout = claude_p.run_mcp(_calendar_prompt(chunk, start, end, event_types), mcp_tool=CAL_TOOL,
                                       model=model or MODEL, cwd=str(REPO_ROOT), timeout=timeout)
         except (claude_p.ToolUnavailableError, RuntimeError, subprocess.TimeoutExpired) as e:
             raise CalendarError(f"calendar pull {chunk[0]}..{chunk[-1]}: "
@@ -803,8 +812,9 @@ def fetch_calendar(entries: list, start: str, end: str, timeout=CLAUDE_TIMEOUT_S
     return events
 
 
-def plan_from_events(entries: list, events: list, today: dt.date | None = None) -> list:
-    """(entry, CONFERENCE_QUERY, (start, end)) per (name, event day), matched on the
+def plan_from_events(entries: list, events: list, today: dt.date | None = None,
+                     event_type: str = "Conference", queries: tuple = (CONFERENCE_QUERY,)) -> list:
+    """(entry, query, (start, end)) per (name, event day) x query, matched on the
     event's requestId (our factset_id; `identifier` may be the primary listing, e.g.
     TSM-US -> 2330-TW). Two sessions on one day are one pull. An event dated after
     today is deferred: the next trailing-window run sees it."""
@@ -812,7 +822,7 @@ def plan_from_events(entries: list, events: list, today: dt.date | None = None) 
     by_id = {e.factset_id: e for e in entries}
     seen, plan = set(), []
     for ev in events:
-        if not isinstance(ev, dict) or ev.get("eventType") != "Conference":
+        if not isinstance(ev, dict) or ev.get("eventType") != event_type:
             continue
         entry = by_id.get(ev.get("requestId")) or by_id.get(ev.get("identifier"))
         when = ev.get("eventDateTime") or ""
@@ -824,8 +834,9 @@ def plan_from_events(entries: list, events: list, today: dt.date | None = None) 
         if (entry.ticker, w) in seen:
             continue
         seen.add((entry.ticker, w))
-        plan.append((entry, CONFERENCE_QUERY, w))
-    plan.sort(key=lambda t: (t[0].ticker, t[2]))
+        for q in queries:
+            plan.append((entry, q, w))
+    plan.sort(key=lambda t: (t[0].ticker, t[2], queries.index(t[1]) if t[1] in queries else 0))
     return plan
 
 
@@ -844,6 +855,8 @@ def main(argv=None) -> int:
     ap.add_argument("--start", help="explicit window start YYYY-MM-DD (with --end); "
                                     "ledger entries are scoped to the window")
     ap.add_argument("--end", help="explicit window end YYYY-MM-DD (with --start)")
+    ap.add_argument("--earnings", type=int, metavar="DAYS",
+                    help="calendar-driven earnings-call feed over a trailing window (weekday cron, P5b)")
     ap.add_argument("--conferences", type=int, metavar="DAYS",
                     help="forward mode: trailing DAYS window, one generic query per resolved "
                          f"name, themes not required (weekly cron: {CONFERENCE_WINDOW_DAYS}). "
@@ -860,8 +873,15 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
     if bool(args.start) != bool(args.end):
         ap.error("--start and --end go together")
-    if args.conferences and args.start:
-        ap.error("--conferences sets its own window; drop --start/--end")
+    if args.conferences and args.earnings:
+        ap.error("--earnings and --conferences are separate feeds; run one at a time")
+    if (args.conferences or args.earnings) and args.start:
+        ap.error("--conferences/--earnings set their own window; drop --start/--end")
+    feed = "Conference" if args.conferences else ("Earnings" if args.earnings else None)
+    feed_queries = None
+    if feed:
+        feed_queries = list(args.query) if args.query else (
+            [CONFERENCE_QUERY] if feed == "Conference" else list(EARNINGS_QUERIES))
 
     watchlist = load_yaml(WATCHLIST_YAML)
     identity = load_yaml(IDENTITY_YAML)
@@ -873,9 +893,9 @@ def main(argv=None) -> int:
         entries = [e for e in entries if e.ticker in wanted]
 
     entries.sort(key=lambda e: e.ticker)
-    if args.conferences:
-        start, end = conference_window(args.conferences)
-        window, override = (start, end), (args.query or [CONFERENCE_QUERY])
+    if feed:
+        start, end = conference_window(args.conferences or args.earnings)
+        window, override = (start, end), feed_queries
     elif args.start:
         start, end = args.start, args.end
         window, override = (start, end), args.query
@@ -896,16 +916,17 @@ def main(argv=None) -> int:
         return 0
 
     # plan items: (entry, query, (start, end), ledger window-key or None)
-    if args.conferences and not args.scan:
+    if feed and not args.scan:
         try:
-            events = fetch_calendar(entries, start, end, model=args.model)
+            events = fetch_calendar(entries, start, end, model=args.model, event_types=(feed,))
         except CalendarError as e:
             log(f"ABORT: {e}")
             return 1
-        plan = [(e, q, w, w) for e, q, w in plan_from_events(entries, events)]
-        n_conf = sum(1 for ev in events if isinstance(ev, dict) and ev.get("eventType") == "Conference")
-        log(f"calendar: {len(events)} events ({n_conf} Conference) for {len(entries)} names "
-            f"-> {len(plan)} (name, day) pulls")
+        plan = [(e, q, w, w) for e, q, w in
+                plan_from_events(entries, events, event_type=feed, queries=tuple(feed_queries))]
+        n_typed = sum(1 for ev in events if isinstance(ev, dict) and ev.get("eventType") == feed)
+        log(f"calendar: {len(events)} events ({n_typed} {feed}) for {len(entries)} names "
+            f"-> {len(plan)} (name, day, query) pulls")
     else:
         plan = [(e, q, (start, end), window) for e in entries
                 for q in queries_for(e, args.max_queries, override=override)]
