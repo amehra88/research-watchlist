@@ -1556,9 +1556,6 @@ tier_3_watchlist:
   - ticker: FFIV
     themes: [networking_competitive_landscape, cybersecurity_competitive_landscape, enterprise_ai_adoption]
     added_date: 2026-05-11
-  - ticker: FICO
-    themes: [enterprise_ai_adoption, vertical_ai_applications]
-    added_date: 2026-05-11
   - ticker: FROG
     themes: [enterprise_ai_adoption, ai_infrastructure_software, cybersecurity_competitive_landscape]
     added_date: 2026-05-09
