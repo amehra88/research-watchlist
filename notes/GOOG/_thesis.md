@@ -94,13 +94,13 @@ assumptions:
     at the scoring date alongside a disclosed TPU design win in Cloud AI workloads
   - DeepMind publishing a peer-reviewed result establishing a new state-of-the-art
     in a domain where competitors had no equivalent published work at scoring
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 3.5
+    confirm: 10.5
     challenge: 0.5
     window_days: 90
-    last_evidence: '2026-09-07'
+    last_evidence: '2026-09-08'
   draft: true
 - id: search_defense_not_breached
   statement: At the time of scoring, Google Search had not experienced a revenue or
@@ -154,10 +154,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: ai_capable_and_ai_exposed
   statement: At the time of scoring, GOOG's AI capability lead and its core-revenue

@@ -73,10 +73,10 @@ assumptions:
   status: open
   status_source: operator
   pressure:
-    confirm: 14.0
+    confirm: 17.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-11'
   draft: false
 - id: telecom_drag_no_worse
   statement: Legacy telecom weakness is ALREADY subtracting from the score — it is
@@ -128,9 +128,9 @@ assumptions:
   status_source: operator
   pressure:
     confirm: 8.0
-    challenge: 0
+    challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-11'
   draft: false
 ---
 ## Rationale

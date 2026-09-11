@@ -138,13 +138,13 @@ assumptions:
     in a quarterly filing
   - No public announcement of a competing tool qualification displacing LRCX in GAA,
     HBM, or advanced-packaging etch/dep flows during the period
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 11.0
+    confirm: 12.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-11'
   draft: true
 - id: china_export_drag_at_scoring
   statement: At scoring, export-control restrictions on China-bound WFE reduced LRCX's
