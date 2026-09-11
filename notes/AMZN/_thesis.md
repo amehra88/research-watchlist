@@ -34,13 +34,13 @@ assumptions:
     the respective companies' quarterly filings
   - Bedrock enterprise customer count disclosed in AMZN earnings materials increases
     quarter-over-quarter
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 7.0
+    confirm: 9.5
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-11'
   draft: true
 - id: bedrock_anthropic_closes_model_gap
   statement: The Bedrock + Anthropic partnership closes the model-layer capability
@@ -62,8 +62,8 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
-    challenge: 2.5
+    confirm: 2.5
+    challenge: 3.0
     window_days: 90
     last_evidence: '2026-09-09'
   draft: true
@@ -117,10 +117,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: ads_revenue_material_at_scoring
   statement: Advertising Services is a material contributor to AMZN's consolidated

@@ -61,13 +61,13 @@ assumptions:
     and preserves the similar-trajectory language for FY2027
   - A SEMI or Gartner industry WFE forecast published after the scoring date reports
     2026 industry growth ≥30%
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 5.0
+    confirm: 9.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-11'
   draft: true
 - id: hbm_expansion_drives_dram_wfe
   statement: At scoring, AMAT's DRAM revenue growth of +18% YoY and the advanced packaging
@@ -88,13 +88,13 @@ assumptions:
     addition and associated tool purchase commitments
   - AMAT FQ3'26 filing reports DRAM segment revenue growth at or above the FQ2'26
     YoY rate
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 11.0
+    confirm: 12.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-10'
   draft: true
 - id: china_no_incremental_restriction
   statement: At scoring, China represented approximately 24% of AMAT Semi Systems
@@ -176,10 +176,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 5.0
+    confirm: 6.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-09'
   draft: true
 ---
 ## Rationale

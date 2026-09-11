@@ -56,10 +56,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 32.0
-    challenge: 0
+    confirm: 33.0
+    challenge: 6.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-11'
   draft: true
 - id: hynix_first_to_market_hbm_gens
   statement: At scoring, SK Hynix had shipped each major HBM generation ahead of Samsung
@@ -104,9 +104,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 1.0
-    challenge: 0
+    challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-11'
   draft: true
 - id: base_dram_commodity_pricing
   statement: At scoring, SK Hynix's non-HBM DRAM segments carried commodity-level

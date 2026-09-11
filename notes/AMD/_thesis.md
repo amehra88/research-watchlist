@@ -95,7 +95,7 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 1.0
+    challenge: 6.0
     window_days: 90
     last_evidence: '2026-09-08'
   draft: true
@@ -122,10 +122,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 4.0
+    confirm: 14.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-10'
   draft: true
 - id: meta_openai_sole_named_gpu_customers
   statement: At scoring, Meta (6GW deployment) and OpenAI are the only named large-scale
@@ -148,13 +148,13 @@ assumptions:
   - AMD 10-K or 10-Q showing that no single customer accounts for ≥10% of total revenue,
     without a corresponding disclosure of new named GPU customers added in the same
     period
-  status: open
-  status_source: draft
+  status: challenged
+  status_source: evidence
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 4.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: sw_distribution_gap_holds_score_below_5
   statement: At scoring, AMD's software and distribution gap to NVIDIA is the stated
