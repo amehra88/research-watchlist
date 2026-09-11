@@ -62,10 +62,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: bootcamp_model_supports_commercial_landings
   statement: At scoring, the bootcamp-led sales motion was the mechanism supporting

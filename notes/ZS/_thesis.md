@@ -41,10 +41,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 9.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: billings_watch_not_worsened
   statement: 'Conditions at scoring hold: the billings/deferred-revenue watch-item
@@ -67,9 +67,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: ai_data_sec_innovation_lead
   statement: 'Conditions at scoring hold: no competitor has shipped a GA product that
@@ -89,13 +89,13 @@ assumptions:
   - ZS press release announces a new AI/data-security product module reaching GA with
     a disclosed enterprise customer count
   - ZS 10-Q or 10-K names AI/data-security as a contributing driver of net new ARR
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 20.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: security_first_ai_positioning
   statement: ZS's AI-positioning score of 3 reflects a security-first architecture
@@ -117,13 +117,13 @@ assumptions:
     enterprise customer adoptions
   - ZS earnings call Q&A contains no analyst or management commentary attributing
     losses to an AI-feature gap
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 9.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: decel_not_displacement
   statement: 'Conditions at scoring hold: the constraint on investor interest is growth
@@ -143,13 +143,13 @@ assumptions:
   - ZS quarterly press release shows organic net new ARR at or above the low end of
     the FY27 guided pace with no competitive-displacement language from management
     or in analyst Q&A
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 7.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 ---
 ## Rationale
