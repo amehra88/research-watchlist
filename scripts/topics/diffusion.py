@@ -165,3 +165,85 @@ def denominators(rows) -> dict:
         elif r.get("event_type") in ("earnings_call", "conference"):
             cov[cq][r["event_type"]].add(r["ticker"])
     return {cq: {k: len(cov[cq][k]) for k in ("earnings_call", "conference", "mdna_filers")} for cq in sorted(cov)}
+
+
+def quarters_in(rows) -> list:
+    return sorted({r["cal_quarter"] for r in rows if r.get("cal_quarter")})
+
+
+def newly_said(rows, baseline: int = NEWLY_SAID_BASELINE, mdna_min_blocks: int = MDNA_MIN_BLOCKS) -> list:
+    """Findings R4/R5: (filer, theme) is newly said in quarter q when the filer has rows of that
+    source in each of the `baseline` prior quarters and none of them carry the theme. Recurring
+    boilerplate can never register — that is the point. A filer with no rows in a baseline
+    quarter is skipped (unknown), never counted as new."""
+    qs = quarters_in(rows)
+    seen: dict = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))  # (ticker,source)->cq->theme->n
+    present: dict = collections.defaultdict(set)                                                # (ticker,source)->{cq}
+    register_of = {}
+    for r in rows:
+        k, cq = (r.get("ticker"), r.get("source") or "exchange"), r.get("cal_quarter")
+        if not k[0] or not cq:
+            continue
+        present[k].add(cq)
+        register_of[(k, cq)] = r.get("register")
+        for t in _themes(r):
+            seen[k][cq][t] += 1
+    out = []
+    for k, by_q in seen.items():
+        ticker, source = k
+        for cq, counter in by_q.items():
+            i = qs.index(cq)
+            if i < baseline:
+                continue
+            prior = qs[i - baseline:i]
+            if any(p not in present[k] for p in prior):
+                continue                       # baseline unknown: the filer has no rows there
+            for theme, n in counter.items():
+                if source == "mdna" and n < mdna_min_blocks:
+                    continue
+                if any(theme in by_q.get(p, {}) for p in prior):
+                    continue
+                out.append({"ticker": ticker, "theme": theme, "cal_quarter": cq, "source": source,
+                            "register": register_of.get((k, cq)), "n_rows": n, "baseline_quarters": prior})
+    out.sort(key=lambda e: (e["cal_quarter"], e["ticker"], e["theme"], e["source"]))
+    return out
+
+
+def movers(m: dict, cq: str, prev: str) -> list:
+    """Two quarters compared, nothing fitted. Sorted on n_banks delta, then n_companies (§5 weighting)."""
+    themes = {t for (t, q) in m if q in (cq, prev)}
+    z = {"n_banks": 0, "n_companies": 0, "n_disclosing": 0}
+    out = []
+    for t in themes:
+        a, b = m.get((t, cq), z), m.get((t, prev), z)
+        out.append({"theme": t, "n_banks": a["n_banks"], "prev_banks": b["n_banks"],
+                    "delta_banks": a["n_banks"] - b["n_banks"],
+                    "n_companies": a["n_companies"], "prev_companies": b["n_companies"],
+                    "delta_companies": a["n_companies"] - b["n_companies"],
+                    "n_disclosing": a["n_disclosing"], "prev_disclosing": b["n_disclosing"]})
+    out.sort(key=lambda e: (-e["delta_banks"], -e["delta_companies"], e["theme"]))
+    return out
+
+
+def detector_asked_elsewhere(idx: dict, graph: dict, as_of: str) -> list:
+    """§6.1 over §6.3 stage 2: evidence here, questions elsewhere. Adjacent askers (verified
+    graph) are what the spec calls stage 2; askers with no verified link are listed separately
+    so the operator sees both and the stage never depends on an unaudited edge."""
+    asked_by_theme: dict = collections.defaultdict(dict)
+    for (theme, ticker), p in idx.items():
+        if p["first_question_date"]:
+            asked_by_theme[theme][ticker] = p["first_question_date"]
+    out = []
+    for (theme, ticker), p in idx.items():
+        if lc.stage(idx, theme, ticker) != 2:
+            continue
+        nbrs = graph.get(ticker, {})
+        adjacent = [{"ticker": t, "routes": nbrs[t], "first_question_date": d}
+                    for t, d in sorted(asked_by_theme[theme].items()) if t in nbrs]
+        other = [t for t in sorted(asked_by_theme[theme]) if t not in nbrs]
+        out.append({"theme": theme, "ticker": ticker, "stage": 2, "adjacent_asked": adjacent, "other_asked": other,
+                    "first_evidence_date": p["first_evidence_date"], "first_filing_date": p["first_filing_date"],
+                    "evidence_sources": sorted(p["evidence_sources"]),
+                    "open_lag_days": lc.open_lag_days(p, as_of)})
+    out.sort(key=lambda e: (not e["adjacent_asked"], -(e["open_lag_days"] or 0), e["theme"], e["ticker"]))
+    return out

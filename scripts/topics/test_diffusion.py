@@ -74,6 +74,52 @@ def test_denominators_count_covered_companies_per_quarter_and_event_type_over_al
     assert d["CY2026-Q3"] == {"earnings_call": 1, "conference": 1, "mdna_filers": 1}
 
 
+def test_newly_said_requires_a_full_baseline_and_absence_in_it():
+    rows = [_r("a1", "evidence", "COHR", "2025-11-01", "CY2025-Q4", ["other"]),
+            _r("a2", "evidence", "COHR", "2026-02-01", "CY2026-Q1", ["other"]),
+            _r("a3", "evidence", "COHR", "2026-05-01", "CY2026-Q2", ["t1"]),          # new: absent Q4, Q1
+            _r("b1", "evidence", "LITE", "2026-02-01", "CY2026-Q1", ["other"]),
+            _r("b2", "evidence", "LITE", "2026-05-01", "CY2026-Q2", ["t1"]),          # only 1 prior quarter: unknown
+            _r("c1", "evidence", "FN", "2025-11-01", "CY2025-Q4", ["t1"]),
+            _r("c2", "evidence", "FN", "2026-02-01", "CY2026-Q1", ["other"]),
+            _r("c3", "evidence", "FN", "2026-05-01", "CY2026-Q2", ["t1"])]           # said in Q4: not new
+    out = df.newly_said(rows)
+    assert [(e["ticker"], e["theme"], e["cal_quarter"]) for e in out] == [("COHR", "t1", "CY2026-Q2")]
+    assert out[0]["baseline_quarters"] == ["CY2025-Q4", "CY2026-Q1"]
+
+
+def test_newly_said_mdna_needs_two_blocks_in_the_current_quarter():
+    base = [_r(f"m{q}", "evidence", "COHR", d, q, ["other"], source="mdna")
+            for q, d in (("CY2025-Q4", "2025-11-01"), ("CY2026-Q1", "2026-02-01"))]
+    one = base + [_r("x1", "evidence", "COHR", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna")]
+    assert df.newly_said(one) == []
+    two = one + [_r("x2", "evidence", "COHR", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna")]
+    assert [e["theme"] for e in df.newly_said(two)] == ["t1"]
+
+
+def test_movers_compare_two_quarters_and_sort_on_banks_then_companies():
+    m = {("t1", "Q1"): {"n_banks": 1, "n_companies": 1, "n_disclosing": 0},
+         ("t1", "Q2"): {"n_banks": 4, "n_companies": 3, "n_disclosing": 2},
+         ("t2", "Q2"): {"n_banks": 2, "n_companies": 5, "n_disclosing": 0},
+         ("t3", "Q1"): {"n_banks": 3, "n_companies": 3, "n_disclosing": 0}}
+    out = df.movers(m, "Q2", "Q1")
+    assert [(e["theme"], e["delta_banks"]) for e in out] == [("t1", 3), ("t2", 2), ("t3", -3)]
+    assert out[0]["prev_companies"] == 1 and out[1]["prev_banks"] == 0
+
+
+def test_asked_elsewhere_separates_adjacent_from_other_askers():
+    rows = [_r("c1", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("q1", "question", "AAOI", "2026-08-06", "CY2026-Q3", ["t1"], firm="Raymond James"),
+            _r("q2", "question", "NVDA", "2026-08-07", "CY2026-Q3", ["t1"], firm="Citi")]
+    idx = lc.build_index(rows)
+    graph = {"COHR": {"AAOI": ["comparable"]}, "AAOI": {"COHR": ["comparable"]}}
+    out = df.detector_asked_elsewhere(idx, graph, as_of="2026-09-10")
+    assert len(out) == 1 and out[0]["ticker"] == "COHR" and out[0]["stage"] == 2
+    assert out[0]["adjacent_asked"] == [{"ticker": "AAOI", "routes": ["comparable"], "first_question_date": "2026-08-06"}]
+    assert out[0]["other_asked"] == ["NVDA"]
+    assert out[0]["open_lag_days"] == (dt.date(2026, 9, 10) - dt.date(2026, 4, 20)).days
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     failed = 0
