@@ -1,6 +1,6 @@
 # Idea surfacing & sub-sector timeliness — design
 
-**Status: SPEC, approved in brainstorming 2026-08-11. P1 built 2026-08-11 (forward conference cron 2026-09-10); P2 built 2026-09-10 (`scripts/topics/`, plan `docs/superpowers/plans/2026-09-10-topic-map.md`); P3b built 2026-09-10 (plan `docs/superpowers/plans/2026-09-10-mdna-evidence-p3b.md`); P4 built 2026-09-10 (plan `docs/superpowers/plans/2026-09-10-diffusion-p4.md`; `challenging_rate` dropped, verified adjacency only, stages/lag on MD&A evidence only, no vault notes); P3/P5/P5b open.**
+**Status: SPEC, approved in brainstorming 2026-08-11. P1 built 2026-08-11 (forward conference cron 2026-09-10); P2 built 2026-09-10 (`scripts/topics/`, plan `docs/superpowers/plans/2026-09-10-topic-map.md`); P3b built 2026-09-10 (plan `docs/superpowers/plans/2026-09-10-mdna-evidence-p3b.md`); P4 built 2026-09-10 (plan `docs/superpowers/plans/2026-09-10-diffusion-p4.md`; `challenging_rate` dropped, verified adjacency only, stages/lag on MD&A evidence only); P5 theme notes built 2026-09-10 (plan `docs/superpowers/plans/2026-09-10-theme-notes-p5.md`; hybrid open quarter, `_themes.md` ticker index); P3, P5b (alert) and the §7.2 quarterly digest open.**
 
 Answers the operator's standing question: *"how do we surface new investment ideas, or the
 timeliness of a sub-sector we can invest against — and is it timely?"*

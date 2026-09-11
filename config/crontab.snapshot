@@ -6,7 +6,7 @@ PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 30 2 * * * /root/bin/alert_on_failure.sh earnings_reviewer /root/research-watchlist/scripts/cron_earnings_reviewer.py
 
 */15 * * * * . /root/.gmail-poller.env && /root/bin/alert_on_failure.sh gmail_poller /root/research/scripts/poll_gmail_transcripts.py
-#PAUSED-P4 */15 * * * * /root/bin/alert_on_failure.sh auto_sync /root/research-watchlist/scripts/auto_sync.py
+#PAUSED-P5 */15 * * * * /root/bin/alert_on_failure.sh auto_sync /root/research-watchlist/scripts/auto_sync.py
 7,22,37,52 * * * * /root/bin/alert_on_failure.sh sidecar_pdfs /root/research-watchlist/scripts/sidecar_pdfs.py
 12,27,42,57 * * * * set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh enrich_sidecars /root/research-watchlist/scripts/enrich_sidecars.py
 
@@ -49,3 +49,4 @@ PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 0 11 * * 6 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh topic_map python3 scripts/topics/topic_map.py --run --suggest-names --email >> logs/topic_map.log 2>&1
 30 12 * * * cd /root/research-watchlist && /root/bin/alert_on_failure.sh mdna_evidence python3 scripts/topics/mdna_evidence.py >> logs/mdna_evidence.log 2>&1
 0 12 * * 6 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh diffusion python3 scripts/topics/diffusion.py --run --email >> logs/diffusion.log 2>&1
+30 12 * * 6 cd /root/research-watchlist && /root/bin/alert_on_failure.sh theme_notes python3 scripts/topics/theme_notes.py --run >> logs/theme_notes.log 2>&1

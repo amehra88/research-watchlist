@@ -199,8 +199,12 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
   Tier-0 lag run on MD&A evidence only — corprep speech mis-paired 3/5 spot-checked stage-2 rows;
   first Tier-0 read: 53 pairs, median lag −4d, evidence-led 40%, left-censored). Open: P3
   foreign_evidence (the China-laser gold test §11.2/11.3 needs it and an anchor for
-  `laser_architecture_competition`), P5 vault theme notes, P5b daily transition alert, §6.4 novel
-  names. NOTE: the
+  `laser_architecture_competition`), P5b daily transition alert, §6.4 novel
+  names, §7.2 quarterly digest. **P5 theme notes built 2026-09-10** (`scripts/topics/theme_notes.py`,
+  cron Sat 12:30; `notes/themes/*.md` = §7.1 living notes, 36 on first run, gated on breadth;
+  `notes/{T}/_themes.md` ticker index; closed quarters append-only, open quarter replaced in place
+  until quarter end + 14d; frontmatter = state, rewritten weekly). These are the first
+  machine-appended files in the vault — they land in generic Auto-sync commits, expected. NOTE: the
   local branch `worktree-idea-surfacing-spec` (2026-08-19..22, never merged, never ran end to end)
   holds an earlier P2 (claude -p phrase extraction, 21.5h serial) plus `mdna_evidence.py`
   (P3b, 8,251 claims), `lifecycle.py` (Tier-0 lag measurement) and `evidence_store.py` — start
