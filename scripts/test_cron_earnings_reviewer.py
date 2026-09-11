@@ -127,8 +127,37 @@ def test_array_inside_prose_still_parses():
     print("  ✓ a prose-wrapped array is still found")
 
 
+def test_ticker_flag_bypasses_calendar_and_filters_watchlist():
+    calls = []
+    def boom(wl):
+        raise AssertionError("calendar must not be queried with --ticker")
+    cer.query_calendar = boom
+    cer.run_earnings_reviewer = lambda t, started: (calls.append(t) or f"STATUS: new-note-written ticker={t}")
+    cer.load_watchlist_tickers = lambda: ["AAPL", "MSFT"]
+    rc = cer.main(["--ticker", "AAPL", "--ticker", "ZZZZ", "--ticker", "msft"])
+    assert rc == 0 and calls == ["AAPL", "MSFT"], (rc, calls)
+    print("  ✓ --ticker skips the calendar, uppercases, and drops non-watchlist names")
+
+
+def test_session_limit_stops_the_batch():
+    calls = []
+    def fake(t, started):
+        calls.append(t)
+        return ("STATUS: error reason=invocation-failed detail=rc=1 stderr='claude -p session limit reached (429)'"
+                if t == "AAPL" else f"STATUS: new-note-written ticker={t}")
+    cer.run_earnings_reviewer = fake
+    cer.load_watchlist_tickers = lambda: ["AAPL", "MSFT", "META"]
+    rc = cer.main(["--ticker", "AAPL", "--ticker", "MSFT", "--ticker", "META"])
+    assert rc == 1 and calls == ["AAPL"], (rc, calls)
+    assert cer.is_session_limit("STATUS: error reason=x detail=Usage limit reached") is True
+    assert cer.is_session_limit("STATUS: error reason=no-marker-emitted detail=...") is False
+    assert cer.is_session_limit("STATUS: new-note-written ticker=X period=429") is False
+    print("  ✓ a 429/session-limit marker stops the batch instead of burning 15 min per name")
+
+
 if __name__ == "__main__":
     orig = cer.run_claude
+    orig_main = (cer.query_calendar, cer.run_earnings_reviewer, cer.load_watchlist_tickers)
     try:
         test_write_context_without_thesis()
         test_write_context_with_thesis_carries_assumptions()
@@ -139,6 +168,9 @@ if __name__ == "__main__":
         test_persistent_failure_still_aborts()
         test_non_us_symbols_do_not_abort_the_run()
         test_array_inside_prose_still_parses()
+        test_ticker_flag_bypasses_calendar_and_filters_watchlist()
+        test_session_limit_stops_the_batch()
     finally:
         cer.run_claude = orig
+        cer.query_calendar, cer.run_earnings_reviewer, cer.load_watchlist_tickers = orig_main
     print("\nALL PASS — calendar query has headroom and survives one slow call.")

@@ -10,6 +10,7 @@ invocation to logs/cron-earnings-reviewer.log.
 Configuration is baked in (see CONFIG below). Modify in place if scope/window
 changes.
 """
+import argparse
 import json
 import os
 import re
@@ -293,9 +294,22 @@ def run_earnings_reviewer(ticker: str, run_started_at: datetime) -> str:
     # Neither marker nor artifact change — true error
     return f"STATUS: error reason=no-marker-emitted detail=stdout_tail={stdout[-200:]!r}"
 
+SESSION_LIMIT_RE = re.compile(r"429|session limit|usage limit", re.I)
+
+
+def is_session_limit(marker: str) -> bool:
+    """True for an error marker caused by the subscription's rolling session limit. A batch
+    that keeps dispatching after one of these burns 15 minutes per remaining name for nothing."""
+    return marker.startswith("STATUS: error") and bool(SESSION_LIMIT_RE.search(marker))
+
+
 # === Main ===
 
-def main() -> int:
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description="earnings-reviewer cron wrapper")
+    ap.add_argument("--ticker", action="append",
+                    help="review these tickers instead of asking the calendar (repeatable; backfill entry point)")
+    args = ap.parse_args(argv)
     run_started_at = datetime.now(timezone.utc)
     log_section(f"CRON RUN {run_started_at.isoformat(timespec='seconds')}")
 
@@ -307,13 +321,17 @@ def main() -> int:
         log_write(f"  WATCHLIST_LOAD_FAILED err={e}")
         return 1
 
-    # Query calendar
-    log_write(f"  Querying earnings calendar (window={WINDOW_HOURS}h)")
-    reported = query_calendar(watchlist)
-    if reported is None:
-        log_write("  ABORT: calendar query failed; no tickers processed this run")
-        return 1
-    log_write(f"  Calendar returned {len(reported)} ticker(s): {reported}")
+    if args.ticker:
+        reported = [t.upper() for t in args.ticker]
+        log_write(f"  --ticker given: {reported} (calendar skipped)")
+    else:
+        # Query calendar
+        log_write(f"  Querying earnings calendar (window={WINDOW_HOURS}h)")
+        reported = query_calendar(watchlist)
+        if reported is None:
+            log_write("  ABORT: calendar query failed; no tickers processed this run")
+            return 1
+        log_write(f"  Calendar returned {len(reported)} ticker(s): {reported}")
 
     # Intersect with watchlist (defense; Claude should have already filtered)
     watchlist_set = set(watchlist)
@@ -336,6 +354,10 @@ def main() -> int:
         log_write(f"  {marker}")
         if marker.startswith("STATUS: error"):
             error_count += 1
+            if is_session_limit(marker):
+                for rest in to_process[to_process.index(ticker) + 1:]:
+                    log_write(f"  SKIPPED_SESSION_LIMIT {rest}")
+                break
 
     log_write(f"  CRON_RUN_SUMMARY processed={len(to_process)} errors={error_count}")
     return 1 if error_count > 0 else 0
