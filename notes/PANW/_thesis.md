@@ -32,10 +32,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: fcf_fy28_40pct_target_holds
   statement: The FY28 adjusted FCF margin target of 40% holds, requiring the full
@@ -82,9 +82,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: gross_margin_pressure_no_worsening
   statement: The conditions driving gross margin pressure at the Q4'26 print — SaaS

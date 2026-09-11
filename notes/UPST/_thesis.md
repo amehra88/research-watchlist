@@ -30,10 +30,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: upst_trains_on_bureau_rejected_outcomes
   statement: UPST's model training corpus contains repayment outcome data from borrowers
@@ -79,10 +79,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 3.0
+    challenge: 4.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: upst_no_material_balance_sheet_buffer
   statement: UPST does not retain originated loans on its own balance sheet at a scale
@@ -104,9 +104,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 4.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 ---
 ## Rationale

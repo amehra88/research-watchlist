@@ -33,10 +33,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: ai_demand_crowds_out_near_term_masks
   statement: At the time of 3Q26, IC mask demand was suppressed by elevated foundry
@@ -110,10 +110,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: capex_cut_is_delivery_timing
   statement: The FY26 capex guide reduction from $330M to $255–305M reflects tool
@@ -165,9 +165,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 ---
 ## Rationale

@@ -31,10 +31,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: nvmi_gaa_500m_target_unrevised
   statement: Management's Q4'25 call stated cumulative gate-all-around revenue will
@@ -56,10 +56,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 1.0
+    challenge: 3.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: nvmi_adv_pkg_20pct_product_rev
   statement: Advanced packaging constitutes ≥20% of Nova's product revenue as of Q4'25,
@@ -81,10 +81,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 7.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: nvmi_rev_growth_exceeds_wfe
   statement: Management's Q4'25 guidance implies Nova's 2026 revenue growth rate exceeds
@@ -106,9 +106,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 4.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: nvmi_cd_film_share_25pct
   statement: Nova holds ≥25% market share in critical dimension and film metrology,

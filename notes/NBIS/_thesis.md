@@ -111,13 +111,13 @@ assumptions:
   - First signed asset-light capacity partner agreement publicly disclosed in an 8-K,
     press release, or earnings call
   - Q3'26 earnings update quantifying a live pipeline or naming a partner in negotiation
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 9.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: meta_concentration_no_deepening
   statement: Customer concentration at Q2'26 scoring — with the Meta $27B contract
