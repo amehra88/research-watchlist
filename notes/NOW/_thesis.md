@@ -30,13 +30,13 @@ assumptions:
     or above $1B
   - Management reiteration of the $1B milestone with sequential or YoY growth figures
     on next earnings call
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 5.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: now_rpo_growth_at_scoring
   statement: RPO of $29.0B and cRPO growing 21% YoY as of June 30, 2026 are the backlog
@@ -58,10 +58,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: now_q2_selloff_not_fundamental
   statement: The post-Q2 price decline was not accompanied by fundamental deterioration
@@ -81,13 +81,13 @@ assumptions:
   - Q3 2026 earnings release reporting NRR at or above Q2 2026 levels
   - Supplemental filing or earnings call disclosing AI SKU mix expansion relative
     to Q2 2026
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 8.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 ---
 ## Rationale

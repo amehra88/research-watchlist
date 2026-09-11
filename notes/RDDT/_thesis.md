@@ -27,13 +27,13 @@ assumptions:
   - Q3 2026 10-Q filing showing ARPU growth at or above 36% YoY
   - Full-year 2026 guidance raise for revenue per unique in a subsequent earnings
     release
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 8.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: search_referral_traffic_still_material
   statement: Search engine referral traffic is a material DAUq driver at the scoring
@@ -58,10 +58,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 2.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: ai_data_licensing_contracts_intact
   statement: AI data-licensing agreements flagged as a watch-item at the scoring date
@@ -81,13 +81,13 @@ assumptions:
     agreement
   - 10-Q or 10-K disclosing a separate data-licensing revenue line item with a year-over-year
     increase
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 ---
 ## Rationale

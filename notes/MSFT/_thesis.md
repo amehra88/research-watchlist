@@ -35,10 +35,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 2.5
+    challenge: 0.5
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: msft_no_native_frontier_model
   statement: At scoring, MSFT had not shipped a proprietary frontier-scale AI model
@@ -105,10 +105,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 0.5
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: enterprise_distribution_moat_intact
   statement: At scoring, MSFT's enterprise distribution moat was overwhelming and
@@ -128,10 +128,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 0.5
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: investor_momentum_factors_weakening
   statement: At scoring, momentum factors for MSFT were weakening relative to mega-cap
