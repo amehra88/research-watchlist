@@ -193,8 +193,14 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
 - **Idea surfacing / sub-sector timeliness (spec 2026-08-11)** — P1 transcript ingest built
   (backfill 08-11, forward cron 09-10); **P2 topic_map built 2026-09-10** on main
   (`scripts/topics/`, calibrated pg-centroid anchors, no per-unit LLM extraction); **P3b MD&A
-  evidence built 2026-09-10** (ported from the branch + within-family diff fix). P3
-  foreign_evidence, P4 diffusion/detectors, P5 renderers still open. NOTE: the
+  evidence built 2026-09-10** (ported from the branch + within-family diff fix). **P4 diffusion built 2026-09-10**
+  (`scripts/topics/{adjacency,lifecycle,diffusion}.py`, cron Sat 12:00 after topic_map, report
+  `notes/reports/theme-diffusion.md`, append-only `state/topics/detections.jsonl`; stages and the
+  Tier-0 lag run on MD&A evidence only — corprep speech mis-paired 3/5 spot-checked stage-2 rows;
+  first Tier-0 read: 53 pairs, median lag −4d, evidence-led 40%, left-censored). Open: P3
+  foreign_evidence (the China-laser gold test §11.2/11.3 needs it and an anchor for
+  `laser_architecture_competition`), P5 vault theme notes, P5b daily transition alert, §6.4 novel
+  names. NOTE: the
   local branch `worktree-idea-surfacing-spec` (2026-08-19..22, never merged, never ran end to end)
   holds an earlier P2 (claude -p phrase extraction, 21.5h serial) plus `mdna_evidence.py`
   (P3b, 8,251 claims), `lifecycle.py` (Tier-0 lag measurement) and `evidence_store.py` — start
