@@ -73,6 +73,19 @@ def test_first_evidence_date_comes_from_the_row_event_date_for_both_sources():
     assert p["evidence_sources"] == {"mdna", "exchange"}
 
 
+def test_first_filing_date_is_mdna_only_so_same_call_answers_do_not_zero_the_lag():
+    """A corprep answer carries the date of the question that prompted it; measuring the lag
+    from it would report 0 for every answered question. The clock runs from filings."""
+    rows = [_row("t1", "AAOI", "question", "q1", "2026-06-09", firm="Mizuho"),
+            _row("t1", "AAOI", "evidence", "a1", "2026-06-09", source="exchange"),
+            _row("t1", "AAOI", "evidence", "c1", "2026-04-20", source="mdna")]
+    p = lc.build_index(rows)[("t1", "AAOI")]
+    assert p["first_evidence_date"] == "2026-04-20" and p["first_filing_date"] == "2026-04-20"
+    assert lc.lag_days(p["first_filing_date"], p["first_question_date"]) == 50
+    q = lc.build_index(rows[:2])[("t1", "AAOI")]
+    assert q["first_filing_date"] is None and q["first_evidence_date"] == "2026-06-09"
+
+
 def test_stage_1_is_evidence_with_no_question_anywhere():
     rows = [_row("t1", "AAOI", "evidence", "e1", "2026-05-01")]
     idx = lc.build_index(rows)

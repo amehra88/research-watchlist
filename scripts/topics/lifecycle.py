@@ -89,8 +89,13 @@ def iter_rows(path: Path = TOPICS_PATH):
 
 
 def build_index(rows) -> dict:
-    """-> {(theme, ticker): {first_evidence_date, first_question_date, n_evidence, n_question,
-    banks, evidence_sources}}. A row contributes once per theme it carries.
+    """-> {(theme, ticker): {first_evidence_date, first_filing_date, first_question_date,
+    n_evidence, n_question, banks, evidence_sources}}. A row contributes once per theme it carries.
+
+    `first_evidence_date` is ANY evidence row (MD&A claim or corprep transcript turn) — it drives
+    the stage. `first_filing_date` is MD&A only — it drives the Tier-0 lag, because a corprep
+    answer shares its date with the analyst question that prompted it (192 of 363 pairs were
+    same-day on the first run) and a lag measured from it says nothing about disclosure timing.
 
     Rows with no theme are skipped: a below-threshold row is a CANDIDATE, not a topic, and
     counting un-named clusters here would quietly pad the distribution with things the
@@ -107,6 +112,7 @@ def build_index(rows) -> dict:
             p = idx.setdefault((theme, ticker), {
                 "theme": theme, "ticker": ticker,
                 "first_evidence_date": None, "first_question_date": None,
+                "first_filing_date": None,
                 "n_evidence": 0, "n_question": 0, "banks": set(), "evidence_sources": set(),
             })
             if r.get("register") == "evidence":
@@ -114,6 +120,9 @@ def build_index(rows) -> dict:
                 p["evidence_sources"].add(r.get("source") or "exchange")
                 if p["first_evidence_date"] is None or date < p["first_evidence_date"]:
                     p["first_evidence_date"] = date
+                if (r.get("source") == "mdna"
+                        and (p["first_filing_date"] is None or date < p["first_filing_date"])):
+                    p["first_filing_date"] = date
             elif r.get("register") == "question":
                 p["n_question"] += 1
                 if r.get("firm"):
@@ -229,10 +238,10 @@ def main(argv=None) -> int:
     log(f"{len(rows)} topic rows -> {len(idx)} (topic, company) pairs")
 
     both = {k: p for k, p in idx.items()
-            if p["first_evidence_date"] and p["first_question_date"]}
-    lags = [lag_days(p["first_evidence_date"], p["first_question_date"])
+            if p["first_filing_date"] and p["first_question_date"]}
+    lags = [lag_days(p["first_filing_date"], p["first_question_date"])
             for p in both.values()]
-    log(f"{len(both)} pairs carry BOTH registers")
+    log(f"{len(both)} pairs carry BOTH a filing (MD&A) and a question")
 
     s = summarize(lags)
     if s["n"]:
