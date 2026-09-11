@@ -26,13 +26,13 @@ assumptions:
   confirmed_by:
   - HPE retained in watchlist.yaml tier_2 after the Q3 FY26 earnings cycle (2026-09-03
     print) with no removal annotation
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 27.0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: not_a_bctk_holding_at_addition
   statement: HPE was not a BCTK portfolio holding at 2026-06-24 and had not been purchased

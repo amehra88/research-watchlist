@@ -30,13 +30,13 @@ assumptions:
   - Q2 FY27 8-K disclosing Atlas YoY revenue growth at or above 27%
   - Q3 FY27 8-K disclosing Atlas YoY revenue growth at or above management's FY27
     ~27% Atlas guide
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 6.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: ai_memory_layer_not_displaced
   statement: MongoDB's role as a memory and state layer for AI agents — evidenced
@@ -61,10 +61,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 19.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: mdb_not_bctk_held_at_addition
   statement: T2 candidacy at addition (2026-06-24) implies MDB was not held in the
