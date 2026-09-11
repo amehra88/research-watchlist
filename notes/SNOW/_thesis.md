@@ -35,10 +35,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 7.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: snow_cortex_gateway_no_model_asset
   statement: SNOW's Cortex AI Gateway routes AI tasks across third-party models for
@@ -64,10 +64,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: snow_observe_1pp_watch
   statement: Observe contributes approximately 1 percentage point to FY27 product
@@ -142,10 +142,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: snow_ai_gm_compression_74pct
   statement: FY27 non-GAAP product gross margin is guided to 74%, with management
@@ -169,10 +169,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 ---
 ## Rationale

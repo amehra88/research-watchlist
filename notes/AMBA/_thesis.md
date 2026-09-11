@@ -11,7 +11,23 @@ drafted_from:
 - notes/AMBA/20260904-2Q27.md
 reviewed_by_operator: false
 scores: {}
-proposed_scores: {}
+proposed_scores:
+  ai_positioning:
+    value: '4'
+    since: '2026-09-10'
+    source: notes/AMBA/20260910-2Q27.md
+  competitive_advantage.innovation_rate:
+    value: '4'
+    since: '2026-09-10'
+    source: notes/AMBA/20260910-2Q27.md
+  competitive_advantage.distribution:
+    value: '3'
+    since: '2026-09-10'
+    source: notes/AMBA/20260910-2Q27.md
+  competitive_advantage.overall:
+    value: 3+
+    since: '2026-09-10'
+    source: notes/AMBA/20260910-2Q27.md
 assumptions:
 - id: ai_soc_unit_cadence_holds
   statement: The cumulative AI SoC shipment trajectory observable when T2 candidacy
@@ -29,13 +45,13 @@ assumptions:
   - 2Q27 8-K or earnings transcript citing a cumulative AI SoC count above 46M+
   - 2Q27 10-Q product-line or segment note showing unit growth in AI-enabled products
     YoY
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 6.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: hanwha_lta_unmodified
   statement: The Hanwha long-term agreement citing >$800M potential lifetime revenue
@@ -54,13 +70,13 @@ assumptions:
     with scope unchanged
   - Absence of any amendment or termination notice in AMBA SEC filings through the
     2Q27 reporting period
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 8.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: inventory_drift_not_break
   statement: The inventory build and FCF burn flagged as a drift watch item in the
@@ -103,13 +119,13 @@ assumptions:
   - 2Q27 10-Q segment disclosure showing automotive revenue at or above the 1Q27 level
   - A new automotive design-win-to-production-ramp announcement disclosed in a press
     release, 8-K, or 2Q27 prepared remarks
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 7.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: scoring_deferred_one_cycle_only
   statement: The 2026-06-24 note's deferral of theme and score assignment to 'next
@@ -132,10 +148,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 ---
 ## Rationale

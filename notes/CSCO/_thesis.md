@@ -29,10 +29,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 27.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-08'
   draft: true
 - id: 4q26_cycle_sufficient_as_gate
   statement: The 4Q26 earnings cycle (reported 2026-08-12) is the specific event the

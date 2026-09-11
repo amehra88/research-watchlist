@@ -33,9 +33,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: ai_mix_share_not_declining
   statement: AI-related product ARR as a share of cloud external revenue does not
@@ -56,10 +56,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: net_cash_funding_adequacy
   statement: Net cash at scoring (USD 30.7B as of 2026-06-30) is not drawn below a
@@ -83,9 +83,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: cmr_not_worsening
   statement: CMR YoY growth rate at scoring (-7% reported in 1Q27) does not worsen
