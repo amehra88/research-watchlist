@@ -45,8 +45,8 @@ Row shape consumed (from `topic_map.jsonl`, 17,116 rows on 2026-09-10):
 
 ### Task 0: Build hygiene
 
-- [ ] **Step 1:** `pgrep -af "claude -p|ingest|topic_map|mdna|diffusion" | grep -v pgrep` → expect nothing.
-- [ ] **Step 2:** `ts=$(date +%Y%m%d_%H%M); crontab -l > /root/backups/crontab.pre_build_$ts.bak && crontab -l | sed 's#^\(\*/15 \* \* \* \* .*auto_sync.*\)$#\#PAUSED-P4 \1#' | crontab - && crontab -l | grep -n auto_sync` → the line shows `#PAUSED-P4`.
+- [x] **Step 1:** `pgrep -af "claude -p|ingest|topic_map|mdna|diffusion" | grep -v pgrep` → expect nothing.
+- [x] **Step 2:** `ts=$(date +%Y%m%d_%H%M); crontab -l > /root/backups/crontab.pre_build_$ts.bak && crontab -l | sed 's#^\(\*/15 \* \* \* \* .*auto_sync.*\)$#\#PAUSED-P4 \1#' | crontab - && crontab -l | grep -n auto_sync` → the line shows `#PAUSED-P4`.
 
 ### Task 1: `adjacency.py` — the verified ticker graph
 
@@ -57,7 +57,7 @@ Row shape consumed (from `topic_map.jsonl`, 17,116 rows on 2026-09-10):
 - Produces `load_adjacency(manual_path=MANUAL, watchlist_path=WATCHLIST) -> dict` (same shape).
 - Produces `MANUAL = Path("/root/research/config/supply-chain-manual.yaml")`, `WATCHLIST = REPO / "config" / "watchlist.yaml"`.
 
-- [ ] **Step 1: Failing test**
+- [x] **Step 1: Failing test**
 
 ```python
 #!/usr/bin/env python3
@@ -115,8 +115,8 @@ if __name__ == "__main__":
     print(f"\n{len(fns) - failed}/{len(fns)} pass"); sys.exit(1 if failed else 0)
 ```
 
-- [ ] **Step 2:** `python3 scripts/topics/test_adjacency.py` → fails with `ModuleNotFoundError: adjacency`.
-- [ ] **Step 3: Implement**
+- [x] **Step 2:** `python3 scripts/topics/test_adjacency.py` → fails with `ModuleNotFoundError: adjacency`.
+- [x] **Step 3: Implement**
 
 ```python
 #!/usr/bin/env python3
@@ -180,8 +180,8 @@ def load_adjacency(manual_path: Path = MANUAL, watchlist_path: Path = WATCHLIST)
     return build_adjacency(edges, wl.get("ingest_comparables") or [], wl.get("tier_4_ecosystem") or [])
 ```
 
-- [ ] **Step 4:** `python3 scripts/topics/test_adjacency.py` → 4/4.
-- [ ] **Step 5:** `git add scripts/topics/adjacency.py scripts/topics/test_adjacency.py && git commit -m "topics: verified ticker adjacency for Detector 1 (manual edges + comparables + tier_4 affects)"`
+- [x] **Step 4:** `python3 scripts/topics/test_adjacency.py` → 4/4.
+- [x] **Step 5:** `git add scripts/topics/adjacency.py scripts/topics/test_adjacency.py && git commit -m "topics: verified ticker adjacency for Detector 1 (manual edges + comparables + tier_4 affects)"`
 
 ### Task 2: `lifecycle.py` — port and adapt to the live row shape
 
@@ -193,7 +193,7 @@ def load_adjacency(manual_path: Path = MANUAL, watchlist_path: Path = WATCHLIST)
 - Produces `lag_days`, `open_lag_days`, `summarize`, `append_detections(path, entries, as_of, coverage_pct=None) -> int` (unchanged).
 - Produces `map_is_fresh(map_path, inputs: list[Path]) -> tuple[bool, str]` — False if the map is missing, or older (mtime) than any existing input.
 
-- [ ] **Step 1: Port** — `for f in lifecycle test_lifecycle; do git show worktree-idea-surfacing-spec:scripts/v3_ingest/$f.py > scripts/topics/$f.py; done`. Then rewrite the tests' `_row` helper and the index tests to the live shape:
+- [x] **Step 1: Port** — `for f in lifecycle test_lifecycle; do git show worktree-idea-surfacing-spec:scripts/v3_ingest/$f.py > scripts/topics/$f.py; done`. Then rewrite the tests' `_row` helper and the index tests to the live shape:
 
 ```python
 def _row(themes, ticker, register, rid, date, firm=None, source="exchange"):
@@ -232,8 +232,8 @@ def test_map_is_fresh_rejects_a_map_older_than_its_inputs():
         assert not lc.map_is_fresh(Path(d) / "missing.jsonl", [x])[0]
 ```
 
-- [ ] **Step 2:** `python3 scripts/topics/test_lifecycle.py` → the index/stage tests fail (`build_index` still expects `theme`/`unit_id`/`qdates`).
-- [ ] **Step 3: Adapt `lifecycle.py`** — replace `build_index`, drop `question_dates`/`coverage`/`PROGRESS_PATH`, add `map_is_fresh`, fix paths (`TOPICS_PATH = REPO/"state"/"topics"/"topic_map.jsonl"`, `DETECTIONS_PATH = .../detections.jsonl`); keep the module docstring (it is the Tier-0 rationale) and `main()` but have `main()` call `map_is_fresh(TOPICS_PATH, [EXCHANGES_PATH, CLAIMS_PATH])` in place of the `_progress.json` refusal.
+- [x] **Step 2:** `python3 scripts/topics/test_lifecycle.py` → the index/stage tests fail (`build_index` still expects `theme`/`unit_id`/`qdates`).
+- [x] **Step 3: Adapt `lifecycle.py`** — replace `build_index`, drop `question_dates`/`coverage`/`PROGRESS_PATH`, add `map_is_fresh`, fix paths (`TOPICS_PATH = REPO/"state"/"topics"/"topic_map.jsonl"`, `DETECTIONS_PATH = .../detections.jsonl`); keep the module docstring (it is the Tier-0 rationale) and `main()` but have `main()` call `map_is_fresh(TOPICS_PATH, [EXCHANGES_PATH, CLAIMS_PATH])` in place of the `_progress.json` refusal.
 
 ```python
 def build_index(rows) -> dict:
@@ -276,8 +276,8 @@ def map_is_fresh(map_path: Path, inputs: list) -> tuple:
     return True, "fresh"
 ```
 
-- [ ] **Step 4:** `python3 scripts/topics/test_lifecycle.py` → all pass (expect 13).
-- [ ] **Step 5:** `git add scripts/topics/lifecycle.py scripts/topics/test_lifecycle.py && git commit -m "topics: port lifecycle (Tier-0 lag, §6.3 staging, append-only detections) onto topic_map rows"`
+- [x] **Step 4:** `python3 scripts/topics/test_lifecycle.py` → all pass (expect 13).
+- [x] **Step 5:** `git add scripts/topics/lifecycle.py scripts/topics/test_lifecycle.py && git commit -m "topics: port lifecycle (Tier-0 lag, §6.3 staging, append-only detections) onto topic_map rows"`
 
 ### Task 3: `diffusion.py` — metrics, denominators, host-firm exclusion
 
@@ -290,7 +290,7 @@ def map_is_fresh(map_path: Path, inputs: list) -> tuple:
 - Produces `denominators(rows, no_coverage=None) -> dict[cq -> {earnings_call: n, conference: n, mdna_filers: n}]` over ALL exchange/mdna rows regardless of mapping, plus `no_coverage` lists passed through.
 - Constants: `MDNA_MIN_BLOCKS = 2`, `STATE = REPO/"state"/"topics"`, `TOPIC_MAP`, `EXCHANGES`, `CLAIMS`, `NO_COVERAGE = REPO/"state"/"transcripts"/"_no_coverage.json"`, `DIFFUSION = STATE/"diffusion.json"`, `REPORT = REPO/"notes"/"reports"/"theme-diffusion.md"`.
 
-- [ ] **Step 1: Failing tests**
+- [x] **Step 1: Failing tests**
 
 ```python
 #!/usr/bin/env python3
@@ -368,8 +368,8 @@ if __name__ == "__main__":
     print(f"\n{len(fns) - failed}/{len(fns)} pass"); sys.exit(1 if failed else 0)
 ```
 
-- [ ] **Step 2:** `python3 scripts/topics/test_diffusion.py` → `ModuleNotFoundError`.
-- [ ] **Step 3: Implement**
+- [x] **Step 2:** `python3 scripts/topics/test_diffusion.py` → `ModuleNotFoundError`.
+- [x] **Step 3: Implement**
 
 ```python
 #!/usr/bin/env python3
@@ -510,8 +510,8 @@ def denominators(rows, no_coverage: dict | None = None) -> dict:
     return {cq: {k: len(cov[cq][k]) for k in ("earnings_call", "conference", "mdna_filers")} for cq in sorted(cov)}
 ```
 
-- [ ] **Step 4:** `python3 scripts/topics/test_diffusion.py` → 5/5.
-- [ ] **Step 5:** `git add scripts/topics/diffusion.py scripts/topics/test_diffusion.py && git commit -m "topics: diffusion metrics per (theme, quarter) with denominators, host-firm exclusion, 2-block MD&A rule"`
+- [x] **Step 4:** `python3 scripts/topics/test_diffusion.py` → 5/5.
+- [x] **Step 5:** `git add scripts/topics/diffusion.py scripts/topics/test_diffusion.py && git commit -m "topics: diffusion metrics per (theme, quarter) with denominators, host-firm exclusion, 2-block MD&A rule"`
 
 ### Task 4: newly-said, movers, asked-elsewhere detector
 
@@ -523,7 +523,7 @@ def denominators(rows, no_coverage: dict | None = None) -> dict:
 - Produces `movers(m: dict, cq: str, prev: str) -> list[dict]` sorted by `(-delta_banks, -delta_companies)`: `{theme, n_banks, prev_banks, delta_banks, n_companies, prev_companies, delta_companies, n_disclosing, prev_disclosing}` for every theme present in either quarter.
 - Produces `detector_asked_elsewhere(idx, graph) -> list[dict]` — for every `(theme, ticker)` pair with `stage == 2`: `{theme, ticker, stage: 2, adjacent_asked: [{ticker, routes, first_question_date}], other_asked: [tickers], first_evidence_date, open_lag_days}`. `adjacent_asked` is the asked names that are graph-neighbours of `ticker`; sorted so pairs with non-empty `adjacent_asked` come first.
 
-- [ ] **Step 1: Failing tests** (append to `test_diffusion.py`)
+- [x] **Step 1: Failing tests** (append to `test_diffusion.py`)
 
 ```python
 def test_newly_said_requires_a_full_baseline_and_absence_in_it():
@@ -574,8 +574,8 @@ def test_asked_elsewhere_separates_adjacent_from_other_askers():
 
 Add `import datetime as dt` and `import lifecycle as lc` at the top of the test file.
 
-- [ ] **Step 2:** run → 4 new failures (`AttributeError`).
-- [ ] **Step 3: Implement** (append to `diffusion.py`)
+- [x] **Step 2:** run → 4 new failures (`AttributeError`).
+- [x] **Step 3: Implement** (append to `diffusion.py`)
 
 ```python
 def quarters_in(rows) -> list:
@@ -658,8 +658,8 @@ def detector_asked_elsewhere(idx: dict, graph: dict, as_of: str) -> list:
     return out
 ```
 
-- [ ] **Step 4:** `python3 scripts/topics/test_diffusion.py` → 9/9.
-- [ ] **Step 5:** `git add scripts/topics/diffusion.py scripts/topics/test_diffusion.py && git commit -m "topics: newly-said (2-quarter baseline), movers, asked-elsewhere detector over verified adjacency"`
+- [x] **Step 4:** `python3 scripts/topics/test_diffusion.py` → 9/9.
+- [x] **Step 5:** `git add scripts/topics/diffusion.py scripts/topics/test_diffusion.py && git commit -m "topics: newly-said (2-quarter baseline), movers, asked-elsewhere detector over verified adjacency"`
 
 ### Task 5: report, snapshot, detection log, CLI — run on the real map
 
@@ -669,7 +669,7 @@ def detector_asked_elsewhere(idx: dict, graph: dict, as_of: str) -> list:
 - Produces `write_report(snapshot: dict, path=REPORT) -> str` and `build_snapshot(rows, meta, graph, as_of, no_coverage) -> dict` with keys `{as_of, quarters, current_quarter, in_progress: bool, denominators, no_coverage, metrics: [{theme, cal_quarter, ...m}], movers, stage_counts, lag_summary, stage1: [...], stage2: [...], newly_said, notes: [str]}`.
 - CLI: `diffusion.py --run [--as-of YYYY-MM-DD] [--email] [--no-log] [--force-log]`.
 
-- [ ] **Step 1: Failing test** (append)
+- [x] **Step 1: Failing test** (append)
 
 ```python
 def test_report_prints_denominators_exclusions_and_the_dropped_metric_note():
@@ -688,8 +688,8 @@ def test_report_prints_denominators_exclusions_and_the_dropped_metric_note():
     assert snap["current_quarter"] == "CY2026-Q3" and snap["in_progress"] is True
 ```
 
-- [ ] **Step 2:** run → fails (`build_snapshot` missing).
-- [ ] **Step 3: Implement** (append)
+- [x] **Step 2:** run → fails (`build_snapshot` missing).
+- [x] **Step 3: Implement** (append)
 
 ```python
 def _quarter_of(date_iso: str) -> str:
@@ -843,12 +843,14 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-- [ ] **Step 4:** `python3 scripts/topics/test_diffusion.py` → 10/10.
-- [ ] **Step 5: Real run, no log first** — `python3 scripts/topics/diffusion.py --run --no-log` → exit 0; read `notes/reports/theme-diffusion.md`. Record in the plan the counts: cells, stage counts, lag summary, stage2 count, stage1 count, newly_said count, host exclusions total (`python3 -c "import json;s=json.load(open('state/topics/diffusion.json'));print(sum(m['n_host_excluded'] for m in s['metrics']))"`).
-- [ ] **Step 6: Gold checks (§11.3 / §11.5c)** — `python3 - <<'EOF'` : load `diffusion.json`; (a) print the stage-2 entries whose `ticker` is COHR or LITE and whose `adjacent_asked` includes AAOI — expected ≥ 1 (Detector 1 fires on COHR/LITE via the AAOI comparable route); if none, print which themes AAOI's 2026-08-06 Raymond James rows mapped to (`topic_map.jsonl` rows with ticker AAOI, event_date 2026-08-06, register question) and record the recall gap honestly — do NOT add a query or theme to make it pass; (b) print at least one stage-1/stage-2 entry with `"mdna"` in `evidence_sources` (§11.5c: the MD&A path contributes). Paste both results into the plan under this step.
-- [ ] **Step 7: Spot-check 5 stage-2 rows** by joining ids back to `exchanges.jsonl` (question text) and `claims.jsonl` (evidence text) — record ok/wrong per row. If ≥ 3 of 5 are wrong, stop and reassess the mdna 2-block rule before logging anything.
-- [ ] **Step 8: Log run** — `python3 scripts/topics/diffusion.py --run` → detections appended (N); re-run → `0 new stage-1 detections`.
-- [ ] **Step 9: Commit** — `git add scripts/topics/diffusion.py scripts/topics/test_diffusion.py state/topics/diffusion.json state/topics/detections.jsonl notes/reports/theme-diffusion.md && git commit -m "topics: P4 diffusion report + snapshot + append-only stage-1 detections (first real run: <N cells>, stage2 <n>, stage1 <n>)"`
+- [x] **Step 4:** `python3 scripts/topics/test_diffusion.py` → 10/10.
+- [x] **Step 5: Real run, no log first** — `python3 scripts/topics/diffusion.py --run --no-log` → exit 0; read `notes/reports/theme-diffusion.md`. Record in the plan the counts: cells, stage counts, lag summary, stage2 count, stage1 count, newly_said count, host exclusions total (`python3 -c "import json;s=json.load(open('state/topics/diffusion.json'));print(sum(m['n_host_excluded'] for m in s['metrics']))"`).
+- [x] **Step 6: Gold checks (§11.3 / §11.5c)** — `python3 - <<'EOF'` : load `diffusion.json`; (a) print the stage-2 entries whose `ticker` is COHR or LITE and whose `adjacent_asked` includes AAOI — expected ≥ 1 (Detector 1 fires on COHR/LITE via the AAOI comparable route); if none, print which themes AAOI's 2026-08-06 Raymond James rows mapped to (`topic_map.jsonl` rows with ticker AAOI, event_date 2026-08-06, register question) and record the recall gap honestly — do NOT add a query or theme to make it pass; (b) print at least one stage-1/stage-2 entry with `"mdna"` in `evidence_sources` (§11.5c: the MD&A path contributes). Paste both results into the plan under this step.
+- [x] **Step 7: Spot-check 5 stage-2 rows** by joining ids back to `exchanges.jsonl` (question text) and `claims.jsonl` (evidence text) — record ok/wrong per row. If ≥ 3 of 5 are wrong, stop and reassess the mdna 2-block rule before logging anything.
+- [x] **Step 8: Log run** — `python3 scripts/topics/diffusion.py --run` → detections appended (N); re-run → `0 new stage-1 detections`.
+- [x] **Step 9: Commit** — `git add scripts/topics/diffusion.py scripts/topics/test_diffusion.py state/topics/diffusion.json state/topics/detections.jsonl notes/reports/theme-diffusion.md && git commit -m "topics: P4 diffusion report + snapshot + append-only stage-1 detections (first real run: <N cells>, stage2 <n>, stage1 <n>)"`
+
+**Recorded on the first real run (2026-09-10, as_of 2026-09-10):** 17,116 rows → 223 (theme, quarter) cells over CY2025-Q4..CY2026-Q3 (Q3 in progress). Host-firm exclusions: 897 conference analyst turns. **Deviation adopted at Step 7:** the first spot check (stages driven by any evidence) had all 5 top adjacent-backed stage-2 pairs sourced from corprep transcript speech and 3 of 5 wrongly paired, so `STAGE_EVIDENCE_SOURCES = ("mdna",)` — stages and the Tier-0 lag run from MD&A evidence only (spec §6.3 says the clock is claims); corprep speech stays a reported count (`n_corprep_companies`). After that: stages {1: 13, 2: 155, 3: 55, 4: 372}; adjacent-backed stage 2 = 1 (NVDA `hyperscaler_revenue_concentration`: 10-K customer-concentration prose 2026-02-25 → CBRS/MRVL questions; pairing judged sound); newly_said 124; Tier-0 lag n=53, min −184, p25 −77, median −4, p75 174, max 272, evidence-led 39.6% (31 negative) — left-censored (questions from 2025-11-11, filings from 2025-12-10), stated in the report. Gold (a) §11.3: with corprep evidence Detector 1 fired on COHR (`thermal_management_cooling`) and LITE (`hyperscaler_revenue_concentration`) via AAOI but both pairings were wrong on inspection; with MD&A evidence it does not fire for COHR/LITE — the AAOI 2026-08-06 Raymond James turn is unmapped and the LITE/Mizuho 2026-06-09 turns map to `networking_competitive_landscape` (stage 3/4 there). `laser_architecture_competition` has no anchor yet (no labelled chunks). **Recall gap recorded, not papered over.** Gold (b) §11.5c: 168 of 490 stage-1/2 entries carried MD&A evidence before the deviation; after it every stage-1/2 entry is MD&A-sourced by construction. Known leak: AMBA's 2026-09-04 10-Q Item 2 embeds a risk-factor summary (192 blocks; 64 mapped to `software_seat_pricing_pressure`) — isolated (only note with ≥10 risk-flavoured blocks), left labelled; generic-finance themes (`software_seat_pricing_pressure` 26 disclosing, `capex_vs_opex_shift` 20) remain misfiling-dominated at mdna thr 0.40 and are flagged lower-confidence in the report.
 
 ### Task 6: cron, docs, memory, restore auto_sync
 

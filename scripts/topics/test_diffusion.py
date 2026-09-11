@@ -120,6 +120,38 @@ def test_asked_elsewhere_separates_adjacent_from_other_askers():
     assert out[0]["open_lag_days"] == (dt.date(2026, 9, 10) - dt.date(2026, 4, 20)).days
 
 
+def test_report_prints_denominators_exclusions_and_the_dropped_metric_note():
+    rows = [_r("q1", "question", "AAOI", "2026-08-06", "CY2026-Q3", ["t1"], firm="Raymond James"),
+            _r("c1", "evidence", "COHR", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("c2", "evidence", "COHR", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna")]
+    nc = {"no_results": ["ADI"], "incomplete": ["innolight.cn"], "no_factset_id": [{"ticker": "base_power.us"}]}
+    snap = df.build_snapshot(rows, {}, {"COHR": {"AAOI": ["comparable"]}, "AAOI": {"COHR": ["comparable"]}},
+                             as_of="2026-09-10", no_coverage=nc)
+    with tempfile.TemporaryDirectory() as d:
+        text = df.write_report(snap, Path(d) / "r.md")
+    assert "innolight.cn" in text and "ADI" in text and "base_power.us" in text     # exclusions named
+    assert "earnings_call" in text and "conference" in text                        # denominators per event type
+    assert "challenging_rate" in text                                                # the dropped metric is declared
+    assert "stage 2" in text.lower() and "COHR" in text and "AAOI" in text
+    assert snap["current_quarter"] == "CY2026-Q3" and snap["in_progress"] is True
+    assert snap["stage2"][0]["ticker"] == "COHR" and snap["stage2"][0]["adjacent_asked"][0]["ticker"] == "AAOI"
+
+
+def test_snapshot_applies_the_mdna_block_rule_before_staging():
+    rows = [_r("c1", "evidence", "COHR", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna")]   # one block only
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-10", no_coverage={})
+    assert snap["stage1"] == [] and snap["stage_counts"] == {}
+
+
+def test_snapshot_stages_on_mdna_evidence_only_and_counts_corprep_separately():
+    rows = [_r("e1", "evidence", "COHR", "2026-05-01", "CY2026-Q2", ["t1"]),                     # corprep speech
+            _r("c1", "evidence", "LITE", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("c2", "evidence", "LITE", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna")]
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-10", no_coverage={})
+    assert [(e["theme"], e["ticker"]) for e in snap["stage1"]] == [("t1", "LITE")]
+    assert snap["metrics"][0]["n_corprep_companies"] == 1
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     failed = 0

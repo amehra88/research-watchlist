@@ -34,6 +34,8 @@ NO_COVERAGE = REPO / "state" / "transcripts" / "_no_coverage.json"
 REPORT = REPO / "notes" / "reports" / "theme-diffusion.md"
 
 MDNA_MIN_BLOCKS = 2        # memory mdna-evidence-p3b: one mapped MD&A block is ~half wrong at thr 0.40
+STAGE_EVIDENCE_SOURCES = ("mdna",)   # §6.3: the evidence clock is filings. Corprep speech (thr 0.30, P~0.31) drove
+                                     # 3 of the 5 first spot-checked stage-2 pairs wrong; it stays a reported count
 NEWLY_SAID_BASELINE = 2    # findings R5: absent from the filer's two prior quarters
 _FIRM_ALIASES = {"bankofamerica": "bofa", "jpmorgansecurities": "jpmorgan", "jpmorgan": "jpmorgan"}
 
@@ -247,3 +249,172 @@ def detector_asked_elsewhere(idx: dict, graph: dict, as_of: str) -> list:
                     "open_lag_days": lc.open_lag_days(p, as_of)})
     out.sort(key=lambda e: (not e["adjacent_asked"], -(e["open_lag_days"] or 0), e["theme"], e["ticker"]))
     return out
+
+
+def _quarter_of(date_iso: str) -> str:
+    y, m = int(date_iso[:4]), int(date_iso[5:7])
+    return f"CY{y}-Q{(m - 1) // 3 + 1}"
+
+
+def _date_span(rows, pred) -> tuple:
+    ds = sorted(str(r.get("event_date") or "")[:10] for r in rows if pred(r) and r.get("event_date"))
+    return (ds[0], ds[-1]) if ds else (None, None)
+
+
+def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None) -> dict:
+    rows = apply_mdna_block_rule(rows)          # single-block MD&A themes never reach a stage or a count
+    qs = quarters_in(rows)
+    cur = qs[-1] if qs else None
+    prev = qs[-2] if len(qs) > 1 else None
+    m = metrics(rows, meta)
+    idx = lc.build_index([r for r in rows if r.get("register") == "question"
+                          or (r.get("register") == "evidence" and r.get("source") in STAGE_EVIDENCE_SOURCES)])
+    lags = [lc.lag_days(p["first_filing_date"], p["first_question_date"]) for p in idx.values()
+            if p["first_filing_date"] and p["first_question_date"]]
+    stage_counts = collections.Counter()
+    stage1 = []
+    for (theme, ticker), p in idx.items():
+        st = lc.stage(idx, theme, ticker)
+        stage_counts[st] += 1
+        if st == 1 and p["first_evidence_date"]:
+            stage1.append({"theme": theme, "ticker": ticker, "stage": 1, "first_evidence_date": p["first_evidence_date"],
+                           "first_filing_date": p["first_filing_date"], "n_evidence": p["n_evidence"],
+                           "evidence_sources": sorted(p["evidence_sources"]), "open_lag_days": lc.open_lag_days(p, as_of)})
+    stage1.sort(key=lambda e: (-(e["open_lag_days"] or 0), e["theme"], e["ticker"]))
+    nc = no_coverage or {}
+    excl = {"no_results": sorted(nc.get("no_results") or []), "incomplete": sorted(nc.get("incomplete") or []),
+            "no_factset_id": sorted(x.get("ticker") for x in (nc.get("no_factset_id") or []) if x.get("ticker"))}
+    q_span = _date_span(rows, lambda r: r.get("register") == "question")
+    f_span = _date_span(rows, lambda r: r.get("source") == "mdna")
+    notes = ["challenging_rate (spec §5) is not computed: exchange rows carry no challenging flag and 99% of "
+             "analyst turns are sentiment=Neutral.",
+             "P3 foreign evidence is not built: stages and lags use US MD&A evidence only; Chinese filers "
+             "appear only in the exclusions list. Corprep transcript speech is reported as a count "
+             "(n_corprep_companies) but does not set a stage: at its 0.30 threshold it mis-paired 3 of 5 "
+             "spot-checked stage-2 rows.",
+             f"MD&A counts need >= {MDNA_MIN_BLOCKS} mapped blocks per filer-quarter and are lower-confidence "
+             "than transcript counts (mdna precision ~0.4 at its threshold).",
+             f"The Tier-0 lag runs from MD&A filing dates only (corprep answers share the question's date). Both "
+             f"windows are truncated — questions {q_span[0]}..{q_span[1]}, filings {f_span[0]}..{f_span[1]} — so a "
+             "question dated before the first filing in the window can only look question-first (left-censoring); "
+             "negative lags near the window start are not evidence against the premise.",
+             "No trend lines by design: three or four observations per theme support a comparison, not a slope."]
+    return {"as_of": as_of, "quarters": qs, "current_quarter": cur, "in_progress": bool(cur) and _quarter_of(as_of) == cur,
+            "denominators": denominators(rows), "no_coverage": excl,
+            "metrics": [dict(theme=t, cal_quarter=q, **v) for (t, q), v in sorted(m.items())],
+            "movers": movers(m, cur, prev) if cur and prev else [],
+            "stage_counts": {str(k): v for k, v in sorted(stage_counts.items()) if k},
+            "lag_summary": lc.summarize(lags), "stage1": stage1,
+            "stage2": detector_asked_elsewhere(idx, graph, as_of), "newly_said": newly_said(rows), "notes": notes}
+
+
+def write_report(snap: dict, path: Path = REPORT) -> str:
+    d, cur = snap["denominators"], snap["current_quarter"]
+    prev = snap["quarters"][-2] if len(snap["quarters"]) > 1 else None
+    L = [f"## Theme diffusion — {snap['as_of']}", ""]
+    L.append(f"Current quarter **{cur}**{' (in progress — counts are partial)' if snap['in_progress'] else ''}; "
+             f"prior {prev or 'n/a'}. Quarters covered: {', '.join(snap['quarters'])}.")
+    L.append("")
+    L.append("### Coverage (read first)")
+    L.append("| quarter | earnings_call companies | conference companies | MD&A filers |")
+    L.append("|---|---|---|---|")
+    for q in snap["quarters"]:
+        x = d.get(q, {})
+        L.append(f"| {q} | {x.get('earnings_call', 0)} | {x.get('conference', 0)} | {x.get('mdna_filers', 0)} |")
+    nc = snap["no_coverage"]
+    L.append(f"\nNo transcript coverage — no results: {', '.join(nc['no_results']) or 'none'}; "
+             f"incomplete/unknown: {', '.join(nc['incomplete']) or 'none'}; "
+             f"unmappable: {', '.join(nc['no_factset_id']) or 'none'}. "
+             "FactSet retrieval is topically scoped (theme-derived queries), not whole-call export.")
+    L.append("")
+    for n in snap["notes"]:
+        L.append(f"- {n}")
+    L.append("")
+    if snap["movers"]:
+        L.append(f"### Movers — {cur} vs {prev} (n_banks first, then n_companies; host banks excluded at their own conferences)")
+        L.append("| theme | banks | prev | Δ | companies asked | prev | disclosing (MD&A) | prev |")
+        L.append("|---|---|---|---|---|---|---|---|")
+        for e in snap["movers"][:40]:
+            L.append(f"| {e['theme']} | {e['n_banks']} | {e['prev_banks']} | {e['delta_banks']:+d} | {e['n_companies']} | "
+                     f"{e['prev_companies']} | {e['n_disclosing']} | {e['prev_disclosing']} |")
+        L.append("")
+    s = snap["lag_summary"]
+    L.append("### Lifecycle (spec §6.3) — Tier-0 lag = first analyst question minus first MD&A filing, days")
+    if s.get("n"):
+        L.append(f"n={s['n']} (theme, company) pairs with both a filing and a question: min {s['min']}, p25 {s['p25']}, "
+                 f"median {s['median']}, p75 {s['p75']}, max {s['max']}; evidence led in {s['share_evidence_led']}% "
+                 f"({s['n_negative']} negative = question came first, {s['n_zero']} same-day). See the censoring note above.")
+    L.append("Stage counts (theme, company): " + ", ".join(f"stage {k}: {v}" for k, v in snap["stage_counts"].items()))
+    L.append("")
+    L.append(f"### Stage 2 — asked at another name, not here ({len(snap['stage2'])}; verified-adjacent askers first)")
+    L.append("| theme | company | adjacent asked (route, first question) | other askers | first evidence | open days | evidence |")
+    L.append("|---|---|---|---|---|---|---|")
+    for e in snap["stage2"][:60]:
+        adj = "; ".join(f"{a['ticker']} ({','.join(a['routes'])}, {a['first_question_date']})" for a in e["adjacent_asked"]) or "—"
+        others = ", ".join(e["other_asked"][:6]) + (f" +{len(e['other_asked']) - 6}" if len(e["other_asked"]) > 6 else "")
+        L.append(f"| {e['theme']} | {e['ticker']} | {adj} | {others} | {e['first_evidence_date']} | "
+                 f"{e['open_lag_days']} | {','.join(e['evidence_sources'])} |")
+    L.append("")
+    L.append(f"### Stage 1 — evidence, nobody asked anywhere ({len(snap['stage1'])})")
+    L.append("| theme | company | first evidence | open days | n_evidence | sources |")
+    L.append("|---|---|---|---|---|---|")
+    for e in snap["stage1"][:60]:
+        L.append(f"| {e['theme']} | {e['ticker']} | {e['first_evidence_date']} | {e['open_lag_days']} | {e['n_evidence']} | "
+                 f"{','.join(e['evidence_sources'])} |")
+    L.append("")
+    ns = [e for e in snap["newly_said"] if e["cal_quarter"] == cur]
+    L.append(f"### Newly said in {cur} ({len(ns)}) — absent from the same filer's two prior quarters (findings R4/R5)")
+    L.append("| company | theme | register | source | rows |")
+    L.append("|---|---|---|---|---|")
+    for e in ns[:80]:
+        L.append(f"| {e['ticker']} | {e['theme']} | {e['register']} | {e['source']} | {e['n_rows']} |")
+    L.append("")
+    text = "\n".join(L)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text)
+    return text
+
+
+def run(args) -> int:
+    ok, why = lc.map_is_fresh(TOPIC_MAP, [EXCHANGES, CLAIMS])
+    if not ok and not args.force_log:
+        log(f"REFUSING: {why}")
+        return 2
+    rows = load_rows()
+    meta = load_exchange_meta()
+    graph = adjmod.load_adjacency()
+    nc = json.loads(NO_COVERAGE.read_text()) if NO_COVERAGE.exists() else {}
+    snap = build_snapshot(rows, meta, graph, args.as_of, nc)
+    log(f"{len(rows)} rows, {len(snap['metrics'])} (theme, quarter) cells, quarters {snap['quarters']}, "
+        f"stages {snap['stage_counts']}, stage2 {len(snap['stage2'])}, stage1 {len(snap['stage1'])}, "
+        f"newly_said {len(snap['newly_said'])}, lag {snap['lag_summary']}")
+    STATE.mkdir(parents=True, exist_ok=True)
+    DIFFUSION.write_text(json.dumps(snap, indent=1, default=list))
+    text = write_report(snap)
+    log(f"report -> {REPORT}")
+    if not args.no_log:
+        n = lc.append_detections(DETECTIONS, snap["stage1"], args.as_of)
+        log(f"{n} new stage-1 detections appended -> {DETECTIONS} (first-seen dates never restamped)")
+    if args.email:
+        from newsdigest.email_send import send
+        send(f"Theme diffusion {args.as_of}", text)
+        log("emailed")
+    return 0
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description="P4 diffusion (spec §5/§6)")
+    ap.add_argument("--run", action="store_true")
+    ap.add_argument("--as-of", default=dt.date.today().isoformat())
+    ap.add_argument("--email", action="store_true")
+    ap.add_argument("--no-log", action="store_true", help="do not append stage-1 detections")
+    ap.add_argument("--force-log", action="store_true", help="proceed even if the map is older than its inputs")
+    a = ap.parse_args(argv)
+    if a.run:
+        return run(a)
+    ap.print_help()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
