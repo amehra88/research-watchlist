@@ -281,6 +281,13 @@ def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None) -> d
                            "first_filing_date": p["first_filing_date"], "n_evidence": p["n_evidence"],
                            "evidence_sources": sorted(p["evidence_sources"]), "open_lag_days": lc.open_lag_days(p, as_of)})
     stage1.sort(key=lambda e: (-(e["open_lag_days"] or 0), e["theme"], e["ticker"]))
+    pairs = []
+    for (theme, ticker), p in sorted(idx.items()):
+        pairs.append({"theme": theme, "ticker": ticker, "stage": lc.stage(idx, theme, ticker),
+                      "first_evidence_date": p["first_evidence_date"], "first_filing_date": p["first_filing_date"],
+                      "first_question_date": p["first_question_date"],
+                      "lag_days": lc.lag_days(p["first_filing_date"], p["first_question_date"]),
+                      "n_evidence": p["n_evidence"], "n_question": p["n_question"], "banks": sorted(p["banks"])})
     nc = no_coverage or {}
     excl = {"no_results": sorted(nc.get("no_results") or []), "incomplete": sorted(nc.get("incomplete") or []),
             "no_factset_id": sorted(x.get("ticker") for x in (nc.get("no_factset_id") or []) if x.get("ticker"))}
@@ -305,7 +312,8 @@ def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None) -> d
             "movers": movers(m, cur, prev) if cur and prev else [],
             "stage_counts": {str(k): v for k, v in sorted(stage_counts.items()) if k},
             "lag_summary": lc.summarize(lags), "stage1": stage1,
-            "stage2": detector_asked_elsewhere(idx, graph, as_of), "newly_said": newly_said(rows), "notes": notes}
+            "stage2": detector_asked_elsewhere(idx, graph, as_of), "newly_said": newly_said(rows), "pairs": pairs,
+            "notes": notes}
 
 
 def write_report(snap: dict, path: Path = REPORT) -> str:

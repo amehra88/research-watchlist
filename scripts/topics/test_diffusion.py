@@ -152,6 +152,17 @@ def test_snapshot_stages_on_mdna_evidence_only_and_counts_corprep_separately():
     assert snap["metrics"][0]["n_corprep_companies"] == 1
 
 
+def test_snapshot_pairs_carry_stage_and_dates_per_theme_ticker():
+    rows = [_r("c1", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("c2", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("q1", "question", "AAOI", "2026-08-06", "CY2026-Q3", ["t1"], firm="Raymond James")]
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-10", no_coverage={})
+    pairs = {(p["theme"], p["ticker"]): p for p in snap["pairs"]}
+    assert pairs[("t1", "COHR")]["stage"] == 2 and pairs[("t1", "COHR")]["lag_days"] is None
+    assert pairs[("t1", "AAOI")]["stage"] == 3 and pairs[("t1", "AAOI")]["banks"] == ["Raymond James"]
+    assert pairs[("t1", "COHR")]["first_filing_date"] == "2026-04-20"
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     failed = 0
