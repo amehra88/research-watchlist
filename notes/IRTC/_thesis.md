@@ -27,9 +27,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: cpt_code_active_at_scoring
   statement: A CPT billing code covering iRhythm's AI-classifier-derived service was
@@ -86,10 +86,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: ai_native_rank_3_at_scoring
   statement: 'iRhythm ranked #3 within the PM''s ai_native_vertical cohort at the

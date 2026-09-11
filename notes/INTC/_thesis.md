@@ -32,10 +32,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: foundry_win_not_yet_filed
   statement: As of scoring, no signed external foundry customer contract has been
@@ -58,10 +58,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: net_debt_gap_holds_post_equity_raise
   statement: At Q2 2026 close, Intel carries approximately $20.8B net debt (total
@@ -89,9 +89,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 4.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 ---
 ## Rationale

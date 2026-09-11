@@ -30,13 +30,13 @@ assumptions:
     agreement with a named data center customer in an 8-K or earnings filing
   - Optical communications segment revenue as a share of total GLW net sales increases
     in the next quarterly filing
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 18.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: solar_margin_drag_capacity_ramp
   statement: Gross margin pressure in the Solar segment as of Q2 2026 reflects a capacity
@@ -59,10 +59,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: optical_complex_capex_cycle_risk
   statement: GLW optical revenue is exposed to the same systematic AI infrastructure
@@ -84,13 +84,13 @@ assumptions:
     macro-driven optical infrastructure sessions with no company-specific catalyst
   - GLW optical communications quarterly revenue growth decelerates in the next 10-Q
     in the same quarter that CIEN reports a bookings miss
-  status: open
-  status_source: draft
+  status: challenged
+  status_source: evidence
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 2.0
+    challenge: 11.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 ---
 ## Rationale

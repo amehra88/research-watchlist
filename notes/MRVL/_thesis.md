@@ -98,10 +98,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 5.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: nvda_partnership_not_terminated
   statement: At scoring, the NVDA NVLink Fusion co-integration partnership and the
@@ -126,10 +126,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: google_warrant_no_exclusivity_clause
   statement: At scoring, the Google warrant agreement (8-K 2026-08-19, 240 tranches
@@ -156,10 +156,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: dc_rev_growth_exceeds_capex_growth_fy28
   statement: MRVL's data center revenue grows faster than aggregate hyperscaler CapEx
@@ -185,10 +185,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 ---
 ## Rationale
