@@ -39,10 +39,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 8.0
+    confirm: 15.0
     challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-11'
   draft: true
 - id: avgo_ai_networking_material_leg
   statement: AI networking (Tomahawk/Jericho switching, optical DSPs) is a material
@@ -142,10 +142,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 2.0
-    challenge: 0
+    confirm: 3.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-11'
   draft: true
 ---
 ## Rationale

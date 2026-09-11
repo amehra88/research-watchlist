@@ -63,10 +63,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 0.5
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: gev_distribution_moat_utility_rels
   statement: GEV's utility and grid-operator relationships, together with its global

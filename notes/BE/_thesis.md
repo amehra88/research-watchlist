@@ -36,10 +36,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 0
+    confirm: 2.0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-10'
   draft: true
 - id: hyperscaler_partnerships_active
   statement: At scoring, hyperscaler partnerships were the mechanism supporting distribution
