@@ -35,10 +35,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 2.5
+    confirm: 3.5
     challenge: 0.5
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-11'
   draft: true
 - id: msft_no_native_frontier_model
   statement: At scoring, MSFT had not shipped a proprietary frontier-scale AI model
@@ -128,10 +128,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0.5
-    challenge: 0
+    confirm: 1.5
+    challenge: 0.5
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-11'
   draft: true
 - id: investor_momentum_factors_weakening
   statement: At scoring, momentum factors for MSFT were weakening relative to mega-cap

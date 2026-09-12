@@ -60,10 +60,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-12'
   draft: true
 - id: connected_power_yend26_milestone
   statement: The connected power milestone of 800 MW–1 GW by year-end 2026, reaffirmed
@@ -114,10 +114,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 9.0
+    confirm: 11.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-11'
   draft: true
 - id: meta_concentration_no_deepening
   statement: Customer concentration at Q2'26 scoring — with the Meta $27B contract

@@ -34,10 +34,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-11'
   draft: true
 - id: ps_op_profit_not_materially_down
   statement: 'Personal Systems earnings from operations at Q3''26 ($537M) were not
@@ -110,10 +110,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: fy26_eps_raise_tariff_composition
   statement: The FY26 non-GAAP EPS guidance midpoint increase from $3.00 to $3.24

@@ -33,10 +33,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 14.0
-    challenge: 2.0
+    confirm: 36.0
+    challenge: 3.0
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-10'
   draft: true
 - id: dne_mix_shift_no_sam_cost_blowout
   statement: The shift in top-25 customer revenue share from approximately 9% to approximately
@@ -62,10 +62,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 4.0
+    confirm: 7.0
+    challenge: 5.0
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-10'
   draft: true
 - id: gpu_supply_not_binding_in_q2
   statement: GPU infrastructure supply capacity at DOCN as of the June 2026 quarter
@@ -88,10 +88,10 @@ assumptions:
     discussion in the September 2026 10-Q
   - GPU Droplet and Bare Metal GPU product availability confirmed without capacity
     qualification in a press release, product changelog, or 8-K during Q3 2026
-  status: challenged
+  status: confirmed
   status_source: evidence
   pressure:
-    confirm: 6.0
+    confirm: 14.0
     challenge: 11.0
     window_days: 90
     last_evidence: '2026-09-10'

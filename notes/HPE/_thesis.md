@@ -29,10 +29,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 27.0
+    confirm: 44.0
     challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-12'
   draft: true
 - id: not_a_bctk_holding_at_addition
   statement: HPE was not a BCTK portfolio holding at 2026-06-24 and had not been purchased

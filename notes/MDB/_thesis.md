@@ -33,10 +33,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 6.0
+    confirm: 7.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-12'
   draft: true
 - id: ai_memory_layer_not_displaced
   statement: MongoDB's role as a memory and state layer for AI agents — evidenced
