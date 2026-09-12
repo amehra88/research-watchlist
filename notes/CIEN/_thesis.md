@@ -85,9 +85,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: supply_sets_fy27_rev_ceiling
   statement: At the time of the 3Q26 print, CIEN's FY27 revenue was bounded by component
@@ -162,10 +162,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-12'
   draft: true
 ---
 ## Rationale

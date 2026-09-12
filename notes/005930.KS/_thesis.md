@@ -38,9 +38,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 1.0
-    challenge: 2.0
+    challenge: 3.0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-12'
   draft: true
 - id: hbm4_catchup_unconfirmed_at_scoring
   statement: Samsung's HBM4 development had not produced a customer qualification
@@ -87,10 +87,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
-    challenge: 9.0
+    confirm: 7.0
+    challenge: 10.0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-12'
   draft: true
 - id: samsung_no1_dram_nand_volume
   statement: Samsung held the largest global volume share in both DRAM and NAND at

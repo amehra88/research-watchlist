@@ -40,10 +40,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 6.0
+    confirm: 8.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-12'
   draft: true
 - id: cowos_no_qualified_alternative
   statement: At scoring date, no alternative CoWoS-equivalent advanced-packaging source
@@ -95,10 +95,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 6.0
+    confirm: 10.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-12'
   draft: true
 - id: n2_a16_process_leadership
   statement: At scoring date, TSMC held process node leadership on the N2/A16 roadmap
@@ -124,10 +124,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 4.0
+    confirm: 5.0
     challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-12'
   draft: true
 - id: geopolitical_risk_conditions_hold
   statement: The Taiwan/China geopolitical risk level — cited at scoring as the single
@@ -179,10 +179,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-12'
   draft: true
 ---
 ## Rationale
