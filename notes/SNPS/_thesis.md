@@ -41,10 +41,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-12'
   draft: true
 - id: agentic_eda_pre_revenue_at_scoring
   statement: The ai_positioning score of 4 (not 4+) is premised on agentic EDA being
