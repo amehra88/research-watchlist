@@ -31,10 +31,10 @@ assumptions:
     any Cloud revenue shortfall to capacity or supply limitations
   - A 10-Q or 8-K disclosing new data-center lease signings or power procurement contracts
     alongside supply-constraint language
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 3.0
+    confirm: 4.0
     challenge: 0
     window_days: 90
     last_evidence: '2026-09-09'
@@ -107,10 +107,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
-    challenge: 1.0
+    confirm: 1.0
+    challenge: 1.5
     window_days: 90
-    last_evidence: '2026-09-07'
+    last_evidence: '2026-09-09'
   draft: true
 - id: q1_eps_beat_was_non_operating
   statement: The 1Q26 EPS beat of +90.5% versus consensus was driven by $37.7B in

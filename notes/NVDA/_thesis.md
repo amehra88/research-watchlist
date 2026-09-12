@@ -35,9 +35,9 @@ assumptions:
   status_source: evidence
   pressure:
     confirm: 3.0
-    challenge: 10.5
+    challenge: 15.0
     window_days: 90
-    last_evidence: '2026-09-07'
+    last_evidence: '2026-09-09'
   draft: true
 - id: roadmap_2yr_named_platforms
   statement: At scoring date, NVDA has publicly named successor platforms with disclosed

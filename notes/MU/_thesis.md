@@ -118,9 +118,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 3.0
-    challenge: 2.0
+    challenge: 3.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-12'
   draft: true
 - id: china_export_ctrl_not_escalated
   statement: China export-control exposure, flagged as a watch-item at the time of

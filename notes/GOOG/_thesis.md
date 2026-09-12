@@ -97,10 +97,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 10.5
+    confirm: 12.5
     challenge: 0.5
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-12'
   draft: true
 - id: search_defense_not_breached
   statement: At the time of scoring, Google Search had not experienced a revenue or
@@ -154,7 +154,7 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 3.0
+    confirm: 6.0
     challenge: 0
     window_days: 90
     last_evidence: '2026-09-08'

@@ -39,10 +39,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-12'
   draft: true
 - id: dist_moat_attrition_at_scoring
   statement: 'The distribution score of 4 is premised on conditions observed at scoring:
@@ -187,9 +187,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 ---
 ## Rationale
