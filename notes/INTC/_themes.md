@@ -8,8 +8,8 @@ written_by: scripts/topics/theme_notes.py
 
 Themes where this name has been asked or has disclosed (spec §7.1). Machine-written; edit the theme notes' operator sections, not this index.
 
-- [[themes/pc_demand|pc_demand]] — stage 2 · open 230d
-- [[themes/solar_supply_chain|solar_supply_chain]] — stage 2 · open 230d
+- [[themes/pc_demand|pc_demand]] — stage 2 · open 232d
+- [[themes/solar_supply_chain|solar_supply_chain]] — stage 2 · open 232d
 - [[themes/ai_compute_topology|ai_compute_topology]] — stage 4
 - [[themes/chip_design_competition|chip_design_competition]] — stage 4
 - [[themes/data_center_deployment_constraints|data_center_deployment_constraints]] — stage 4

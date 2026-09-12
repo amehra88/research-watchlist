@@ -8,8 +8,8 @@ written_by: scripts/topics/theme_notes.py
 
 Themes where this name has been asked or has disclosed (spec §7.1). Machine-written; edit the theme notes' operator sections, not this index.
 
-- [[themes/capex_vs_opex_shift|capex_vs_opex_shift]] — stage 2 · open 129d
-- [[themes/software_seat_pricing_pressure|software_seat_pricing_pressure]] — stage 2 · open 195d
+- [[themes/capex_vs_opex_shift|capex_vs_opex_shift]] — stage 2 · open 131d
+- [[themes/software_seat_pricing_pressure|software_seat_pricing_pressure]] — stage 2 · open 197d
 - [[themes/automotive_semiconductor_demand|automotive_semiconductor_demand]] — stage 3 · lag -22d
 - [[themes/advanced_materials_ai_infra|advanced_materials_ai_infra]] — stage 4
 - [[themes/ai_compute_topology|ai_compute_topology]] — stage 4

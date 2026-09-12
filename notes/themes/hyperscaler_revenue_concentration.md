@@ -33,7 +33,7 @@ affects:
 first_evidence_date: '2025-12-12'
 first_question_date: '2025-11-11'
 lag_days: -31
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -87,13 +87,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[CRWV/_thesis|CRWV]] 10-Q filed 2026-05-08: “Revenue for the three months ended March 31, 2026 increased by $1.1 billion, or 112%, compared to the three months ended March 31, 2025. This substantial growth was related to increased demand from both existing and new customer contracts and our fulfillment of that demand through our expanded data center footprint. Approximately 38% of the increase in revenue was attributable to expansion within our existing customer base and the remaining increase was attributable to new customers for the three months ended March 31, 2026.”
 - [[NVDA/_thesis|NVDA]] 10-Q filed 2026-05-20: “Direct Customers – For the first quarter of fiscal year 2027, three direct customers represented 21%, 17%, and 16% of total revenue, all of which was primarily attributable to the Compute & Networking segment.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 9 banks, 8 of 45 earnings-call / 29 conference companies covered, 14 exchanges — [[AMD/_thesis|AMD]], [[AVGO/_thesis|AVGO]], [[CBRS/_thesis|CBRS]], [[CSCO/_thesis|CSCO]], [[GDS/_thesis|GDS]], [[GLW/_thesis|GLW]], [[HPE/_thesis|HPE]], [[INTC/_thesis|INTC]].
-**Disclosed (MD&A):** 2 of 67 filers — [[NVDA/_thesis|NVDA]], [[SNOW/_thesis|SNOW]]; corprep speech at 20 companies.
+**Asked:** 9 banks, 8 of 50 earnings-call / 34 conference companies covered, 15 exchanges — [[AMD/_thesis|AMD]], [[AVGO/_thesis|AVGO]], [[CBRS/_thesis|CBRS]], [[CSCO/_thesis|CSCO]], [[GDS/_thesis|GDS]], [[GLW/_thesis|GLW]], [[HPE/_thesis|HPE]], [[INTC/_thesis|INTC]].
+**Disclosed (MD&A):** 2 of 69 filers — [[NVDA/_thesis|NVDA]], [[SNOW/_thesis|SNOW]]; corprep speech at 23 companies.
 **Gap (§6.2):** 2 disclosing / 8 asked.
 **Banks:** Bernstein Institutional Services LLC, Bernstein Research, BofA Securities, Inc., Goldman Sachs (Singapore) Pte., Morgan Stanley & Co. LLC, Morgan Stanley Asia Ltd., Needham & Co. LLC, UBS Securities LLC, Wells Fargo Securities LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[CBRS/_thesis|CBRS]] 2026-08-12 — Timothy Arcuri (UBS Securities LLC), Q2 2026 Earnings Call: “Thanks a lot. Andrew, I wanted to ask about customer concentration. So you did say that revenue would be up more than 3x next year. And obviously we know that OpenAI is ramping right now, so that's a big piece of your incremental revenue today. I would think that AWS could be $1 billion next year or something like that, maybe more. So how do you think about customer concentration when you look at next year? Like, is it going to be two-thirds of your revenue is like those two customers? And then can you also speak to your talks with some of the other folks, Google and Microsoft and folks like …”

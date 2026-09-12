@@ -13,4 +13,5 @@ Themes where this name has been asked or has disclosed (spec §7.1). Machine-wri
 - [[themes/data_center_deployment_constraints|data_center_deployment_constraints]] — stage 4
 - [[themes/datacenter_buildout_pacing|datacenter_buildout_pacing]] — stage 4
 - [[themes/energy_storage_buildout|energy_storage_buildout]] — stage 4
+- [[themes/humanoid_robotics_competition|humanoid_robotics_competition]] — stage 4
 - [[themes/nuclear_energy_buildout|nuclear_energy_buildout]] — stage 4

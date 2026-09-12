@@ -20,7 +20,7 @@ affects:
 first_evidence_date: '2025-12-12'
 first_question_date: null
 lag_days: null
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -56,12 +56,12 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[GLW/_thesis|GLW]] 10-Q filed 2026-05-01: “(8) Loss on investments : Amount reflects the loss recognized on investments due to mark-to-market adjustments for the change in fair value or the disposition of an investment.”
 - [[NXPI/_thesis|NXPI]] 10-Q filed 2026-04-28: “million (collectively the “Notes”), of which $750 million is payable within 12 months. Future interest payments associated with the Notes total $2,777 million, with $396 million payable within 12 months.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 0 banks, 0 of 45 earnings-call / 29 conference companies covered, 0 exchanges.
-**Disclosed (MD&A):** 5 of 67 filers — [[FN/_thesis|FN]], [[GLW/_thesis|GLW]], [[LITE/_thesis|LITE]], [[NXPI/_thesis|NXPI]], [[RDNT/_thesis|RDNT]]; corprep speech at 0 companies.
+**Asked:** 0 banks, 0 of 50 earnings-call / 34 conference companies covered, 0 exchanges.
+**Disclosed (MD&A):** 5 of 69 filers — [[FN/_thesis|FN]], [[GLW/_thesis|GLW]], [[LITE/_thesis|LITE]], [[NXPI/_thesis|NXPI]], [[RDNT/_thesis|RDNT]]; corprep speech at 0 companies.
 **Gap (§6.2):** 5 disclosing / 0 asked.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **MD&A (added this quarter, lower-confidence mapping):**
 - [[NXPI/_thesis|NXPI]] 10-Q filed 2026-07-28: “- Purchase of investments of $146 million for the (driven primarily by the capital contributions of $70 million into VSMC and approximately $32 million into ESMC)”

@@ -14,7 +14,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2025-12-03'
 lag_days: null
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -56,13 +56,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[INTC/_thesis|INTC]] 2026-04-23 — Vivek Arya (BofA Securities, Inc.), Q1 2026 Earnings Call: “Yes. Thank you, John. Maybe the follow-up, Lip-Bu is for you, on server CPU competition. So, both when we look at competition versus x86 against AMD, do you think you are gaining share? Do you expect to gain share against them? And then, broader, I think the competition against Arm, because NVIDIA is planning to launch a standalone Vera CPU Rack. Recently, we heard Amazon talk up their Graviton option. I think Google yesterday said they would launch Axion and connect it with every TPU. So, just kind of near-term, how do you look at competition versus AMD in x86, and then kind of medium to …”
 - [[MPWR/_thesis|MPWR]] 2026-04-30 — Joshua Buchalter (TD Cowen), Q1 2026 Earnings Call: “Thank you both for all the color there. Unfortunately, when you deliver good news, you still get annoying follow-up questions. But yeah, I guess, if we think about the incremental upside since last quarter, any help you can give us on how much of that's coming from CPUs, as Ross mentioned earlier, versus more confidence into either content or visibility into share on the AI accelerator side? Thank you both and congratulations again.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 1 banks, 2 of 45 earnings-call / 29 conference companies covered, 5 exchanges — [[AMD/_thesis|AMD]], [[AVGO/_thesis|AVGO]].
-**Disclosed (MD&A):** 0 of 67 filers; corprep speech at 1 companies.
+**Asked:** 1 banks, 2 of 50 earnings-call / 34 conference companies covered, 5 exchanges — [[AMD/_thesis|AMD]], [[AVGO/_thesis|AVGO]].
+**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 1 companies.
 **Gap (§6.2):** 0 disclosing / 2 asked.
 **Banks:** Barclays Capital, Inc..
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[AMD/_thesis|AMD]] 2026-09-08 — Atif Malik (Citigroup Global Markets, Inc.), Citi Global TMT Conference: “The CPU side, can you talk about maybe price? I think, like, Intel's been taking more price because it had older products, and just wanted to get your thoughts on price and how you guys see price evolving over the next couple of years.”

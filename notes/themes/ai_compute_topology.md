@@ -18,6 +18,7 @@ tickers:
 - LITE
 - MPWR
 - MRVL
+- NBIS
 affects:
 - ANET
 - AVGO
@@ -28,7 +29,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2025-11-11'
 lag_days: null
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -70,16 +71,16 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[LITE/_thesis|LITE]] 2026-06-09 — Vijay Raghavan Rakesh (Mizuho Securities USA LLC), Mizuho Global Technology Conference: “Got it. So, basically, connecting all the data centers, so they look like one big monolithic GPU.”
 - [[AMD/_thesis|AMD]] 2026-05-05 — Aaron Rakers (Wells Fargo Securities LLC), Q1 2026 Earnings Call: “Yeah. Thanks for taking the question and congrats on the results. I want to stick on the topic of CPU to GPU and as we think about the chart that you had outlined at the Analyst Day, there was obviously broken out between traditional CPUs and then the AI bucket on top of that. Obviously, I think the new forecast has a lot to do with the AI CPU expansion. I'm just curious. When you're doing a CPU in an AI workload, is there structurally a different level of ASP tied to that kind of CPU optimized for AI relative to a general purpose server CPU? Any kind of color or help on that would be useful.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 6 banks, 5 of 45 earnings-call / 29 conference companies covered, 10 exchanges — [[AMBA/_thesis|AMBA]], [[AMD/_thesis|AMD]], [[ARM/_thesis|ARM]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]].
-**Disclosed (MD&A):** 0 of 67 filers; corprep speech at 11 companies.
-**Gap (§6.2):** 0 disclosing / 5 asked.
-**Banks:** Barclays Capital, Inc., Citigroup Global Markets, Inc., Morgan Stanley & Co. LLC, Needham & Co. LLC, ROTH Capital Partners LLC, TD Cowen.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+**Asked:** 7 banks, 6 of 50 earnings-call / 34 conference companies covered, 12 exchanges — [[AMBA/_thesis|AMBA]], [[AMD/_thesis|AMD]], [[ARM/_thesis|ARM]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[NBIS/_thesis|NBIS]].
+**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 13 companies.
+**Gap (§6.2):** 0 disclosing / 6 asked.
+**Banks:** Analyst, Citigroup, Barclays Capital, Inc., Citigroup Global Markets, Inc., Morgan Stanley & Co. LLC, Needham & Co. LLC, ROTH Capital Partners LLC, TD Cowen.
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
+- [[AMD/_thesis|AMD]] 2026-09-11 — James Edward Schneider (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “Excellent. One thing that's striking me is, over the past couple years, we've kind of changed the parlance of how we talk about this market. We're not talking about server counts or counting accelerators. We're talking about counting gigawatts of capacity, and every single presentation at this conference has done that. So, maybe as you think about these multi-gigawatt AI deployments, how should investors be thinking about CPU content per gigawatt?”
 - [[CBRS/_thesis|CBRS]] 2026-08-12 — Quinn Bolton (Needham & Co. LLC), Q2 2026 Earnings Call: “Does that remove the need for some of this disaggregated compute or heterogeneous inferencing that you're talking about? Or does that just make the entire throughput of the heterogeneous solutions just that much faster...”
 - [[ARM/_thesis|ARM]] 2026-07-29 — Tom O'Malley (Barclays Capital, Inc.), Q1 2027 Earnings Call: “Hey, guys. Thanks for taking my question. Last week, AMD hosted an Analyst Day and talked about a $220 billion TAM by the end of the decade. And kind of underneath that, the largest contributor was agentic AI that kind of laid out traditional CPU to head nodes and then agentic applications. So I was curious, when you look at your silicon business longer term, where do you see that fitting in? Is that going to cover all three of those buckets in your early wins and your early pipeline? Is there one way that that's leaning or another? Just would like to get a flavor of what you foresee for that …”
-- [[AMD/_thesis|AMD]] 2026-09-08 — Atif Malik (Citigroup Global Markets, Inc.), Citi Global TMT Conference: “Think about your competitive positioning versus NVIDIA and proprietary ASICs, where do you feel AMD has the clearest performance cost or availability advantage at this time? Thank you.”
 

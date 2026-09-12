@@ -12,7 +12,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2026-01-28'
 lag_days: null
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -48,13 +48,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[FRVO/_thesis|FRVO]] 2026-06-22 — Justin Clare (ROTH Capital Partners LLC), Q1 2026 Earnings Call: “Hey, good morning. Thanks for the questions here. So just wanted to follow up on Cape Phase I. So you're on track for first power delivery in Q4 2026 with the first GeoBlock commissioning underway. So wondering if you can just walk through the remaining kind of critical items between now and commercial operation and just what milestones should we be looking for over the next few months here.”
 - [[FPS/_thesis|FPS]] 2026-05-14 — Tanner James (Jefferies LLC), Q3 2026 Earnings Call: “Hi team. This is Tanner on for Julien. Could you discuss trends you're seeing specifically in order activity for grid related equipment? Like what's the mix you're seeing for generation adjacent equipment orders versus that of traditional T&D? And then perhaps on the generation side, has there been any impact from evolving customer sentiment toward or away from development of certain types of generation, generation resource. Thanks.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 2 banks, 2 of 45 earnings-call / 29 conference companies covered, 2 exchanges — [[FRVO/_thesis|FRVO]], [[GEV/_thesis|GEV]].
-**Disclosed (MD&A):** 0 of 67 filers; corprep speech at 2 companies.
+**Asked:** 2 banks, 2 of 50 earnings-call / 34 conference companies covered, 2 exchanges — [[FRVO/_thesis|FRVO]], [[GEV/_thesis|GEV]].
+**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 2 companies.
 **Gap (§6.2):** 0 disclosing / 2 asked.
 **Banks:** Morgan Stanley & Co. LLC, Wolfe Research LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[GEV/_thesis|GEV]] 2026-07-22 — David Arcaro (Morgan Stanley & Co. LLC), Q2 2026 Earnings Call: “Hey, thanks so much. Good morning. I was wondering if you could characterize whether 2026 could be the year of peak orders for gas turbines. Just how you think about that, putting it into context, what does it mean for the growth outlook?”

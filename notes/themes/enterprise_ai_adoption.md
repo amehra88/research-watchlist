@@ -33,7 +33,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2025-12-02'
 lag_days: null
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -75,13 +75,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[DDOG/_thesis|DDOG]] 2026-06-03 — Koji Ikeda (BofA Securities, Inc.), Bank of America Global Technology Conference: “I got you. Wanted to ask you a question on durability of growth. You guys have great growth trends, and so how do we think about the drivers of the durability of growth, whether that's cloud migration, platform consolidation and AI? And what signals are you guys seeing that's giving you the confidence that growth continues in the fashion it does?”
 - [[IOT/_thesis|IOT]] 2026-06-04 — Christopher Quintero (Morgan Stanley & Co. LLC), Q1 2027 Earnings Call: “Hey, guys. Thank you for taking our questions here and congrats on a solid set of results, especially on the GAAP net income side, which if I'm not mistaken, means you are now eligible for some index inclusion. So congrats on that. Maybe first on the $1M+ ARR cohort, really nice to see that acceleration. Maybe could you talk a little bit about what you're seeing and how those discussions are going with some of your largest customers, and what's really driving that momentum up there?”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 14 banks, 12 of 45 earnings-call / 29 conference companies covered, 29 exchanges — [[ANET/_thesis|ANET]], [[AXON/_thesis|AXON]], [[CSCO/_thesis|CSCO]], [[DDOG/_thesis|DDOG]], [[GWRE/_thesis|GWRE]], [[IOT/_thesis|IOT]], [[MDB/_thesis|MDB]], [[MSFT/_thesis|MSFT]], [[NOW/_thesis|NOW]], [[PANW/_thesis|PANW]], [[SNOW/_thesis|SNOW]], [[ZS/_thesis|ZS]].
-**Disclosed (MD&A):** 0 of 67 filers; corprep speech at 14 companies.
-**Gap (§6.2):** 0 disclosing / 12 asked.
+**Asked:** 14 banks, 13 of 50 earnings-call / 34 conference companies covered, 32 exchanges — [[ANET/_thesis|ANET]], [[AXON/_thesis|AXON]], [[CSCO/_thesis|CSCO]], [[DDOG/_thesis|DDOG]], [[DOCN/_thesis|DOCN]], [[GWRE/_thesis|GWRE]], [[IOT/_thesis|IOT]], [[MDB/_thesis|MDB]], [[MSFT/_thesis|MSFT]], [[NOW/_thesis|NOW]], [[PANW/_thesis|PANW]], [[SNOW/_thesis|SNOW]], [[ZS/_thesis|ZS]].
+**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 15 companies.
+**Gap (§6.2):** 0 disclosing / 13 asked.
 **Banks:** BNP Paribas Securities Corp., BTIG LLC, Barclays Capital, Inc., Citigroup Global Markets, Inc., Craig-Hallum Capital Group LLC, JPMorgan Securities LLC, Jefferies LLC, Morgan Stanley & Co. International Plc, Morgan Stanley & Co. LLC, Needham & Co. LLC, Oppenheimer & Co., Inc., RBC Capital Markets LLC, UBS Securities LLC, Wells Fargo Securities LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[NOW/_thesis|NOW]] 2026-09-09 — Tyler Radke (Citigroup Global Markets, Inc.), Citi Global TMT Conference: “Right. Right. Got it. And one of the dynamics we've seen kind of on and off within software is just kind these this issue of deal elongation, extended sales cycles. You were one of the first software companies to report and had very strong results. I think we're a bit measured in your outlook. It, it sort of seems like we've seen a little bit of an attenuation in this SaaS apocalypse concern, you know, at least, up until Labor Day. But is your speaking to customers, like is there still this sense of hesitation or AI distraction that we had at the beginning of the year? Or is that kind of …”

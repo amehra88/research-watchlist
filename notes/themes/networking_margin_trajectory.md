@@ -6,6 +6,8 @@ stage: 4
 tickers:
 - AAOI
 - AAPL
+- ADI
+- AMAT
 - ANET
 - AVGO
 - CIEN
@@ -25,7 +27,7 @@ affects: []
 first_evidence_date: '2025-12-12'
 first_question_date: '2025-12-03'
 lag_days: -9
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -79,13 +81,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[CIEN/_thesis|CIEN]] 10-Q filed 2026-06-04: “• Routing and Switching products revenue increased by $81.5 million, primarily driven by increases in sales of our 3000 and 5000 series of service delivery and aggregation platforms, and our 8100 Coherent IP networking platforms in our out-of-band data center management (DCOM) solution.”
 - [[ANET/_thesis|ANET]] 10-Q filed 2026-05-06: “Product revenue increased by $618.8 million, or 36.6% for the three months ended March 31, 2026, compared to the same period in 2025. This increase reflects healthy customer demand and higher shipments of our switching and routing platforms across our customer base. In addition, service revenue increased by $85.4 million, or 27.3% for the three months ended March 31, 2026, compared to the same period in 2025, as a result of continued growth in initial and renewal support contracts as our customer installed base has continued to expand. Non-Americas revenue represented 15.5% of total revenue …”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 15 banks, 13 of 45 earnings-call / 29 conference companies covered, 36 exchanges — [[AAOI/_thesis|AAOI]], [[AAPL/_thesis|AAPL]], [[ANET/_thesis|ANET]], [[CIEN/_thesis|CIEN]], [[COHR/_thesis|COHR]], [[CRDO/_thesis|CRDO]], [[FN/_thesis|FN]], [[GLW/_thesis|GLW]], [[HPE/_thesis|HPE]], [[LITE/_thesis|LITE]], [[MPWR/_thesis|MPWR]], [[MTRN/_thesis|MTRN]], [[NXPI/_thesis|NXPI]].
-**Disclosed (MD&A):** 4 of 67 filers — [[CIEN/_thesis|CIEN]], [[FN/_thesis|FN]], [[HPE/_thesis|HPE]], [[LITE/_thesis|LITE]]; corprep speech at 16 companies.
-**Gap (§6.2):** 4 disclosing / 13 asked.
-**Banks:** BNP Paribas Securities Corp., Barclays Capital, Inc., CJS Securities, Inc., Citigroup Global Markets Canada, Inc., Citigroup Global Markets, Inc., Evercore ISI, Freedom Capital Markets, JPMorgan Securities LLC, Mizuho Securities USA LLC, Morgan Stanley & Co. LLC, Northland Securities, Inc., Raymond James, Susquehanna Financial Group LLLP, TD Cowen, Wolfe Research LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+**Asked:** 16 banks, 15 of 50 earnings-call / 34 conference companies covered, 39 exchanges — [[AAOI/_thesis|AAOI]], [[AAPL/_thesis|AAPL]], [[ADI/_thesis|ADI]], [[AMAT/_thesis|AMAT]], [[ANET/_thesis|ANET]], [[CIEN/_thesis|CIEN]], [[COHR/_thesis|COHR]], [[CRDO/_thesis|CRDO]], [[FN/_thesis|FN]], [[GLW/_thesis|GLW]], [[HPE/_thesis|HPE]], [[LITE/_thesis|LITE]], [[MPWR/_thesis|MPWR]], [[MTRN/_thesis|MTRN]], [[NXPI/_thesis|NXPI]].
+**Disclosed (MD&A):** 4 of 69 filers — [[CIEN/_thesis|CIEN]], [[FN/_thesis|FN]], [[HPE/_thesis|HPE]], [[LITE/_thesis|LITE]]; corprep speech at 17 companies.
+**Gap (§6.2):** 4 disclosing / 15 asked.
+**Banks:** BNP Paribas Securities Corp., Barclays Capital, Inc., Bernstein Institutional Services LLC, CJS Securities, Inc., Citigroup Global Markets Canada, Inc., Citigroup Global Markets, Inc., Evercore ISI, Freedom Capital Markets, JPMorgan Securities LLC, Mizuho Securities USA LLC, Morgan Stanley & Co. LLC, Northland Securities, Inc., Raymond James, Susquehanna Financial Group LLLP, TD Cowen, Wolfe Research LLC.
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[LITE/_thesis|LITE]] 2026-08-11 — Vijay Raghavan Rakesh (Mizuho Securities USA LLC), Q4 2026 Earnings Call: “Yeah, hi Michael and Wajid. Good quarter and guide here. Just a quick question on the 200-gig per lane EML and CW, looks like that's ramping very nicely. Is it fair to assume both the 200-gig EML and CW laser should be accretive to your margins? And when do you see this 1.6T crossover? It looks like it's already greater than 25% revenues, but when do you see that crossing over with the 800-gig? And I have a follow-up.”

@@ -8,10 +8,10 @@ written_by: scripts/topics/theme_notes.py
 
 Themes where this name has been asked or has disclosed (spec §7.1). Machine-written; edit the theme notes' operator sections, not this index.
 
-- [[themes/foundry_capacity|foundry_capacity]] — stage 1 · open 24d
-- [[themes/automotive_semiconductor_demand|automotive_semiconductor_demand]] — stage 2 · open 127d
-- [[themes/software_seat_pricing_pressure|software_seat_pricing_pressure]] — stage 2 · open 24d
-- [[themes/solar_supply_chain|solar_supply_chain]] — stage 2 · open 24d
+- [[themes/foundry_capacity|foundry_capacity]] — stage 1 · open 26d
+- [[themes/automotive_semiconductor_demand|automotive_semiconductor_demand]] — stage 2 · open 129d
+- [[themes/software_seat_pricing_pressure|software_seat_pricing_pressure]] — stage 2 · open 26d
+- [[themes/solar_supply_chain|solar_supply_chain]] — stage 2 · open 26d
 - [[themes/advanced_materials_ai_infra|advanced_materials_ai_infra]] — stage 4 · lag -154d
 - [[themes/aerospace_defense_aftermarket|aerospace_defense_aftermarket]] — stage 4
 - [[themes/ai_compute_topology|ai_compute_topology]] — stage 4

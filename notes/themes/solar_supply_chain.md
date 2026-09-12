@@ -34,7 +34,7 @@ affects: []
 first_evidence_date: '2025-12-10'
 first_question_date: '2026-01-28'
 lag_days: 49
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -82,13 +82,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[PWR/_thesis|PWR]] 10-Q filed 2026-04-30: “or severe weather events; environmental restrictions or regulatory delays; protests, public activism, other political activity or legal challenges related to a project; and the performance of third parties. Moreover, we currently generate a significant portion of our revenues under fixed price contracts, and fixed price contracts are more common in connection with our larger and more complex projects that typically involve greater performance risk. Under these contracts, we assume risks related to project estimates and execution, and project revenues can vary, sometimes substantially, from …”
 - [[BE/_thesis|BE]] 10-Q filed 2026-04-29: “Our future capital requirements depend on a variety of factors, including our rate of revenue growth; the timing and extent of spending on research and development and other business initiatives; increases in our manufacturing capacity; the pace and volume of system builds; the need for additional working capital; the expansion of our sales and marketing activities in both domestic and international markets; market acceptance of our products; selling models and vehicles required by customers; our ability to secure financing for customer use of our products; the timing of installations and …”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 2 banks, 3 of 45 earnings-call / 29 conference companies covered, 4 exchanges — [[BE/_thesis|BE]], [[GLW/_thesis|GLW]], [[MTRN/_thesis|MTRN]].
-**Disclosed (MD&A):** 14 of 67 filers — [[AMBA/_thesis|AMBA]], [[AVGO/_thesis|AVGO]], [[BE/_thesis|BE]], [[COHR/_thesis|COHR]], [[CRDO/_thesis|CRDO]], [[CSCO/_thesis|CSCO]], [[ENTG/_thesis|ENTG]], [[GLW/_thesis|GLW]], [[LITE/_thesis|LITE]], [[LRCX/_thesis|LRCX]], [[PLTR/_thesis|PLTR]], [[PWR/_thesis|PWR]], [[SEI/_thesis|SEI]], [[TSLA/_thesis|TSLA]]; corprep speech at 8 companies.
+**Asked:** 2 banks, 3 of 50 earnings-call / 34 conference companies covered, 4 exchanges — [[BE/_thesis|BE]], [[GLW/_thesis|GLW]], [[MTRN/_thesis|MTRN]].
+**Disclosed (MD&A):** 14 of 69 filers — [[AMBA/_thesis|AMBA]], [[AVGO/_thesis|AVGO]], [[BE/_thesis|BE]], [[COHR/_thesis|COHR]], [[CRDO/_thesis|CRDO]], [[CSCO/_thesis|CSCO]], [[ENTG/_thesis|ENTG]], [[GLW/_thesis|GLW]], [[LITE/_thesis|LITE]], [[LRCX/_thesis|LRCX]], [[PLTR/_thesis|PLTR]], [[PWR/_thesis|PWR]], [[SEI/_thesis|SEI]], [[TSLA/_thesis|TSLA]]; corprep speech at 8 companies.
 **Gap (§6.2):** 14 disclosing / 3 asked.
 **Banks:** Morgan Stanley & Co. LLC, Seaport Research Partners.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[BE/_thesis|BE]] 2026-07-28 — David Arcaro (Morgan Stanley & Co. LLC), Q2 2026 Earnings Call: “Oh, thank you so much. Appreciate you taking my questions. So, there have been some project development challenges that have gotten headlines at a few large projects. I was wondering if you could characterize your financial exposure to project delays, any contractual protections that you typically have in place, and alternatives that you may work on with customers.”

@@ -8,9 +8,9 @@ written_by: scripts/topics/theme_notes.py
 
 Themes where this name has been asked or has disclosed (spec §7.1). Machine-written; edit the theme notes' operator sections, not this index.
 
-- [[themes/china_export_controls|china_export_controls]] — stage 2 · open 126d
-- [[themes/software_seat_pricing_pressure|software_seat_pricing_pressure]] — stage 2 · open 196d
-- [[themes/solar_supply_chain|solar_supply_chain]] — stage 2 · open 126d
+- [[themes/china_export_controls|china_export_controls]] — stage 2 · open 128d
+- [[themes/software_seat_pricing_pressure|software_seat_pricing_pressure]] — stage 2 · open 198d
+- [[themes/solar_supply_chain|solar_supply_chain]] — stage 2 · open 128d
 - [[themes/advanced_materials_ai_infra|advanced_materials_ai_infra]] — stage 4
 - [[themes/ai_compute_topology|ai_compute_topology]] — stage 4
 - [[themes/hyperscaler_revenue_concentration|hyperscaler_revenue_concentration]] — stage 4

@@ -32,7 +32,7 @@ affects:
 first_evidence_date: '2025-12-18'
 first_question_date: '2026-01-28'
 lag_days: 41
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -78,13 +78,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[NXPI/_thesis|NXPI]] 10-Q filed 2026-04-28: “On February 2, 2026, we completed the sale of our MEMS Sensors business, resulting in cash proceeds of $878 million at closing and a gain on sale of $627 million recorded in Other income (expense). See Note 3 to the Consolidated Financial Statements for further information regarding NXP’s sale of the MEMS Sensors business.”
 - [[TXN/_thesis|TXN]] 10-Q filed 2026-04-24: “Revenue of $4.83 billion increased $756 million, or 19%, due to increased demand in our Analog segment and, to a lesser extent, in our Embedded Processing segment, which were both impacted by the macroeconomic factors discussed above.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 3 banks, 5 of 45 earnings-call / 29 conference companies covered, 8 exchanges — [[AAPL/_thesis|AAPL]], [[AMBA/_thesis|AMBA]], [[HPE/_thesis|HPE]], [[MPWR/_thesis|MPWR]], [[NXPI/_thesis|NXPI]].
-**Disclosed (MD&A):** 11 of 67 filers — [[AMAT/_thesis|AMAT]], [[AMBA/_thesis|AMBA]], [[AVGO/_thesis|AVGO]], [[COHR/_thesis|COHR]], [[FN/_thesis|FN]], [[GLW/_thesis|GLW]], [[MPWR/_thesis|MPWR]], [[MRVL/_thesis|MRVL]], [[NXPI/_thesis|NXPI]], [[SNPS/_thesis|SNPS]], [[TXN/_thesis|TXN]]; corprep speech at 27 companies.
+**Asked:** 3 banks, 5 of 50 earnings-call / 34 conference companies covered, 8 exchanges — [[AAPL/_thesis|AAPL]], [[AMBA/_thesis|AMBA]], [[HPE/_thesis|HPE]], [[MPWR/_thesis|MPWR]], [[NXPI/_thesis|NXPI]].
+**Disclosed (MD&A):** 11 of 69 filers — [[AMAT/_thesis|AMAT]], [[AMBA/_thesis|AMBA]], [[AVGO/_thesis|AVGO]], [[COHR/_thesis|COHR]], [[FN/_thesis|FN]], [[GLW/_thesis|GLW]], [[MPWR/_thesis|MPWR]], [[MRVL/_thesis|MRVL]], [[NXPI/_thesis|NXPI]], [[SNPS/_thesis|SNPS]], [[TXN/_thesis|TXN]]; corprep speech at 29 companies.
 **Gap (§6.2):** 11 disclosing / 5 asked.
 **Banks:** BofA Securities, Inc., JPMorgan Securities LLC, Wells Fargo Securities LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[NXPI/_thesis|NXPI]] 2026-09-09 — James Edward Schneider (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “Great. Now maybe kind of turning back to sort of your current business trends for a moment. You reported a pretty solid quarter, very constructive commentary on demand trends across most markets. How do you characterize the end demand trends as you're seeing them right now across automotive, IoT, mobile, and communications? And sort of where are you seeing the strongest orders on a relative basis?”

@@ -24,7 +24,7 @@ affects:
 first_evidence_date: '2026-05-06'
 first_question_date: '2025-12-03'
 lag_days: -154
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -74,13 +74,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[COHR/_thesis|COHR]] 10-Q filed 2026-05-06: “Coherent is a global leader in photonic technology, which is foundational to the performance and scalability of AI datacenters and critical to many important industrial applications. We are at the center of a significant expansion in optical networking infrastructure, driven by the rapid growth of AI and the increasing need for bandwidth and energy efficiency. We continue to experience strong demand in our Datacenter and Communications markets. The increasing investments by hyperscale and other cloud providers in AI datacenter infrastructures have significantly boosted demand for our …”
 - [[LITE/_thesis|LITE]] 10-Q filed 2026-05-06: “The increase in Components products was primarily driven by the ramp of laser chip and laser assembly product shipments to support strong, broad-based demand across intra-data center, data center interconnect, and long-haul applications. Additionally, a slight increase in average selling prices of laser chip products contributed to the increase in Components revenue driven primarily by a shift to 200G lane speeds. The remaining approximately 19% of Components revenue growth was due to an increase in shipment volume of data transport products, encompassing line subsystems solutions for …”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 14 banks, 12 of 45 earnings-call / 29 conference companies covered, 41 exchanges — [[AAOI/_thesis|AAOI]], [[AMAT/_thesis|AMAT]], [[COHR/_thesis|COHR]], [[CRDO/_thesis|CRDO]], [[ENTG/_thesis|ENTG]], [[FN/_thesis|FN]], [[GLW/_thesis|GLW]], [[LITE/_thesis|LITE]], [[LRCX/_thesis|LRCX]], [[MTRN/_thesis|MTRN]], [[NVMI/_thesis|NVMI]], [[NXPI/_thesis|NXPI]].
-**Disclosed (MD&A):** 1 of 67 filers — [[LITE/_thesis|LITE]]; corprep speech at 15 companies.
+**Asked:** 15 banks, 12 of 50 earnings-call / 34 conference companies covered, 42 exchanges — [[AAOI/_thesis|AAOI]], [[AMAT/_thesis|AMAT]], [[COHR/_thesis|COHR]], [[CRDO/_thesis|CRDO]], [[ENTG/_thesis|ENTG]], [[FN/_thesis|FN]], [[GLW/_thesis|GLW]], [[LITE/_thesis|LITE]], [[LRCX/_thesis|LRCX]], [[MTRN/_thesis|MTRN]], [[NVMI/_thesis|NVMI]], [[NXPI/_thesis|NXPI]].
+**Disclosed (MD&A):** 1 of 69 filers — [[LITE/_thesis|LITE]]; corprep speech at 17 companies.
 **Gap (§6.2):** 1 disclosing / 12 asked.
-**Banks:** BMO Capital Markets Corp., BNP Paribas Securities Corp., Barclays Capital, Inc., CJS Securities, Inc., Citigroup Global Markets Canada, Inc., Citigroup Global Markets, Inc., Freedom Capital Markets, JPMorgan Securities LLC, Jefferies LLC, Mizuho Securities USA LLC, Needham & Co. LLC, Northland Securities, Inc., Seaport Research Partners, Wolfe Research LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+**Banks:** BMO Capital Markets Corp., BNP Paribas Securities Corp., Barclays Capital, Inc., CJS Securities, Inc., Citigroup Global Markets Canada, Inc., Citigroup Global Markets, Inc., Freedom Capital Markets, JPMorgan Securities LLC, Jefferies LLC, Mizuho Securities USA LLC, Needham & Co. LLC, Northland Securities, Inc., RBC Capital Markets LLC, Seaport Research Partners, Wolfe Research LLC.
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[FN/_thesis|FN]] 2026-08-17 — Tim Savageaux (Northland Securities, Inc.), Q4 2026 Earnings Call: “Great. And let me close by adding maybe one other growth driver that I don't know that's been discussed that yet, and that's optical cross connect, OCS. And we heard last week, big ramp there from the industry leader, but also, I think plans to move from strictly internal to working with contract manufacturers. I wonder if you might be able to give us an update on what you think the timing might be there for you or the opportunity. And does that lie in fiscal 2027 as well?”

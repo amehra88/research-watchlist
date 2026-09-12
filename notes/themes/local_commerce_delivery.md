@@ -2,9 +2,10 @@
 doc_type: theme_state
 theme: local_commerce_delivery
 status: approved
-stage: 3
+stage: 4
 tickers:
 - AMZN
+- BABA
 - DASH
 - SHOP
 - WMT
@@ -13,7 +14,7 @@ affects:
 first_evidence_date: '2026-03-13'
 first_question_date: '2026-02-18'
 lag_days: -23
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -57,18 +58,18 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[DASH/_thesis|DASH]] 10-Q filed 2026-05-06: “Adjusted EBITDA is a measure that we use to assess our operating performance and the operating leverage in our business. We define Adjusted EBITDA as net income (loss) attributable to DoorDash, Inc. common stockholders, adjusted to include net income (loss) attributable to redeemable non-controlling interests and exclude (i) certain legal, tax, and regulatory settlements, reserves, and expenses, (ii) loss on disposal of property and equipment, (iii) transaction-related costs (primarily consists of acquisition, integration, and investment related costs), (iv) impairment expenses, (v) …”
 - [[WMT/_thesis|WMT]] 10-Q filed 2026-05-29: “Our total revenues increased $12.1 billion or 7.3% for the three months ended April 30, 2026 when compared to the same period in the previous fiscal year. The increase was primarily due to strong positive comparable sales in our U.S. segments and international markets driven by growth in transactions. eCommerce net sales grew $8.5 billion or 26% primarily driven by store and club-fulfilled delivery. Net sales growth also reflected strong sales in grocery and general merchandise across our segments. Net sales for the three months ended April 30, 2026 were positively affected by $2.3 billion in …”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 10 banks, 2 of 45 earnings-call / 29 conference companies covered, 11 exchanges — [[AMZN/_thesis|AMZN]], [[DASH/_thesis|DASH]].
-**Disclosed (MD&A):** 2 of 67 filers — [[DASH/_thesis|DASH]], [[WMT/_thesis|WMT]]; corprep speech at 2 companies.
-**Gap (§6.2):** 2 disclosing / 2 asked.
-**Banks:** Barclays Capital, Inc., Citigroup Global Markets, Inc., Evercore ISI, Goldman Sachs & Co. LLC, JPMorgan Securities LLC, MoffettNathanson LLC, Oppenheimer & Co., Inc., Rothschild & Co Redburn, Truist Securities, Inc., Wolfe Research LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+**Asked:** 11 banks, 3 of 50 earnings-call / 34 conference companies covered, 12 exchanges — [[AMZN/_thesis|AMZN]], [[BABA/_thesis|BABA]], [[DASH/_thesis|DASH]].
+**Disclosed (MD&A):** 2 of 69 filers — [[DASH/_thesis|DASH]], [[WMT/_thesis|WMT]]; corprep speech at 5 companies.
+**Gap (§6.2):** 2 disclosing / 3 asked.
+**Banks:** Barclays Capital, Inc., Citigroup Global Markets, Inc., Evercore ISI, Goldman Sachs & Co. LLC, JPMorgan Securities LLC, MoffettNathanson LLC, Oppenheimer & Co., Inc., Rothschild & Co Redburn, The Hongkong & Shanghai Banking Corp. Ltd. (Singapore), Truist Securities, Inc., Wolfe Research LLC.
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[DASH/_thesis|DASH]] 2026-08-05 — Shweta Khajuria (Wolfe Research LLC), Q2 2026 Earnings Call: “Thank you for taking my questions. Let me try two, please. First is on the DashMart Fulfillment Services. Since your launch and since working with a handful of partners I understand, what have you learned so far that you could potentially quantify or some sort of tangible learnings that you could share, whether it is on the magnitude of customer experience improvements or something else? And then, what metrics do you look at to be able to make that decision to scale DashMart Fulfillment Services? And then, the second question is just overall EBITDA growth. Where now we are in the back half of …”
 - [[AMZN/_thesis|AMZN]] 2026-07-30 — Eric J. Sheridan (Goldman Sachs & Co. LLC), Q2 2026 Earnings Call: “Thanks so much for taking the question. Maybe pivoting to the commerce business. When you're talking about scaling some of your initiatives around fast commerce and a wider array of supply of groceries and everyday essentials, can you talk a little bit about the signal you're getting from consumers in terms of either adoption rates of those services or what it's doing to overall spend trends, and whether there's any countries or geographies where you're seeing different outcomes as you launch and scale some of those services? Thanks so much.”
-- [[DASH/_thesis|DASH]] 2026-08-05 — Ronald Josey (Citigroup Global Markets, Inc.), Q2 2026 Earnings Call: “Great. Thanks for taking the questions. I wanted to go back to the gross profit in DashPass chart that we have in the letter here. And so, the slope of the lines more recently are steepening for both, which is talking all the trends that we saw. So, would love to hear more, maybe Tony, on just the plans or strategies to continue adding value to the program, and the push and pull what that value does to overall gross profit. And then, more recently, I think the company launched newer or greater fees for larger delivery radiuses. So, talk just about the reasoning for those fees and the …”
+- [[BABA/_thesis|BABA]] 2026-08-20 — Charlene Liu (The Hongkong & Shanghai Banking Corp. Ltd. (Singapore)), Q1 2027 Earnings Call: “I'm from HSBC, but thank you very much for this opportunity. Thank you for taking my question. First, can we get an update on the latest developments in quick commerce? And under the reclassification of multiple business lines, which are regrouped under the Alibaba E-commerce Group, can you talk about the future strategic focuses of these lines of business?”
 
 **MD&A (added this quarter, lower-confidence mapping):**
 - [[DASH/_thesis|DASH]] 10-Q filed 2026-08-05: “Other income, net primarily consists of changes in the fair value of the deal-contingent forward contract (the "Deal-Contingent Forward"), which was entered into during the second quarter of 2025 in connection with the acquisition of Deliveroo and was subsequently settled upon the closing of the acquisition in October 2025. Other income, net also includes adjustments to non-marketable equity securities, including impairment, as well as gains and losses from transactions denominated in a currency other than the functional currency.”

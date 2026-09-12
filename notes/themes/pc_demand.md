@@ -13,7 +13,7 @@ affects: []
 first_evidence_date: '2025-12-10'
 first_question_date: '2026-01-29'
 lag_days: 50
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -59,12 +59,12 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[HPQ/_thesis|HPQ]] 10-Q filed 2026-05-28: “For the six months ended April 30, 2026, total net revenue increased 7.9% (increased 5.7% on a constant currency basis) as compared to the prior-year period. Net revenue from international operations increased 12.2% to $19.7 billion primarily driven by the Windows-based PC operating system refresh, while U.S. net revenue decreased 0.3% to $9.1 billion. The increase in net revenue was primarily driven by products net revenue due to pricing actions to mitigate higher commodity costs in Personal Systems as well as an increase in services net revenue due to support services on hardware devices, …”
 - [[ROKU/_thesis|ROKU]] 10-Q filed 2026-05-01: “Our business is subject to risks related to the evolving macroeconomic environment, including the effects of increased volatility in financial markets, higher inflation and interest rates, potential economic slowdown or recession, geopolitical developments, such as the conflict in the Middle East, changes in economic or government policies, including the unknown impact of tariffs, changing global regulations, global supply chain constraints, including the scarcity of, or increased prices for, key components such as memory chips, and the overall uncertainty surrounding international trade …”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 0 banks, 1 of 45 earnings-call / 29 conference companies covered, 8 exchanges — [[HPQ/_thesis|HPQ]].
-**Disclosed (MD&A):** 3 of 67 filers — [[AAPL/_thesis|AAPL]], [[HPE/_thesis|HPE]], [[HPQ/_thesis|HPQ]]; corprep speech at 9 companies.
+**Asked:** 0 banks, 1 of 50 earnings-call / 34 conference companies covered, 8 exchanges — [[HPQ/_thesis|HPQ]].
+**Disclosed (MD&A):** 3 of 69 filers — [[AAPL/_thesis|AAPL]], [[HPE/_thesis|HPE]], [[HPQ/_thesis|HPQ]]; corprep speech at 11 companies.
 **Gap (§6.2):** 3 disclosing / 1 asked.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[HPQ/_thesis|HPQ]] 2026-09-08 — Katherine Murphy (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “Got you. You've guided it for Personal Systems margins to trough in the fiscal fourth quarter and then recover into your long-term framework of 5% to 7% as we move throughout next year. This is really driven by the other two levers that we haven't talked about, the non-pricing and the non-supply related levers. Can you talk to and help us understand what these operational levers are? Maybe any examples as to why you have confidence that 4Q will be the trough for your Personal Systems margins?”

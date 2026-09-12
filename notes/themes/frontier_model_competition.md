@@ -8,6 +8,7 @@ tickers:
 - CRWV
 - META
 - MSFT
+- NBIS
 - NOW
 - ZS
 affects:
@@ -15,7 +16,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2025-12-02'
 lag_days: null
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -54,13 +55,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[CRWV/_thesis|CRWV]] 2026-05-27 — Brent Thill (Jefferies LLC), Jefferies Software Internet and AI Conference: “And everyone says, well, how are they? How are they so good at this? Maybe if you can describe what has made you the most elite builder of the new AI world.”
 - [[MSFT/_thesis|MSFT]] 2026-06-02 — Kirk Materne (Evercore Group LLC), Evercore TMT Conference: “Okay. One of the questions obviously comes up a lot is sort of your relationship with the broader sort of model ecosystem. And I think Satya has been very open about kind of your views on this, but maybe just you could sort of reiterate kind of where you guys are how are you trying to position yourself with the other frontier models, and then what you guys are doing internally in terms of first-party models as well.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 2 banks, 4 of 45 earnings-call / 29 conference companies covered, 4 exchanges — [[CRWD/_thesis|CRWD]], [[META/_thesis|META]], [[NOW/_thesis|NOW]], [[ZS/_thesis|ZS]].
-**Disclosed (MD&A):** 0 of 67 filers; corprep speech at 8 companies.
-**Gap (§6.2):** 0 disclosing / 4 asked.
-**Banks:** Bernstein Institutional Services LLC, JPMorgan Securities LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+**Asked:** 3 banks, 5 of 50 earnings-call / 34 conference companies covered, 6 exchanges — [[CRWD/_thesis|CRWD]], [[META/_thesis|META]], [[NBIS/_thesis|NBIS]], [[NOW/_thesis|NOW]], [[ZS/_thesis|ZS]].
+**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 10 companies.
+**Gap (§6.2):** 0 disclosing / 5 asked.
+**Banks:** Analyst, Citigroup, Bernstein Institutional Services LLC, JPMorgan Securities LLC.
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[ZS/_thesis|ZS]] 2026-09-09 — Gabriela Borges (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “What about for and this actually comes back to the R&D part of the conversation as well. What about in terms of your own applications of AI within your organization, any thoughts on how you can apply something like an open source model or even a frontier model to your own rich datasets in-house to have an evolution and data plus model to get to something greater?”

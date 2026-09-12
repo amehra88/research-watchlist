@@ -17,7 +17,7 @@ affects: []
 first_evidence_date: '2026-02-04'
 first_question_date: '2026-01-28'
 lag_days: -7
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -64,13 +64,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[RKLB/_thesis|RKLB]] 10-Q filed 2026-05-07: “Backlog represents future revenues that we would recognize in connection with the completion of all contracts and purchase orders that have been entered into by our customers but have not yet been fulfilled, excluding any customer options for future products or services that have not yet been exercised. Contracts for launch services and spacecraft builds typically include termination rights that may be exercised by customers upon advanced notice and payment of a specified termination fee. Backlog increased from $1,847.3 million as of December 31, 2025 to $2,219.8 million as of March 31, 2026, …”
 - [[SEI/_thesis|SEI]] 10-Q filed 2026-05-01: “On March 16, 2026, the Company, through our subsidiary Project G Buyer, LLC, completed the acquisition of 100% of the outstanding equity interests in Focus Genco Cayman Ltd. (“Genco”), the parent company of Genco Power Solutions, a distributed power generation company, pursuant to a securities purchase agreement (the “Genco Acquisition”). The acquired assets consist primarily of gas turbine generators held for lease under passive dry-lease arrangements. The Genco Acquisition expands the Company’s capabilities in power distribution solutions within the Solaris Power Solutions segment and is …”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 4 banks, 4 of 45 earnings-call / 29 conference companies covered, 5 exchanges — [[CRS/_thesis|CRS]], [[GEV/_thesis|GEV]], [[LITE/_thesis|LITE]], [[MTRN/_thesis|MTRN]].
-**Disclosed (MD&A):** 2 of 67 filers — [[COHR/_thesis|COHR]], [[RKLB/_thesis|RKLB]]; corprep speech at 7 companies.
+**Asked:** 4 banks, 4 of 50 earnings-call / 34 conference companies covered, 5 exchanges — [[CRS/_thesis|CRS]], [[GEV/_thesis|GEV]], [[LITE/_thesis|LITE]], [[MTRN/_thesis|MTRN]].
+**Disclosed (MD&A):** 2 of 69 filers — [[COHR/_thesis|COHR]], [[RKLB/_thesis|RKLB]]; corprep speech at 8 companies.
 **Gap (§6.2):** 2 disclosing / 4 asked.
 **Banks:** CJS Securities, Inc., RBC Capital Markets LLC, Seaport Research Partners, Wells Fargo Securities LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[MTRN/_thesis|MTRN]] 2026-08-05 — Michael J. Harrison (Seaport Research Partners), Q2 2026 Earnings Call: “You noted that the space order book is up 100% year-on-year. I assume that's off a relatively small base. Hopefully at some point you break out space from the rest of aerospace and defense. Definitely appreciate the details here on slide 8 that you provided on where you guys participate in the market. I was hoping that maybe you could dig a little bit deeper for us as we look at these applications. Where are you seeing the fastest growth today, or if we want to think about maybe where some of the largest addressable markets or largest longer-term opportunities could lie? Again, referring to …”

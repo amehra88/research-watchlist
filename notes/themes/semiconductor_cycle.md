@@ -39,7 +39,7 @@ affects:
 first_evidence_date: '2025-12-18'
 first_question_date: '2025-11-13'
 lag_days: -35
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -93,13 +93,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[MU/_thesis|MU]] 10-Q filed 2026-06-25: “• Sales of DRAM products increased 67%, primarily due to a low-60% range increase in average selling prices and a low-single-digit percentage range increase in bit shipments.”
 - [[AMAT/_thesis|AMAT]] 10-Q filed 2026-05-21: “Our results are driven primarily by customer spending on capital equipment and services to support key technology transitions or changes in production volume in response to worldwide demand for semiconductors.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 22 banks, 15 of 45 earnings-call / 29 conference companies covered, 49 exchanges — [[000660.KS/_thesis|000660.KS]], [[005930.KS/_thesis|005930.KS]], [[AAPL/_thesis|AAPL]], [[AMAT/_thesis|AMAT]], [[AMBA/_thesis|AMBA]], [[ARM/_thesis|ARM]], [[ENTG/_thesis|ENTG]], [[HPQ/_thesis|HPQ]], [[INTC/_thesis|INTC]], [[LRCX/_thesis|LRCX]], [[MTRN/_thesis|MTRN]], [[NVMI/_thesis|NVMI]], [[NXPI/_thesis|NXPI]], [[STX/_thesis|STX]], [[TSM/_thesis|TSM]].
-**Disclosed (MD&A):** 0 of 67 filers; corprep speech at 17 companies.
+**Asked:** 25 banks, 15 of 50 earnings-call / 34 conference companies covered, 58 exchanges — [[000660.KS/_thesis|000660.KS]], [[005930.KS/_thesis|005930.KS]], [[AAPL/_thesis|AAPL]], [[AMAT/_thesis|AMAT]], [[AMBA/_thesis|AMBA]], [[ARM/_thesis|ARM]], [[ENTG/_thesis|ENTG]], [[HPQ/_thesis|HPQ]], [[INTC/_thesis|INTC]], [[LRCX/_thesis|LRCX]], [[MTRN/_thesis|MTRN]], [[NVMI/_thesis|NVMI]], [[NXPI/_thesis|NXPI]], [[STX/_thesis|STX]], [[TSM/_thesis|TSM]].
+**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 18 companies.
 **Gap (§6.2):** 0 disclosing / 15 asked.
-**Banks:** BofA Securities, BofA Securities, Inc., Cantor Fitzgerald & Co., DS Investment & Securities Co., Ltd., Daiwa Securities Capital Markets Korea Co., Ltd., Deutsche Bank Securities, Inc., Goldman Sachs (Asia) LLC (Taiwan), Hana Securities Co., Ltd., JPMorgan Securities (Asia Pacific) Ltd., JPMorgan Securities LLC, KB Securities Co., Ltd., Korea Investment & Securities Co., Ltd., Melius Research LLC, Mizuho Securities USA LLC, Needham & Co. LLC, RBC Capital Markets LLC, Seaport Research Partners, TD Cowen, The HongKong & Shanghai Banking Corp. Ltd. (South Korea), Wells Fargo Securities LLC, William Blair & Co. LLC, Wolfe Research LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+**Banks:** BofA Securities, BofA Securities, Inc., Cantor Fitzgerald & Co., DS Investment & Securities Co., Ltd., Daiwa Securities Capital Markets Korea Co., Ltd., Deutsche Bank Securities, Inc., Goldman Sachs & Co. LLC, Goldman Sachs (Asia) LLC (Taiwan), Hana Securities Co., Ltd., JPMorgan Securities (Asia Pacific) Ltd., JPMorgan Securities LLC, Jefferies LLC, KB Securities Co., Ltd., Korea Investment & Securities Co., Ltd., Melius Research LLC, Mizuho Securities USA LLC, Needham & Co. LLC, RBC Capital Markets LLC, Seaport Research Partners, Susquehanna Financial Group LLLP, TD Cowen, The HongKong & Shanghai Banking Corp. Ltd. (South Korea), Wells Fargo Securities LLC, William Blair & Co. LLC, Wolfe Research LLC.
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[AMAT/_thesis|AMAT]] 2026-09-09 — James Edward Schneider (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “Yeah. Now specifically on memory, that really appears to be leading growth in the industry, at least short term. Do you see that relative strength continuing into next year and/or is there a point in time where you expect, say, leading-edge foundry or one of the other areas to sort of growth to go faster?”

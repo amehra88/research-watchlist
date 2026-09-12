@@ -33,7 +33,7 @@ affects:
 first_evidence_date: '2025-12-18'
 first_question_date: '2025-11-13'
 lag_days: -35
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -87,18 +87,18 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[MU/_thesis|MU]] 10-Q filed 2026-06-25: “• Sales of NAND products increased 99%, primarily due to a mid-80% range increase in average selling prices and a mid-single-digit percentage range increase in bit shipments.”
 - [[MU/_thesis|MU]] 10-Q filed 2026-06-25: “• Sales of NAND products increased 183%, primarily due to an approximate 130% increase in average selling prices and a low-20% range increase in bit shipments.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 21 banks, 13 of 45 earnings-call / 29 conference companies covered, 49 exchanges — [[000660.KS/_thesis|000660.KS]], [[005930.KS/_thesis|005930.KS]], [[AAPL/_thesis|AAPL]], [[AMAT/_thesis|AMAT]], [[AMBA/_thesis|AMBA]], [[ARM/_thesis|ARM]], [[ASML/_thesis|ASML]], [[ENTG/_thesis|ENTG]], [[HPQ/_thesis|HPQ]], [[INDI/_thesis|INDI]], [[LRCX/_thesis|LRCX]], [[NVMI/_thesis|NVMI]], [[STX/_thesis|STX]].
-**Disclosed (MD&A):** 0 of 67 filers; corprep speech at 15 companies.
-**Gap (§6.2):** 0 disclosing / 13 asked.
-**Banks:** B. Riley Securities, Inc., BofA Securities, Inc., CJS Securities, Inc., Cantor Fitzgerald & Co., Citigroup Global Markets, Inc., DS Investment & Securities Co., Ltd., Daishin Securities Co., Ltd., Daiwa Securities Capital Markets Korea Co., Ltd., Evercore ISI, Hana Securities Co., Ltd., JPMorgan Securities Far East Ltd. (South Korea), Joh. Berenberg, Gossler & Co. KG (United Kingdom), KB Securities Co., Ltd., Korea Investment & Securities Co., Ltd., Meritz Securities Co., Ltd., Mizuho Securities USA LLC, ODDO BHF SCA, The HongKong & Shanghai Banking Corp. Ltd. (South Korea), Wells Fargo Securities LLC, William Blair & Co. LLC, Wolfe Research LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+**Asked:** 25 banks, 14 of 50 earnings-call / 34 conference companies covered, 60 exchanges — [[000660.KS/_thesis|000660.KS]], [[005930.KS/_thesis|005930.KS]], [[AAPL/_thesis|AAPL]], [[AMAT/_thesis|AMAT]], [[AMBA/_thesis|AMBA]], [[ANET/_thesis|ANET]], [[ARM/_thesis|ARM]], [[ASML/_thesis|ASML]], [[ENTG/_thesis|ENTG]], [[HPQ/_thesis|HPQ]], [[INDI/_thesis|INDI]], [[LRCX/_thesis|LRCX]], [[NVMI/_thesis|NVMI]], [[STX/_thesis|STX]].
+**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 15 companies.
+**Gap (§6.2):** 0 disclosing / 14 asked.
+**Banks:** B. Riley Securities, Inc., BofA Securities, Inc., CJS Securities, Inc., Cantor Fitzgerald & Co., Citigroup Global Markets, Inc., DS Investment & Securities Co., Ltd., Daishin Securities Co., Ltd., Daiwa Securities Capital Markets Korea Co., Ltd., Evercore ISI, Goldman Sachs & Co. LLC, Hana Securities Co., Ltd., JPMorgan Securities Far East Ltd. (South Korea), Jefferies LLC, Joh. Berenberg, Gossler & Co. KG (United Kingdom), KB Securities Co., Ltd., Korea Investment & Securities Co., Ltd., Meritz Securities Co., Ltd., Mizuho Securities USA LLC, Morgan Stanley & Co. LLC, ODDO BHF SCA, Susquehanna Financial Group LLLP, The HongKong & Shanghai Banking Corp. Ltd. (South Korea), Wells Fargo Securities LLC, William Blair & Co. LLC, Wolfe Research LLC.
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[LRCX/_thesis|LRCX]] 2026-09-09 — Atif Malik (Citigroup Global Markets, Inc.), Citi Global TMT Conference: “All right. And, Ram, going back to you, NAND you do a lot of work in thinking around the drivers of the NAND market, KV cache, how is this market changing. And you, guys, have laid out this $40 billion NAND upgrade opportunity historically through calendar 2027. Can you help us understand what's changing in the NAND market from a demand perspective if you have an updated number or how you looking at the NAND opportunity?”
 - [[005930.KS/_thesis|005930.KS]] 2026-07-29 — Min-Sook Chae (Korea Investment & Securities Co., Ltd.), Q2 2026 Earnings Call: “Yes. Good morning. This is Min-Sook Chae. Thank you for the opportunity to ask some questions. For across the memory market overall, we're hearing lots of news about multiyear contracts. I believe at the last call, you also said that Samsung Electronics was also pursuing multi-year arrangements. So to the extent possible, could you provide us with a status update and some color on the terms?”
-- [[000660.KS/_thesis|000660.KS]] 2026-07-28 — Sung Kyu Kim (Daiwa Securities Capital Markets Korea Co., Ltd.), Q2 2026 Earnings Call: “Thank you for taking my questions, and congratulations on the good performance. My questions are on DRAM. It appears as if DRAM ASV growth in the second quarter fell below market expectations. What are the reasons and what is the outlook for the second half of the year?”
+- [[AMAT/_thesis|AMAT]] 2026-08-13 — Blayne Curtis (Jefferies LLC), Q3 2026 Earnings Call: “Hey, good afternoon, guys. Thanks for letting me ask a question. I want to ask on NAND. It doubled in the quarter, obviously, off a small base. Just curious what you're seeing in that market. And then you didn't mention it in October. I'm assuming maybe that's just small dollars, that's why you didn't call it out. But is it continuing to grow?”
 
 **MD&A (added this quarter, lower-confidence mapping):**
 - [[CSCO/_thesis|CSCO]] 10-K filed 2026-09-02: “We continue to operate in a highly competitive and complex environment, especially as it relates to memory constraints and costs, and trade policy. Notwithstanding these challenges, we believe that we are making progress on our strategic priorities. We continue to invest in key priority areas with the objective of driving profitable growth over the long term, and we remain focused on delivering innovation across our technologies to assist our customers in executing on their digital transformations.”

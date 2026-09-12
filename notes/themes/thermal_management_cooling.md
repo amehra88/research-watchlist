@@ -23,7 +23,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2025-12-03'
 lag_days: null
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -65,13 +65,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[LRCX/_thesis|LRCX]] 2026-06-02 — Vivek Arya (BofA Securities, Inc.), Bank of America Global Technology Conference: “Got it. On DRAM, how is your content changing from HBM3 to HBM4? And I saw yesterday Samsung talk about HBM5 as well. So, how is your kind of content evolving along these different HBM generations?”
 - [[AMAT/_thesis|AMAT]] 2026-05-28 — Stacy A. Rasgon (AB Bernstein), Bernstein Strategic Decisions Conference: “What kind of time frames are we talking about for, like, 4F-squared or 3D DRAM?”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 3 banks, 6 of 45 earnings-call / 29 conference companies covered, 9 exchanges — [[AMAT/_thesis|AMAT]], [[AMD/_thesis|AMD]], [[AVGO/_thesis|AVGO]], [[LITE/_thesis|LITE]], [[LRCX/_thesis|LRCX]], [[TSM/_thesis|TSM]].
-**Disclosed (MD&A):** 0 of 67 filers; corprep speech at 10 companies.
-**Gap (§6.2):** 0 disclosing / 6 asked.
-**Banks:** Citigroup Global Markets Taiwan Securities Co., Ltd., Jefferies LLC, Macquarie Capital Ltd..
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+**Asked:** 4 banks, 7 of 50 earnings-call / 34 conference companies covered, 11 exchanges — [[AMAT/_thesis|AMAT]], [[AMD/_thesis|AMD]], [[ANET/_thesis|ANET]], [[AVGO/_thesis|AVGO]], [[LITE/_thesis|LITE]], [[LRCX/_thesis|LRCX]], [[TSM/_thesis|TSM]].
+**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 13 companies.
+**Gap (§6.2):** 0 disclosing / 7 asked.
+**Banks:** Citigroup Global Markets Taiwan Securities Co., Ltd., Jefferies LLC, Macquarie Capital Ltd., RBC Capital Markets LLC.
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[AMD/_thesis|AMD]] 2026-09-08 — Atif Malik (Citigroup Global Markets, Inc.), Citi Global TMT Conference: “Thank you very much for your time. As scale-up domain gets bigger, at what point does copper start (00:27:59) being good enough, and when does that when does optics have to move inside the package?”

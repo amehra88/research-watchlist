@@ -8,7 +8,7 @@ written_by: scripts/topics/theme_notes.py
 
 Themes where this name has been asked or has disclosed (spec §7.1). Machine-written; edit the theme notes' operator sections, not this index.
 
-- [[themes/automotive_semiconductor_demand|automotive_semiconductor_demand]] — stage 2 · open 119d
+- [[themes/automotive_semiconductor_demand|automotive_semiconductor_demand]] — stage 2 · open 121d
 - [[themes/capex_vs_opex_shift|capex_vs_opex_shift]] — stage 3
 - [[themes/solar_supply_chain|solar_supply_chain]] — stage 3
 - [[themes/data_center_deployment_constraints|data_center_deployment_constraints]] — stage 4

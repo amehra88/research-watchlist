@@ -22,8 +22,10 @@ tickers:
 - GEV
 - INTC
 - LITE
+- LRCX
 - MPWR
 - MSFT
+- NBIS
 - SEI
 affects:
 - BE
@@ -36,7 +38,7 @@ affects:
 first_evidence_date: '2026-02-09'
 first_question_date: '2025-11-11'
 lag_days: -90
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -85,18 +87,18 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 **MD&A (added this quarter, lower-confidence mapping):**
 - [[SEI/_thesis|SEI]] 10-Q filed 2026-05-01: “In the first quarter of 2026, we entered into an agreement for over 500 MW of power generation to support power demand for artificial intelligence computing needs at data centers with a global technology leader. Subsequently, in April 2026, we entered into an agreement with an additional global technology leader for over 600 MW of power generation at its data center locations.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 20 banks, 11 of 45 earnings-call / 29 conference companies covered, 38 exchanges — [[AMZN/_thesis|AMZN]], [[AVGO/_thesis|AVGO]], [[BE/_thesis|BE]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[DOCN/_thesis|DOCN]], [[FN/_thesis|FN]], [[FRVO/_thesis|FRVO]], [[GDS/_thesis|GDS]], [[GEV/_thesis|GEV]], [[MPWR/_thesis|MPWR]].
-**Disclosed (MD&A):** 3 of 67 filers — [[BE/_thesis|BE]], [[FRVO/_thesis|FRVO]], [[SEI/_thesis|SEI]]; corprep speech at 17 companies.
-**Gap (§6.2):** 3 disclosing / 11 asked.
-**Banks:** Barclays Capital, Inc., Bernstein Institutional Services LLC, BofA Securities, Inc., Cantor Fitzgerald & Co., Citigroup Global Markets, Inc., Deutsche Bank Securities, Inc., Evercore ISI, Goldman Sachs & Co. LLC, Jefferies Hong Kong Ltd., Jefferies LLC, KeyBanc Capital Markets, Inc., Mizuho Securities USA LLC, Morgan Stanley & Co. LLC, Oppenheimer & Co., Inc., Piper Sandler & Co., RBC Capital Markets LLC, Robert W. Baird & Co., Inc., TD Cowen, William Blair & Co. LLC, Wolfe Research LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+**Asked:** 21 banks, 13 of 50 earnings-call / 34 conference companies covered, 48 exchanges — [[AMZN/_thesis|AMZN]], [[AVGO/_thesis|AVGO]], [[BE/_thesis|BE]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[DOCN/_thesis|DOCN]], [[FN/_thesis|FN]], [[FRVO/_thesis|FRVO]], [[GDS/_thesis|GDS]], [[GEV/_thesis|GEV]], [[LRCX/_thesis|LRCX]], [[MPWR/_thesis|MPWR]], [[NBIS/_thesis|NBIS]].
+**Disclosed (MD&A):** 3 of 69 filers — [[BE/_thesis|BE]], [[FRVO/_thesis|FRVO]], [[SEI/_thesis|SEI]]; corprep speech at 22 companies.
+**Gap (§6.2):** 3 disclosing / 13 asked.
+**Banks:** Analyst, Citigroup, Barclays Capital, Inc., Bernstein Institutional Services LLC, BofA Securities, Inc., Cantor Fitzgerald & Co., Citigroup Global Markets, Inc., Deutsche Bank Securities, Inc., Evercore ISI, Goldman Sachs & Co. LLC, Jefferies Hong Kong Ltd., Jefferies LLC, KeyBanc Capital Markets, Inc., Mizuho Securities USA LLC, Morgan Stanley & Co. LLC, Oppenheimer & Co., Inc., Piper Sandler & Co., RBC Capital Markets LLC, Robert W. Baird & Co., Inc., TD Cowen, William Blair & Co. LLC, Wolfe Research LLC.
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[FRVO/_thesis|FRVO]] 2026-08-12 — Benjamin Joseph Kallo (Robert W. Baird & Co., Inc.), Q2 2026 Earnings Call: “Okay, great. Just going to behind-the-meter. Could you talk to us kind of the mechanics? And you mentioned that there's a discussion about higher costs. So how would we expect like a data center development to the timeline to occur with your timeline of build out? So like, would a data center start construction before you're completed with the power plant or after? And then would you provide the auxiliary equipment needed or even additional generation or stationary storage as part of that deal? Just maybe describe a little bit more how we should expect that to evolve.”
 - [[DOCN/_thesis|DOCN]] 2026-09-08 — Maura Hager (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “And as we think about the supply-constrained environment that we're in, how do you go about securing incremental megawatts of capacity?”
-- [[CRWV/_thesis|CRWV]] 2026-09-08 — Gabriela Borges (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “Well, let me stay on this point on bringing more capacity online is very hard operationally to do. We've seen so many announcements from new entrants in the past several months where we'll get data points on companies bringing on 10 gigawatts over the next two years, 7 gigawatts over the next two years. How do you think this all shakes out from an industry structure standpoint?”
+- [[NBIS/_thesis|NBIS]] 2026-09-09 — Tyler Radke (Analyst, Citigroup), Citi Global TMT Conference: “And you're going to be bringing on a lot of capacity. You have you still have a lot of capacity to sell. You've talked about five gigawatts by 2030. How do you think about what makes most sense for Nebius in terms of the types of contracts you want to sign, like for the next 2 gigawatt of capacity, how much do you want to be auction, you know, maybe short term capacity through token factory versus multi-year committed deals? What, what makes most sense?”
 
 **MD&A (added this quarter, lower-confidence mapping):**
 - [[SEI/_thesis|SEI]] 10-Q filed 2026-08-06: “Demand for Solaris Power Solutions is predominantly influenced by accelerating needs for power in the U.S., juxtaposed against constrained electrical grid infrastructure. This is due to a number of factors including, but not limited to, aging transmission and distribution networks, extreme weather, and long lead times for various electric infrastructure equipment. Solaris’ power offerings are configurable and can be scaled to match power demand on a “behind-the-meter” or “distributed” basis in a shorter timeline than many grid-based alternatives, and can stay on site longer term to provide …”

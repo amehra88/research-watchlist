@@ -20,7 +20,7 @@ affects: []
 first_evidence_date: '2026-01-29'
 first_question_date: '2026-01-29'
 lag_days: 0
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2026-Q1
@@ -55,13 +55,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[TTWO/_thesis|TTWO]] 10-K filed 2026-05-22: “The following tables set forth, for the periods indicated, our Consolidated Statements of Operations, net revenue by platform, net revenue by distribution channel, and net revenue by content type:”
 - [[NVDA/_thesis|NVDA]] 10-Q filed 2026-05-20: “(1) In the first quarter of fiscal year 2027, we changed our presentation of revenue by market platform and the comparable periods have been recast.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 4 banks, 3 of 45 earnings-call / 29 conference companies covered, 5 exchanges — [[AAPL/_thesis|AAPL]], [[AMZN/_thesis|AMZN]], [[DASH/_thesis|DASH]].
-**Disclosed (MD&A):** 6 of 67 filers — [[AMZN/_thesis|AMZN]], [[META/_thesis|META]], [[RDDT/_thesis|RDDT]], [[ROKU/_thesis|ROKU]], [[SHOP/_thesis|SHOP]], [[TTWO/_thesis|TTWO]]; corprep speech at 7 companies.
+**Asked:** 4 banks, 3 of 50 earnings-call / 34 conference companies covered, 5 exchanges — [[AAPL/_thesis|AAPL]], [[AMZN/_thesis|AMZN]], [[DASH/_thesis|DASH]].
+**Disclosed (MD&A):** 6 of 69 filers — [[AMZN/_thesis|AMZN]], [[META/_thesis|META]], [[RDDT/_thesis|RDDT]], [[ROKU/_thesis|ROKU]], [[SHOP/_thesis|SHOP]], [[TTWO/_thesis|TTWO]]; corprep speech at 8 companies.
 **Gap (§6.2):** 6 disclosing / 3 asked.
 **Banks:** Goldman Sachs & Co. LLC, JPMorgan Securities LLC, Morgan Stanley & Co. LLC, Truist Securities, Inc..
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[AAPL/_thesis|AAPL]] 2026-07-30 — Erik W. Woodring (Morgan Stanley & Co. LLC), Q3 2026 Earnings Call: “Yeah, yeah. No, that does help. Thank you, Tim. And then just maybe a quick follow-up, I guess, Tim or Kevan, just 12% Services growth was just a bit below your guidance. I imagine FX maybe played a role there. I think the fiscal 4Q guidance assumes another deceleration. I think the math would imply below 10% year-over-year as reported. So can you maybe just help us understand the kind of function factors underlying that deceleration? And if that's App Store, which I think some third-party data sources would suggest, is that a function of AI maybe reprioritizing time away from parts of the …”

@@ -53,7 +53,7 @@ affects: []
 first_evidence_date: '2025-12-10'
 first_question_date: '2025-12-02'
 lag_days: -8
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -106,13 +106,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[HPQ/_thesis|HPQ]] 10-Q filed 2026-05-28: “We are also exposed to fluctuations in foreign currency exchange rates. We have a large global presence, with more than 65% of our net revenue from outside the United States. As a result, our financial results can be impacted by fluctuations in foreign currency exchange rates. For a further discussion of trends, uncertainties and other factors that could impact our operating results, see the section entitled “Risk Factors” in Item 1A of Part I in our Annual Report on Form 10-K for the fiscal year ended October 31, 2025.”
 - [[RBRK/_thesis|RBRK]] 10-Q filed 2026-06-05: “deployment timelines, in some cases delaying customer purchases and in other cases resulting in customers pulling software purchases forward to lock in hardware prices. In response, we may in the future provide certain commercial accommodations, which could reduce our margins or adversely affect our revenue and operating results if such practices become widespread or prolonged. Due to our subscription-focused business model, any impact of the current macroeconomic environment and supply chain constraints on our business may not be fully reflected in our results of operations until future …”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 7 banks, 5 of 45 earnings-call / 29 conference companies covered, 11 exchanges — [[GLW/_thesis|GLW]], [[GWRE/_thesis|GWRE]], [[HPE/_thesis|HPE]], [[PANW/_thesis|PANW]], [[ZS/_thesis|ZS]].
-**Disclosed (MD&A):** 20 of 67 filers — [[AMBA/_thesis|AMBA]], [[AVGO/_thesis|AVGO]], [[CIEN/_thesis|CIEN]], [[CRDO/_thesis|CRDO]], [[CRWD/_thesis|CRWD]], [[CSCO/_thesis|CSCO]], [[GLW/_thesis|GLW]], [[HPE/_thesis|HPE]], [[HPQ/_thesis|HPQ]], [[LRCX/_thesis|LRCX]], [[MDB/_thesis|MDB]], [[NET/_thesis|NET]], [[NOW/_thesis|NOW]], [[NVDA/_thesis|NVDA]], [[PLTR/_thesis|PLTR]], [[PWR/_thesis|PWR]], [[RBRK/_thesis|RBRK]], [[SNOW/_thesis|SNOW]], [[STX/_thesis|STX]], [[ZS/_thesis|ZS]]; corprep speech at 20 companies.
-**Gap (§6.2):** 20 disclosing / 5 asked.
+**Asked:** 7 banks, 5 of 50 earnings-call / 34 conference companies covered, 11 exchanges — [[GLW/_thesis|GLW]], [[GWRE/_thesis|GWRE]], [[HPE/_thesis|HPE]], [[PANW/_thesis|PANW]], [[ZS/_thesis|ZS]].
+**Disclosed (MD&A):** 21 of 69 filers — [[AMBA/_thesis|AMBA]], [[AVGO/_thesis|AVGO]], [[CIEN/_thesis|CIEN]], [[CRDO/_thesis|CRDO]], [[CRWD/_thesis|CRWD]], [[CSCO/_thesis|CSCO]], [[GLW/_thesis|GLW]], [[HPE/_thesis|HPE]], [[HPQ/_thesis|HPQ]], [[LRCX/_thesis|LRCX]], [[MDB/_thesis|MDB]], [[NET/_thesis|NET]], [[NOW/_thesis|NOW]], [[NVDA/_thesis|NVDA]], [[PANW/_thesis|PANW]], [[PLTR/_thesis|PLTR]], [[PWR/_thesis|PWR]], [[RBRK/_thesis|RBRK]], [[SNOW/_thesis|SNOW]], [[STX/_thesis|STX]], [[ZS/_thesis|ZS]]; corprep speech at 25 companies.
+**Gap (§6.2):** 21 disclosing / 5 asked.
 **Banks:** Bank of America Merrill Lynch, JPMorgan Securities LLC, Morgan Stanley & Co. LLC, Oppenheimer & Co., Inc., Piper Sandler & Co., Robert W. Baird & Co., Inc., Wells Fargo Securities LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[GWRE/_thesis|GWRE]] 2026-09-03 — Alexei Mihaylovich Gogolev (JPMorgan Securities LLC), Q4 2026 Earnings Call: “Hello, everyone. Thank you for letting me ask a question. And first of all, I wanted to ask about the ARR dynamics. So FX adjusted ARR came in at the top end of your guide. Can you break down the key drivers of 4Q in net new ARR performance and talk about what was the most different versus your internal expectations entering the quarter, things like new deals versus backlog conversion and true-ups? And then maybe if there are any sizable deals that closed in August that you were positively surprised with?”

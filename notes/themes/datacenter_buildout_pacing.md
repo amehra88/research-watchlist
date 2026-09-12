@@ -21,12 +21,13 @@ tickers:
 - GEV
 - LITE
 - MRVL
+- NBIS
 - SEI
 affects: []
 first_evidence_date: '2026-02-09'
 first_question_date: '2025-11-11'
 lag_days: -90
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -76,18 +77,18 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[SEI/_thesis|SEI]] 10-Q filed 2026-05-01: “On February 12, 2026, we entered into a Master Equipment Rental Agreement (the “Hatchbo Agreement”) with Hatchbo, LLC (“Hatchbo”) to provide over 500 megawatts (“MW”) of power generation equipment to support Hatchbo’s power demand for artificial intelligence computing needs at its data center. Hatchbo is an affiliate of an investment grade, global technology company and industry leader in the evolving artificial intelligence space. The Hatchbo Agreement has an initial term of 10 years, with an option to extend an additional 5 years, beginning in the first quarter of 2027.”
 - [[SEI/_thesis|SEI]] 10-Q filed 2026-05-01: “On April 24, 2026, we entered into an agreement with a new customer to provide over 600 MW of power capacity, including balance of plant equipment beyond emissions control, to support the customer’s power demand for artificial intelligence computing needs at its data center. The new customer is an affiliate of an investment grade, global technology company in the evolving artificial intelligence space. For additional information on the agreement, refer to Note 19.“Subsequent Events” in the notes to our consolidated financial statements.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 13 banks, 9 of 45 earnings-call / 29 conference companies covered, 20 exchanges — [[AMZN/_thesis|AMZN]], [[AVGO/_thesis|AVGO]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[DOCN/_thesis|DOCN]], [[FN/_thesis|FN]], [[FRVO/_thesis|FRVO]], [[GDS/_thesis|GDS]], [[GEV/_thesis|GEV]].
-**Disclosed (MD&A):** 1 of 67 filers — [[SEI/_thesis|SEI]]; corprep speech at 14 companies.
-**Gap (§6.2):** 1 disclosing / 9 asked.
-**Banks:** Bernstein Institutional Services LLC, BofA Securities, Inc., Cantor Fitzgerald & Co., Citigroup Global Markets, Inc., Deutsche Bank Securities, Inc., Evercore ISI, Goldman Sachs (Singapore) Pte., KeyBanc Capital Markets, Inc., Mizuho Securities USA LLC, Morgan Stanley Asia Ltd., Robert W. Baird & Co., Inc., TD Cowen, Wolfe Research LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+**Asked:** 14 banks, 10 of 50 earnings-call / 34 conference companies covered, 24 exchanges — [[AMZN/_thesis|AMZN]], [[AVGO/_thesis|AVGO]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[DOCN/_thesis|DOCN]], [[FN/_thesis|FN]], [[FRVO/_thesis|FRVO]], [[GDS/_thesis|GDS]], [[GEV/_thesis|GEV]], [[NBIS/_thesis|NBIS]].
+**Disclosed (MD&A):** 1 of 69 filers — [[SEI/_thesis|SEI]]; corprep speech at 17 companies.
+**Gap (§6.2):** 1 disclosing / 10 asked.
+**Banks:** Analyst, Citigroup, Bernstein Institutional Services LLC, BofA Securities, Inc., Cantor Fitzgerald & Co., Citigroup Global Markets, Inc., Deutsche Bank Securities, Inc., Evercore ISI, Goldman Sachs (Singapore) Pte., KeyBanc Capital Markets, Inc., Mizuho Securities USA LLC, Morgan Stanley Asia Ltd., Robert W. Baird & Co., Inc., TD Cowen, Wolfe Research LLC.
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[FRVO/_thesis|FRVO]] 2026-08-12 — Benjamin Joseph Kallo (Robert W. Baird & Co., Inc.), Q2 2026 Earnings Call: “Okay, great. Just going to behind-the-meter. Could you talk to us kind of the mechanics? And you mentioned that there's a discussion about higher costs. So how would we expect like a data center development to the timeline to occur with your timeline of build out? So like, would a data center start construction before you're completed with the power plant or after? And then would you provide the auxiliary equipment needed or even additional generation or stationary storage as part of that deal? Just maybe describe a little bit more how we should expect that to evolve.”
 - [[CRWV/_thesis|CRWV]] 2026-08-11 — Irvin Liu (Evercore ISI), Q2 2026 Earnings Call: “Okay. Got it, got it. Thank you for that. And then, for my follow-up, I think the regulatory backdrop for data centers appears to be increasingly difficult, there have been reports of local opposition to data centers. With this in mind, can you talk about your confidence level in deploying more than 3 gigawatts of active power by the end of next year, and kind of your roadmap to 8 gigawatts by the end of the decade?”
-- [[AVGO/_thesis|AVGO]] 2026-09-02 — Joshua Buchalter (TD Cowen), Q3 2026 Earnings Call: “Hey, guys. Thank you for taking my question. With XPV, I think you have $35 billion of the financing secured. As we think about the 10 gigawatts for Anthropic and the 5 gigawatts for OpenAI in fiscal 2028, are you expecting most or all of this to be financed through the XPV? And can you give us sort of any help on the timeline and hurdles required to secure financing as we look forward to those deployments getting secured? Thank you.”
+- [[NBIS/_thesis|NBIS]] 2026-09-09 — Tyler Radke (Analyst, Citigroup), Citi Global TMT Conference: “And when we build our own sites, actually, we do it from the beginning. We just recently realized that other people don't do it, didn't do it here in the US all the big constructions of is in US where under India is. Nobody could guess who's building. We always have come to the site openly, like a developer company would say, build a booth where we show the project. We invite community people to discuss what we're building. We have our educational programs for the communities and we employ local unions for to build it. We try to be open and friendly, but again, this is real life, real people, …”
 
 **MD&A (added this quarter, lower-confidence mapping):**
 - [[SEI/_thesis|SEI]] 10-Q filed 2026-08-06: “artificial intelligence computing needs at its data center. In July 2026, we signed additional agreements which expand the scope of the original contract to now include additional balance of plant and energy storage assets as well as management of natural gas on a cost-plus basis. The new customer is an affiliate of an investment grade, global technology company in the evolving artificial intelligence space. The agreement provides for an initial rental term of ten years, with an option to extend for an additional five years. Deployments are scheduled to commence in late 2026 and scale through …”

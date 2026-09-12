@@ -8,11 +8,11 @@ written_by: scripts/topics/theme_notes.py
 
 Themes where this name has been asked or has disclosed (spec §7.1). Machine-written; edit the theme notes' operator sections, not this index.
 
-- [[themes/automotive_semiconductor_demand|automotive_semiconductor_demand]] — stage 2 · open 266d
-- [[themes/capex_vs_opex_shift|capex_vs_opex_shift]] — stage 2 · open 266d
-- [[themes/china_export_controls|china_export_controls]] — stage 2 · open 266d
-- [[themes/software_seat_pricing_pressure|software_seat_pricing_pressure]] — stage 2 · open 266d
-- [[themes/solar_supply_chain|solar_supply_chain]] — stage 2 · open 0d
+- [[themes/automotive_semiconductor_demand|automotive_semiconductor_demand]] — stage 2 · open 268d
+- [[themes/capex_vs_opex_shift|capex_vs_opex_shift]] — stage 2 · open 268d
+- [[themes/china_export_controls|china_export_controls]] — stage 2 · open 268d
+- [[themes/software_seat_pricing_pressure|software_seat_pricing_pressure]] — stage 2 · open 268d
+- [[themes/solar_supply_chain|solar_supply_chain]] — stage 2 · open 2d
 - [[themes/ai_compute_topology|ai_compute_topology]] — stage 4
 - [[themes/ai_inference_margin_compression|ai_inference_margin_compression]] — stage 4
 - [[themes/ai_infrastructure_software|ai_infrastructure_software]] — stage 4

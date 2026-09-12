@@ -22,7 +22,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2025-11-13'
 lag_days: null
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -64,13 +64,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[AMAT/_thesis|AMAT]] 2026-06-02 — Vivek Arya (Bank of America), Bank of America Global Technology Conference: “Got you. You mentioned DRAM as many investors are very happy to see, right, the strong performance of DRAM and a lot of memory stocks. But there is also kind of this lingering concern that how much of this is, right, cyclical. And so, just theoretically, let's say if DRAM prices go down next year, do you think customers will be as motivated to add capacity? Or will they want to protect pricing? What has happened historically?”
 - [[LRCX/_thesis|LRCX]] 2026-04-22 — Vijay Raghavan Rakesh (Mizuho Securities USA LLC), Q3 2026 Earnings Call: “Got it. And just on the follow-up on HBF. I mean, are you seeing both SanDisk and Hynix talking about it, I guess. But outside of that, when you look at high-bandwidth flash, are you seeing investments or CapEx picking up there? Is that something you're seeing into 2027? How would you look at the ramp? Thanks.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 16 banks, 9 of 45 earnings-call / 29 conference companies covered, 27 exchanges — [[000660.KS/_thesis|000660.KS]], [[005930.KS/_thesis|005930.KS]], [[AAPL/_thesis|AAPL]], [[AMAT/_thesis|AMAT]], [[ASML/_thesis|ASML]], [[ENTG/_thesis|ENTG]], [[HPQ/_thesis|HPQ]], [[LRCX/_thesis|LRCX]], [[STX/_thesis|STX]].
-**Disclosed (MD&A):** 0 of 67 filers; corprep speech at 6 companies.
+**Asked:** 16 banks, 9 of 50 earnings-call / 34 conference companies covered, 29 exchanges — [[000660.KS/_thesis|000660.KS]], [[005930.KS/_thesis|005930.KS]], [[AAPL/_thesis|AAPL]], [[AMAT/_thesis|AMAT]], [[ASML/_thesis|ASML]], [[ENTG/_thesis|ENTG]], [[HPQ/_thesis|HPQ]], [[LRCX/_thesis|LRCX]], [[STX/_thesis|STX]].
+**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 6 companies.
 **Gap (§6.2):** 0 disclosing / 9 asked.
 **Banks:** BofA Securities, Inc., Cantor Fitzgerald & Co., Citigroup Global Markets, Inc., Daiwa Securities Capital Markets Korea Co., Ltd., Hana Securities Co., Ltd., JPMorgan Securities Far East Ltd. (South Korea), Joh. Berenberg, Gossler & Co. KG (United Kingdom), Korea Investment & Securities Co., Ltd., Meritz Securities Co., Ltd., Mizuho Securities USA LLC, ODDO BHF SCA, SK Securities Co., Ltd., The HongKong & Shanghai Banking Corp. Ltd. (South Korea), UBS Securities Pte Ltd., Wells Fargo Securities LLC, Wolfe Research LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[LRCX/_thesis|LRCX]] 2026-09-09 — Atif Malik (Citigroup Global Markets, Inc.), Citi Global TMT Conference: “(00:25:40) Micron, I was at a conference in August, made this statement that 2027 would be tighter than 2026. Is that an industry-wide belief? And I look at some of the industry forecasts for CapEx, it was for DRAM, $68 billion last year, going to over $100 billion this year. What does it take for DRAM memory in general to get into supply-demand balance?”

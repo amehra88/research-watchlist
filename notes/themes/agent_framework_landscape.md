@@ -9,6 +9,7 @@ tickers:
 - DASH
 - DDOG
 - DOCN
+- MDB
 - META
 - MSFT
 - NXPI
@@ -21,7 +22,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2025-12-02'
 lag_days: null
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -63,13 +64,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[META/_thesis|META]] 2026-04-29 — Ross Sandler (Barclays Capital, Inc.), Q1 2026 Earnings Call: “Yeah. Mark, just sort of related to that last answer, but there's a lot of new consumer applications kind of cropping up everything from like an OpenClaw to something a little bit more consumer-friendly that you would build for your mom, like you said, with like Poke (00:43:41) or Dreamer, which you recently acquired. So, how are these new ideas, I guess, changing your view around the direction that core Meta AI or Dreamer or kind of your overall Agentic strategy needs to go? And then the second part of it would be, do you think the lab will stay in this consumer lane? Or do you think you …”
 - [[MSFT/_thesis|MSFT]] 2026-06-02 — Kirk Materne (Evercore Group LLC), Evercore TMT Conference: “And maybe just to maybe step back or take a step back, just in terms of where we are with most enterprises in terms of the agentic road map, meaning, I think we've all seen that certain use cases and developers, customer service, obviously there's been some pretty straightforward and good wins for AI in those areas. But where's your average customer right now? Are they trying to figure out identity management for agents? Are they doing it in sort of a departmental level approach? Just kind of level set because I think we all have a view of where agentic can go, but I think where it is today …”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 1 banks, 5 of 45 earnings-call / 29 conference companies covered, 8 exchanges — [[CRWD/_thesis|CRWD]], [[DDOG/_thesis|DDOG]], [[DOCN/_thesis|DOCN]], [[NXPI/_thesis|NXPI]], [[ZS/_thesis|ZS]].
-**Disclosed (MD&A):** 0 of 67 filers; corprep speech at 19 companies.
-**Gap (§6.2):** 0 disclosing / 5 asked.
+**Asked:** 1 banks, 6 of 50 earnings-call / 34 conference companies covered, 9 exchanges — [[CRWD/_thesis|CRWD]], [[DDOG/_thesis|DDOG]], [[DOCN/_thesis|DOCN]], [[MDB/_thesis|MDB]], [[NXPI/_thesis|NXPI]], [[ZS/_thesis|ZS]].
+**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 20 companies.
+**Gap (§6.2):** 0 disclosing / 6 asked.
 **Banks:** JPMorgan Securities LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[ZS/_thesis|ZS]] 2026-09-09 — Gabriela Borges (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “Your point on patching doesn't solve the problem, I would love to use it as an opportunity to ask you about frontier models. And Adam, this one's probably for you. What do you think the role is of a frontier model in security? Where do you think the swim lanes ultimately converge versus stay separate?”

@@ -18,6 +18,7 @@ tickers:
 - GEV
 - GLW
 - MTRN
+- NBIS
 - PWR
 - SEI
 - TSLA
@@ -26,7 +27,7 @@ affects:
 first_evidence_date: '2026-02-09'
 first_question_date: '2025-12-01'
 lag_days: -70
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -76,13 +77,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[BE/_thesis|BE]] 10-Q filed 2026-04-29: “Bloom Energy is a global leader in onsite power generation, delivering a foundational platform purpose-built for the digital era and the global energy transition. We manufacture a versatile fuel cell energy platform, supporting the commercial availability of two primary products: the Bloom Energy Server® fuel cell system for generating electricity and the Bloom Electrolyzer™ for producing hydrogen. Our primary product, the Bloom Energy Server is a proprietary high-temperature solid-oxide fuel cell technology that converts fuels—including natural gas, biogas, and hydrogen—into electricity at …”
 - [[SEI/_thesis|SEI]] 10-Q filed 2026-05-01: “On March 13, 2026, we acquired all contractual rights to receive 30 NovaLT16 gas turbine generator units (the “NovaLT16 Turbine Acquisition”) from Baker Hughes Energy Services LLC under an existing turbine supply contract. The units are scheduled to be delivered between September 2026 and September 2029, providing approximately 500 MW of incremental power generation capacity between early 2027 and 2029. See Note 17. “Commitments and Contingencies” in the notes to our condensed consolidated financial statements.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 14 banks, 8 of 45 earnings-call / 29 conference companies covered, 28 exchanges — [[BE/_thesis|BE]], [[CIEN/_thesis|CIEN]], [[CRWV/_thesis|CRWV]], [[DOCN/_thesis|DOCN]], [[FRVO/_thesis|FRVO]], [[GDS/_thesis|GDS]], [[GEV/_thesis|GEV]], [[GLW/_thesis|GLW]].
-**Disclosed (MD&A):** 4 of 67 filers — [[BE/_thesis|BE]], [[PWR/_thesis|PWR]], [[SEI/_thesis|SEI]], [[TSLA/_thesis|TSLA]]; corprep speech at 9 companies.
-**Gap (§6.2):** 4 disclosing / 8 asked.
-**Banks:** Barclays Capital, Inc., Bernstein Institutional Services LLC, BofA Securities, Inc., Cantor Fitzgerald & Co., Citigroup Global Markets, Inc., Deutsche Bank Securities, Inc., Jefferies Hong Kong Ltd., Jefferies LLC, KeyBanc Capital Markets, Inc., Morgan Stanley & Co. LLC, Piper Sandler & Co., RBC Capital Markets LLC, Robert W. Baird & Co., Inc., Wolfe Research LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+**Asked:** 15 banks, 9 of 50 earnings-call / 34 conference companies covered, 30 exchanges — [[BE/_thesis|BE]], [[CIEN/_thesis|CIEN]], [[CRWV/_thesis|CRWV]], [[DOCN/_thesis|DOCN]], [[FRVO/_thesis|FRVO]], [[GDS/_thesis|GDS]], [[GEV/_thesis|GEV]], [[GLW/_thesis|GLW]], [[NBIS/_thesis|NBIS]].
+**Disclosed (MD&A):** 4 of 69 filers — [[BE/_thesis|BE]], [[PWR/_thesis|PWR]], [[SEI/_thesis|SEI]], [[TSLA/_thesis|TSLA]]; corprep speech at 10 companies.
+**Gap (§6.2):** 4 disclosing / 9 asked.
+**Banks:** Analyst, Citigroup, Barclays Capital, Inc., Bernstein Institutional Services LLC, BofA Securities, Inc., Cantor Fitzgerald & Co., Citigroup Global Markets, Inc., Deutsche Bank Securities, Inc., Jefferies Hong Kong Ltd., Jefferies LLC, KeyBanc Capital Markets, Inc., Morgan Stanley & Co. LLC, Piper Sandler & Co., RBC Capital Markets LLC, Robert W. Baird & Co., Inc., Wolfe Research LLC.
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[FRVO/_thesis|FRVO]] 2026-08-12 — Sunaina Ocalan (Bernstein Institutional Services LLC), Q2 2026 Earnings Call: “Okay. That's great. Thanks. And just one more follow-up. On slide 5, this is your current view of like the 50% data center and hyperscalers, 15% large C&I, et cetera, right? So do you have an internal view that you're working with in terms of like how big the behind-the-meter can be? And is that changing over time? Is this essentially, is that 50% essentially just addressing a constrained grid right now? Any color on what you're expecting that to be over the next few years?”

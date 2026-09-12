@@ -5,6 +5,7 @@ status: approved
 stage: 4
 tickers:
 - AAOI
+- ADI
 - ANET
 - AVGO
 - CIEN
@@ -26,7 +27,7 @@ affects:
 first_evidence_date: '2026-02-04'
 first_question_date: '2025-12-02'
 lag_days: -64
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -79,13 +80,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[CIEN/_thesis|CIEN]] 10-Q filed 2026-06-04: “• Routing and Switching products revenue increased by $81.5 million, primarily driven by increases in sales of our 3000 and 5000 series of service delivery and aggregation platforms, and our 8100 Coherent IP networking platforms in our out-of-band data center management (DCOM) solution.”
 - [[LITE/_thesis|LITE]] 10-Q filed 2026-05-06: “The increase in Components products was primarily driven by the ramp of laser chip and laser assembly product shipments to support strong, broad-based demand across intra-data center, data center interconnect, and long-haul applications. Additionally, a slight increase in average selling prices of laser chip products contributed to the increase in Components revenue driven primarily by a shift to 200G lane speeds. The remaining approximately 19% of Components revenue growth was due to an increase in shipment volume of data transport products, encompassing line subsystems solutions for …”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 13 banks, 10 of 45 earnings-call / 29 conference companies covered, 38 exchanges — [[AAOI/_thesis|AAOI]], [[ANET/_thesis|ANET]], [[CIEN/_thesis|CIEN]], [[COHR/_thesis|COHR]], [[CRDO/_thesis|CRDO]], [[CSCO/_thesis|CSCO]], [[FN/_thesis|FN]], [[GLW/_thesis|GLW]], [[HPE/_thesis|HPE]], [[LITE/_thesis|LITE]].
-**Disclosed (MD&A):** 3 of 67 filers — [[AAOI/_thesis|AAOI]], [[CIEN/_thesis|CIEN]], [[LITE/_thesis|LITE]]; corprep speech at 12 companies.
-**Gap (§6.2):** 3 disclosing / 10 asked.
-**Banks:** BNP Paribas Securities Corp., Barclays Capital, Inc., Citigroup Global Markets, Inc., Evercore ISI, JPMorgan Securities LLC, Jefferies LLC, Mizuho Securities USA LLC, Needham & Co. LLC, Northland Securities, Inc., Piper Sandler & Co., Raymond James, Susquehanna Financial Group LLLP, Wolfe Research LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+**Asked:** 14 banks, 11 of 50 earnings-call / 34 conference companies covered, 41 exchanges — [[AAOI/_thesis|AAOI]], [[ADI/_thesis|ADI]], [[ANET/_thesis|ANET]], [[CIEN/_thesis|CIEN]], [[COHR/_thesis|COHR]], [[CRDO/_thesis|CRDO]], [[CSCO/_thesis|CSCO]], [[FN/_thesis|FN]], [[GLW/_thesis|GLW]], [[HPE/_thesis|HPE]], [[LITE/_thesis|LITE]].
+**Disclosed (MD&A):** 3 of 69 filers — [[AAOI/_thesis|AAOI]], [[CIEN/_thesis|CIEN]], [[LITE/_thesis|LITE]]; corprep speech at 12 companies.
+**Gap (§6.2):** 3 disclosing / 11 asked.
+**Banks:** BNP Paribas Securities Corp., Barclays Capital, Inc., Bernstein Institutional Services LLC, Citigroup Global Markets, Inc., Evercore ISI, JPMorgan Securities LLC, Jefferies LLC, Mizuho Securities USA LLC, Needham & Co. LLC, Northland Securities, Inc., Piper Sandler & Co., Raymond James, Susquehanna Financial Group LLLP, Wolfe Research LLC.
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[LITE/_thesis|LITE]] 2026-08-11 — Vijay Raghavan Rakesh (Mizuho Securities USA LLC), Q4 2026 Earnings Call: “Yeah, hi Michael and Wajid. Good quarter and guide here. Just a quick question on the 200-gig per lane EML and CW, looks like that's ramping very nicely. Is it fair to assume both the 200-gig EML and CW laser should be accretive to your margins? And when do you see this 1.6T crossover? It looks like it's already greater than 25% revenues, but when do you see that crossing over with the 800-gig? And I have a follow-up.”

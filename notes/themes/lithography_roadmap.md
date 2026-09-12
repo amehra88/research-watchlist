@@ -28,7 +28,7 @@ affects:
 first_evidence_date: '2025-12-12'
 first_question_date: '2025-11-13'
 lag_days: -29
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -82,13 +82,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[AMAT/_thesis|AMAT]] 10-Q filed 2026-05-21: “Our results are driven primarily by customer spending on capital equipment and services to support key technology transitions or changes in production volume in response to worldwide demand for semiconductors.”
 - [[PLAB/_thesis|PLAB]] 10-Q filed 2026-06-11: “required to manufacture even more complex products, including photomasks with advanced optical proximity correction, insertion of curvilinear patterning and EUV photomasks. Additionally, demand for photomasks has been, and could in the future”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 24 banks, 9 of 45 earnings-call / 29 conference companies covered, 54 exchanges — [[AMAT/_thesis|AMAT]], [[ASML/_thesis|ASML]], [[ENTG/_thesis|ENTG]], [[GLW/_thesis|GLW]], [[INTC/_thesis|INTC]], [[LRCX/_thesis|LRCX]], [[MTRN/_thesis|MTRN]], [[NVMI/_thesis|NVMI]], [[TSM/_thesis|TSM]].
-**Disclosed (MD&A):** 1 of 67 filers — [[LRCX/_thesis|LRCX]]; corprep speech at 12 companies.
-**Gap (§6.2):** 1 disclosing / 9 asked.
-**Banks:** Bank of America, Citigroup Global Markets Canada, Inc., Citigroup Global Markets, Inc., Deutsche Bank AG (UK), Deutsche Bank Securities, Inc., Goldman Sachs & Co. LLC, Goldman Sachs (Asia) LLC (Taiwan), JPMorgan Securities LLC, Jefferies LLC, Joh. Berenberg, Gossler & Co. KG (United Kingdom), Melius Research LLC, Morgan Stanley & Co. International Plc, Morgan Stanley Taiwan Ltd., Needham & Co. LLC, ODDO BHF SCA, RBC Capital Markets LLC, Seaport Research Partners, Susquehanna International Group, TD Cowen, UBS AG (London Branch), UBS Securities LLC, UBS Securities Pte Ltd. (Taiwan), Wells Fargo Securities LLC, Wolfe Research LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+**Asked:** 26 banks, 9 of 50 earnings-call / 34 conference companies covered, 62 exchanges — [[AMAT/_thesis|AMAT]], [[ASML/_thesis|ASML]], [[ENTG/_thesis|ENTG]], [[GLW/_thesis|GLW]], [[INTC/_thesis|INTC]], [[LRCX/_thesis|LRCX]], [[MTRN/_thesis|MTRN]], [[NVMI/_thesis|NVMI]], [[TSM/_thesis|TSM]].
+**Disclosed (MD&A):** 2 of 69 filers — [[LRCX/_thesis|LRCX]], [[PLAB/_thesis|PLAB]]; corprep speech at 14 companies.
+**Gap (§6.2):** 2 disclosing / 9 asked.
+**Banks:** Bank of America, Cantor Fitzgerald & Co., Citigroup Global Markets Canada, Inc., Citigroup Global Markets, Inc., Deutsche Bank AG (UK), Deutsche Bank Securities, Inc., Goldman Sachs & Co. LLC, Goldman Sachs (Asia) LLC (Taiwan), JPMorgan Securities LLC, Jefferies LLC, Joh. Berenberg, Gossler & Co. KG (United Kingdom), Melius Research LLC, Morgan Stanley & Co. International Plc, Morgan Stanley Taiwan Ltd., Needham & Co. LLC, ODDO BHF SCA, RBC Capital Markets LLC, Seaport Research Partners, Susquehanna Financial Group LLLP, Susquehanna International Group, TD Cowen, UBS AG (London Branch), UBS Securities LLC, UBS Securities Pte Ltd. (Taiwan), Wells Fargo Securities LLC, Wolfe Research LLC.
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[ASML/_thesis|ASML]] 2026-07-15 — Chris Caso (Wolfe Research LLC), Q2 2026 Earnings Call: “Thank you. As a follow-up, I have a question on pricing and a clarification from some of your prior comments. And I think you were very clear about the mix effect of Low NA EUV on the higher-throughput tools where you get higher proportionally higher ASPs. Is there also any potential for higher ASPs on a like-for-like basis? And the reason why I ask is because you are taking steps to add capacity, you're rolling up your sleeves as you say. Would that potentially result in higher like-for-like ASPs as you increase your cost to do what the customers are asking?”
@@ -97,5 +97,5 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 
 **MD&A (added this quarter, lower-confidence mapping):**
 - [[LRCX/_thesis|LRCX]] 10-K filed 2026-08-07: “Wafer fabrication equipment investments were strong in the 2025 calendar year, and have continued to grow in 2026 with the AI market driving higher semiconductor industry spending across both the memory and non-memory market segments. In the short term, volatility in the semiconductor industry environment from trade restrictions, tariffs, as well as other direct and indirect risks and uncertainties discussed in Part I, Item 1A, “Risk Factors, ” have had, and in the future may have, a negative impact on our revenue and operating margin. Over the longer term, we believe that secular demand for …”
-- [[AMAT/_thesis|AMAT]] 10-Q filed 2026-08-20: “The Semiconductor Systems segment remained our largest revenue contributor for which revenue increased for the three and nine months ended July 26, 2026, compared to the same periods in the prior year. The increase in foundry and logic customers’ spending for the three and nine months ended July 26, 2026 reflected stronger demand for leading-edge manufacturing technologies. For the nine months ended July 26, 2026, this increase was partially offset by lower customer demand for trailing-edge logic systems. Memory customers’ spending in the three and nine months ended July 26, 2026 was higher …”
+- [[PLAB/_thesis|PLAB]] 10-Q filed 2026-09-10: “The global semiconductor and FPD industries are driven by end markets which have broad application in the global economy including but not limited to consumer-driven applications, data centers that support AI implementation, electric vehicles and national security. While we cannot predict the timing of the industry's transition to volume production of next-generation technology nodes, or the timing of up and down-cycles with precise accuracy, we believe that such transitions and cycles will continue into the future, beneficially and adversely affecting our business, financial condition, and …”
 

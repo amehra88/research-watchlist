@@ -24,7 +24,7 @@ affects:
 first_evidence_date: '2025-12-12'
 first_question_date: '2025-12-02'
 lag_days: -10
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -69,12 +69,12 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[ENTG/_thesis|ENTG]] 10-Q filed 2026-04-30: “us to adjust our supply chain and find alternative suppliers, and (iii) may result in manufacturing and delivery delays. In addition, foreign governments may apply rules of origin or other trade measures that treat products we manufacture outside the United States as U.S.-origin goods, potentially subjecting those products to retaliatory tariffs or other restrictions that increase costs for our customers and reduce demand for our products in those markets. As a result, we may face a reduction in the demand for, and in the competitiveness of, our products, including from increased local or …”
 - [[MRVL/_thesis|MRVL]] 10-Q filed 2026-05-28: “Most of our sales are made to customers with operations located outside of the United States, primarily in Asia, and a majority of our products are manufactured outside the United States. Sales shipped to customers with operations in Asia represented approximately 83% and 74% of our net revenue in the three months ended May 2, 2026 and May 3, 2025, respectively. Because many manufacturers and manufacturing subcontractors of our customers are located in Asia, we expect that most of our net revenue will continue to be represented by sales to our customers in that region. For risks related to …”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 0 banks, 2 of 45 earnings-call / 29 conference companies covered, 2 exchanges — [[AMAT/_thesis|AMAT]], [[NXPI/_thesis|NXPI]].
-**Disclosed (MD&A):** 2 of 67 filers — [[AMBA/_thesis|AMBA]], [[SNPS/_thesis|SNPS]]; corprep speech at 7 companies.
+**Asked:** 0 banks, 2 of 50 earnings-call / 34 conference companies covered, 2 exchanges — [[AMAT/_thesis|AMAT]], [[NXPI/_thesis|NXPI]].
+**Disclosed (MD&A):** 2 of 69 filers — [[AMBA/_thesis|AMBA]], [[SNPS/_thesis|SNPS]]; corprep speech at 9 companies.
 **Gap (§6.2):** 2 disclosing / 2 asked.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[AMAT/_thesis|AMAT]] 2026-09-09 — James Edward Schneider (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “Great. And then maybe last regional question on China, because this has been an area where there seems to be like a resurgence of CapEx on the part of those customers. But US export controls have obviously put a damper on how much of that market you can address. You've talked about that market now being expected to be up for you in 2026. Maybe help profile for us, how do you expect that level of structural growth in China for Applied and in light of all those kind of export controls you're subject to?”

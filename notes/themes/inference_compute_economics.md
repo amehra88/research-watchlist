@@ -4,6 +4,7 @@ theme: inference_compute_economics
 status: approved
 stage: 4
 tickers:
+- AMBA
 - AMD
 - AMZN
 - ANET
@@ -19,9 +20,12 @@ tickers:
 - INTC
 - LITE
 - LRCX
+- MDB
 - META
 - MRVL
 - MSFT
+- NBIS
+- NVDA
 affects:
 - AMD
 - AVGO
@@ -32,7 +36,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2025-12-02'
 lag_days: null
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -74,16 +78,16 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[LITE/_thesis|LITE]] 2026-06-09 — Vijay Raghavan Rakesh (Mizuho Securities USA LLC), Mizuho Global Technology Conference: “Got it. So, basically, connecting all the data centers, so they look like one big monolithic GPU.”
 - [[CBRS/_thesis|CBRS]] 2026-06-23 — Quinn Bolton (Needham & Co. LLC), Q1 2026 Earnings Call: “Thank you. Andrew, Bob, congratulations on your first call as a public company. Andrew, I wanted to follow up on the inference TAM question. Just obviously you guys are addressing the fast inference portion of the market, which you think can allows you to address the entire market. But your tokens may be more expensive. And so, just wondering if you could address the higher token cost for fast inference. How much of the market do you think is willing to pay a premium for fast inference? And then, I've got a follow up on the road map.”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 3 banks, 10 of 45 earnings-call / 29 conference companies covered, 23 exchanges — [[AMD/_thesis|AMD]], [[ANET/_thesis|ANET]], [[AVGO/_thesis|AVGO]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[DDOG/_thesis|DDOG]], [[DOCN/_thesis|DOCN]], [[GOOG/_thesis|GOOG]], [[LRCX/_thesis|LRCX]], [[META/_thesis|META]].
-**Disclosed (MD&A):** 0 of 67 filers; corprep speech at 18 companies.
-**Gap (§6.2):** 0 disclosing / 10 asked.
-**Banks:** Barclays Capital, Inc., Morgan Stanley & Co. LLC, Needham & Co. LLC.
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+**Asked:** 7 banks, 14 of 50 earnings-call / 34 conference companies covered, 33 exchanges — [[AMBA/_thesis|AMBA]], [[AMD/_thesis|AMD]], [[ANET/_thesis|ANET]], [[AVGO/_thesis|AVGO]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[DDOG/_thesis|DDOG]], [[DOCN/_thesis|DOCN]], [[GOOG/_thesis|GOOG]], [[LRCX/_thesis|LRCX]], [[MDB/_thesis|MDB]], [[META/_thesis|META]], [[NBIS/_thesis|NBIS]], [[NVDA/_thesis|NVDA]].
+**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 21 companies.
+**Gap (§6.2):** 0 disclosing / 14 asked.
+**Banks:** Analyst, Citigroup, Barclays Capital, Inc., Cantor Fitzgerald & Co., Jefferies LLC, Morgan Stanley & Co. LLC, Needham & Co. LLC, Rosenblatt Securities, Inc..
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[CRWV/_thesis|CRWV]] 2026-09-08 — Gabriela Borges (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “The next question I have for you is taking some of those performance decisions that have been made for training GPUs, and then extending that advantage to something like post-training and something like inference. Talk to us about why those decisions that optimize for training also give you a performance advantage for post-training or for inference?”
 - [[CBRS/_thesis|CBRS]] 2026-08-12 — Quinn Bolton (Needham & Co. LLC), Q2 2026 Earnings Call: “Does that remove the need for some of this disaggregated compute or heterogeneous inferencing that you're talking about? Or does that just make the entire throughput of the heterogeneous solutions just that much faster...”
-- [[AVGO/_thesis|AVGO]] 2026-09-08 — James Edward Schneider (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “Now, as the models get more efficient, more powerful, you talked about token cost coming down quite dramatically. What's your personal opinion about where the value greatest value is going to accrue across the AI stack, model layer, application layer, someplace else?”
+- [[DOCN/_thesis|DOCN]] 2026-09-10 — Mark Zhang (Citigroup Global Markets, Inc.), Citi Global TMT Conference: “Got you. Got you. That's terrific. And I think I think related to that question or to that, that thought, what do you see as the greatest torque here? I feel like you obviously mentioned a lot of just token consumption and pricing. Where do you see most of the torque. Was it going up the inferencing stack or selling more compute, core compute? What's sort of the thoughts?”
 

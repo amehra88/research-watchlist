@@ -8,7 +8,7 @@ written_by: scripts/topics/theme_notes.py
 
 Themes where this name has been asked or has disclosed (spec §7.1). Machine-written; edit the theme notes' operator sections, not this index.
 
-- [[themes/platform_take_rate|platform_take_rate]] — stage 2 · open 98d
+- [[themes/platform_take_rate|platform_take_rate]] — stage 2 · open 100d
 - [[themes/capex_vs_opex_shift|capex_vs_opex_shift]] — stage 3 · lag -93d
 - [[themes/software_seat_pricing_pressure|software_seat_pricing_pressure]] — stage 3 · lag -93d
 - [[themes/agent_framework_landscape|agent_framework_landscape]] — stage 4

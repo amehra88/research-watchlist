@@ -22,7 +22,7 @@ affects:
 first_evidence_date: '2026-01-29'
 first_question_date: '2026-01-28'
 lag_days: -1
-updated: '2026-09-10'
+updated: '2026-09-12'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2026-Q1
@@ -58,13 +58,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[META/_thesis|META]] 10-Q filed 2026-04-30: “Changes in foreign exchange rates had a favorable impact on our revenue in the three months ended March 31, 2026 compared to the same period in 2025. To calculate revenue on a constant currency basis, we translated revenue using the prior year's monthly exchange rates for our settlement or billing currencies other than the U.S. dollar. Using these constant rates for the three months ended March 31, 2026, our total revenue and advertising revenue would have been $54.56 billion and $53.29 billion, which were $1.75 billion and $1.73 billion lower than actual total revenue and advertising …”
 - [[RDDT/_thesis|RDDT]] 10-Q filed 2026-05-01: “Revenue for the three months ended March 31, 2026 increased by $271.1 million, or 69%, compared to the prior year period. The growth in revenue was due primarily to an increase in advertising revenue of $266.0 million, or 74%, as compared to the prior year period driven by an increase in impressions delivered and an increase in pricing. During the three months ended March 31, 2026, ad impressions delivered increased by approximately 32% compared to the prior year period driven in part by ad load optimization and improvements, including new ad placements, and by increases in the number of …”
 
-## CY2026-Q3 — in progress (as of 2026-09-10)
+## CY2026-Q3 — in progress (as of 2026-09-12)
 
-**Asked:** 3 banks, 3 of 45 earnings-call / 29 conference companies covered, 6 exchanges — [[DASH/_thesis|DASH]], [[GOOG/_thesis|GOOG]], [[RDDT/_thesis|RDDT]].
-**Disclosed (MD&A):** 5 of 67 filers — [[GOOG/_thesis|GOOG]], [[GOOGL/_thesis|GOOGL]], [[META/_thesis|META]], [[RDDT/_thesis|RDDT]], [[ROKU/_thesis|ROKU]]; corprep speech at 10 companies.
+**Asked:** 3 banks, 3 of 50 earnings-call / 34 conference companies covered, 6 exchanges — [[DASH/_thesis|DASH]], [[GOOG/_thesis|GOOG]], [[RDDT/_thesis|RDDT]].
+**Disclosed (MD&A):** 5 of 69 filers — [[GOOG/_thesis|GOOG]], [[GOOGL/_thesis|GOOGL]], [[META/_thesis|META]], [[RDDT/_thesis|RDDT]], [[ROKU/_thesis|ROKU]]; corprep speech at 14 companies.
 **Gap (§6.2):** 5 disclosing / 3 asked.
 **Banks:** Citigroup Global Markets, Inc., JPMorgan Securities LLC, Truist Securities, Inc..
-_Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT …._
+_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
 
 **Analyst questions (verbatim):**
 - [[GOOG/_thesis|GOOG]] 2026-07-22 — Ronald Josey (Citigroup Global Markets, Inc.), Q2 2026 Earnings Call: “Great. Thanks for taking the question. Maybe I'll switch topics somewhat and Philipp ask you a little bit more about monetization from a Search and YouTube perspective just given the greater signal we have with AI searches. And then you talked about YouTube's strength. Talk just a little bit more on how advertisers are leveraging the greater personalization and targeting that Google has to drive this ROAS. And a question we often get is Google is at size and scale, we're still growing 17%, any reasons what's driving that all-time high on searches. Thank you.”
