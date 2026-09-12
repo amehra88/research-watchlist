@@ -1,15 +1,18 @@
-## Theme candidates — 2026-09-11
+## Theme candidates — 2026-09-12
 
 Anchors: 62 themes; threshold 0.3 (by source: {'default': 0.3, 'exchange': 0.3, 'mdna': 0.4}) (held-out P 0.302 / R 0.38 on 1725 labelled chunks).
-Coverage: question register: 1453/3535 mapped (41%); evidence register: 6112/13666 mapped (45%); by source: exchange source: 5936/11881 mapped (50%), mdna source: 1629/5320 mapped (31%); 5387 rows skipped (operator/untyped speakers, acknowledgements, housekeeping).
+Coverage: question register: 1521/3757 mapped (40%); evidence register: 6326/14232 mapped (44%); by source: exchange source: 6218/12669 mapped (49%), mdna source: 1629/5320 mapped (31%); 5771 rows skipped (operator/untyped speakers, acknowledgements, housekeeping).
 A unit maps when its cosine to a theme centroid clears the threshold; the rest are clustered and only clusters with >= 3 companies and >= 2 banks are listed. The system never edits `config/watchlist.yaml` — accept with `topic_map.py --accept <id> --name <slug>`, reject with `--reject <id>`.
 
-### Pending candidates (2 of 41; 0 evidence-only listed below)
+### Pending candidates (5 of 46; 3 evidence-only listed below)
 
 | id | suggested | n_banks | n_companies | n_exch | first_seen | tickers | phrases |
 |---|---|---|---|---|---|---|---|
-| `cand:3355431-t_3355431-t_qna_28_0` | china_margin_disconnect | 4 | 3 | 4 | 2025-12-02 | AMAT, ASML, LRCX | gross margin; china; margins; follow-up; july |
+| `cand:3355431-t_3355431-t_qna_28_0` | china_margin_disconnect | 4 | 4 | 5 | 2025-12-02 | ADI, AMAT, ASML, LRCX | gross margins; strong gross margin; china; step-up; follow-up |
+| `cand:3413799-t_3413799-t_qna_52_0` | leverage_target_optimization | 3 | 3 | 4 | 2026-03-03 | COHR, GEV, STX | balance sheet; allocation opportunities chances; chances optimize balance; getting leverage target; leverage target level |
+| `cand:3375096-t_qna_94_0` | consensus_gap | 3 | 3 | 3 | 2026-01-13 | CIEN, GEV, LRCX | investors |
 | `cand:3405694-t_qna_62_0` | sales_cycle_lengthening | 3 | 3 | 3 | 2026-03-05 | AXON, GWRE, HNGE | pipeline; longer; half; driving; sales |
+| `cand:3513821-t_qna_56_0` | 2027_growth_inflection | 3 | 3 | 3 | 2026-08-13 | AMAT, AMBA, IRTC | growth; revenue |
 
 #### `cand:3355431-t_3355431-t_qna_28_0` — china_margin_disconnect
 _Analysts probing whether margin strength reflects operational leverage or stems from geographic mix shift reducing China exposure._
@@ -18,6 +21,20 @@ Banks: Cantor Fitzgerald & Co., JPMorgan Securities LLC, UBS Securities LLC, Wol
 - **ASML 2026-01-28** (Wolfe Research LLC): My follow-up question is with regard to gross margins, and you spoke about that a bit. But perhaps you could clarify what are the headwinds and tailwinds with respect to gross margin for this year. I presume that China is one factor. But what are the factors that cause you to be 
 - **AMAT 2026-05-14** (Cantor Fitzgerald & Co.): As a quick follow-up, just on the gross margin side, great guide with, I'm assuming, depressed China. How should we think about gross margins beyond the July quarter, particularly as it appears as silicon will continue to grow sequentially well into 2027 and beyond?
 
+#### `cand:3413799-t_3413799-t_qna_52_0` — leverage_target_optimization
+_Analysts probing capital allocation priorities as companies optimize balance sheet positioning and deploy cash generation toward target leverage levels._
+Banks: BofA Securities, Inc., Goldman Sachs & Co. LLC, Morgan Stanley & Co. LLC
+- **COHR 2026-03-03** (Morgan Stanley & Co. LLC): So, just how are you thinking about capital allocation opportunities and just chances to optimize balance sheet? You mentioned kind of getting leverage below kind of target level.
+- **COHR 2026-03-03** (Morgan Stanley & Co. LLC): So, just how are you thinking about capital allocation opportunities and just chances to optimize balance sheet? You mentioned kind of getting leverage below kind of target level.
+- **GEV 2026-03-18** (BofA Securities, Inc.): And maybe in the remaining minutes, just shift to capital allocation. As I said, we were discussing where you were two years ago and where you are right now. Maybe just, you're going to be very cash generative. Maybe you can talk about across organic and inorganic shareholder ret
+
+#### `cand:3375096-t_qna_94_0` — consensus_gap
+_Executives identify where investor expectations diverge from business reality, flagging potential repricing catalysts or surprise risks._
+Banks: Bernstein, Goldman Sachs & Co. LLC, Needham & Co. LLC
+- **CIEN 2026-01-13** (Needham & Co. LLC): Any last thoughts in terms of questions you heard today? What do you think investors are not getting exactly right and asking a lot of questions about it?
+- **GEV 2026-05-27** (Bernstein): We're coming up on time, so I like this question. What is the biggest misconception about the business? What do people get wrong most often? What do you want to adjust with current market consensus about the business?
+- **LRCX 2026-09-10** (Goldman Sachs & Co. LLC): Maybe a real final question for you then. If we're back on stage here again in five years, let's say, or three years. What do you think would be the thing that, looking back, investors might be most surprised about?
+
 #### `cand:3405694-t_qna_62_0` — sales_cycle_lengthening
 _Pipelines are building strongly but conversions are back-half weighted, indicating sales cycles are extending as enterprise deal sizes and product complexity increase._
 Banks: Raymond James & Associates, Inc., WR Securities LLC, William Blair & Co. LLC
@@ -25,19 +42,35 @@ Banks: Raymond James & Associates, Inc., WR Securities LLC, William Blair & Co. 
 - **HNGE 2026-08-04** (Raymond James & Associates, Inc.): So I wanted to clarify on the selling season, it seems like this is the second year in a row where there's been really strong pipeline build, but the conversion is going to be back half weighted. Is that the new normal that we should expect? And do you think there's anything that
 - **AXON 2026-08-05** (WR Securities LLC): In the past, you've talked about longer sales cycles for AI and OSP bundles. With the bigger price tags on those. Are those cycles shortening now that the products have been in the market for longer periods of time, customers might be more familiar, more used to AI or are you kin
 
+#### `cand:3513821-t_qna_56_0` — 2027_growth_inflection
+_Analysts questioning whether 2027 revenue accelerates versus 2026's implied baseline, with Street modeling at 17% as a key variable._
+Banks: Citigroup Global Markets, Inc., Goldman Sachs & Co. LLC, Wells Fargo Securities LLC
+- **AMAT 2026-08-13** (Goldman Sachs & Co. LLC): And then just given the first half versus second half dynamic we're seeing in calendar 2026, is there any reason why in calendar 2027 you wouldn't see an accelerating growth rate for overall revenue? Is there anything you see on the horizon that would give you pause?
+- **AMBA 2026-09-09** (Citigroup Global Markets, Inc.): You've guided to a 10% to 15% revenue growth for fiscal 2027. How do you think about the growth drivers we've discussed today? What's going to drive upside, downside or the range of outcomes?
+- **IRTC 2026-09-09** (Wells Fargo Securities LLC): So we're in September. Investors are starting to think about 2027. Your full year 2026 guidance implies about 15% growth in Q4. Is that the right jumping-off point for 2027? I mean, Street is modeling 17% right now. Any framing you could put around that?
+
+### Evidence-only clusters (3) — executives say it, no analyst has asked (spec §6.3 stage 1)
+
+| id | suggested | n_companies | n_exch | first_seen | tickers | phrases |
+|---|---|---|---|---|---|---|
+| `cand:3502919-t_qna_12_0` | call_moderation | 3 | 9 | 2026-08-05 | AMAT, DASH, HPE | operator please |
+| `cand:3379000-t_md_5_0` | call_access_discipline | 3 | 4 | 2026-01-28 | ADI, AMAT, GEV | operator please; analysts ask people; ask everyone queue; ask people possible; consider fellow analysts |
+| `cand:3385303-t_qna_21_0` | ai_supply_tightness | 3 | 4 | 2026-02-19 | AMD, ANET, INDI | tightness; well-positioned; supply; feel; base |
+
 ### Decided
 - `cand:3362309-t_qna_18_0` accepted as `capacity_supply_tightness`
 - `cand:3363278-t_qna_60_0` accepted as `pricing_power_in_shortage`
 - `cand:3359603-t_3359603-t_qna_14_0` accepted as `capacity_supply_tightness`
-- `cand:3438469-t_qna_33_0` accepted as `server_cpu_agentic_tam`
 - `cand:3388411-t_qna_10_0` accepted as `neocloud_demand`
-- `cand:3354107-t_qna_41_0` accepted as `capacity_supply_tightness`
+- `cand:3438469-t_qna_33_0` accepted as `server_cpu_agentic_tam`
+- `cand:3433453-t_md_5_4` accepted as `physical_ai_adoption`
 - `cand:3328815-t_qna_49_0` accepted as `capacity_supply_tightness`
 - `cand:3335314-t_3335314-t_qna_33_0` accepted as `advanced_packaging_substrate_supply`
+- `cand:3354107-t_qna_41_0` accepted as `capacity_supply_tightness`
 - `cand:3453466-t_3453466-t_qna_68_1` rejected
 - `cand:3384162-t_qna_32_0` rejected
-- `cand:3433453-t_md_5_4` accepted as `physical_ai_adoption`
 - `cand:3381168-t_qna_36_0` rejected
+- `cand:3385303-t_qna_20_0` accepted as `capacity_supply_tightness`
 - `cand:3335314-t_3335314-t_qna_22_0` rejected
 - `cand:3374273-t_3374273-t_qna_72_0` accepted as `advanced_packaging_substrate_supply`
 - `cand:3489856-t_qna_53_0` rejected
@@ -49,19 +82,17 @@ Banks: Raymond James & Associates, Inc., WR Securities LLC, William Blair & Co. 
 - `cand:3355795-t_3355795-t_qna_27_0` accepted as `laser_architecture_competition`
 - `cand:3463943-t_qna_23_0` rejected
 - `cand:3384540-t_3384540-t_qna_28_0` rejected
-- `cand:3385303-t_qna_20_0` accepted as `capacity_supply_tightness`
 - `cand:3500983-t_qna_62_0` accepted as `pricing_power_in_shortage`
+- `cand:3384540-t_3384540-t_qna_29_1` accepted as `pricing_power_in_shortage`
+- `cand:3385152-t_3385152-t_qna_18_0` rejected
 - `cand:3398918-t_3398918-t_qna_23_0` accepted as `co_packaged_optics_ramp`
 - `cand:3397579-t_qna_17_1` rejected
-- `cand:3403970-t_qna_21_0` accepted as `capacity_supply_tightness`
-- `cand:3384540-t_3384540-t_qna_29_1` accepted as `pricing_power_in_shortage`
+- `cand:3383478-t_qna_32_0` rejected
 - `cand:3450442-t_qna_65_0` rejected
 - `cand:3452572-t_qna_50_0` rejected
-- `cand:3385152-t_3385152-t_qna_18_0` rejected
 - `cand:3359603-t_3359603-t_qna_9_0` rejected
 - `cand:3376441-t_qna_38_0` rejected
 - `cand:3386656-t_qna_9_1` accepted as `capacity_supply_tightness`
 - `cand:3438469-t_qna_59_0` accepted as `server_cpu_agentic_tam`
-- `cand:3383478-t_qna_32_0` rejected
 - `cand:3404809-t_qna_55_0` accepted as `capacity_supply_tightness`
 - `cand:3413799-t_3413799-t_qna_27_0` accepted as `long_term_supply_agreements`
