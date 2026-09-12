@@ -39,10 +39,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 15.0
+    confirm: 17.0
     challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-12'
   draft: true
 - id: avgo_ai_networking_material_leg
   statement: AI networking (Tomahawk/Jericho switching, optical DSPs) is a material
@@ -139,13 +139,13 @@ assumptions:
   confirmed_by:
   - Q4'26 8-K Ex. 99.1 reports AI semiconductor revenue at or above $21.7B, maintaining
     AI semi as a majority of the semiconductor solutions segment
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 3.0
+    confirm: 5.0
     challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-12'
   draft: true
 ---
 ## Rationale

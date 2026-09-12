@@ -85,10 +85,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-10'
   draft: true
 - id: ai_startup_concentration_adds_vol
   statement: AI-native startup customer concentration is sufficient at scoring to
@@ -111,10 +111,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-10'
   draft: true
 - id: land_expand_over_cloud_native_base
   statement: DDOG's distribution operates through a land-and-expand motion over a
@@ -137,10 +137,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 6.0
+    confirm: 7.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-10'
   draft: true
 - id: growth_and_fcf_positive_at_scoring
   statement: DDOG's revenue growth rate and free cash flow are both positive in the

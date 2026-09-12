@@ -57,9 +57,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 33.0
-    challenge: 6.0
+    challenge: 9.0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-12'
   draft: true
 - id: hynix_first_to_market_hbm_gens
   statement: At scoring, SK Hynix had shipped each major HBM generation ahead of Samsung

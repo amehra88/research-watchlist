@@ -67,10 +67,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-07'
+    last_evidence: '2026-09-11'
   draft: true
 - id: cuda_gap_caps_inference_distribution
   statement: Conditions at scoring — the CUDA software gap caps AMD's GPU distribution
@@ -95,9 +95,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 6.0
+    challenge: 7.0
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-11'
   draft: true
 - id: mi450_demand_exceeds_2027_plan
   statement: Conditions at scoring — MI450 customer demand forecasts exceed AMD's
@@ -122,10 +122,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 14.0
+    confirm: 22.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-12'
   draft: true
 - id: meta_openai_sole_named_gpu_customers
   statement: At scoring, Meta (6GW deployment) and OpenAI are the only named large-scale
@@ -151,7 +151,7 @@ assumptions:
   status: challenged
   status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 4.0
     window_days: 90
     last_evidence: '2026-09-11'
@@ -181,9 +181,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 ---
 ## Rationale
