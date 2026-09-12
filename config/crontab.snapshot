@@ -1,5 +1,5 @@
 # snapshot of the live droplet crontab — written by scripts/snapshot_crontab.sh
-# snapshot taken: 2026-09-11T13:30:02-04:00
+# snapshot taken: 2026-09-12T13:30:01-04:00
 PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 0 7 * * * /root/bin/alert_on_failure.sh daily_digest /root/daily/run_daily.sh
 7 12 * * 0 /root/bin/alert_on_failure.sh nport_weekly /root/nport/run_weekly.sh >> /root/nport/data/cron.log 2>&1
@@ -52,3 +52,11 @@ PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 30 12 * * * cd /root/research-watchlist && /root/bin/alert_on_failure.sh mdna_evidence python3 scripts/topics/mdna_evidence.py >> logs/mdna_evidence.log 2>&1
 0 12 * * 6 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh diffusion python3 scripts/topics/diffusion.py --run --email >> logs/diffusion.log 2>&1
 30 12 * * 6 cd /root/research-watchlist && /root/bin/alert_on_failure.sh theme_notes python3 scripts/topics/theme_notes.py --run >> logs/theme_notes.log 2>&1
+
+# P5b (2026-09-11): weekday chain = earnings-call pull -> topic_map -> diffusion -> stage alert (sequential; after mdna_evidence 12:30)
+45 12 * * 1-5 /root/research-watchlist/scripts/topics/daily_chain.sh
+45 12 * * 6 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh stage_alert python3 scripts/topics/stage_alert.py --run --email >> logs/stage_alert.log 2>&1
+# one-shot (self-removing): earnings-call catch-up — every call since the 08-11 backfill is missing (40 calls / 80 Haiku pulls)
+# one-shots (self-removing): July earnings-review backfill (20 names lost to the calendar-regex abort, fixed 0f968170); 16:00 so neither batch overlaps thesis_match 15:00
+0 16 12 9 * : ONESHOT_BACKFILL_1; cd /root/research-watchlist && /root/bin/alert_on_failure.sh earnings_backfill_1 python3 scripts/cron_earnings_reviewer.py --ticker BE --ticker CLS --ticker GLW --ticker KLAC --ticker NXPI --ticker SWKS --ticker UMC --ticker WELL --ticker MSFT --ticker META --ticker QCOM; crontab -l | grep -v ONESHOT_BACKFILL_1 | crontab -
+0 16 13 9 * : ONESHOT_BACKFILL_2; cd /root/research-watchlist && /root/bin/alert_on_failure.sh earnings_backfill_2 python3 scripts/cron_earnings_reviewer.py --ticker ARM --ticker LRCX --ticker AAPL --ticker AMZN --ticker MPWR --ticker PWR --ticker RDDT --ticker SOLS --ticker SONY; crontab -l | grep -v ONESHOT_BACKFILL_2 | crontab -
