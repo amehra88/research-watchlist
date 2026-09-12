@@ -1,0 +1,12 @@
+{"as_of": "2026-09-12", "id": "gate:agentic_commerce", "kind": "gate", "theme": "agentic_commerce", "ticker": null, "ts": "2026-09-12T16:45:04.135065+00:00"}
+{"as_of": "2026-09-12", "id": "gate:ai_agent_monetization", "kind": "gate", "theme": "ai_agent_monetization", "ticker": null, "ts": "2026-09-12T16:45:04.135065+00:00"}
+{"as_of": "2026-09-12", "id": "stage4:autonomous_vehicle_competition", "kind": "stage4", "theme": "autonomous_vehicle_competition", "ticker": null, "ts": "2026-09-12T16:45:04.135065+00:00"}
+{"as_of": "2026-09-12", "id": "stage3:china_ai_infrastructure_demand:BABA", "kind": "stage3", "theme": "china_ai_infrastructure_demand", "ticker": "BABA", "ts": "2026-09-12T16:45:04.135065+00:00"}
+{"as_of": "2026-09-12", "id": "stage3:china_ai_infrastructure_demand:BIDU", "kind": "stage3", "theme": "china_ai_infrastructure_demand", "ticker": "BIDU", "ts": "2026-09-12T16:45:04.135065+00:00"}
+{"as_of": "2026-09-12", "id": "gate:foundation_model_economics", "kind": "gate", "theme": "foundation_model_economics", "ticker": null, "ts": "2026-09-12T16:45:04.135065+00:00"}
+{"as_of": "2026-09-12", "id": "gate:humanoid_robotics_competition", "kind": "gate", "theme": "humanoid_robotics_competition", "ticker": null, "ts": "2026-09-12T16:45:04.135065+00:00"}
+{"as_of": "2026-09-12", "id": "stage4:humanoid_robotics_competition", "kind": "stage4", "theme": "humanoid_robotics_competition", "ticker": null, "ts": "2026-09-12T16:45:04.135065+00:00"}
+{"as_of": "2026-09-12", "id": "gate:local_commerce_delivery", "kind": "gate", "theme": "local_commerce_delivery", "ticker": null, "ts": "2026-09-12T16:45:04.135065+00:00"}
+{"as_of": "2026-09-12", "id": "stage4:local_commerce_delivery", "kind": "stage4", "theme": "local_commerce_delivery", "ticker": null, "ts": "2026-09-12T16:45:04.135065+00:00"}
+{"as_of": "2026-09-12", "id": "gate:search_disruption", "kind": "gate", "theme": "search_disruption", "ticker": null, "ts": "2026-09-12T16:45:04.135065+00:00"}
+{"as_of": "2026-09-12", "id": "stage3:sovereign_ai_deployments:NBIS", "kind": "stage3", "theme": "sovereign_ai_deployments", "ticker": "NBIS", "ts": "2026-09-12T16:45:04.135065+00:00"}
