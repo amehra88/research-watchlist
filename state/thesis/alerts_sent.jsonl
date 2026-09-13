@@ -37,3 +37,9 @@
 {"id": "status:ZS:security_first_ai_positioning:confirmed:2026-09-11", "ticker": "ZS", "ts": "2026-09-12T10:20:02.001988+00:00"}
 {"id": "status:AVGO:avgo_ai_semi_majority_of_segment:confirmed:2026-09-12", "ticker": "AVGO", "ts": "2026-09-12T19:45:02.626345+00:00"}
 {"id": "status:GOOGL:cloud_supply_constraint_holds:confirmed:2026-09-12", "ticker": "GOOGL", "ts": "2026-09-12T19:45:02.626345+00:00"}
+{"id": "note:BE:20260912-2Q26.md", "ticker": "BE", "ts": "2026-09-13T10:20:02.484051+00:00"}
+{"id": "note:CLS:20260728-2Q26.md", "ticker": "CLS", "ts": "2026-09-13T10:20:02.484051+00:00"}
+{"id": "status:DOCN:gpu_supply_not_binding_in_q2:confirmed:2026-09-12", "ticker": "DOCN", "ts": "2026-09-13T10:20:02.484051+00:00"}
+{"id": "note:GLW:20260912-2Q26.md", "ticker": "GLW", "ts": "2026-09-13T10:20:02.484051+00:00"}
+{"id": "note:KLAC:20260912-4Q26.md", "ticker": "KLAC", "ts": "2026-09-13T10:20:02.484051+00:00"}
+{"id": "status:NXPI:auto_revenue_q2_level_holds:confirmed:2026-09-12", "ticker": "NXPI", "ts": "2026-09-13T10:20:02.484051+00:00"}
