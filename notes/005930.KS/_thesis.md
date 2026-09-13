@@ -88,9 +88,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 7.0
-    challenge: 10.0
+    challenge: 11.0
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-13'
   draft: true
 - id: samsung_no1_dram_nand_volume
   statement: Samsung held the largest global volume share in both DRAM and NAND at

@@ -34,7 +34,7 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 4.0
+    confirm: 4.5
     challenge: 0
     window_days: 90
     last_evidence: '2026-09-09'
@@ -83,10 +83,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: cloud_backlog_no_material_cancel
   statement: The $462B Cloud backlog disclosed at 1Q26 has not experienced material

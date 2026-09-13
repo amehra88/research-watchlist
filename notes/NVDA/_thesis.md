@@ -35,7 +35,7 @@ assumptions:
   status_source: evidence
   pressure:
     confirm: 3.0
-    challenge: 15.0
+    challenge: 16.0
     window_days: 90
     last_evidence: '2026-09-09'
   draft: true
@@ -143,9 +143,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 1.0
+    challenge: 1.5
     window_days: 90
-    last_evidence: '2026-09-07'
+    last_evidence: '2026-09-09'
   draft: true
 - id: fifty_pct_fcf_return_structural
   statement: At scoring date, the capital return posture of approximately 50% of FCF

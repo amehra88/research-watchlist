@@ -86,9 +86,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 2.0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-13'
   draft: true
 - id: ai_startup_concentration_adds_vol
   statement: AI-native startup customer concentration is sufficient at scoring to

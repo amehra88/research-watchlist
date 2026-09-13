@@ -40,10 +40,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 8.0
+    confirm: 10.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-13'
   draft: true
 - id: cowos_no_qualified_alternative
   statement: At scoring date, no alternative CoWoS-equivalent advanced-packaging source

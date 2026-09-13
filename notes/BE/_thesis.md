@@ -14,7 +14,11 @@ scores:
   competitive_advantage.distribution: 3+
   competitive_advantage.overall: '4'
   potential_investor_interest.score: '5'
-proposed_scores: {}
+proposed_scores:
+  competitive_advantage.distribution:
+    value: '4'
+    since: '2026-09-12'
+    source: notes/BE/20260912-2Q26.md
 assumptions:
 - id: fuel_cell_dc_power_relevance
   statement: Fuel cell technology was considered a viable power solution for data
@@ -33,13 +37,13 @@ assumptions:
   - A hyperscaler or colocation operator publicly discloses a signed fuel cell power
     purchase agreement
   - BE files an 8-K announcing a new data center power deployment contract
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 2.0
+    confirm: 5.0
     challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-12'
   draft: true
 - id: hyperscaler_partnerships_active
   statement: At scoring, hyperscaler partnerships were the mechanism supporting distribution
@@ -57,13 +61,13 @@ assumptions:
   - BE press release or 8-K announces a new or expanded hyperscaler deployment agreement
   - 10-Q names a hyperscaler as a significant customer or discloses capacity expansion
     under an existing agreement
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 2.0
+    confirm: 8.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-12'
   draft: true
 - id: no_dc_customer_substitution
   statement: At scoring, BE faced no active substitution of its technology by a competing
@@ -80,13 +84,13 @@ assumptions:
     or improved terms
   - No second-source qualification for BE's power application disclosed in customer
     procurement filings or earnings call transcripts
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-12'
   draft: true
 - id: dc_power_narrative_conditions_intact
   statement: At scoring, data center power was a hot sector driving narrative momentum
@@ -130,10 +134,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 2.0
+    confirm: 5.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-13'
   draft: true
 ---
 ## Rationale

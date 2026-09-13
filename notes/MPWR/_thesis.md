@@ -61,10 +61,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-07'
+    last_evidence: '2026-09-13'
   draft: true
 - id: nvda_concentration_caps_distribution
   statement: NVDA single-customer concentration was the binding constraint that prevented

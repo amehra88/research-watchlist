@@ -90,9 +90,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 5.0
-    challenge: 1.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-13'
   draft: true
 - id: avgo_google_2ndsrc_not_yet_material
   statement: As of the Q3'26 earnings note (2026-09-03), the Google second-sourcing
@@ -142,10 +142,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 5.0
+    confirm: 6.0
     challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-13'
   draft: true
 ---
 ## Rationale
