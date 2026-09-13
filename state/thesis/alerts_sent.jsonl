@@ -43,3 +43,15 @@
 {"id": "note:GLW:20260912-2Q26.md", "ticker": "GLW", "ts": "2026-09-13T10:20:02.484051+00:00"}
 {"id": "note:KLAC:20260912-4Q26.md", "ticker": "KLAC", "ts": "2026-09-13T10:20:02.484051+00:00"}
 {"id": "status:NXPI:auto_revenue_q2_level_holds:confirmed:2026-09-12", "ticker": "NXPI", "ts": "2026-09-13T10:20:02.484051+00:00"}
+{"id": "score:BE:competitive_advantage.distribution:4", "ticker": "BE", "ts": "2026-09-13T19:45:03.140967+00:00"}
+{"id": "status:BE:fuel_cell_dc_power_relevance:confirmed:2026-09-13", "ticker": "BE", "ts": "2026-09-13T19:45:03.140967+00:00"}
+{"id": "status:BE:hyperscaler_partnerships_active:confirmed:2026-09-13", "ticker": "BE", "ts": "2026-09-13T19:45:03.140967+00:00"}
+{"id": "status:BE:no_dc_customer_substitution:confirmed:2026-09-13", "ticker": "BE", "ts": "2026-09-13T19:45:03.140967+00:00"}
+{"id": "status:CSCO:t2_candidacy_not_disqualified:confirmed:2026-09-13", "ticker": "CSCO", "ts": "2026-09-13T19:45:03.140967+00:00"}
+{"id": "status:DOCN:gpu_supply_not_binding_in_q2:challenged:2026-09-13", "ticker": "DOCN", "ts": "2026-09-13T19:45:03.140967+00:00"}
+{"id": "chal3:GLW:notes/GLW/20260912-2Q26.md#4b:optical_complex_capex_cycle_risk:optical_complex_capex_cycle_risk", "ticker": "GLW", "ts": "2026-09-13T19:45:03.140967+00:00"}
+{"id": "score:GLW:competitive_advantage.distribution:4", "ticker": "GLW", "ts": "2026-09-13T19:45:03.140967+00:00"}
+{"id": "score:GLW:competitive_advantage.innovation_rate:4", "ticker": "GLW", "ts": "2026-09-13T19:45:03.140967+00:00"}
+{"id": "score:GLW:competitive_advantage.overall:4", "ticker": "GLW", "ts": "2026-09-13T19:45:03.140967+00:00"}
+{"id": "status:MSFT:enterprise_distribution_moat_intact:confirmed:2026-09-13", "ticker": "MSFT", "ts": "2026-09-13T19:45:03.140967+00:00"}
+{"id": "status:SNOW:snow_ai_product_accel_attribution:confirmed:2026-09-13", "ticker": "SNOW", "ts": "2026-09-13T19:45:03.140967+00:00"}
