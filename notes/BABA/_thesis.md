@@ -33,9 +33,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 1.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-13'
   draft: true
 - id: ai_mix_share_not_declining
   statement: AI-related product ARR as a share of cloud external revenue does not

@@ -33,7 +33,7 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 36.0
+    confirm: 37.0
     challenge: 3.0
     window_days: 90
     last_evidence: '2026-09-10'
@@ -88,13 +88,13 @@ assumptions:
     discussion in the September 2026 10-Q
   - GPU Droplet and Bare Metal GPU product availability confirmed without capacity
     qualification in a press release, product changelog, or 8-K during Q3 2026
-  status: confirmed
+  status: challenged
   status_source: evidence
   pressure:
     confirm: 14.0
-    challenge: 11.0
+    challenge: 15.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-11'
   draft: true
 ---
 ## Rationale

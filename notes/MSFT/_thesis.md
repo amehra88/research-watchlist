@@ -58,9 +58,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 0.5
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-11'
   draft: true
 - id: anthropic_app_optimization_share_gain
   statement: At scoring, Anthropic had captured application optimization surface area
@@ -125,13 +125,13 @@ assumptions:
   confirmed_by:
   - MSFT quarterly earnings filing shows commercial cloud bookings and enterprise
     seat counts consistent with prior-period growth rates across reported segments
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 1.5
+    confirm: 6.5
     challenge: 0.5
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-13'
   draft: true
 - id: investor_momentum_factors_weakening
   statement: At scoring, momentum factors for MSFT were weakening relative to mega-cap

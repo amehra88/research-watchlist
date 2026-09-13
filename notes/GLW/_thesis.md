@@ -9,7 +9,19 @@ drafted_from:
 - config/watchlist.yaml#GLW
 reviewed_by_operator: false
 scores: {}
-proposed_scores: {}
+proposed_scores:
+  competitive_advantage.innovation_rate:
+    value: '4'
+    since: '2026-09-12'
+    source: notes/GLW/20260912-2Q26.md
+  competitive_advantage.distribution:
+    value: '4'
+    since: '2026-09-12'
+    source: notes/GLW/20260912-2Q26.md
+  competitive_advantage.overall:
+    value: '4'
+    since: '2026-09-12'
+    source: notes/GLW/20260912-2Q26.md
 assumptions:
 - id: optical_comms_primary_driver
   statement: Optical communications is the dominant contributor to GLW's above-trend
@@ -33,7 +45,7 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 20.0
+    confirm: 23.0
     challenge: 0
     window_days: 90
     last_evidence: '2026-09-12'
@@ -88,9 +100,9 @@ assumptions:
   status_source: evidence
   pressure:
     confirm: 2.0
-    challenge: 11.0
+    challenge: 16.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-12'
   draft: true
 ---
 ## Rationale

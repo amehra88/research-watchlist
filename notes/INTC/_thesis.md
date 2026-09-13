@@ -33,9 +33,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 3.0
-    challenge: 0
+    challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-13'
   draft: true
 - id: foundry_win_not_yet_filed
   statement: As of scoring, no signed external foundry customer contract has been

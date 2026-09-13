@@ -32,13 +32,13 @@ assumptions:
     to an equal or larger share of the quarter's acceleration
   - SNOW 10-Q for the period ending October 31, 2026 discloses CoCo accounts above
     11,000
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 7.0
+    confirm: 8.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-13'
   draft: true
 - id: snow_cortex_gateway_no_model_asset
   statement: SNOW's Cortex AI Gateway routes AI tasks across third-party models for

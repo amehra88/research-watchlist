@@ -33,10 +33,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-13'
   draft: true
 - id: per_mw_pricing_conditions_hold
   statement: Per-MW pricing conditions at Q2'26 scoring — capacity auction clearing
@@ -114,10 +114,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 11.0
+    confirm: 13.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-13'
   draft: true
 - id: meta_concentration_no_deepening
   statement: Customer concentration at Q2'26 scoring — with the Meta $27B contract
@@ -142,10 +142,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-13'
   draft: true
 - id: nvidia_exemplar_status_intact
   statement: NVIDIA Exemplar Cloud designation and associated supply-chain priority,
