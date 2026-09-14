@@ -1,0 +1,1453 @@
+{
+ "date": "2026-09-14",
+ "since": "2026-09-07",
+ "kind": "weekly",
+ "ranking": [
+  {
+   "ticker": "BE",
+   "tier": "tier_1_bctk",
+   "delta": 16.0,
+   "why": "fuel_cell_dc_power_relevance open\u2192confirmed; hyperscaler_partnerships_active open\u2192confirmed; no_dc_customer_substitution open\u2192confirmed; distribution proposed 4 (applied 3+); pressure +24/\u22122",
+   "rank_score_proposed": 4.2,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "3+",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "5"
+   },
+   "proposed": {
+    "competitive_advantage.distribution": "4"
+   },
+   "n_assumptions": 5,
+   "status_counts": {
+    "confirmed": 3,
+    "open": 2
+   }
+  },
+  {
+   "ticker": "AMBA",
+   "tier": "tier_2_active_candidates",
+   "delta": 14.0,
+   "why": "ai_soc_unit_cadence_holds open\u2192confirmed; hanwha_lta_unmodified open\u2192confirmed; auto_seg_record_not_single_peak open\u2192confirmed; ai_positioning proposed 4 (applied None); innovation_rate proposed 4 (applied None); distribution proposed 3 (applied None); overall proposed 3+ (applied None); pressure +22/\u22120",
+   "rank_score_proposed": 3.562,
+   "applied": {},
+   "proposed": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "3",
+    "competitive_advantage.overall": "3+"
+   },
+   "n_assumptions": 5,
+   "status_counts": {
+    "confirmed": 3,
+    "open": 2
+   }
+  },
+  {
+   "ticker": "ZS",
+   "tier": "tier_2_active_candidates",
+   "delta": 14.0,
+   "why": "ai_data_sec_innovation_lead open\u2192confirmed; security_first_ai_positioning open\u2192confirmed; decel_not_displacement open\u2192confirmed; pressure +47/\u22121",
+   "rank_score_proposed": 3.6,
+   "applied": {
+    "ai_positioning": "3",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "3"
+   },
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 2,
+    "confirmed": 3
+   }
+  },
+  {
+   "ticker": "AMAT",
+   "tier": "tier_1_bctk",
+   "delta": 11.0,
+   "why": "wfe_30pct_two_year_guide open\u2192confirmed; hbm_expansion_drives_dram_wfe open\u2192confirmed; pressure +34/\u22120",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 4,
+    "confirmed": 2
+   }
+  },
+  {
+   "ticker": "AVGO",
+   "tier": "tier_1_bctk",
+   "delta": 11.0,
+   "why": "avgo_xpu_multi_hyperscaler_wins open\u2192confirmed; avgo_ai_semi_majority_of_segment open\u2192confirmed; pressure +30/\u22125",
+   "rank_score_proposed": 4.8,
+   "applied": {
+    "ai_positioning": "5",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "5",
+    "competitive_advantage.overall": "5",
+    "potential_investor_interest.score": "5"
+   },
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "confirmed": 2,
+    "open": 3
+   }
+  },
+  {
+   "ticker": "NOW",
+   "tier": "tier_2_active_candidates",
+   "delta": 11.0,
+   "why": "now_ai_contract_value_at_1b open\u2192confirmed; now_q2_selloff_not_fundamental open\u2192confirmed; pressure +14/\u22120",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 3,
+   "status_counts": {
+    "confirmed": 2,
+    "open": 1
+   }
+  },
+  {
+   "ticker": "RDDT",
+   "tier": "tier_2_active_candidates",
+   "delta": 11.0,
+   "why": "rddt_arpu_expansion_not_at_ceiling open\u2192confirmed; ai_data_licensing_contracts_intact open\u2192confirmed; pressure +14/\u22122",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 3,
+   "status_counts": {
+    "confirmed": 2,
+    "open": 1
+   }
+  },
+  {
+   "ticker": "AMZN",
+   "tier": "tier_1_bctk",
+   "delta": 8.0,
+   "why": "aws_leads_enterprise_ai_distribution open\u2192confirmed; pressure +16/\u22124",
+   "rank_score_proposed": 4.5,
+   "applied": {
+    "ai_positioning": "4+",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "5",
+    "competitive_advantage.overall": "5",
+    "potential_investor_interest.score": "4+"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "confirmed": 1,
+    "open": 5
+   }
+  },
+  {
+   "ticker": "CRWV",
+   "tier": "tier_2_active_candidates",
+   "delta": 8.0,
+   "why": "crwv_2h_ramp_power_gated open\u2192confirmed; pressure +12/\u22120",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "confirmed": 1,
+    "open": 5
+   }
+  },
+  {
+   "ticker": "CSCO",
+   "tier": "tier_2_active_candidates",
+   "delta": 8.0,
+   "why": "t2_candidacy_not_disqualified open\u2192confirmed; pressure +28/\u22120",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 4,
+   "status_counts": {
+    "confirmed": 1,
+    "open": 3
+   }
+  },
+  {
+   "ticker": "GOOG",
+   "tier": "tier_1_bctk",
+   "delta": 8.0,
+   "why": "goog_ai_stack_best_in_class open\u2192confirmed; pressure +25/\u22121",
+   "rank_score_proposed": 4.85,
+   "applied": {
+    "ai_positioning": "5",
+    "competitive_advantage.innovation_rate": "5",
+    "competitive_advantage.distribution": "5",
+    "competitive_advantage.overall": "4+",
+    "potential_investor_interest.score": "5"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 5,
+    "confirmed": 1
+   }
+  },
+  {
+   "ticker": "GOOGL",
+   "tier": "tier_1_bctk",
+   "delta": 8.0,
+   "why": "cloud_supply_constraint_holds open\u2192confirmed; pressure +13/\u22122",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "confirmed": 1,
+    "open": 5
+   }
+  },
+  {
+   "ticker": "HPE",
+   "tier": "tier_2_active_candidates",
+   "delta": 8.0,
+   "why": "t2_candidacy_conditions_hold open\u2192confirmed; pressure +49/\u22122",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 4,
+   "status_counts": {
+    "confirmed": 1,
+    "open": 3
+   }
+  },
+  {
+   "ticker": "LRCX",
+   "tier": "tier_1_bctk",
+   "delta": 8.0,
+   "why": "wfe_cycle_caps_not_comp_erosion open\u2192confirmed; pressure +28/\u22120",
+   "rank_score_proposed": 4.6,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "5",
+    "competitive_advantage.distribution": "5",
+    "competitive_advantage.overall": "5",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 5,
+    "confirmed": 1
+   }
+  },
+  {
+   "ticker": "MDB",
+   "tier": "tier_2_active_candidates",
+   "delta": 8.0,
+   "why": "atlas_growth_at_candidacy open\u2192confirmed; pressure +26/\u22120",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 4,
+   "status_counts": {
+    "confirmed": 1,
+    "open": 3
+   }
+  },
+  {
+   "ticker": "MSFT",
+   "tier": "tier_2_active_candidates",
+   "delta": 8.0,
+   "why": "enterprise_distribution_moat_intact open\u2192confirmed; pressure +15/\u22123",
+   "rank_score_proposed": 3.95,
+   "applied": {
+    "ai_positioning": "4-",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "5",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "3"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 5,
+    "confirmed": 1
+   }
+  },
+  {
+   "ticker": "NBIS",
+   "tier": "tier_2_active_candidates",
+   "delta": 8.0,
+   "why": "asset_light_pipeline_no_deterioration open\u2192confirmed; pressure +16/\u22120",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 5,
+    "confirmed": 1
+   }
+  },
+  {
+   "ticker": "NXPI",
+   "tier": "tier_2_active_candidates",
+   "delta": 8.0,
+   "why": "auto_revenue_q2_level_holds open\u2192confirmed; pressure +14/\u22121",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 3,
+   "status_counts": {
+    "confirmed": 1,
+    "open": 2
+   }
+  },
+  {
+   "ticker": "SNOW",
+   "tier": "tier_2_active_candidates",
+   "delta": 8.0,
+   "why": "snow_ai_product_accel_attribution open\u2192confirmed; pressure +11/\u22120",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "confirmed": 1,
+    "open": 5
+   }
+  },
+  {
+   "ticker": "TSM",
+   "tier": "tier_1_bctk",
+   "delta": 8.0,
+   "why": "tsm_sole_leadingedge_foundry open\u2192confirmed; pressure +30/\u22123",
+   "rank_score_proposed": 4.8,
+   "applied": {
+    "ai_positioning": "5",
+    "competitive_advantage.innovation_rate": "5",
+    "competitive_advantage.distribution": "5",
+    "competitive_advantage.overall": "5",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "confirmed": 1,
+    "open": 5
+   }
+  },
+  {
+   "ticker": "NVDA",
+   "tier": "tier_1_bctk",
+   "delta": -8.0,
+   "why": "cuda_dev_lock_in_distribution_moat open\u2192challenged; pressure +5/\u221231",
+   "rank_score_proposed": 4.8,
+   "applied": {
+    "ai_positioning": "5",
+    "competitive_advantage.innovation_rate": "5",
+    "competitive_advantage.distribution": "5",
+    "competitive_advantage.overall": "5",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "challenged": 1,
+    "open": 5
+   }
+  },
+  {
+   "ticker": "000660.KS",
+   "tier": "tier_1_bctk",
+   "delta": 5.0,
+   "why": "pressure +44/\u221224",
+   "rank_score_proposed": 4.4,
+   "applied": {
+    "ai_positioning": "5",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "5",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "AMD",
+   "tier": "tier_1_bctk",
+   "delta": 5.0,
+   "why": "mi450_demand_exceeds_2027_plan open\u2192confirmed; meta_openai_sole_named_gpu_customers open\u2192challenged; pressure +29/\u221213",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 4,
+    "confirmed": 1,
+    "challenged": 1
+   }
+  },
+  {
+   "ticker": "ANET",
+   "tier": "tier_1_bctk",
+   "delta": 5.0,
+   "why": "pressure +18/\u22120",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "ASML",
+   "tier": "tier_1_bctk",
+   "delta": 5.0,
+   "why": "pressure +32/\u22120",
+   "rank_score_proposed": 4.6,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "5",
+    "competitive_advantage.distribution": "5",
+    "competitive_advantage.overall": "5",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "AXON",
+   "tier": "tier_1_bctk",
+   "delta": 5.0,
+   "why": "pressure +29/\u22121",
+   "rank_score_proposed": 4.2,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "5"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "DDOG",
+   "tier": "tier_1_bctk",
+   "delta": 5.0,
+   "why": "pressure +14/\u22126",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "GLW",
+   "tier": "tier_2_active_candidates",
+   "delta": 5.0,
+   "why": "optical_comms_primary_driver open\u2192confirmed; optical_complex_capex_cycle_risk open\u2192challenged; innovation_rate proposed 4 (applied None); distribution proposed 4 (applied None); overall proposed 4 (applied None); pressure +28/\u221216",
+   "rank_score_proposed": 4.0,
+   "applied": {},
+   "proposed": {
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4"
+   },
+   "n_assumptions": 3,
+   "status_counts": {
+    "confirmed": 1,
+    "open": 1,
+    "challenged": 1
+   }
+  },
+  {
+   "ticker": "HPQ",
+   "tier": "tier_2_active_candidates",
+   "delta": 5.0,
+   "why": "pressure +11/\u22121",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "LITE",
+   "tier": "tier_1_bctk",
+   "delta": 5.0,
+   "why": "pressure +43/\u221228",
+   "rank_score_proposed": 3.8,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "3",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "META",
+   "tier": "tier_1_bctk",
+   "delta": 5.0,
+   "why": "pressure +10/\u22122",
+   "rank_score_proposed": 4.6,
+   "applied": {
+    "ai_positioning": "5",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "5",
+    "competitive_advantage.overall": "5",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "MRVL",
+   "tier": "tier_2_active_candidates",
+   "delta": 5.0,
+   "why": "pressure +11/\u22122",
+   "rank_score_proposed": 4.25,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4+",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "5"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "MU",
+   "tier": "tier_1_bctk",
+   "delta": 5.0,
+   "why": "pressure +29/\u22128",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "NET",
+   "tier": "tier_1_bctk",
+   "delta": 5.0,
+   "why": "pressure +7/\u22120",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "PLTR",
+   "tier": "tier_2_active_candidates",
+   "delta": 5.0,
+   "why": "pressure +6/\u22120",
+   "rank_score_proposed": 4.4,
+   "applied": {
+    "ai_positioning": "5",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "5"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "SPCX",
+   "tier": "tier_1_bctk",
+   "delta": 5.0,
+   "why": "pressure +11/\u22122",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 3,
+   "status_counts": {
+    "open": 3
+   }
+  },
+  {
+   "ticker": "STX",
+   "tier": "tier_1_bctk",
+   "delta": 5.0,
+   "why": "pressure +22/\u22120",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 3,
+   "status_counts": {
+    "open": 3
+   }
+  },
+  {
+   "ticker": "TSLA",
+   "tier": "tier_1_bctk",
+   "delta": 5.0,
+   "why": "pressure +9/\u22123",
+   "rank_score_proposed": 4.4,
+   "applied": {
+    "ai_positioning": "5",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "5"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "005930.KS",
+   "tier": "tier_2_active_candidates",
+   "delta": -5.0,
+   "why": "pressure +8/\u221219",
+   "rank_score_proposed": 3.6,
+   "applied": {
+    "ai_positioning": "3",
+    "competitive_advantage.innovation_rate": "3",
+    "competitive_advantage.distribution": "5",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "3"
+   },
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "COHR",
+   "tier": "tier_1_bctk",
+   "delta": -5.0,
+   "why": "pressure +10/\u221228",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 7,
+   "status_counts": {
+    "open": 6,
+    "retired": 1
+   }
+  },
+  {
+   "ticker": "AAPL",
+   "tier": "tier_2_active_candidates",
+   "delta": 4.0,
+   "why": "pressure +8/\u22124",
+   "rank_score_proposed": 3.8,
+   "applied": {
+    "ai_positioning": "3",
+    "competitive_advantage.innovation_rate": "3",
+    "competitive_advantage.distribution": "5",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "CRWD",
+   "tier": "tier_1_bctk",
+   "delta": 4.0,
+   "why": "pressure +5/\u22121",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "UPST",
+   "tier": "tier_2_active_candidates",
+   "delta": -4.0,
+   "why": "pressure +4/\u22128",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 4,
+   "status_counts": {
+    "open": 4
+   }
+  },
+  {
+   "ticker": "MPWR",
+   "tier": "tier_1_bctk",
+   "delta": 3.0,
+   "why": "pressure +3/\u22120",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "PLAB",
+   "tier": "tier_2_active_candidates",
+   "delta": 3.0,
+   "why": "pressure +4/\u22121",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "BABA",
+   "tier": "tier_2_active_candidates",
+   "delta": -3.0,
+   "why": "pressure +1/\u22124",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "GWRE",
+   "tier": "tier_1_bctk",
+   "delta": -3.0,
+   "why": "pressure +1/\u22124",
+   "rank_score_proposed": 3.4,
+   "applied": {
+    "ai_positioning": "3",
+    "competitive_advantage.innovation_rate": "3",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "3"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "INTC",
+   "tier": "tier_2_active_candidates",
+   "delta": -3.0,
+   "why": "pressure +4/\u22127",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 3,
+   "status_counts": {
+    "open": 3
+   }
+  },
+  {
+   "ticker": "CIEN",
+   "tier": "tier_2_active_candidates",
+   "delta": 2.0,
+   "why": "pressure +3/\u22121",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "DOCN",
+   "tier": "tier_2_active_candidates",
+   "delta": 2.0,
+   "why": "gpu_supply_not_binding_in_q2 open\u2192challenged; gpu_supply_not_binding_in_q2 challenged\u2192confirmed; gpu_supply_not_binding_in_q2 confirmed\u2192challenged; pressure +58/\u221223",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 3,
+   "status_counts": {
+    "open": 2,
+    "challenged": 1
+   }
+  },
+  {
+   "ticker": "ENTG",
+   "tier": "tier_1_bctk",
+   "delta": 2.0,
+   "why": "pressure +2/\u22120",
+   "rank_score_proposed": 3.2,
+   "applied": {
+    "ai_positioning": "3",
+    "competitive_advantage.innovation_rate": "3",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "3",
+    "potential_investor_interest.score": "3"
+   },
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "IOT",
+   "tier": "tier_1_bctk",
+   "delta": 2.0,
+   "why": "pressure +2/\u22120",
+   "rank_score_proposed": 3.8,
+   "applied": {
+    "ai_positioning": "3",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "NVMI",
+   "tier": "tier_2_active_candidates",
+   "delta": 2.0,
+   "why": "pressure +9/\u22127",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "PWR",
+   "tier": "tier_1_bctk",
+   "delta": 2.0,
+   "why": "pressure +2/\u22120",
+   "rank_score_proposed": 3.6,
+   "applied": {
+    "ai_positioning": "3",
+    "competitive_advantage.innovation_rate": "3",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "SHOP",
+   "tier": "tier_1_bctk",
+   "delta": 2.0,
+   "why": "pressure +2/\u22120",
+   "rank_score_proposed": 4.2,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "5",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "SPOT",
+   "tier": "tier_1_bctk",
+   "delta": 2.0,
+   "why": "pressure +2/\u22120",
+   "rank_score_proposed": 4.2,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "5",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "ADI",
+   "tier": "tier_2_active_candidates",
+   "delta": 1.0,
+   "why": "pressure +1/\u22120",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "HTFL",
+   "tier": "tier_2_active_candidates",
+   "delta": 1.0,
+   "why": "pressure +1/\u22120",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 4,
+   "status_counts": {
+    "open": 4
+   }
+  },
+  {
+   "ticker": "SNPS",
+   "tier": "tier_2_active_candidates",
+   "delta": 1.0,
+   "why": "pressure +1/\u22120",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "WELL",
+   "tier": "tier_1_bctk",
+   "delta": 1.0,
+   "why": "pressure +1/\u22120",
+   "rank_score_proposed": 3.4,
+   "applied": {
+    "ai_positioning": "3",
+    "competitive_advantage.innovation_rate": "3",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "3",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "IRTC",
+   "tier": "tier_2_active_candidates",
+   "delta": -1.0,
+   "why": "pressure +1/\u22122",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "PANW",
+   "tier": "tier_2_active_candidates",
+   "delta": -1.0,
+   "why": "pressure +1/\u22122",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "AAOI",
+   "tier": null,
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 3,
+   "status_counts": {
+    "open": 3
+   }
+  },
+  {
+   "ticker": "ARM",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 3,
+   "status_counts": {
+    "open": 3
+   }
+  },
+  {
+   "ticker": "BIDU",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "CBRS",
+   "tier": "tier_1_bctk",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "5",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "3",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "CRDO",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "DASH",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 3,
+   "status_counts": {
+    "open": 3
+   }
+  },
+  {
+   "ticker": "DE",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "DPC",
+   "tier": "tier_1_bctk",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 3,
+   "status_counts": {
+    "open": 3
+   }
+  },
+  {
+   "ticker": "FPS",
+   "tier": "tier_1_bctk",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": 3.2,
+   "applied": {
+    "ai_positioning": "3",
+    "competitive_advantage.innovation_rate": "3",
+    "competitive_advantage.distribution": "3",
+    "competitive_advantage.overall": "3",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "FRVO",
+   "tier": "tier_1_bctk",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": 3.2,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "3",
+    "competitive_advantage.distribution": "3",
+    "competitive_advantage.overall": "3",
+    "potential_investor_interest.score": "3"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "GDS",
+   "tier": "tier_1_bctk",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": 3.4,
+   "applied": {
+    "ai_positioning": "4",
+    "competitive_advantage.innovation_rate": "3",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "3",
+    "potential_investor_interest.score": "3"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "GEV",
+   "tier": "tier_1_bctk",
+   "delta": 0.0,
+   "why": "pressure +3/\u22123",
+   "rank_score_proposed": 3.8,
+   "applied": {
+    "ai_positioning": "3",
+    "competitive_advantage.innovation_rate": "3",
+    "competitive_advantage.distribution": "4",
+    "competitive_advantage.overall": "4",
+    "potential_investor_interest.score": "5"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "GH",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "HNGE",
+   "tier": "tier_1_bctk",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": 3.0,
+   "applied": {
+    "ai_positioning": "3",
+    "competitive_advantage.innovation_rate": "3",
+    "competitive_advantage.distribution": "3",
+    "competitive_advantage.overall": "3",
+    "potential_investor_interest.score": "3"
+   },
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  },
+  {
+   "ticker": "HSAI",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "INDI",
+   "tier": "tier_1_bctk",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": 3.0,
+   "applied": {
+    "ai_positioning": "3",
+    "competitive_advantage.innovation_rate": "3",
+    "competitive_advantage.distribution": "3",
+    "competitive_advantage.overall": "3",
+    "potential_investor_interest.score": "3"
+   },
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "INIO",
+   "tier": "tier_1_bctk",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 3,
+   "status_counts": {
+    "open": 3
+   }
+  },
+  {
+   "ticker": "NTES",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "RBRK",
+   "tier": "tier_1_bctk",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": 3.4,
+   "applied": {
+    "ai_positioning": "3",
+    "competitive_advantage.innovation_rate": "4",
+    "competitive_advantage.distribution": "3",
+    "competitive_advantage.overall": "3",
+    "potential_investor_interest.score": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "RDNT",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": 4.0,
+   "applied": {
+    "ai_positioning": "4"
+   },
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "SE",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "SEI",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 0,
+   "status_counts": {}
+  },
+  {
+   "ticker": "TSEM",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "TTWO",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 5,
+   "status_counts": {
+    "open": 5
+   }
+  },
+  {
+   "ticker": "TXN",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 0,
+   "status_counts": {}
+  },
+  {
+   "ticker": "WMT",
+   "tier": "tier_2_active_candidates",
+   "delta": 0.0,
+   "why": "quiet",
+   "rank_score_proposed": null,
+   "applied": {},
+   "proposed": {},
+   "n_assumptions": 6,
+   "status_counts": {
+    "open": 6
+   }
+  }
+ ]
+}

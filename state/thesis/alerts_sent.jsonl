@@ -55,3 +55,8 @@
 {"id": "score:GLW:competitive_advantage.overall:4", "ticker": "GLW", "ts": "2026-09-13T19:45:03.140967+00:00"}
 {"id": "status:MSFT:enterprise_distribution_moat_intact:confirmed:2026-09-13", "ticker": "MSFT", "ts": "2026-09-13T19:45:03.140967+00:00"}
 {"id": "status:SNOW:snow_ai_product_accel_attribution:confirmed:2026-09-13", "ticker": "SNOW", "ts": "2026-09-13T19:45:03.140967+00:00"}
+{"id": "note:AAPL:20260913-3Q26.md", "ticker": "AAPL", "ts": "2026-09-14T10:20:02.597147+00:00"}
+{"id": "note:AMZN:20260913-2Q26.md", "ticker": "AMZN", "ts": "2026-09-14T10:20:02.597147+00:00"}
+{"id": "note:ARM:20260913-1Q27.md", "ticker": "ARM", "ts": "2026-09-14T10:20:02.597147+00:00"}
+{"id": "note:LRCX:20260913-4Q26.md", "ticker": "LRCX", "ts": "2026-09-14T10:20:02.597147+00:00"}
+{"id": "note:MPWR:20260913-2Q26.md", "ticker": "MPWR", "ts": "2026-09-14T10:20:02.597147+00:00"}
