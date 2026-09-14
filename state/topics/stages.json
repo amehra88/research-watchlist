@@ -1,5 +1,5 @@
 {
- "as_of": "2026-09-12",
+ "as_of": "2026-09-14",
  "pairs": {
   "ad_market_strength|AAPL": 3,
   "ad_market_strength|AMZN": 2,
@@ -136,6 +136,7 @@
   "automotive_semiconductor_demand|NXPI": 3,
   "automotive_semiconductor_demand|PLAB": 2,
   "automotive_semiconductor_demand|PWR": 2,
+  "automotive_semiconductor_demand|SITM": 2,
   "automotive_semiconductor_demand|SNPS": 2,
   "automotive_semiconductor_demand|TXN": 2,
   "autonomous_vehicle_competition|BIDU": 4,
