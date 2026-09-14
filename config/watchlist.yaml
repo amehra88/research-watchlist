@@ -808,10 +808,6 @@ tier_1_bctk:
     themes: []      # TODO: assign themes via WATCHLIST email
     notes: "DPC Holdings PLC (parent of Doncasters Group) — Jersey-domiciled, NYSE-listed. 250-year-old UK manufacturer of aerospace + industrial gas turbine (IGT) engine components (turbine blades, structural/rotating parts). IPO 2026-06-25 at $33 (~$21.7B mcap); BCTK initiated 0.67% position late June (per 06/26/2026 daily holdings). Read-through: aerospace/defense supply chain + IGT demand tied to data-center / grid power buildout."
     added_date: 2026-06-26
-  - ticker: simaai.pvt
-    themes: [silicon_architecture_competition, inference_compute_economics, chip_design_competition]
-    added_date: 2026-08-19
-    notes: "SiMa.ai — PRIVATE BCTK holding, added at operator request 2026-08-19. Fabless edge-AI silicon (MLSoC) for embedded / physical-AI inference at the edge rather than datacenter training.\nTHIS IS THE FIRST .pvt ID IN A TIER BLOCK, and it is deliberate. The 14 private_drivers are companies that MOVE holdings; this one IS a holding, so T1 (defined as 'BCTK holdings') would be false if it were left out. It keeps the .pvt id rather than being given a pseudo-ticker, because a private company has no symbol and inventing one would collide with the [A-Z]+ regexes that gate the earnings pipeline. Registered in private_drivers (the .pvt authority) as simaai.pvt with bctk_holding: true.\nCONSUMERS: sec_filings.py load_universe() and cron_earnings_reviewer.py both read T1 and neither filtered non-ticker ids, so both would have queried EDGAR/transcripts for a private company and produced flagged-and-skipped noise every run. A .pvt guard was added to each on 2026-08-19 (sec_filings.py already DOCUMENTED the exclusion at module level but did not enforce it). news_digest.py is safe by construction — it intersects the universe with ticker_identity, which has no .pvt entries.\nEverything here is OPERATOR-ASSERTED: no public filings exist, so no claim in this entry is verifiable against a primary document. Convert to a real ticker on any IPO, per the spacex.pvt -> SPCX precedent (scripts/migrate_spacex_to_spcx.py)."
   - ticker: ENTG
     themes: [foundry_capacity, semiconductor_cycle, advanced_materials_ai_infra, china_export_controls, lithography_roadmap, nand_demand_cycle]
     added_date: 2026-05-09
@@ -1131,6 +1127,9 @@ tier_1_bctk:
       notes: "Growth reacceleration plus FCF/margin inflection and an agentic-commerce narrative; premium multiple. Factors: hot sector, growth rate, FCF; valuation cap."
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02 via ticker-synthesis session, analyst-draft for operator review. Sources: public data (no notes/SHOP/ corpus yet — analyst-draft pending earnings cycle). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
+  - ticker: SITM
+    themes: [ai_infrastructure_capex, networking_competitive_landscape, automotive_semiconductor_demand, semiconductor_cycle]
+    added_date: 2026-05-11
   - ticker: SPCX
     themes: [space_economy, frontier_model_competition, ai_infrastructure_capex]
     notes: "SpaceX (Space Exploration Technologies). Public as of 2026-06-12 on Nasdaq (SPCX); IPO priced ~$135/share fixed, ~$1.75T valuation. Consolidated entity: launch services + Starlink (~58% of FY24 rev) + xAI/Grok (absorbed 2026-02-02, folded into SpaceX's AI division May 2026). Major NVDA compute consumer (Colossus; Vera CPU early adopter; planned orbital DCs). Read-through: NVDA, GEV (power), TSLA (Grok). Contingencies still riding on this name: EchoStar spectrum + Cursor/Anysphere (operator signal, non-public) deals — fold Cursor in on close, no standalone .pvt. Promote to T1 automatically when SPCX appears in BCTK. See notes/SPCX/_profile.md."
@@ -1202,6 +1201,10 @@ tier_1_bctk:
       notes: "REIT with a strong demographic tailwind, defensive, strong senior-housing-operating performance, index inclusion; data-driven capital allocation a differentiator. Factors: demographic growth, defensive, index inclusion, ROIC."
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02. Sources: public data, OPERATOR-PRIVATE SIGNAL: WELL uses AI for operations and market-selection (buy/sell) decisions, making it an AI-beneficiary not REIT-noise (ai_positioning 3 reflects this; public-data analyst view alone might score 1). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
+  - ticker: simaai.pvt
+    themes: [silicon_architecture_competition, inference_compute_economics, chip_design_competition]
+    added_date: 2026-08-19
+    notes: "SiMa.ai — PRIVATE BCTK holding, added at operator request 2026-08-19. Fabless edge-AI silicon (MLSoC) for embedded / physical-AI inference at the edge rather than datacenter training.\nTHIS IS THE FIRST .pvt ID IN A TIER BLOCK, and it is deliberate. The 14 private_drivers are companies that MOVE holdings; this one IS a holding, so T1 (defined as 'BCTK holdings') would be false if it were left out. It keeps the .pvt id rather than being given a pseudo-ticker, because a private company has no symbol and inventing one would collide with the [A-Z]+ regexes that gate the earnings pipeline. Registered in private_drivers (the .pvt authority) as simaai.pvt with bctk_holding: true.\nCONSUMERS: sec_filings.py load_universe() and cron_earnings_reviewer.py both read T1 and neither filtered non-ticker ids, so both would have queried EDGAR/transcripts for a private company and produced flagged-and-skipped noise every run. A .pvt guard was added to each on 2026-08-19 (sec_filings.py already DOCUMENTED the exclusion at module level but did not enforce it). news_digest.py is safe by construction — it intersects the universe with ticker_identity, which has no .pvt entries.\nEverything here is OPERATOR-ASSERTED: no public filings exist, so no claim in this entry is verifiable against a primary document. Convert to a real ticker on any IPO, per the spacex.pvt -> SPCX precedent (scripts/migrate_spacex_to_spcx.py)."
 tier_2_active_candidates:
   - ticker: 005930.KS
     themes: [hbm_competitive_landscape, semiconductor_cycle, ai_infrastructure_capex, model_efficiency_evolution, china_export_controls, nand_demand_cycle]
@@ -1668,9 +1671,6 @@ tier_3_watchlist:
     added_date: 2026-08-20  # Recursion - purest archetype A on the list; clinical output unproven
   - ticker: SE
     themes: [agentic_commerce, ai_generated_content, platform_take_rate, local_commerce_delivery]
-    added_date: 2026-05-11
-  - ticker: SITM
-    themes: [ai_infrastructure_capex, networking_competitive_landscape, automotive_semiconductor_demand, semiconductor_cycle]
     added_date: 2026-05-11
   - ticker: SLAB
     themes: [semiconductor_cycle, automotive_semiconductor_demand, china_us_tensions]
