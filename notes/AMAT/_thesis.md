@@ -64,10 +64,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 9.0
+    confirm: 10.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-14'
   draft: true
 - id: hbm_expansion_drives_dram_wfe
   statement: At scoring, AMAT's DRAM revenue growth of +18% YoY and the advanced packaging

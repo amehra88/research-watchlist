@@ -151,13 +151,13 @@ assumptions:
     no disclosed peer matching scale in more than one channel
   - A third-party market-share report placing GOOG first in at least three of the
     four distribution channels at the scoring date
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 6.0
+    confirm: 9.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-14'
   draft: true
 - id: ai_capable_and_ai_exposed
   statement: At the time of scoring, GOOG's AI capability lead and its core-revenue

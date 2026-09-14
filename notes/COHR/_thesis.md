@@ -76,10 +76,10 @@ assumptions:
   status: open
   status_source: operator
   pressure:
-    confirm: 8.0
+    confirm: 10.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-14'
   draft: false
 - id: customer_concentration_not_worsening
   statement: Datacom customer concentration exists and is already reflected in the

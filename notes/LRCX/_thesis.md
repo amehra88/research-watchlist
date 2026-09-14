@@ -34,13 +34,13 @@ assumptions:
     tool shipments contributed to revenue in the reported period
   - A tier-1 foundry naming LRCX as a qualified GAA etch/dep supplier in a technology
     roadmap filing or public announcement
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 8.0
+    confirm: 11.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-13'
   draft: true
 - id: csbg_service_annuity_material
   statement: At scoring, LRCX's installed-base service revenue constituted a material
@@ -59,13 +59,13 @@ assumptions:
     release
   - LRCX management citing installed-base expansion or service-contract renewals in
     an earnings call transcript
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 2.0
+    confirm: 5.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-13'
   draft: true
 - id: lrcx_exec_vs_amat_klac
   statement: At scoring, LRCX's multi-cycle execution record — measured by gross margin
@@ -111,13 +111,13 @@ assumptions:
     to HBM capacity build in an earnings call transcript or investor presentation
   - A major HBM producer disclosing increased etch or deposition tool purchases from
     LRCX in a capital expenditure filing
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 2.0
+    confirm: 5.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-07'
+    last_evidence: '2026-09-13'
   draft: true
 - id: wfe_cycle_caps_not_comp_erosion
   statement: At scoring, the constraint on LRCX's investor-interest score reflected
@@ -141,10 +141,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 12.0
+    confirm: 16.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-14'
   draft: true
 - id: china_export_drag_at_scoring
   statement: At scoring, export-control restrictions on China-bound WFE reduced LRCX's
@@ -164,13 +164,13 @@ assumptions:
     no new general licenses issued covering LRCX product categories
   - LRCX disclosing in a quarterly filing that China-region revenue is below prior-year
     levels with export-control restrictions cited as a contributing factor
-  status: open
-  status_source: draft
+  status: challenged
+  status_source: evidence
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 6.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-13'
   draft: true
 ---
 ## Rationale

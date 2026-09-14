@@ -14,7 +14,11 @@ scores:
   competitive_advantage.distribution: '5'
   competitive_advantage.overall: '5'
   potential_investor_interest.score: 4+
-proposed_scores: {}
+proposed_scores:
+  competitive_advantage.innovation_rate:
+    value: 4+
+    since: '2026-09-13'
+    source: notes/AMZN/20260913-2Q26.md
 assumptions:
 - id: aws_leads_enterprise_ai_distribution
   statement: AWS constitutes a leading enterprise distribution channel for AI workloads
@@ -37,10 +41,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 9.5
+    confirm: 12.5
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-13'
   draft: true
 - id: bedrock_anthropic_closes_model_gap
   statement: The Bedrock + Anthropic partnership closes the model-layer capability
@@ -59,13 +63,13 @@ assumptions:
   - Anthropic model lineup on Bedrock expands as disclosed in an AWS product announcement
   - AMZN 10-K or investor day materials cite Bedrock design wins at named enterprise
     accounts
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 2.5
+    confirm: 5.5
     challenge: 3.0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-13'
   draft: true
 - id: logistics_prime_no_single_rival
   statement: No single competitor replicates the combined logistics network and Prime
@@ -85,13 +89,13 @@ assumptions:
     competitor files comparable capacity additions in the same period
   - Prime subscriber count disclosed in AMZN earnings materials equals or exceeds
     the figure reported in the quarter prior to scoring
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-13'
   draft: true
 - id: distribution_dominates_over_innovation
   statement: At the time of scoring, distribution advantage is the dominant competitive
@@ -114,13 +118,13 @@ assumptions:
     scoring date is at or above the level reported closest to the scoring date
   - New enterprise AI platform contract awards naming AWS as selected provider are
     disclosed in AMZN investor materials or customer press releases
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 1.0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-13'
   draft: true
 - id: ads_revenue_material_at_scoring
   statement: Advertising Services is a material contributor to AMZN's consolidated
@@ -139,13 +143,13 @@ assumptions:
     figure from the most recent quarter prior to scoring
   - Advertising segment revenue growth rate disclosed in an earnings release exceeds
     consolidated net sales growth rate in the same period
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-13'
   draft: true
 - id: aws_growth_reaccelerating_at_scoring
   statement: AWS segment revenue growth rate at the time of scoring is higher than
@@ -163,13 +167,13 @@ assumptions:
     above the most recently reported pre-scoring quarter
   - AWS remaining performance obligations (RPO) backlog disclosed in the next 10-Q
     increases year-over-year
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 6.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-13'
   draft: true
 ---
 ## Rationale

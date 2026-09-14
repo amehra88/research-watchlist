@@ -126,10 +126,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 28.0
+    confirm: 31.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-14'
   draft: true
 - id: ai_demand_one_step_removed
   statement: At scoring, ASML's AI-driven revenue exposure was mediated entirely through

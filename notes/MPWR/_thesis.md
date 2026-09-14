@@ -58,10 +58,10 @@ assumptions:
     revenue on a named next-generation AI-server platform
   - System integrator or analyst teardown report identifies MPWR components on a newly
     released AI server SKU
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 2.0
+    confirm: 5.0
     challenge: 0
     window_days: 90
     last_evidence: '2026-09-13'
@@ -110,13 +110,13 @@ assumptions:
     a share of total for two consecutive quarters
   - MPWR management explicitly ties revenue guidance to AI-server unit build forecasts
     on a quarterly earnings call
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 1.0
+    confirm: 7.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-13'
   draft: true
 - id: valuation_drag_investor_interest
   statement: Valuation was a drag on potential investor interest at scoring — it was
