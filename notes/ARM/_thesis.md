@@ -29,13 +29,13 @@ assumptions:
     company royalty revenue
   - A hyperscaler filing or investor day quantifying volume of ARM-architecture chips
     deployed in inference clusters
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 6.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-13'
   draft: true
 - id: arm_arch_no_qualified_alt
   statement: At scoring, no competing ISA has reached production-scale qualification
@@ -55,13 +55,13 @@ assumptions:
     an SEC filing or earnings call
   - A hyperscaler announcing renewal or expansion of an ARM architecture license for
     data center or AI silicon
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-13'
   draft: true
 - id: arm_anet_capex_additive
   statement: At scoring, AI infrastructure capex directed at compute silicon (ARM's

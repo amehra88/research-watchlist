@@ -81,10 +81,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 9.0
+    confirm: 13.0
     challenge: 1.5
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-14'
   draft: true
 ---
 ## Rationale

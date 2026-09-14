@@ -14,7 +14,11 @@ scores:
   competitive_advantage.distribution: '5'
   competitive_advantage.overall: '4'
   potential_investor_interest.score: '4'
-proposed_scores: {}
+proposed_scores:
+  competitive_advantage.innovation_rate:
+    value: '4'
+    since: '2026-09-13'
+    source: notes/AAPL/20260913-3Q26.md
 assumptions:
 - id: aapl_ai_laggard_at_scoring
   statement: At scoring, Apple had not shipped a frontier model and the Siri overhaul
@@ -57,13 +61,13 @@ assumptions:
   confirmed_by:
   - Apple confirms active device count at or above 2 billion in a filing or earnings
     disclosure
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 5.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-13'
   draft: true
 - id: aapl_silicon_ondevice_optionality
   statement: Apple Silicon and Neural Engine architecture, as of scoring, were technically
@@ -82,10 +86,10 @@ assumptions:
   confirmed_by:
   - Apple Intelligence technical documentation confirms on-device inference via Neural
     Engine for a material portion of shipped features
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 2.0
+    confirm: 6.0
     challenge: 0
     window_days: 90
     last_evidence: '2026-09-13'
@@ -107,13 +111,13 @@ assumptions:
   confirmed_by:
   - Apple's disclosed active device count is at or above the 2B figure cited at scoring
     in a subsequent filing
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 5.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-13'
   draft: true
 - id: aapl_china_iphone_cap_inv_int
   statement: China revenue exposure and decelerating iPhone unit growth were, at scoring,
@@ -133,13 +137,13 @@ assumptions:
     earnings filing
   - Apple reports China segment revenue declining YoY in a subsequent quarterly earnings
     filing
-  status: open
-  status_source: draft
+  status: challenged
+  status_source: evidence
   pressure:
     confirm: 0.5
-    challenge: 3.0
+    challenge: 9.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-13'
   draft: true
 - id: aapl_fcf_buyback_inv_int_support
   statement: FCF generation magnitude and buyback activity were, at scoring, the primary
@@ -155,13 +159,13 @@ assumptions:
   - Apple maintains or increases buyback authorization in a subsequent SEC filing
   - Apple reports FCF at or above the prior-year comparable period in a quarterly
     filing
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 1.0
+    confirm: 7.0
     challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-13'
   draft: true
 ---
 ## Rationale

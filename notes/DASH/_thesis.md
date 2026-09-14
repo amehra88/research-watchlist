@@ -32,9 +32,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-14'
   draft: true
 - id: ad_revenue_not_in_retreat
   statement: Conditions at scoring — DASH offers advertising as a value-added service

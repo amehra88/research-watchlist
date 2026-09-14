@@ -29,10 +29,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 28.0
+    confirm: 29.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-14'
   draft: true
 - id: 4q26_cycle_sufficient_as_gate
   statement: The 4Q26 earnings cycle (reported 2026-08-12) is the specific event the
@@ -49,10 +49,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-14'
   draft: true
 - id: factset_coverage_not_re_broken
   statement: The FactSet data-pull defect that delayed CSCO's inclusion was resolved

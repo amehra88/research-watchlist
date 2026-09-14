@@ -134,13 +134,13 @@ assumptions:
     diluted
   - Q4'26 earnings press release decomposing FY26 EPS vs. prior guidance with tariff
     refunds as the largest single line item in the bridge
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 3.0
+    confirm: 4.0
     challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-14'
   draft: true
 ---
 ## Rationale

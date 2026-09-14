@@ -61,9 +61,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 5.0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-08'
+    last_evidence: '2026-09-14'
   draft: true
 - id: crwv_vera_rubin_margin_premium
   statement: At 2Q26 close, CRWV's first-to-market position on NVIDIA Vera Rubin NVL72
@@ -89,10 +89,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-14'
   draft: true
 - id: crwv_a100_residual_pricing
   statement: 2020-vintage A100 GPU fleet was re-contracting at prices described as

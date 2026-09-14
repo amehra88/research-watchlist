@@ -129,9 +129,9 @@ assumptions:
   status_source: evidence
   pressure:
     confirm: 6.5
-    challenge: 0.5
+    challenge: 1.5
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-14'
   draft: true
 - id: investor_momentum_factors_weakening
   statement: At scoring, momentum factors for MSFT were weakening relative to mega-cap

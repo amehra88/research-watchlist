@@ -49,10 +49,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-14'
   draft: true
 - id: htfl_not_a_current_holding
   statement: The PM does not hold HTFL in the portfolio as of the 2026-06-24 add date;

@@ -35,7 +35,7 @@ assumptions:
   status_source: evidence
   pressure:
     confirm: 3.0
-    challenge: 16.0
+    challenge: 16.5
     window_days: 90
     last_evidence: '2026-09-09'
   draft: true
@@ -118,10 +118,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 0.5
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-09'
   draft: true
 - id: valuation_is_sole_investor_score_cap
   statement: At scoring date, the stated basis for the potential_investor_interest

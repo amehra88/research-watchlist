@@ -91,9 +91,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 2.0
-    challenge: 2.0
+    challenge: 3.0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-14'
   draft: true
 - id: dram_cyclicality_caps_inv_interest
   statement: At the time of scoring, commodity DRAM cyclicality constituted a material
@@ -117,10 +117,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 3.0
+    confirm: 5.0
     challenge: 3.0
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-14'
   draft: true
 - id: china_export_ctrl_not_escalated
   statement: China export-control exposure, flagged as a watch-item at the time of
@@ -167,10 +167,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 15.0
-    challenge: 2.0
+    confirm: 17.0
+    challenge: 4.0
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-14'
   draft: true
 ---
 ## Rationale
