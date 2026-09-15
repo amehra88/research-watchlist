@@ -87,3 +87,6 @@
 {"id": "status:MPWR:ai_server_design_in_intact:confirmed:2026-09-14", "ticker": "MPWR", "ts": "2026-09-14T19:45:02.518756+00:00"}
 {"id": "status:MPWR:ai_server_units_and_density_lever:confirmed:2026-09-14", "ticker": "MPWR", "ts": "2026-09-14T19:45:02.518756+00:00"}
 {"id": "note:FPS:20260514-3Q26.md", "ticker": "FPS", "ts": "2026-09-15T10:20:02.353535+00:00"}
+{"id": "status:GEV:gev_dc_power_order_conditions:challenged:2026-09-15", "ticker": "GEV", "ts": "2026-09-15T19:45:03.653064+00:00"}
+{"id": "status:META:meta_capex_100b_commitment:confirmed:2026-09-15", "ticker": "META", "ts": "2026-09-15T19:45:03.653064+00:00"}
+{"id": "status:NVDA:valuation_is_sole_investor_score_cap:challenged:2026-09-15", "ticker": "NVDA", "ts": "2026-09-15T19:45:03.653064+00:00"}

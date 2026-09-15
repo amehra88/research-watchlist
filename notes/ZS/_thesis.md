@@ -92,10 +92,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 22.0
+    confirm: 24.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-14'
   draft: true
 - id: security_first_ai_positioning
   statement: ZS's AI-positioning score of 3 reflects a security-first architecture
@@ -146,10 +146,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 7.0
+    confirm: 9.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-14'
   draft: true
 ---
 ## Rationale

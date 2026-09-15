@@ -37,10 +37,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-15'
   draft: true
 - id: us_commercial_growth_accelerating_at_scoring
   statement: US commercial revenue growth rate was accelerating at the time of scoring

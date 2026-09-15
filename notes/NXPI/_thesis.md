@@ -35,9 +35,9 @@ assumptions:
   status_source: evidence
   pressure:
     confirm: 5.0
-    challenge: 1.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-14'
   draft: true
 - id: analyst_pushback_no_guide_revision
   statement: The sell-side analyst pushback recorded on the most recent earnings call

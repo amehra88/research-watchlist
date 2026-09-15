@@ -99,9 +99,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 5.0
-    challenge: 2.0
+    challenge: 6.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-15'
   draft: true
 - id: nvda_partnership_not_terminated
   statement: At scoring, the NVDA NVLink Fusion co-integration partnership and the
@@ -186,9 +186,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 1.0
-    challenge: 0
+    challenge: 6.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-14'
   draft: true
 ---
 ## Rationale
