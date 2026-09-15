@@ -65,7 +65,7 @@ assumptions:
   status_source: evidence
   pressure:
     confirm: 10.0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
     last_evidence: '2026-09-14'
   draft: true

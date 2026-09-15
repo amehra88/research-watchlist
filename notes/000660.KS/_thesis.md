@@ -56,10 +56,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 37.0
-    challenge: 13.0
+    confirm: 39.0
+    challenge: 14.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-15'
   draft: true
 - id: hynix_first_to_market_hbm_gens
   statement: At scoring, SK Hynix had shipped each major HBM generation ahead of Samsung
@@ -79,9 +79,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 7.0
-    challenge: 2.0
+    challenge: 4.0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-14'
   draft: true
 - id: hynix_hbm_share_beyond_nvda
   statement: At scoring, SK Hynix held leading HBM share across the broad memory customer
@@ -148,9 +148,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 10.0
+    challenge: 12.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-15'
   draft: true
 ---
 ## Rationale

@@ -101,10 +101,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-14'
   draft: true
 - id: crwd_outage_residual_not_worsening
   statement: The overall competitive-advantage score of 4 incorporates 'modest residual'
@@ -162,9 +162,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 1.0
+    challenge: 5.0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-14'
   draft: true
 ---
 ## Rationale

@@ -67,9 +67,9 @@ assumptions:
   status_source: evidence
   pressure:
     confirm: 5.5
-    challenge: 3.0
+    challenge: 4.5
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-15'
   draft: true
 - id: logistics_prime_no_single_rival
   statement: No single competitor replicates the combined logistics network and Prime
