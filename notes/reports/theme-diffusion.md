@@ -1,4 +1,4 @@
-## Theme diffusion — 2026-09-14
+## Theme diffusion — 2026-09-15
 
 Current quarter **CY2026-Q3** (in progress — counts are partial); prior CY2026-Q2. Quarters covered: CY2025-Q4, CY2026-Q1, CY2026-Q2, CY2026-Q3.
 
@@ -6,9 +6,9 @@ Current quarter **CY2026-Q3** (in progress — counts are partial); prior CY2026
 | quarter | earnings_call companies | conference companies | MD&A filers |
 |---|---|---|---|
 | CY2025-Q4 | 7 | 16 | 8 |
-| CY2026-Q1 | 41 | 22 | 61 |
-| CY2026-Q2 | 43 | 23 | 69 |
-| CY2026-Q3 | 50 | 34 | 71 |
+| CY2026-Q1 | 41 | 22 | 62 |
+| CY2026-Q2 | 43 | 23 | 70 |
+| CY2026-Q3 | 51 | 34 | 71 |
 
 No transcript coverage — no results: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM, TTWO; incomplete/unknown: A000660, MU, NET, PLTR, POET, PWR, RKLB, SHOP, SNPS, SPCX, TSLA, TXN, WELL, accelink.cn, eoptolink.cn, hgtech.cn, innolight.cn, kaori.tw, mtar.in; unmappable: base_power.us, hisense_broadband.cn, source_photonics.cn. FactSet retrieval is topically scoped (theme-derived queries), not whole-call export.
 
@@ -64,90 +64,90 @@ No transcript coverage — no results: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB,
 
 ### Lifecycle (spec §6.3) — Tier-0 lag = first analyst question minus first MD&A filing, days
 n=53 (theme, company) pairs with both a filing and a question: min -184, p25 -77, median -4, p75 174, max 272; evidence led in 39.6% (31 negative = question came first, 1 same-day). See the censoring note above.
-Stage counts (theme, company): stage 1: 13, stage 2: 156, stage 3: 52, stage 4: 408
+Stage counts (theme, company): stage 1: 13, stage 2: 158, stage 3: 52, stage 4: 408
 
-### Stage 2 — asked at another name, not here (156; verified-adjacent askers first)
+### Stage 2 — asked at another name, not here (158; verified-adjacent askers first)
 | theme | company | adjacent asked (route, first question) | other askers | first evidence | open days | evidence |
 |---|---|---|---|---|---|---|
-| hyperscaler_revenue_concentration | NVDA | CBRS (manual:competitor, 2026-06-23); MRVL (manual:partnership, 2025-12-02) | AAOI, AMD, ANET, ARM, AVGO, CIEN +11 | 2026-02-25 | 201 | mdna |
-| capex_vs_opex_shift | HPQ | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2025-12-10 | 278 | mdna |
-| software_seat_pricing_pressure | HPQ | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2025-12-10 | 278 | mdna |
-| solar_supply_chain | HPQ | — | BE, CRS, FPS, GEV, GLW, MTRN | 2025-12-10 | 278 | mdna |
-| capex_vs_opex_shift | AMAT | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2025-12-12 | 276 | mdna |
-| software_seat_pricing_pressure | AMAT | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2025-12-12 | 276 | mdna |
-| software_seat_pricing_pressure | CIEN | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2025-12-12 | 276 | mdna |
-| automotive_semiconductor_demand | AVGO | — | AAPL, AMAT, AMBA, HPE, LRCX, MPWR +1 | 2025-12-18 | 270 | mdna |
-| capex_vs_opex_shift | AVGO | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2025-12-18 | 270 | mdna |
-| capex_vs_opex_shift | MU | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2025-12-18 | 270 | mdna |
-| china_export_controls | AVGO | — | AMAT, ASML, LRCX, NXPI | 2025-12-18 | 270 | mdna |
-| nand_demand_cycle | MU | — | 000660.KS, 005930.KS, AAPL, AMAT, AMBA, AMD +13 | 2025-12-18 | 270 | mdna |
-| pc_demand | HPE | — | AAPL, HPQ | 2025-12-18 | 270 | mdna |
-| semiconductor_cycle | MU | — | 000660.KS, 005930.KS, AAPL, AMAT, AMBA, ARM +15 | 2025-12-18 | 270 | mdna |
-| software_seat_pricing_pressure | AVGO | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2025-12-18 | 270 | mdna |
-| software_seat_pricing_pressure | DE | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2025-12-18 | 270 | mdna |
-| software_seat_pricing_pressure | HPE | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2025-12-18 | 270 | mdna |
-| solar_supply_chain | HPE | — | BE, CRS, FPS, GEV, GLW, MTRN | 2025-12-18 | 270 | mdna |
-| capex_vs_opex_shift | SNPS | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2025-12-22 | 266 | mdna |
-| china_export_controls | SNPS | — | AMAT, ASML, LRCX, NXPI | 2025-12-22 | 266 | mdna |
-| software_seat_pricing_pressure | SNPS | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2025-12-22 | 266 | mdna |
-| solar_supply_chain | SNPS | — | BE, CRS, FPS, GEV, GLW, MTRN | 2025-12-22 | 266 | mdna |
-| pc_demand | INTC | — | AAPL, HPQ | 2026-01-23 | 234 | mdna |
-| solar_supply_chain | INTC | — | BE, CRS, FPS, GEV, GLW, MTRN | 2026-01-23 | 234 | mdna |
-| software_seat_pricing_pressure | MSFT | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-01-28 | 229 | mdna |
-| capex_vs_opex_shift | LRCX | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-01-29 | 228 | mdna |
-| capex_vs_opex_shift | NOW | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-01-29 | 228 | mdna |
-| platform_take_rate | META | — | AAPL, AMZN, DASH | 2026-01-29 | 228 | mdna |
-| software_seat_pricing_pressure | META | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-01-29 | 228 | mdna |
-| software_seat_pricing_pressure | NOW | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-01-29 | 228 | mdna |
-| automotive_semiconductor_demand | FN | — | AAPL, AMAT, AMBA, HPE, LRCX, MPWR +1 | 2026-02-03 | 223 | mdna |
-| capex_vs_opex_shift | FN | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-03 | 223 | mdna |
-| china_consumer_demand | FN | — | AAPL, AMAT, LRCX | 2026-02-03 | 223 | mdna |
-| platform_take_rate | FN | — | AAPL, AMZN, DASH | 2026-02-03 | 223 | mdna |
-| aerospace_defense_aftermarket | COHR | — | CRS, GEV, LITE, MRVL, MTRN | 2026-02-04 | 222 | mdna |
-| automotive_semiconductor_demand | COHR | — | AAPL, AMAT, AMBA, HPE, LRCX, MPWR +1 | 2026-02-04 | 222 | mdna |
-| capex_vs_opex_shift | TTWO | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-04 | 222 | mdna |
-| platform_take_rate | TTWO | — | AAPL, AMZN, DASH | 2026-02-04 | 222 | mdna |
-| software_seat_pricing_pressure | TTWO | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-04 | 222 | mdna |
-| ad_market_strength | GOOGL | — | AAPL, DASH, GOOG, META, RDDT | 2026-02-05 | 221 | mdna |
-| software_seat_pricing_pressure | GOOG | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-05 | 221 | mdna |
-| software_seat_pricing_pressure | GOOGL | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-05 | 221 | mdna |
-| ad_market_strength | AMZN | — | AAPL, DASH, GOOG, META, RDDT | 2026-02-06 | 220 | mdna |
-| automotive_semiconductor_demand | TXN | — | AAPL, AMAT, AMBA, HPE, LRCX, MPWR +1 | 2026-02-06 | 220 | mdna |
-| capex_vs_opex_shift | AMZN | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-06 | 220 | mdna |
-| platform_take_rate | RDDT | — | AAPL, AMZN, DASH | 2026-02-06 | 220 | mdna |
-| software_seat_pricing_pressure | RDDT | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-06 | 220 | mdna |
-| capex_vs_opex_shift | BE | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-09 | 217 | mdna |
-| software_seat_pricing_pressure | BE | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-09 | 217 | mdna |
-| capex_vs_opex_shift | ENTG | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-11 | 215 | mdna |
-| software_seat_pricing_pressure | ENTG | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-11 | 215 | mdna |
-| automotive_semiconductor_demand | GLW | — | AAPL, AMAT, AMBA, HPE, LRCX, MPWR +1 | 2026-02-12 | 214 | mdna |
-| software_seat_pricing_pressure | GLW | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-12 | 214 | mdna |
-| ad_market_strength | ROKU | — | AAPL, DASH, GOOG, META, RDDT | 2026-02-13 | 213 | mdna |
-| capex_vs_opex_shift | ROKU | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-13 | 213 | mdna |
-| platform_take_rate | ROKU | — | AAPL, AMZN, DASH | 2026-02-13 | 213 | mdna |
-| software_seat_pricing_pressure | ROKU | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-13 | 213 | mdna |
-| capex_vs_opex_shift | ANET | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-17 | 209 | mdna |
-| capex_vs_opex_shift | CSCO | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-17 | 209 | mdna |
-| capex_vs_opex_shift | PLTR | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-17 | 209 | mdna |
+| hyperscaler_revenue_concentration | NVDA | CBRS (manual:competitor, 2026-06-23); MRVL (manual:partnership, 2025-12-02) | AAOI, AMD, ANET, ARM, AVGO, CIEN +11 | 2026-02-25 | 202 | mdna |
+| capex_vs_opex_shift | HPQ | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2025-12-10 | 279 | mdna |
+| software_seat_pricing_pressure | HPQ | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2025-12-10 | 279 | mdna |
+| solar_supply_chain | HPQ | — | BE, CRS, FPS, GEV, GLW, MTRN | 2025-12-10 | 279 | mdna |
+| capex_vs_opex_shift | AMAT | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2025-12-12 | 277 | mdna |
+| software_seat_pricing_pressure | AMAT | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2025-12-12 | 277 | mdna |
+| software_seat_pricing_pressure | CIEN | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2025-12-12 | 277 | mdna |
+| automotive_semiconductor_demand | AVGO | — | AAPL, AMAT, AMBA, HPE, LRCX, MPWR +1 | 2025-12-18 | 271 | mdna |
+| capex_vs_opex_shift | AVGO | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2025-12-18 | 271 | mdna |
+| capex_vs_opex_shift | MU | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2025-12-18 | 271 | mdna |
+| china_export_controls | AVGO | — | AMAT, ASML, LRCX, NXPI | 2025-12-18 | 271 | mdna |
+| nand_demand_cycle | MU | — | 000660.KS, 005930.KS, AAPL, AMAT, AMBA, AMD +13 | 2025-12-18 | 271 | mdna |
+| pc_demand | HPE | — | AAPL, HPQ | 2025-12-18 | 271 | mdna |
+| semiconductor_cycle | MU | — | 000660.KS, 005930.KS, AAPL, AMAT, AMBA, ARM +15 | 2025-12-18 | 271 | mdna |
+| software_seat_pricing_pressure | AVGO | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2025-12-18 | 271 | mdna |
+| software_seat_pricing_pressure | DE | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2025-12-18 | 271 | mdna |
+| software_seat_pricing_pressure | HPE | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2025-12-18 | 271 | mdna |
+| solar_supply_chain | HPE | — | BE, CRS, FPS, GEV, GLW, MTRN | 2025-12-18 | 271 | mdna |
+| capex_vs_opex_shift | SNPS | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2025-12-22 | 267 | mdna |
+| china_export_controls | SNPS | — | AMAT, ASML, LRCX, NXPI | 2025-12-22 | 267 | mdna |
+| software_seat_pricing_pressure | SNPS | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2025-12-22 | 267 | mdna |
+| solar_supply_chain | SNPS | — | BE, CRS, FPS, GEV, GLW, MTRN | 2025-12-22 | 267 | mdna |
+| pc_demand | INTC | — | AAPL, HPQ | 2026-01-23 | 235 | mdna |
+| solar_supply_chain | INTC | — | BE, CRS, FPS, GEV, GLW, MTRN | 2026-01-23 | 235 | mdna |
+| software_seat_pricing_pressure | MSFT | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-01-28 | 230 | mdna |
+| capex_vs_opex_shift | LRCX | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-01-29 | 229 | mdna |
+| capex_vs_opex_shift | NOW | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-01-29 | 229 | mdna |
+| platform_take_rate | META | — | AAPL, AMZN, DASH | 2026-01-29 | 229 | mdna |
+| software_seat_pricing_pressure | META | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-01-29 | 229 | mdna |
+| software_seat_pricing_pressure | NOW | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-01-29 | 229 | mdna |
+| automotive_semiconductor_demand | FN | — | AAPL, AMAT, AMBA, HPE, LRCX, MPWR +1 | 2026-02-03 | 224 | mdna |
+| capex_vs_opex_shift | FN | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-03 | 224 | mdna |
+| china_consumer_demand | FN | — | AAPL, AMAT, LRCX | 2026-02-03 | 224 | mdna |
+| platform_take_rate | FN | — | AAPL, AMZN, DASH | 2026-02-03 | 224 | mdna |
+| aerospace_defense_aftermarket | COHR | — | CRS, GEV, LITE, MRVL, MTRN | 2026-02-04 | 223 | mdna |
+| automotive_semiconductor_demand | COHR | — | AAPL, AMAT, AMBA, HPE, LRCX, MPWR +1 | 2026-02-04 | 223 | mdna |
+| capex_vs_opex_shift | TTWO | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-04 | 223 | mdna |
+| platform_take_rate | TTWO | — | AAPL, AMZN, DASH | 2026-02-04 | 223 | mdna |
+| software_seat_pricing_pressure | TTWO | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-04 | 223 | mdna |
+| ad_market_strength | GOOGL | — | AAPL, DASH, GOOG, META, RDDT | 2026-02-05 | 222 | mdna |
+| software_seat_pricing_pressure | GOOG | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-05 | 222 | mdna |
+| software_seat_pricing_pressure | GOOGL | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-05 | 222 | mdna |
+| ad_market_strength | AMZN | — | AAPL, DASH, GOOG, META, RDDT | 2026-02-06 | 221 | mdna |
+| automotive_semiconductor_demand | TXN | — | AAPL, AMAT, AMBA, HPE, LRCX, MPWR +1 | 2026-02-06 | 221 | mdna |
+| capex_vs_opex_shift | AMZN | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-06 | 221 | mdna |
+| platform_take_rate | RDDT | — | AAPL, AMZN, DASH | 2026-02-06 | 221 | mdna |
+| software_seat_pricing_pressure | RDDT | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-06 | 221 | mdna |
+| capex_vs_opex_shift | BE | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-09 | 218 | mdna |
+| software_seat_pricing_pressure | BE | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-09 | 218 | mdna |
+| capex_vs_opex_shift | ENTG | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-11 | 216 | mdna |
+| capex_vs_opex_shift | SITM | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-11 | 216 | mdna |
+| software_seat_pricing_pressure | ENTG | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-11 | 216 | mdna |
+| software_seat_pricing_pressure | SITM | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-11 | 216 | mdna |
+| automotive_semiconductor_demand | GLW | — | AAPL, AMAT, AMBA, HPE, LRCX, MPWR +1 | 2026-02-12 | 215 | mdna |
+| software_seat_pricing_pressure | GLW | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-12 | 215 | mdna |
+| ad_market_strength | ROKU | — | AAPL, DASH, GOOG, META, RDDT | 2026-02-13 | 214 | mdna |
+| capex_vs_opex_shift | ROKU | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-13 | 214 | mdna |
+| platform_take_rate | ROKU | — | AAPL, AMZN, DASH | 2026-02-13 | 214 | mdna |
+| software_seat_pricing_pressure | ROKU | — | CRWD, DDOG, GWRE, IOT, MDB, PANW +1 | 2026-02-13 | 214 | mdna |
+| capex_vs_opex_shift | ANET | — | AAPL, CIEN, CRWD, FPS, GLW, GWRE +3 | 2026-02-17 | 210 | mdna |
 
 ### Stage 1 — evidence, nobody asked anywhere (13)
 | theme | company | first evidence | open days | n_evidence | sources |
 |---|---|---|---|---|---|
-| foundry_capacity | CIEN | 2025-12-12 | 276 | 2 | mdna |
-| silicon_architecture_competition | FN | 2026-02-03 | 223 | 2 | mdna |
-| antitrust_action | GOOG | 2026-02-05 | 221 | 2 | mdna |
-| antitrust_action | GOOGL | 2026-02-05 | 221 | 2 | mdna |
-| fed_policy_tech | UPST | 2026-02-10 | 216 | 18 | mdna |
-| foundry_capacity | GLW | 2026-02-12 | 214 | 12 | mdna |
-| foundry_capacity | NXPI | 2026-02-19 | 207 | 7 | mdna |
-| foundry_capacity | AXON | 2026-02-25 | 201 | 2 | mdna |
-| antitrust_action | META | 2026-04-30 | 137 | 2 | mdna |
-| space_supply_chain | RKLB | 2026-05-07 | 130 | 16 | mdna |
-| foundry_capacity | RDNT | 2026-05-11 | 126 | 5 | mdna |
-| foundry_capacity | LITE | 2026-08-17 | 28 | 2 | mdna |
-| foundry_capacity | FN | 2026-08-18 | 27 | 3 | mdna |
+| foundry_capacity | CIEN | 2025-12-12 | 277 | 2 | mdna |
+| silicon_architecture_competition | FN | 2026-02-03 | 224 | 2 | mdna |
+| antitrust_action | GOOG | 2026-02-05 | 222 | 2 | mdna |
+| antitrust_action | GOOGL | 2026-02-05 | 222 | 2 | mdna |
+| fed_policy_tech | UPST | 2026-02-10 | 217 | 18 | mdna |
+| foundry_capacity | GLW | 2026-02-12 | 215 | 12 | mdna |
+| foundry_capacity | NXPI | 2026-02-19 | 208 | 7 | mdna |
+| foundry_capacity | AXON | 2026-02-25 | 202 | 2 | mdna |
+| antitrust_action | META | 2026-04-30 | 138 | 2 | mdna |
+| space_supply_chain | RKLB | 2026-05-07 | 131 | 16 | mdna |
+| foundry_capacity | RDNT | 2026-05-11 | 127 | 5 | mdna |
+| foundry_capacity | LITE | 2026-08-17 | 29 | 2 | mdna |
+| foundry_capacity | FN | 2026-08-18 | 28 | 3 | mdna |
 
-### Newly said in CY2026-Q3 (78) — absent from the same filer's two prior quarters (findings R4/R5)
+### Newly said in CY2026-Q3 (81) — absent from the same filer's two prior quarters (findings R4/R5)
 | company | theme | register | source | rows |
 |---|---|---|---|---|
 | AAOI | automotive_semiconductor_demand | evidence | exchange | 1 |
@@ -191,6 +191,8 @@ Stage counts (theme, company): stage 1: 13, stage 2: 156, stage 3: 52, stage 4: 
 | DOCN | vertical_ai_applications | evidence | exchange | 1 |
 | ENTG | solar_supply_chain | evidence | mdna | 2 |
 | FN | foundry_capacity | evidence | mdna | 3 |
+| FPS | hyperscaler_capex_buildout | evidence | exchange | 1 |
+| FPS | silicon_architecture_competition | evidence | exchange | 1 |
 | GDS | hyperscaler_revenue_concentration | evidence | exchange | 2 |
 | GDS | solar_supply_chain | evidence | exchange | 1 |
 | GLW | enterprise_ai_adoption | evidence | exchange | 1 |
@@ -225,6 +227,6 @@ Stage counts (theme, company): stage 1: 13, stage 2: 156, stage 3: 52, stage 4: 
 | NVDA | capex_vs_opex_shift | evidence | mdna | 2 |
 | PWR | energy_storage_buildout | evidence | mdna | 2 |
 | RBRK | cybersecurity_competitive_landscape | evidence | mdna | 2 |
+| SITM | automotive_semiconductor_demand | evidence | mdna | 2 |
 | SNOW | hyperscaler_revenue_concentration | evidence | mdna | 2 |
 | SNPS | automotive_semiconductor_demand | evidence | mdna | 3 |
-| STX | software_seat_pricing_pressure | evidence | mdna | 2 |

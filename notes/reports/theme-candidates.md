@@ -1,7 +1,7 @@
-## Theme candidates — 2026-09-14
+## Theme candidates — 2026-09-15
 
 Anchors: 62 themes; threshold 0.3 (by source: {'default': 0.3, 'exchange': 0.3, 'mdna': 0.4}) (held-out P 0.302 / R 0.38 on 1725 labelled chunks).
-Coverage: question register: 1521/3757 mapped (40%); evidence register: 6343/14276 mapped (44%); by source: exchange source: 6218/12669 mapped (49%), mdna source: 1646/5364 mapped (31%); 5812 rows skipped (operator/untyped speakers, acknowledgements, housekeeping).
+Coverage: question register: 1521/3757 mapped (40%); evidence register: 6371/14353 mapped (44%); by source: exchange source: 6238/12700 mapped (49%), mdna source: 1654/5410 mapped (31%); 5871 rows skipped (operator/untyped speakers, acknowledgements, housekeeping).
 A unit maps when its cosine to a theme centroid clears the threshold; the rest are clustered and only clusters with >= 3 companies and >= 2 banks are listed. The system never edits `config/watchlist.yaml` — accept with `topic_map.py --accept <id> --name <slug>`, reject with `--reject <id>`.
 
 ### Pending candidates (5 of 46; 3 evidence-only listed below)

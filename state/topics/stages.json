@@ -1,5 +1,5 @@
 {
- "as_of": "2026-09-14",
+ "as_of": "2026-09-15",
  "pairs": {
   "ad_market_strength|AAPL": 3,
   "ad_market_strength|AMZN": 2,
@@ -183,6 +183,7 @@
   "capex_vs_opex_shift|RBRK": 2,
   "capex_vs_opex_shift|ROKU": 2,
   "capex_vs_opex_shift|SHOP": 2,
+  "capex_vs_opex_shift|SITM": 2,
   "capex_vs_opex_shift|SNOW": 2,
   "capex_vs_opex_shift|SNPS": 2,
   "capex_vs_opex_shift|STX": 2,
@@ -578,6 +579,7 @@
   "software_seat_pricing_pressure|RBRK": 2,
   "software_seat_pricing_pressure|RDDT": 2,
   "software_seat_pricing_pressure|ROKU": 2,
+  "software_seat_pricing_pressure|SITM": 2,
   "software_seat_pricing_pressure|SNOW": 2,
   "software_seat_pricing_pressure|SNPS": 2,
   "software_seat_pricing_pressure|STX": 2,
