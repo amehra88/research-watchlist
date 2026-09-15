@@ -38,10 +38,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-14'
   draft: true
 - id: sk_hynix_hbm_lead_intact
   statement: At the time of scoring, SK Hynix led MU on HBM — the gap that caps MU's
@@ -63,10 +63,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 9.0
+    confirm: 10.0
     challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-15'
   draft: true
 - id: hbm_alloc_locking_ai_customers
   statement: At the time of scoring, HBM allocation to major AI customers was described
@@ -90,10 +90,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 2.0
-    challenge: 3.0
+    confirm: 3.0
+    challenge: 11.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-15'
   draft: true
 - id: dram_cyclicality_caps_inv_interest
   statement: At the time of scoring, commodity DRAM cyclicality constituted a material
@@ -117,7 +117,7 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 5.0
+    confirm: 6.0
     challenge: 3.0
     window_days: 90
     last_evidence: '2026-09-14'
@@ -168,9 +168,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 17.0
-    challenge: 4.0
+    challenge: 5.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-15'
   draft: true
 ---
 ## Rationale

@@ -36,9 +36,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-15'
   draft: true
 - id: ai_server_design_in_intact
   statement: MPWR had active design-ins on major AI-server platforms at scoring; no

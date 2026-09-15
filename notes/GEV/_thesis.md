@@ -60,13 +60,13 @@ assumptions:
     growth in the power segment
   - A hyperscaler or co-location operator publicly naming GEV as a power-equipment
     supplier in a press release or 8-K
-  status: open
-  status_source: draft
+  status: challenged
+  status_source: evidence
   pressure:
     confirm: 0.5
-    challenge: 2.0
+    challenge: 12.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-15'
   draft: true
 - id: gev_distribution_moat_utility_rels
   statement: GEV's utility and grid-operator relationships, together with its global

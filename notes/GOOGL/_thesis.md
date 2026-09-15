@@ -34,10 +34,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 7.0
-    challenge: 0
+    confirm: 9.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-14'
   draft: true
 - id: search_ai_not_cutting_revenue
   statement: AI Overviews and AI Mode, at the time of scoring, are not reducing aggregate
