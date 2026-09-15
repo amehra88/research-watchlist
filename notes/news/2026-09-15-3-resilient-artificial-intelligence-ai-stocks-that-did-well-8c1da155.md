@@ -1,0 +1,33 @@
+---
+doc_type: news
+source: news
+tickers: []
+themes: []
+macro_signals:
+- fed_policy
+lens_tags:
+- macro
+confidence: low
+rationale: Generic AI stock screen vs Fed rate-hike cycles; no specific watchlist
+  tickers named in headline.
+summarized: false
+source_urls:
+- https://news.google.com/rss/articles/CBMilwJBVV95cUxNX1lvSndIOG9aVTJYazJ3dmxmcFNhOUZnNTVGQTk1MjJWRUNoZ3BzN1VCbllocE02SHRRczhnaWMzRWdaUFNDQWhQUFFQT01nV1RjUWpRV2o3U1gzZlM2Z0pqZjNmaFlSSG9KeGt3SzJINjM1enF6TENIWk5CcjBNMDZpUXgzMGhNcHNOTHpOYjBUMmpZXzNPdzVOWllLZXBiUHk3c0lrQUhxM3hrQU5qSWFPeXliWlliaDFkOTVYdXUtTFlzWnNFcV9Wa1d4WlRyVFlRaF8wLXJMLXljWDJJTnJSZXZZaUxwcDczQXozTHJZejg5RjVYbm9DODBWUklHd2VEb3N5aXo4cENZMy1qck9tSXVNUDA?oc=5
+- https://news.google.com/rss/articles/CBMilwJBVV95cUxNZkdXaWVkVmgxa0hHOF9jelFYYU9qWkV3T3IzZTEwU1F6cWxqSURrQWpJTDRXUmxKeEYwSWowY0VSdUVPY0hON0I0WVpTYzdZeWZ5QnJnUkZrQTBibXRkTkFGeWx6aFFVWFlrdWJ2X01IX2VaLWNpTUJ4emFKRzNVVjFkSFFTcWtCcWhZWUg5ZjNaemE3dnc2UGRLZU5iWG5SYTZDbGxhSEF6Q0pnc01zSjE3MkQtSzV3N3pCenZHbW9RdUNTWEpsaEFfMHJOci1UOFZJb1M1ZGhYekRlZ1JFMkJGZlIzSjE2b25qUXJGaFBjcFFWZTFDRHR2ODBBaXI0dEVGRFRCbmdZc2Z0MlVxNEVDZUdnTXc?oc=5
+- https://news.google.com/rss/articles/CBMimgJBVV95cUxOaUFJaEdqTm80eVVTaXpScDBabFNTV3p1UGdzc3hmTjBqNU9CSDVUZWhnWEtaUEtZOHFkTVpWZERjMjBPMDhrM3U5d3NQMnhsTVphWWxGYTV6enpwakcybjllOF9Ya3RKVmpiZDM2MkZmTHRQc1F3ZlVBOFVrd2xYNl96YTU3RmJnQjJyVHBRRmhZeFdScjVwcGtvV3hJVlBXdTFfMVNVVlZjSVJzZkpPNmNtb2E3bmNYa0lXNlFBeU55VW8xbjV6S000UWhQRXhMdUlpV1ZYM1dzbmM1SWpaSFhhTm80U2hsTGUzOUlqa1dhM1hyTjBITkkyWnFHaEdCRTJPa1hPM05PWjFkX3hnWnlhVGJ2cW16TFE?oc=5
+- https://news.google.com/rss/articles/CBMi3wFBVV95cUxPZ2huOGRXd2RFX0JvbWVZVlQ3T1E2N1F1ekNYYmpNTTdLLTlLWEFsZnBNQXE4eTQzRHItc0NhTXQwRTNteXhFYkxoU3lHMlNhMF9CT2tKdkNjakYxTzVYTl83OHY5M2IwNHNLU1YySGRwVFM1M2h4VUljTkFCbXhVU2F2MFdqOHNNSzhZb3ZieHd1aklYWEZ2SUJ1OTlYd005NXVTWnNaSUotT0VCZkM2b3dsNnh0NFZpdkprWTAyeXJnNTN5dXh3aGZXSGlla1VGQlVLM2MwYTBCUGkxUjU4?oc=5
+cluster_headlines:
+- 3 Resilient Artificial Intelligence (AI) Stocks That Did Well the Last Time the
+  Fed Raised Interest Rates
+factset_sentiment: ''
+published_date: '2026-09-15'
+ingestion_date: '2026-09-15'
+extraction_source: v3 news-flow channel (news_digest.py), classified but below the
+  digest cut — headline-only note, not summarized
+---
+
+## 3 Resilient Artificial Intelligence (AI) Stocks That Did Well the Last Time the Fed Raised Interest Rates
+
+Generic AI stock screen vs Fed rate-hike cycles; no specific watchlist tickers named in headline.
+
+- 3 Resilient Artificial Intelligence (AI) Stocks That Did Well the Last Time the Fed Raised Interest Rates
