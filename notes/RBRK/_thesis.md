@@ -42,10 +42,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-15'
   draft: true
 - id: innovation_ai_governance_competitive
   statement: At scoring, RBRK's data-security platform — combining cyber-resilience
@@ -69,10 +69,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-14'
   draft: true
 - id: land_expand_installed_base
   statement: At scoring, RBRK's land-and-expand motion was generating measurable growth

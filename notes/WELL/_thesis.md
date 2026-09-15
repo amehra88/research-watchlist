@@ -140,10 +140,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-14'
   draft: true
 - id: well_index_inclusion_holds_at_scoring
   statement: WELL held inclusion in its primary benchmark index at the time of scoring,

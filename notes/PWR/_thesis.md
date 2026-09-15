@@ -97,10 +97,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 2.0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-14'
   draft: true
 - id: pwr_scale_not_tech_moat
   statement: PWR's competitive advantage at scoring derived from execution scale and
@@ -141,9 +141,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-14'
   draft: true
 ---
 ## Rationale

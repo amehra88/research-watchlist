@@ -62,9 +62,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 4.0
+    challenge: 6.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-15'
   draft: true
 - id: foundry_lags_tsmc_leading_edge
   statement: Samsung foundry held lower leading-edge capacity utilization and fewer
@@ -88,9 +88,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 7.0
-    challenge: 12.0
+    challenge: 15.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-15'
   draft: true
 - id: samsung_no1_dram_nand_volume
   statement: Samsung held the largest global volume share in both DRAM and NAND at
@@ -141,9 +141,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 2.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-15'
   draft: true
 ---
 ## Rationale

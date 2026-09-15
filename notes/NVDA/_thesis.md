@@ -34,10 +34,10 @@ assumptions:
   status: challenged
   status_source: evidence
   pressure:
-    confirm: 3.0
-    challenge: 16.5
+    confirm: 6.0
+    challenge: 17.5
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-11'
   draft: true
 - id: roadmap_2yr_named_platforms
   statement: At scoring date, NVDA has publicly named successor platforms with disclosed
@@ -118,10 +118,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0.5
+    confirm: 3.5
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-10'
   draft: true
 - id: valuation_is_sole_investor_score_cap
   statement: At scoring date, the stated basis for the potential_investor_interest
@@ -139,13 +139,13 @@ assumptions:
   - Sell-side initiations or rating changes to Hold on NVDA citing valuation as the
     primary stated rationale while characterizing demand and competitive position
     as intact
-  status: open
-  status_source: draft
+  status: challenged
+  status_source: evidence
   pressure:
     confirm: 0
-    challenge: 1.5
+    challenge: 5.5
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-10'
   draft: true
 - id: fifty_pct_fcf_return_structural
   statement: At scoring date, the capital return posture of approximately 50% of FCF

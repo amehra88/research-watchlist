@@ -42,9 +42,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 2.5
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-14'
   draft: true
 - id: aapl_active_device_2b_at_scoring
   statement: Active installed base at scoring stood at or above 2 billion devices
@@ -89,10 +89,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 6.0
+    confirm: 8.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-15'
   draft: true
 - id: aapl_distribution_buffers_ai_lag
   statement: The distribution advantage — not AI innovation execution — is the factor

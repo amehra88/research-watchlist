@@ -35,10 +35,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-14'
   draft: true
 - id: custom_inference_silicon_active
   statement: At scoring, Tesla's custom inference silicon was in active production
@@ -84,10 +84,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-15'
   draft: true
 - id: ev_demand_decel_conditions_hold
   statement: At scoring, EV unit demand was decelerating and competitive intensity
@@ -163,9 +163,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 2.0
-    challenge: 2.0
+    challenge: 3.0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-14'
   draft: true
 ---
 ## Rationale

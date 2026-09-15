@@ -68,10 +68,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 2.0
+    confirm: 3.0
     challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-15'
   draft: true
 - id: every_fabless_ai_routes_tsm
   statement: At scoring date, every major fabless AI chip design targeting leading-edge
@@ -125,9 +125,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 5.0
-    challenge: 2.0
+    challenge: 4.0
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-15'
   draft: true
 - id: geopolitical_risk_conditions_hold
   statement: The Taiwan/China geopolitical risk level — cited at scoring as the single
