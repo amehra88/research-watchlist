@@ -86,3 +86,4 @@
 {"id": "status:LRCX:hbm_capex_near_term_driver:confirmed:2026-09-14", "ticker": "LRCX", "ts": "2026-09-14T19:45:02.518756+00:00"}
 {"id": "status:MPWR:ai_server_design_in_intact:confirmed:2026-09-14", "ticker": "MPWR", "ts": "2026-09-14T19:45:02.518756+00:00"}
 {"id": "status:MPWR:ai_server_units_and_density_lever:confirmed:2026-09-14", "ticker": "MPWR", "ts": "2026-09-14T19:45:02.518756+00:00"}
+{"id": "note:FPS:20260514-3Q26.md", "ticker": "FPS", "ts": "2026-09-15T10:20:02.353535+00:00"}
