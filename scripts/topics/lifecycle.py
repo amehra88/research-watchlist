@@ -154,6 +154,12 @@ def stage(idx: dict, theme: str, ticker: str) -> int | None:
 #: so it demands real observed silence without demanding a second filing.
 LAG_GUARD_DAYS = 30
 
+#: a filing this close to the call is the SAME reporting event, not a response
+#: to it. Measured across the corpus: the offset from a ticker's call to its
+#: filing for the same quarter runs median +1 day (p25 0, p75 2), so anything
+#: inside a few days carries no timing information in either direction.
+SAME_EVENT_DAYS = 3
+
 #: below this many identified pairs, report the COUNT and no distribution.
 #: Two pairs that both happen to be negative render as "evidence led in 0.0%",
 #: which is a stronger claim than "we have two observations" and is exactly the
@@ -226,27 +232,43 @@ def lag_is_identified(pair: dict, starts: dict,
     return True
 
 
-def identified_lags(idx: dict, starts: dict,
-                    buf: int = LAG_GUARD_DAYS) -> dict:
-    """-> {"lags", "dropped_pos", "dropped_neg", "buffer_days"}
+def identified_lags(idx: dict, starts: dict, buf: int = LAG_GUARD_DAYS,
+                    same_event: int = SAME_EVENT_DAYS) -> dict:
+    """-> {"lags", "dropped_pos", "dropped_neg", "dropped_same_event",
+           "buffer_days", "same_event_days"}
 
-    The two dropped counts are the diagnostic and are kept apart on purpose:
-    which direction the censoring runs in is the whole story, and one combined
-    number would hide it."""
-    lags, dropped_pos, dropped_neg = [], 0, 0
+    **What the surviving number means:** with same-reporting-event pairs
+    removed, Tier 0 measures leads and lags LONGER THAN ONE REPORTING CYCLE. A
+    genuinely simultaneous disclosure is out of scope by construction — not
+    absent from the data — because at this resolution it is indistinguishable
+    from the mechanical offset between a call and that quarter's filing.
+
+    Three reasons a pair can fail, kept apart on purpose. `dropped_pos` and
+    `dropped_neg` say which direction the censoring runs in, which is the whole
+    diagnostic. `dropped_same_event` is a different thing entirely — those
+    pairs are perfectly well observed, they just have no timing content — and
+    folding it into either censoring count would make the diagnostic lie.
+
+    Every pair carrying both dates lands in exactly one bucket; the test suite
+    asserts that sum, because the `lag == 0` hole came from a branch that
+    matched none of them."""
+    lags, dropped_pos, dropped_neg, dropped_same = [], 0, 0, 0
     for p in idx.values():
         te, tq = p.get("first_filing_date"), p.get("first_question_date")
         if not te or not tq:
             continue
         lag = lag_days(te, tq)
-        if lag_is_identified(p, starts, buf):
+        if abs(lag) <= same_event:
+            dropped_same += 1
+        elif lag_is_identified(p, starts, buf):
             lags.append(lag)
         elif lag < 0:
             dropped_neg += 1
         else:
             dropped_pos += 1
     return {"lags": lags, "dropped_pos": dropped_pos,
-            "dropped_neg": dropped_neg, "buffer_days": buf}
+            "dropped_neg": dropped_neg, "dropped_same_event": dropped_same,
+            "buffer_days": buf, "same_event_days": same_event}
 
 
 def summarize(lags: list) -> dict:

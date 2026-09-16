@@ -276,10 +276,18 @@ def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None) -> d
     _ident = lc.identified_lags(idx, cov)
     lag_identified = {"summary": lc.summarize(_ident["lags"]),
                       "dropped_pos": _ident["dropped_pos"], "dropped_neg": _ident["dropped_neg"],
-                      "buffer_days": _ident["buffer_days"],
+                      "dropped_same_event": _ident["dropped_same_event"],
+                      "buffer_days": _ident["buffer_days"], "same_event_days": _ident["same_event_days"],
                       "n_tickers_mdna_starts_late": sum(
                           1 for c in cov.values() if c["question"] and c["mdna"]
-                          and (lc._d(c["mdna"]) - lc._d(c["question"])).days > 30)}
+                          and (lc._d(c["mdna"]) - lc._d(c["question"])).days > lc.LAG_GUARD_DAYS),
+                      # a ticker whose only observed call is recent has NO question
+                      # history, so nothing about it can ever be identified — this is
+                      # a backfill gap, not a statistical one, and it is fixable
+                      "n_tickers_single_call": sum(
+                          1 for c in cov.values() if c["question"]
+                          and (lc._d(as_of) - lc._d(c["question"])).days < 45),
+                      "n_tickers_with_calls": sum(1 for c in cov.values() if c["question"])}
     stage_counts = collections.Counter()
     stage1 = []
     for (theme, ticker), p in idx.items():
@@ -319,6 +327,15 @@ def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None) -> d
              f"{lag_identified['dropped_neg']} negative and {lag_identified['dropped_pos']} positive pairs fail that "
              "test. Applying the guard to negative lags alone would move the same corpus from 34.2% to 86.2% "
              "evidence-led, which is why it is applied in both directions.",
+             f"Call-side backfill is the binding gap and it is fixable: {lag_identified['n_tickers_single_call']} of "
+             f"{lag_identified['n_tickers_with_calls']} tickers with any call coverage have their FIRST observed call "
+             "in the last 45 days, i.e. one call and no question history at all. Nothing about those names can be "
+             "identified in either direction, and they account for most of the dropped positive pairs (HPQ, PANW, "
+             "HPE, NXPI, RDDT). More transcript history moves this number; more statistics does not.",
+             f"Pairs whose filing and question fall within {lag_identified['same_event_days']}d are excluded as one "
+             "reporting event rather than a disclosure and a response: the call-to-filing offset for the same quarter "
+             "runs median +1d (p25 0, p75 2). Tier 0 therefore measures leads and lags longer than one reporting "
+             "cycle; a genuinely simultaneous disclosure is out of scope by construction, not absent from the data.",
              "No trend lines by design: three or four observations per theme support a comparison, not a slope."]
     return {"as_of": as_of, "quarters": qs, "current_quarter": cur, "in_progress": bool(cur) and _quarter_of(as_of) == cur,
             "denominators": denominators(rows), "no_coverage": excl,
@@ -375,9 +392,11 @@ def write_report(snap: dict, path: Path = REPORT) -> str:
                  f"the first event): min {isum['min']}, median {isum['median']}, max {isum['max']}; "
                  f"evidence led in {isum['share_evidence_led']}%.")
     elif isum.get("n"):
-        L.append(f"**Only {isum['n']} identified pair(s)** (both registers observed >= {ident.get('buffer_days')}d "
-                 f"before the first event) — fewer than the {lc.LAG_MIN_N} needed to state a distribution, so no "
-                 f"share is reported. The lag is **not yet measurable from this corpus**, in either direction.")
+        n = isum["n"]
+        L.append(f"**Only {n} identified {'pair' if n == 1 else 'pairs'}** (both registers observed >= "
+                 f"{ident.get('buffer_days')}d before the first event) — fewer than the {lc.LAG_MIN_N} needed to "
+                 f"state a distribution, so no share is reported. The lag is **not yet measurable from this "
+                 f"corpus**, in either direction.")
     else:
         L.append(f"**No identified pairs.** Not one (theme, company) pair has both registers observed "
                  f"{ident.get('buffer_days', lc.LAG_GUARD_DAYS)}d before its first event, so the lag is **not measurable "
@@ -386,7 +405,9 @@ def write_report(snap: dict, path: Path = REPORT) -> str:
         L.append(f"_Raw (censored, not a finding):_ n={s['n']} pairs with both a filing and a question — median "
                  f"{s['median']}, {s['share_evidence_led']}% evidence-led, {s['n_negative']} negative. "
                  f"{ident.get('dropped_neg', 0)} negative and {ident.get('dropped_pos', 0)} positive pairs fail the "
-                 f"observation test. Do not quote these as a result; see the censoring note above.")
+                 f"observation test; a further {ident.get('dropped_same_event', 0)} are same-reporting-event pairs "
+                 f"(|lag| <= {ident.get('same_event_days')}d) with no timing content. Do not quote these as a "
+                 f"result; see the censoring note above.")
     L.append("Stage counts (theme, company): " + ", ".join(f"stage {k}: {v}" for k, v in snap["stage_counts"].items()))
     L.append("")
     L.append(f"### Stage 2 — asked at another name, not here ({len(snap['stage2'])}; verified-adjacent askers first)")

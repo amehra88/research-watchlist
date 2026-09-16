@@ -278,6 +278,44 @@ def test_identified_lags_reports_why_pairs_were_dropped():
     assert out["buffer_days"] == 30
 
 
+def test_a_same_reporting_event_pair_has_no_timing_content():
+    """Filings land a median +1 day after the call (p25 0, p75 2, measured).
+    So a pair whose two events are a day apart is one disclosure event, not a
+    company reacting to an analyst. AMBA/automotive_semiconductor_demand was
+    exactly this — filed 2026-09-04, asked 2026-09-03 — and it was half the
+    identified sample until it got its own bucket."""
+    starts = {"A": {"question": "2025-11-01", "mdna": "2025-11-01"}}
+    idx = {("t1", "A"): _pair("t1", "A", "2026-09-04", "2026-09-03")}
+    out = lc.identified_lags(idx, starts, buf=30)
+    assert out["lags"] == [], out
+    assert out["dropped_same_event"] == 1, out
+    # it is NOT a censoring drop — conflating the two would make the
+    # directional diagnostic lie
+    assert out["dropped_neg"] == 0 and out["dropped_pos"] == 0, out
+
+
+def test_every_pair_lands_in_exactly_one_bucket():
+    """The accounting invariant. Four buckets now, and the `lag == 0` hole was
+    born of a branch that matched none of them. If a future edit drops a pair
+    into no bucket, or into two, this fails."""
+    starts = {"A": {"question": "2025-11-01", "mdna": "2026-05-01"},
+              "B": {"question": "2025-11-01", "mdna": "2025-11-01"},
+              "C": {"question": "2026-09-01", "mdna": "2025-11-01"}}
+    idx = {
+        ("t1", "A"): _pair("t1", "A", "2026-05-07", "2025-12-09"),   # neg, censored
+        ("t1", "B"): _pair("t1", "B", "2026-03-01", "2026-06-01"),   # +92, kept
+        ("t2", "B"): _pair("t2", "B", "2026-09-04", "2026-09-03"),   # same event
+        ("t1", "C"): _pair("t1", "C", "2026-02-01", "2026-09-20"),   # pos, censored
+        ("t3", "B"): _pair("t3", "B", "2026-03-01", None),           # not a pair
+    }
+    out = lc.identified_lags(idx, starts, buf=30)
+    n_with_both = sum(1 for p in idx.values()
+                      if p["first_filing_date"] and p["first_question_date"])
+    total = (len(out["lags"]) + out["dropped_pos"] + out["dropped_neg"]
+             + out["dropped_same_event"])
+    assert total == n_with_both == 4, (total, n_with_both, out)
+
+
 def test_identified_lags_ignores_pairs_missing_a_side():
     starts = {"A": {"question": "2025-11-01", "mdna": "2025-11-01"}}
     idx = {("t1", "A"): _pair("t1", "A", "2026-03-01", None)}

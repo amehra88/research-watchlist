@@ -209,6 +209,36 @@ def test_a_handful_of_identified_pairs_reports_no_percentage():
     assert "not yet measurable" in sec, sec[:400]
 
 
+def test_a_single_identified_pair_is_not_written_as_pair_s():
+    ident = {"summary": {"n": 1, "min": -79, "median": -79, "max": -79,
+                         "share_evidence_led": 0.0},
+             "dropped_pos": 21, "dropped_neg": 29, "dropped_same_event": 5,
+             "buffer_days": 30, "same_event_days": 3,
+             "n_tickers_mdna_starts_late": 21, "n_tickers_single_call": 20,
+             "n_tickers_with_calls": 63}
+    rows = [_r("c1", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("c2", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna")]
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-15", no_coverage={})
+    snap["lag_identified"] = ident
+    with tempfile.TemporaryDirectory() as d:
+        md = df.write_report(snap, Path(d) / "r.md")
+    sec = md[md.find("### Lifecycle"):]
+    assert "1 identified pair" in sec and "pair(s)" not in sec, sec[:300]
+
+
+def test_the_note_names_the_call_backfill_gap():
+    """The one finding here an operator can act on: 20 of 63 tickers have a
+    single observed call, so nothing about them is identifiable in either
+    direction. That points at the transcript backfill, not the statistics."""
+    rows = [_r("q1", "question", "AAOI", "2026-09-10", "CY2026-Q3", ["t1"], firm="Wolfe"),
+            _r("c1", "evidence", "AAOI", "2026-06-01", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("c2", "evidence", "AAOI", "2026-06-01", "CY2026-Q2", ["t1"], source="mdna")]
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-15", no_coverage={})
+    assert snap["lag_identified"]["n_tickers_single_call"] == 1
+    joined = " ".join(snap["notes"])
+    assert "backfill" in joined and "first observed call" in joined.lower(), joined[-500:]
+
+
 def test_snapshot_pairs_carry_stage_and_dates_per_theme_ticker():
     rows = [_r("c1", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna"),
             _r("c2", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna"),
