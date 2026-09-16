@@ -150,7 +150,12 @@ def _headline(body: str) -> str | None:
 
 
 def _iso_week_shard(iso_date: str) -> str:
-    y, mo, d = (int(x) for x in iso_date[:10].split("-"))
+    # str() first: an unquoted `published_date: 2026-09-10` in frontmatter YAML
+    # parses as a real datetime.date, not a str -- iso_date[:10] would TypeError
+    # on that (a VALID date), not just on a genuinely malformed string. str()
+    # round-trips a date's own isoformat() unchanged, so this never affects a
+    # value that was already a plain "YYYY-MM-DD" string.
+    y, mo, d = (int(x) for x in str(iso_date)[:10].split("-"))
     iy, iw, _ = date(y, mo, d).isocalendar()
     return f"{iy}-W{iw:02d}"
 
