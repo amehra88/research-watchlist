@@ -157,7 +157,12 @@ def render(e: dict, snap: dict, rows: list, ex: dict, as_of: str) -> str:
     theme = e["theme"]
     pairs = _theme_pairs(snap, theme)
     asked = [p for p in pairs if p.get("first_question_date")]
-    n, k = len(pairs), len(asked)
+    k = len(asked)
+    # The denominator comes FROM the snapshot, not from len(pairs). Recomputing
+    # it here means quoting the detected-set while the stage was decided on the
+    # relevance universe — the line would justify "late" with a ratio that does
+    # not clear the rule it claims to have met.
+    n = (snap.get("stage4_denominator") or {}).get(theme, len(pairs))
     kind = e["kind"]
     if kind == "gate":
         cq = snap.get("current_quarter")
