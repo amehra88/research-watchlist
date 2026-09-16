@@ -1,0 +1,9 @@
+# config/ticker_identity.yaml fixture (trimmed) for scripts/portal/test_identity.py.
+# This comment line (and this one) are the regression guard for
+# "comments survive an append" — merge_names() must only ever append text after
+# the existing content, never rewrite/reformat it.
+
+FOO:
+  name: "Foo Corporation"
+  factset_id: "FOO-US"
+  google: '"Foo Corporation" OR FOO stock'

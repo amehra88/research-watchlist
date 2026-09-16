@@ -1,0 +1,11 @@
+{
+ "as_of": "2026-09-15",
+ "source": "test fixture",
+ "names": {
+  "FOO": "Foo Corporation (should be skipped, already present)",
+  "BAR": "Bar Incorporated",
+  "BAZ": "Baz Company",
+  "A00FOO": "Foreign Weird Co",
+  "simaai.pvt": "SiMa.ai"
+ }
+}

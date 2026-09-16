@@ -1,0 +1,55 @@
+# Trimmed fixture of config/watchlist.yaml for scripts/portal/test_identity.py.
+# Shapes only — not real tickers/companies. Covers: a plain tier_1 entry with a
+# scores block, a .pvt id in tier_1 (mirrors simaai.pvt), a dual-listed ticker
+# (tier_2 + tier_3, "first tier wins"), a tier_3-only entry with no scores, a
+# tier_4_ecosystem entry, and a private_drivers entry.
+
+tier_1_bctk:
+  - ticker: FOO
+    themes: [theme_a, theme_b]
+    added_date: 2026-01-01
+    ai_positioning:
+      score: "5"
+      notes: "test scores block"
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "4"
+      overall: "4"
+      notes: "test"
+    potential_investor_interest:
+      score: "4"
+      notes: "test"
+  - ticker: simaai.pvt
+    themes: [theme_pvt]
+    added_date: 2026-08-19
+
+tier_2_active_candidates:
+  - ticker: BAR
+    themes: [theme_c]
+    added_date: 2026-01-02
+  - ticker: DUAL
+    themes: [theme_dual_t2]
+    added_date: 2026-01-03
+
+tier_3_watchlist:
+  - ticker: BAZ
+    themes: [theme_d]
+    added_date: 2026-01-04
+  - ticker: DUAL
+    themes: [theme_dual_t3]
+    added_date: 2026-01-05
+
+tier_4_ecosystem:
+  - id: acme.cn
+    name: "Acme Components"
+    aliases: ["Acme", "Acme Components Ltd"]
+    relation: competitor
+    affects: [FOO]
+    edgar_coverage: false
+
+private_drivers:
+  - name: TestDriver
+    pvt_id: testdriver.pvt
+    aliases: ["TestDriver"]
+    affects: [FOO]
+    added_date: 2026-01-01
