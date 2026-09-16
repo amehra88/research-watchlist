@@ -313,6 +313,30 @@ def test_build_units_note_sections_and_ingest_and_news():
     assert len(by_id) == len(units)
 
 
+def test_note_section_units_route_pvt_ids_to_the_pvt_bundle_path():
+    """fix round 1 (Task 8 r1): a `.pvt` id's bundle is data/pvt/<slug>.json
+    (the builder strips the suffix for the file name) -- emitting
+    data/tickers/openai.pvt.json pointed the app at a file that never exists.
+    The fixture vault's only .pvt note is a _profile.md, which is an INGEST
+    kind and so never reaches the section pass, hence a tiny temp tree here.
+    """
+    import shutil
+    import tempfile
+    td = Path(tempfile.mkdtemp(prefix="ris4_search_pvt_"))
+    try:
+        (td / "openai.pvt").mkdir()
+        (td / "openai.pvt" / "20260601-conf-test-summit.md").write_text(
+            '---\ndoc_type: "conference_transcript"\nprimary_ticker: "openai.pvt"\n'
+            'event_date: "2026-06-01"\n---\n\n## Headline read\n\nCompute is the constraint.\n',
+            encoding="utf-8")
+        units = si._note_section_units(vlt.discover(td))
+        assert len(units) == 1, units
+        assert units[0]["tk"] == ["openai.pvt"]
+        assert units[0]["f"] == "data/pvt/openai.json", units[0]["f"]
+    finally:
+        shutil.rmtree(td, ignore_errors=True)
+
+
 def test_build_units_is_deterministic():
     refs = vlt.discover(VAULT_FIXTURES)
     news = news_sec.news_bundle(14, news_sec.Paths(notes=STATE_FIXTURES / "notes"), TODAY)

@@ -226,6 +226,54 @@ def test_build_state_writes_every_bundle():
         shutil.rmtree(tmp_out_dir, ignore_errors=True)
 
 
+def test_build_state_writes_insiders_json_with_the_market_rows():
+    """fix round 1 (Task 8 r1): the Insiders tab reads its own small file
+    instead of the ~1MB market.json. Same rows, both files written."""
+    import json
+    import shutil
+    import tempfile
+    tmp_out_dir = Path(tempfile.mkdtemp(prefix="ris4_state_bundles_test_"))
+    try:
+        sb.build_state(tmp_out_dir, sb.Ctx(today=TODAY, paths=BASE_PATHS, report_summaries=[]))
+        data = tmp_out_dir / "data"
+        assert (data / "insiders.json").exists(), "data/insiders.json not written"
+        ins = json.loads((data / "insiders.json").read_text())
+        mkt = json.loads((data / "market.json").read_text())
+        assert ins["rows"] == mkt["insiders"], "insiders.json rows must be market.json's insiders verbatim"
+        assert ins["as_of"] == TODAY.isoformat()
+        assert "insiders" in mkt, "market.json must keep its own insiders key for other consumers"
+        mani = json.loads((data / "manifest.json").read_text())
+        assert "data/insiders.json" in mani["files"], "the manifest must hash the new file"
+    finally:
+        shutil.rmtree(tmp_out_dir, ignore_errors=True)
+
+
+def test_manifest_counts_carry_search_news_mode_from_the_written_index():
+    """fix round 1 (Task 8 r1): Status shows the search index's news window
+    without fetching the 3MB index. Read from data/search.json if the
+    search-index stage already wrote it, None otherwise -- never a guess."""
+    import json
+    import shutil
+    import tempfile
+    tmp_out_dir = Path(tempfile.mkdtemp(prefix="ris4_state_bundles_test_"))
+    try:
+        (tmp_out_dir / "data").mkdir(parents=True)
+        # no search.json yet -> None, not an error
+        ctx = sb.Ctx(today=TODAY, paths=BASE_PATHS, report_summaries=[], out_dir=tmp_out_dir)
+        assert sb.manifest(ctx)["counts"]["search_news_mode"] is None
+
+        (tmp_out_dir / "data" / "search.json").write_text(
+            json.dumps({"docs": [], "terms": {}, "stoplist": [], "news_mode": "7d"}))
+        ctx2 = sb.Ctx(today=TODAY, paths=BASE_PATHS, report_summaries=[], out_dir=tmp_out_dir)
+        assert sb.manifest(ctx2)["counts"]["search_news_mode"] == "7d"
+
+        (tmp_out_dir / "data" / "search.json").write_text("{ not json")
+        ctx3 = sb.Ctx(today=TODAY, paths=BASE_PATHS, report_summaries=[], out_dir=tmp_out_dir)
+        assert sb.manifest(ctx3)["counts"]["search_news_mode"] is None
+    finally:
+        shutil.rmtree(tmp_out_dir, ignore_errors=True)
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items())
            if k.startswith("test_") and callable(v)]

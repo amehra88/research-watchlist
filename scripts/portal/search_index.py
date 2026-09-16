@@ -398,7 +398,13 @@ def _note_section_units(refs: list) -> list[dict]:
         note = vault.load_note(ref)
         ticker = note["ticker"]
         if ticker:
-            f = f"data/tickers/{ticker}.json"
+            # A private id's bundle is data/pvt/<slug>.json, NOT
+            # data/tickers/<id>.json -- the builder strips the ".pvt" suffix
+            # for the file name (state_bundles writes it, app.js's bundlePath()
+            # reads it). Emitting the ticker path for a .pvt id pointed the app
+            # at a file that does not exist.
+            f = (f"data/pvt/{ticker[:-4]}.json" if ticker.endswith(".pvt")
+                 else f"data/tickers/{ticker}.json")
         elif note["kind"] == "theme":
             f = "data/themes.json"
         else:

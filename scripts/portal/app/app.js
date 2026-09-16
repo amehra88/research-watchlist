@@ -797,7 +797,13 @@
       '<dt>markdown</dt><dd>' + (STATE.md ? 'markdown-it loaded' : 'vendor file missing \u2014 notes render as plain text') + '</dd>' +
       '</dl>');
 
-    var countKeys = Object.keys(counts);
+    /* The search index's news window, read from the manifest rather than by
+     * fetching the 3MB index itself (state_bundles.manifest() copies it out of
+     * the already-written data/search.json). Absent in a bundle built before
+     * that, which is why the key is skipped rather than printed as "null". */
+    var countKeys = Object.keys(counts).filter(function (k) {
+      return !(k === 'search_news_mode' && (counts[k] === null || counts[k] === undefined));
+    });
     html += section('Counts', countKeys.length
       ? '<dl class="kv">' + countKeys.map(function (k) {
         return '<dt>' + esc(k) + '</dt><dd>' + esc(counts[k]) + '</dd>';

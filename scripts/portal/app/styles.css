@@ -663,7 +663,16 @@ table.data td.wrap { white-space: normal; min-width: 22ch; }
   cursor: pointer;
 }
 .btn:hover { border-color: var(--accent); }
-.btn-mini { min-height: 32px; padding: 0 10px; font-weight: 550; }
+/* Compact LOOK, full-size TARGET: a smaller font and tighter side padding, but
+ * the 44px hit area stays (the vertical padding does the work, and a negative
+ * margin keeps the row from growing around it). */
+.btn-mini {
+  min-height: 44px;
+  padding: 0 10px;
+  font-size: var(--fs-xs);
+  font-weight: 550;
+  margin-block: -6px;
+}
 .btn[disabled] {
   color: var(--muted);
   background: var(--panel-2);

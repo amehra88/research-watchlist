@@ -448,6 +448,25 @@ def _applied_ids(portal_state: Path) -> list:
     return data if isinstance(data, list) else (data.get("ids") or [])
 
 
+def _search_news_mode(out_dir) -> str:
+    """`news_mode` out of an ALREADY-WRITTEN data/search.json, for the Status
+    screen -- so the app can name the search index's news window without
+    fetching the 3MB index itself. The search-index stage runs before
+    build_state() (see build_portal's orchestration order), so the file is on
+    disk by the time manifest() runs; anything else (no out_dir, no file yet,
+    unreadable, key absent) is None, never an error and never a guess.
+    """
+    if not out_dir:
+        return None
+    path = Path(out_dir) / "data" / "search.json"
+    if not path.is_file():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8")).get("news_mode")
+    except (OSError, ValueError):
+        return None
+
+
 def manifest(ctx: Ctx = None) -> dict:
     """data/manifest.json. Reuses ctx.ticker_bundles/ctx.universe when
     build_state() already built them this run; otherwise builds its own full
@@ -548,7 +567,8 @@ def manifest(ctx: Ctx = None) -> dict:
     return {
         "built_at": datetime.now(timezone.utc).isoformat(), "git_sha": _git_sha(paths.repo), "format": "json",
         "counts": {"tickers": len(tickers_rows), "themes": len(themes_rows),
-                  "candidates_pending": len(tb["candidates"]), "ideas": len(ib["ideas"])},
+                  "candidates_pending": len(tb["candidates"]), "ideas": len(ib["ideas"]),
+                  "search_news_mode": _search_news_mode(ctx.out_dir)},
         "tickers": tickers_rows, "themes": themes_rows, "candidates_pending": len(tb["candidates"]),
         "today": {"cards": today_cards}, "upcoming": upcoming,
         "health": {"stale_assumptions": stale_n, "tickers_without_notes": tickers_without_notes,
@@ -595,6 +615,13 @@ def build_state(out_dir: Path, ctx: Ctx = None) -> dict:
 
     mb_json = market_bundle(paths, today)
     _write_json(data_dir / "market.json", mb_json)
+    # The Insiders tab needs ~12 rows and nothing else in market.json, which
+    # runs to ~1MB (etf_flows_14d dominates). Same rows, own file, so a phone
+    # does not pay for the rest; market.json is unchanged for every other
+    # consumer. `as_of` is this build's date -- the rows themselves carry the
+    # transaction dates. Written before manifest(), so `files` hashes it.
+    _write_json(data_dir / "insiders.json",
+                {"as_of": today.isoformat(), "rows": mb_json["insiders"]})
 
     news_paths = news_sec.Paths(notes=paths.notes)
     news = news_sec.news_bundle(ctx.news_days, news_paths, today)

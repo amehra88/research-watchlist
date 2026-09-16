@@ -43,6 +43,7 @@
   var IDEAS_PATH = 'data/ideas.json';
   var SCORES_PATH = 'data/scores.json';
   var MARKET_PATH = 'data/market.json';
+  var INSIDERS_PATH = 'data/insiders.json';
   var ETF_PATH = 'data/etf_trades.json';
   var SEC_PATH = 'data/sec_30d.json';
   var NEWS_INDEX_PATH = 'data/news_index.json';
@@ -507,25 +508,36 @@
 
   function scoresTableHTML(payload) {
     var tickers = isObj(payload.tickers) ? payload.tickers : {};
-    var rows = [];
+    var rows = [], unmatched = [];
     Object.keys(tickers).forEach(function (t) {
       var meta = findTicker(t);
       /* scores.json and manifest.tickers are built from different sources, so a
-       * name can be in one and not the other; an unknown tier is simply not
-       * tier 1-2 and drops out of this table. */
+       * name can be scored here and carry no tier 1-2 there (or not be there at
+       * all). Dropping it from a tier 1-2 table is right; dropping it INVISIBLY
+       * is not, so it is collected, counted in the lede and listed below. */
       var tier = meta ? SCORE_TIERS[meta.tier] : undefined;
-      if (!tier) return;
+      if (!tier) {
+        unmatched.push({ ticker: t, why: meta ? (meta.tier ? String(meta.tier) : 'no tier') : 'not in the manifest' });
+        return;
+      }
       var entry = isObj(tickers[t]) ? tickers[t] : {};
       rows.push({ ticker: t, tier: tier, entry: entry, d: scoreDelta(entry), last: latestRead(entry) });
     });
-    if (!rows.length) return emptyState('No tier 1 or tier 2 name in this build carries a score.');
+    if (!rows.length) {
+      return emptyState('No tier 1 or tier 2 name in this build carries a score.') + unmatchedBlock(unmatched);
+    }
     rows.sort(function (a, b) {
       return ((b.d.has ? 1 : 0) - (a.d.has ? 1 : 0)) || (b.d.mag - a.d.mag) ||
         (a.tier - b.tier) || a.ticker.localeCompare(b.ticker);
     });
     var nProposed = rows.filter(function (r) { return r.d.has; }).length;
     return '<p class="lede">' + esc(rows.length + ' tier 1–2 names · ' + nProposed +
-      ' with a proposed change · tap a row for the reads behind it.') + '</p>' +
+      ' with a proposed change · tap a row for the reads behind it.' +
+      (unmatched.length
+        ? ' ' + unmatched.length + ' scored name' + (unmatched.length === 1 ? '' : 's') +
+          ' could not be matched to a manifest tier and ' + (unmatched.length === 1 ? 'is' : 'are') +
+          ' not shown in the table.'
+        : '')) + '</p>' +
       '<div class="scrollx"><table class="data"><thead><tr>' +
       '<th>ticker</th><th>ai</th><th>ca</th><th>interest</th><th>proposed</th><th>last read</th>' +
       '</tr></thead><tbody>' + rows.map(function (r) {
@@ -543,7 +555,19 @@
           '<td class="mono">' + esc(r.last || '—') + '</td></tr>' +
           '<tr class="expand" id="' + esc(id) + '"' + (open ? '' : ' hidden') + '><td colspan="6">' +
           '<div class="expand-in">' + scoreDetailHTML(r.ticker, r.entry) + '</div></td></tr>';
-      }).join('') + '</tbody></table></div>';
+      }).join('') + '</tbody></table></div>' + unmatchedBlock(unmatched);
+  }
+
+  /* The names scores.json carries that the tier 1-2 table cannot show, each
+   * with the reason, so "not in the table" never reads as "not in the build". */
+  function unmatchedBlock(unmatched) {
+    if (!arr(unmatched).length) return '';
+    return fold('Scored names not in this table', unmatched.length,
+      '<ul class="rows">' + unmatched.map(function (u) {
+        return '<li>' + row(href(['ticker', u.ticker]),
+          '<span class="dot-slot"></span><span class="row-title mono">' + esc(u.ticker) + '</span>' +
+          '<span class="row-right">' + esc(u.why) + '</span>', '') + '</li>';
+      }).join('') + '</ul>', false);
   }
 
   function scoreDetailHTML(ticker, entry) {
@@ -830,10 +854,22 @@
 
   /* -------------------------------------------------------- INSIDERS ------ */
 
+  /* data/insiders.json is the small file the builder writes for this tab (~12
+   * rows); data/market.json is the ~1MB bundle that also carries them, kept as
+   * the fallback for a bundle published before that file existed. */
+  function insiderRows() {
+    return loadJSON(INSIDERS_PATH).then(function (payload) {
+      return arr(isObj(payload) ? payload.rows : null);
+    }).catch(function () {
+      return loadJSON(MARKET_PATH).then(function (payload) {
+        return arr(isObj(payload) ? payload.insiders : null);
+      });
+    });
+  }
+
   function insidersTab(bundle, meta, id) {
-    return loadJSON(MARKET_PATH).then(function (payload) {
-      var rows = arr(isObj(payload) ? payload.insiders : null)
-        .filter(function (r) { return r && String(r.ticker) === String(id); });
+    return insiderRows().then(function (all) {
+      var rows = all.filter(function (r) { return r && String(r.ticker) === String(id); });
       var note = '<p class="empty">' + esc('Static rows from this build’s market bundle — the live insider feed goes live in slice 4.') + '</p>';
       if (!rows.length) {
         return section('Insider transactions',
@@ -854,7 +890,7 @@
             (r.notable ? '<tr class="expand"><td colspan="7"><div class="expand-in">' + esc(r.notable) + '</div></td></tr>' : '');
         }).join('') + '</tbody></table></div>';
       return section('Insider transactions — ' + rows.length, table + note);
-    }).catch(function () { return loadFail(MARKET_PATH); });
+    }).catch(function () { return loadFail(INSIDERS_PATH); });
   }
 
   /* ------------------------------------------------------------- ETF ------ */
@@ -1165,7 +1201,10 @@
             return '<a class="chip" href="' + esc(href(['theme', t])) + '">' + esc(t) + '</a>';
           }).join('');
           if (r.kind === 'inline') {
-            meta += '<button type="button" class="btn btn-mini" data-act="search-open" data-i="' + esc(h.i) + '">Open</button>';
+            /* A real control, so a real 44px target: .btn-mini keeps the
+             * compact look with a smaller font, not a smaller hit area. */
+            meta += '<button type="button" class="btn btn-mini" data-act="search-open"' +
+              ' aria-expanded="false" data-i="' + esc(h.i) + '">Open</button>';
           }
           var snip = clip(d.sn || d.t || '', 220);
           return '<li class="row"><div class="row-top">' + top + '</div>' +
@@ -1178,13 +1217,21 @@
 
   /* A news row and an ingest item have no screen of their own; they open where
    * they are, out of the same file the index points at. */
+  /* The button says what the next tap does. */
+  function searchOpenLabel(node, open) {
+    if (!node) return;
+    node.textContent = open ? 'Close' : 'Open';
+    if (node.setAttribute) node.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
   actions['search-open'] = function (node) {
     var i = parseInt(node.getAttribute('data-i'), 10);
     var idx = searchUI.index;
     var doc = idx && isObj(idx.docs[i]) ? idx.docs[i] : null;
     var box = document.getElementById('sr-' + i);
     if (!doc || !box) return;
-    if (box.innerHTML) { box.innerHTML = ''; return; }
+    if (box.innerHTML) { box.innerHTML = ''; searchOpenLabel(node, false); return; }
+    searchOpenLabel(node, true);
     box.innerHTML = '<p class="skeleton">Loading…</p>';
     loadJSON(String(doc.f)).then(function (payload) {
       var s = num(doc.s);
