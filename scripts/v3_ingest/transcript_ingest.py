@@ -142,6 +142,14 @@ EARNINGS_QUERIES = (
 )
 EARNINGS_WINDOW_DAYS = 3                          # weekday cron with two days of overlap
 ABORT = threading.Event()                         # set on ToolUnavailableError: stop all workers
+# Set the first time the tool is actually invoked in this run. ToolUnavailableError
+# is ambiguous: it fires both when the connector is not loaded (identical for every
+# name, so aborting saves N wasted calls) AND when the model simply declines to place
+# the call once. Measured 2026-09-16 on the first --replay-events run: 75 pages
+# succeeded, one ANET offset=100 page came back with no tool_use, ABORT fired, and
+# DDOG never started. Once the tool has been seen working, a declined call is a
+# retryable `failed` page like any other — not an outage.
+TOOL_SEEN = threading.Event()
 
 # Calendar-driven conference mode (2026-09-10). Measured on AVGO (Goldman session + Q3 call
 # in one 8-day window): pages at offset 0 and 50 of the same query overlapped on 22 of 50
@@ -656,12 +664,15 @@ def fetch_page(factset_id, query, start, end, offset, limit=PAGE_LIMIT,
                                   mcp_tool=TOOL, model=model or MODEL, cwd=str(REPO_ROOT),
                                   timeout=timeout)
     except claude_p.ToolUnavailableError as e:
-        ABORT.set()
+        if not TOOL_SEEN.is_set():
+            ABORT.set()                # never worked this run: a genuine outage
         return [], f"failed: tool unavailable ({str(e)[:120]})", None
     except subprocess.TimeoutExpired:
         return [], "failed: timeout", None
     except Exception as e:                                   # noqa: BLE001
         return [], f"failed: {type(e).__name__}: {str(e)[:160]}", None
+
+    TOOL_SEEN.set()                    # run_mcp raises if the tool was never called
 
     # The model is the only thing between us and the API. Whatever it placed is what
     # the page answers; a drifted argument is a different page under the same ledger key.
@@ -933,6 +944,7 @@ def main(argv=None) -> int:
     ap.add_argument("--query", action="append",
                     help="replace the theme queries with this sentence (repeatable)")
     args = ap.parse_args(argv)
+    ABORT.clear(); TOOL_SEEN.clear()      # a run's outage/seen state is its own
     if bool(args.start) != bool(args.end):
         ap.error("--start and --end go together")
     if args.conferences and (args.earnings or args.replay_events):

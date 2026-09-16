@@ -365,6 +365,35 @@ def test_events_from_exchanges_tolerates_missing_file_and_torn_lines():
         assert [e["eventDateTime"] for e in ev] == ["2026-08-04"]
 
 
+def test_one_declined_tool_call_does_not_abort_a_run_where_the_tool_has_worked():
+    """ABORT exists for a genuinely missing connector, where every name would
+    fail identically. But the same exception fires when the model simply does
+    not place the call once. Measured 2026-09-16 on the first --replay-events
+    run: 75 pages succeeded, then ONE ANET offset=100 page came back with no
+    tool_use, ABORT fired, and DDOG — sorted after ANET — never ran. A single
+    flaky page must not kill a 1,572-pull backfill once the tool has been seen
+    working in this run."""
+    orig = ti.claude_p.run_mcp
+
+    def declined(*_a, **_k):
+        raise ti.claude_p.ToolUnavailableError("no tool_use in transcript")
+    ti.claude_p.run_mcp = declined
+    try:
+        ti.ABORT.clear(); ti.TOOL_SEEN.clear()
+        _c, status, _s = ti.fetch_page("ANET-US", "q", "2026-08-04", "2026-08-06", 0)
+        assert status.startswith("failed: tool unavailable"), status
+        assert ti.ABORT.is_set(), "tool never seen this run: a genuine outage must abort"
+
+        ti.ABORT.clear(); ti.TOOL_SEEN.set()
+        _c, status, _s = ti.fetch_page("ANET-US", "q", "2026-08-04", "2026-08-06", 100)
+        assert status.startswith("failed: tool unavailable"), status
+        assert not ti.ABORT.is_set(), \
+            "tool already worked this run: one declined call is a retryable page, not an outage"
+    finally:
+        ti.claude_p.run_mcp = orig
+        ti.ABORT.clear(); ti.TOOL_SEEN.clear()
+
+
 # ───────────────────────── ledger ─────────────────────────
 
 def test_ledger_distinguishes_empty_from_failed():
@@ -583,7 +612,9 @@ def test_fetch_page_tool_unavailable_is_a_failure_that_aborts_the_run():
         raise ti.claude_p.ToolUnavailableError("no tool_use")
     orig = ti.claude_p.run_mcp
     ti.claude_p.run_mcp = fake
-    ti.ABORT.clear()
+    # TOOL_SEEN must be clear too: an earlier test exercised fetch_page successfully
+    # and the abort is now conditional on the tool never having worked this run.
+    ti.ABORT.clear(); ti.TOOL_SEEN.clear()
     try:
         chunks, status, source = ti.fetch_page("AMD-US", "q?", "2026-09-02", "2026-09-10", 0, 50)
     finally:
