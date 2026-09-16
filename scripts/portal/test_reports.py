@@ -1,20 +1,23 @@
 """
 Unit tests for scripts/portal/reports.py (RIS4 slice 2, Task 3).
 
-Fixtures in fixtures/reports/ are hand-built two-day sets for every stream (ws,
-is, podcasts, logs/etfflows(+table), logs/news_digest_*), plus thesis_state/
-topics_ok/topics_degrade/transcripts_ok for the two alert ledgers. The ws day-1
-fixture is a byte-for-byte copy of a real report_2026-09-15.txt (re-dated) so
-the parser is tested against real Unicode (em dash, →, σ), not hand-typed
-approximations of them. Tests run ONLY against these fixtures via explicit
-`paths: Paths` overrides — reports.py's own zero-arg REPO-backed defaults are
-never exercised here, EXCEPT the one documented case (thesis_alerts' join to
+Fixtures in fixtures/reports/ are hand-built day sets for every stream (is,
+podcasts, logs/etfflows(+table), logs/news_digest_*, and the "ETF UPDATE"
+digest section text, which now points at fixtures/etf_trades/ws/ -- reports.py
+only treats that file as opaque digest text, it doesn't parse it; the parser
+itself and its own fixtures moved to etf_trades.py / test_etf_trades.py in fix
+round 1), plus thesis_state/topics_ok/topics_degrade/transcripts_ok for the two
+alert ledgers. Tests run ONLY against these fixtures via explicit `paths: Paths`
+overrides — reports.py's own zero-arg REPO-backed defaults are never exercised
+here, EXCEPT the one documented case (thesis_alerts' join to
 thesis_report.alert_events(), which has no override hook — see reports.py's
 module docstring for why that is still fixture-safe).
 
 No pytest in this env — run directly:
     python3 scripts/portal/test_reports.py
 """
+import contextlib
+import io
 import os
 import sys
 from pathlib import Path
@@ -23,9 +26,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import reports as rp  # noqa: E402
 
 FIXTURES = Path(__file__).parent / "fixtures" / "reports"
+ETF_FIXTURES = Path(__file__).parent / "fixtures" / "etf_trades"
 
 BASE_PATHS = rp.Paths(
-    ws_reports=FIXTURES / "ws",
     is_reports=FIXTURES / "is",
     podcasts_reports=FIXTURES / "podcasts",
     logs=FIXTURES / "logs",
@@ -34,7 +37,7 @@ BASE_PATHS = rp.Paths(
     transcripts_state=FIXTURES / "transcripts_ok",
     evidence_state=FIXTURES / "does_not_exist",
     streams=[
-        ("ETF UPDATE", str((FIXTURES / "ws" / "report_{date}.txt"))),
+        ("ETF UPDATE", str((ETF_FIXTURES / "ws" / "report_{date}.txt"))),
         ("ETF FLOWS & CROWDING", str((FIXTURES / "logs" / "report_etfflows_{date}.txt"))),
         ("INSIDER ACTIVITY", str((FIXTURES / "is" / "report_{date}.txt"))),
         ("PODCAST DIGEST", str((FIXTURES / "podcasts" / "report_{date}.txt"))),
@@ -43,7 +46,7 @@ BASE_PATHS = rp.Paths(
 )
 
 DEGRADE_PATHS = rp.Paths(
-    ws_reports=FIXTURES / "ws", is_reports=FIXTURES / "is",
+    is_reports=FIXTURES / "is",
     podcasts_reports=FIXTURES / "podcasts", logs=FIXTURES / "logs",
     thesis_state=FIXTURES / "thesis_state",
     topics_state=FIXTURES / "topics_degrade",
@@ -96,6 +99,51 @@ def test_digest_tolerates_a_missing_stream():
     titles = [s["title"] for s in digest["sections"]]
     assert "PODCAST DIGEST" not in titles, titles
     assert "ETF UPDATE" in titles, titles
+
+
+def test_digest_text_banners_each_section_title():
+    cards = rp.day_cards(DAY1, BASE_PATHS)
+    digest = next(c for c in cards if c["kind"] == "digest")
+    assert "INSIDER ACTIVITY\n" in digest["text"], digest["text"][:200]
+
+
+# ───────────────────────── gap logging: exactly one line per omission ─────────────────────────
+
+def test_digest_logs_one_line_for_a_missing_stream():
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rp.day_cards(DAY2, BASE_PATHS)
+    lines = [ln for ln in buf.getvalue().splitlines() if "PODCAST DIGEST" in ln]
+    assert lines == [f"[reports] reports: {DAY2} digest/PODCAST DIGEST missing"], buf.getvalue()
+
+
+def test_digest_logs_one_line_for_the_is_stub_drop():
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rp.day_cards(DAY2, BASE_PATHS)
+    lines = [ln for ln in buf.getvalue().splitlines() if "INSIDER ACTIVITY" in ln]
+    assert lines == [f"[reports] reports: {DAY2} digest/INSIDER ACTIVITY stub dropped (157 B)"], buf.getvalue()
+
+
+def test_digest_logs_one_line_for_an_empty_stream():
+    # fixtures/reports/logs/report_etfflows_2026-01-08.txt is a real 0-byte file;
+    # every other stream for that day is also absent, so this isolates the "empty"
+    # branch (distinct from "missing" and from the IS-stub "dropped" branch).
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rp.day_cards("2026-01-08", BASE_PATHS)
+    lines = [ln for ln in buf.getvalue().splitlines() if "ETF FLOWS & CROWDING" in ln]
+    assert lines == ["[reports] reports: 2026-01-08 digest/ETF FLOWS & CROWDING empty"], buf.getvalue()
+
+
+def test_premarket_and_postmarket_each_log_one_absent_line():
+    # 2026-01-07 has no logs/news_digest_* fixtures at all -> both modes absent.
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rp.day_cards("2026-01-07", BASE_PATHS)
+    out = buf.getvalue().splitlines()
+    assert out.count("[reports] reports: 2026-01-07 premarket absent") == 1, out
+    assert out.count("[reports] reports: 2026-01-07 postmarket absent") == 1, out
 
 
 # ───────────────────────── day with no sources ─────────────────────────
@@ -152,6 +200,56 @@ def test_thesis_alerts_absent_on_a_day_with_no_rows():
     assert not any(c["kind"] == "thesis_alerts" for c in cards)
 
 
+def test_thesis_alerts_absent_when_ledger_file_missing():
+    p = rp.Paths(
+        is_reports=FIXTURES / "is", podcasts_reports=FIXTURES / "podcasts",
+        logs=FIXTURES / "logs", thesis_state=FIXTURES / "does_not_exist",
+        topics_state=FIXTURES / "topics_ok", transcripts_state=FIXTURES / "transcripts_ok",
+        evidence_state=FIXTURES / "does_not_exist", streams=BASE_PATHS.streams,
+    )
+    cards = rp.day_cards(DAY1, p)
+    assert not any(c["kind"] == "thesis_alerts" for c in cards)
+
+
+def test_build_reports_calls_alert_events_once_for_the_whole_window():
+    # thesis_state/alerts_sent.jsonl has qualifying rows on BOTH 2026-01-05 and
+    # 2026-01-04 -- without the fix round 1 cache this would be 2 alert_events()
+    # calls (one per qualifying day); with it, exactly 1 for the whole build.
+    import datetime as dt
+    import json
+    import tempfile
+
+    calls = []
+    orig = rp.thesis_report.alert_events
+
+    def counting(*a, **kw):
+        calls.append(a)
+        return orig(*a, **kw)
+
+    rp.thesis_report.alert_events = counting
+    try:
+        with tempfile.TemporaryDirectory() as td:
+            out = Path(td)
+            rp.build_reports(out, 2, BASE_PATHS, today=dt.date(2026, 1, 5))
+            d1 = json.loads((out / "data" / "reports" / "2026-01-05.json").read_text())
+            d0 = json.loads((out / "data" / "reports" / "2026-01-04.json").read_text())
+    finally:
+        rp.thesis_report.alert_events = orig
+
+    assert len(calls) == 1, calls
+    ta1 = next(c for c in d1["cards"] if c["kind"] == "thesis_alerts")
+    ta0 = next(c for c in d0["cards"] if c["kind"] == "thesis_alerts")
+    assert "FIXTURE_TICKER" in ta1["text"] and "FIXTURE_TICKER3" not in ta1["text"]
+    assert "FIXTURE_TICKER3" in ta0["text"]
+
+
+def test_day_cards_standalone_still_computes_on_demand_without_a_cache():
+    # No thesis_events_cache passed -> day_cards() must still work on its own.
+    cards = rp.day_cards("2026-01-04", BASE_PATHS)
+    ta = next(c for c in cards if c["kind"] == "thesis_alerts")
+    assert "FIXTURE_TICKER3" in ta["text"], ta["text"]
+
+
 # ───────────────────────── stage_alerts: render() success + degrade ─────────────────────────
 
 def test_stage_alerts_renders_via_stage_alert_when_inputs_load():
@@ -177,80 +275,6 @@ def test_stage_alerts_absent_on_a_day_with_no_rows():
 
 def test_upcoming_returns_empty_list_without_calling_factset():
     assert rp.upcoming(14, BASE_PATHS) == []
-
-
-# ───────────────────────── etf_trades parser ─────────────────────────
-
-def test_etf_trades_parses_new_exits_added_trimmed():
-    result = rp.etf_trades(1, paths=BASE_PATHS, today=__import__("datetime").date(2026, 1, 5))
-    day = next(d for d in result["days"] if d["date"] == DAY1)
-    etfs = {e["etf"]: e for e in day["etfs"]}
-
-    assert len(etfs) == 15, sorted(etfs)
-
-    jtek = etfs["JTEK"]
-    assert [n["sym"] for n in jtek["new"]] == ["ADSK", "GENB"]
-    assert jtek["new"][0] == {"sym": "ADSK", "name": "AUTODESK INC COMMON",
-                               "weight": 0.25, "shares": 47525}
-    assert len(jtek["added"]) == 4
-    assert len(jtek["trimmed"]) == 2
-    assert jtek["trimmed"][0] == {"sym": "ORCL", "name": "ORACLE CORP COMMON STOCK",
-                                   "delta_pp": -0.83, "from_weight": 1.18, "to_weight": 0.32}
-
-    tek = etfs["TEK"]
-    assert len(tek["added"]) == 1 and len(tek["trimmed"]) == 1
-
-    alai = etfs["ALAI"]
-    assert len(alai["new"]) == 1 and len(alai["added"]) == 3 and len(alai["trimmed"]) == 24
-
-    ais = etfs["AIS"]
-    assert len(ais["new"]) == 1 and len(ais["exits"]) == 1
-    assert ais["exits"][0] == {"sym": "688008", "name": "C1 Montage Technology Co Ltd",
-                                "weight": 1.01, "shares": 351334}
-
-    no_trade = etfs["SPRX"]
-    assert no_trade == {"etf": "SPRX", "name": "SPEAR Alpha ETF",
-                         "new": [], "exits": [], "added": [], "trimmed": []}
-
-
-def test_etf_trades_by_ticker_inverted_index():
-    result = rp.etf_trades(1, paths=BASE_PATHS, today=__import__("datetime").date(2026, 1, 5))
-    assert result["by_ticker"]["ADSK"] == [{"date": DAY1, "etf": "JTEK", "action": "new"}]
-    assert result["by_ticker"]["ORCL"] == [{"date": DAY1, "etf": "JTEK", "action": "trimmed"}]
-    assert {"date": DAY1, "etf": "AIS", "action": "exit"} in result["by_ticker"]["688008"]
-
-
-def test_etf_trades_tolerates_missing_day():
-    result = rp.etf_trades(3, paths=BASE_PATHS, today=__import__("datetime").date(2026, 1, 7))
-    dates = {d["date"] for d in result["days"]}
-    assert dates == {DAY1, DAY2}  # 2026-01-07 has no ws fixture -> skipped, not an error
-
-
-def test_etf_trades_writes_file_when_out_dir_given():
-    import tempfile
-    import json
-    with tempfile.TemporaryDirectory() as td:
-        out = Path(td)
-        result = rp.etf_trades(1, out_dir=out, paths=BASE_PATHS,
-                                today=__import__("datetime").date(2026, 1, 5))
-        out_path = out / "data" / "etf_trades.json"
-        assert out_path.exists()
-        assert json.loads(out_path.read_text()) == result
-
-
-def test_etf_trades_no_write_without_out_dir():
-    import os
-    import tempfile
-    with tempfile.TemporaryDirectory() as td:
-        cwd = os.getcwd()
-        os.chdir(td)
-        try:
-            rp.etf_trades(1, paths=BASE_PATHS, today=__import__("datetime").date(2026, 1, 5))
-            # A stray relative-path write (the out_dir=None branch writing anyway)
-            # would land under this cwd -- assert the whole tree stayed empty.
-            assert list(Path(td).iterdir()) == []
-        finally:
-            os.chdir(cwd)
 
 
 if __name__ == "__main__":

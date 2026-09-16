@@ -1,24 +1,25 @@
-"""Today + ETF trades: scripts/portal/reports.py — RIS4 portal builder, Task 3.
+"""Today cards: scripts/portal/reports.py — RIS4 portal builder, Task 3.
 
-Builds two things for the mobile-web portal:
+Builds `build_reports(out_dir, days)`: one `data/reports/<date>.json` per day
+that has at least one card, drawn from four streams — the 5-section Daily
+Digest (ws/etfflows/is/podcasts/etfflows-table), the standalone news-digest
+emails (premarket/postmarket), and the two alert ledgers (thesis, stage).
+Returns manifest-ready card summaries for Task 4. Also builds `upcoming(days)`
+(always `[]` today — see its docstring for why).
 
-  - `build_reports(out_dir, days)`: one `data/reports/<date>.json` per day that has
-    at least one card, drawn from five streams — the Daily Digest sections
-    (ws/etfflows/is/podcasts/etfflows-table), the standalone news-digest emails
-    (premarket/postmarket), and the two alert ledgers (thesis, stage). Returns
-    manifest-ready card summaries for Task 4.
-  - `etf_trades(days)`: parses `/root/ws`'s daily ETF-holdings-change report text
-    into structured new/exits/added/trimmed rows per ETF, plus an inverted
-    `by_ticker` index, and (when given an `out_dir`) writes `data/etf_trades.json`.
-  - `upcoming(days)`: always `[]` today — see its docstring for why.
+The ETF-trades parser (`etf_trades()`, ws-report text parsing, `by_ticker`
+index) lives in the sibling module `scripts/portal/etf_trades.py` — split out
+in fix round 1 (controller-directed, size/responsibility separation only; the
+public interface and output shape are unchanged). Nothing in this repo imports
+`etf_trades` from here, so there is no re-export shim.
 
 Every zero-arg-default path here reads live data from REPO (see
 scripts/portal/__init__.py) via the module-level `DEFAULT_PATHS`. Every public
 function accepts an explicit `paths: Paths` override so tests run only against
 fixtures under scripts/portal/fixtures/reports/ — see the `Paths` dataclass below.
 Read-only: this module never writes into notes/, config/, or state/; its only
-writes are `<out_dir>/data/reports/<date>.json` and `<out_dir>/data/etf_trades.json`,
-and only when an `out_dir` is actually passed in.
+write is `<out_dir>/data/reports/<date>.json`, and only when an `out_dir` is
+actually passed in.
 
 One exception to "everything is overridable": the `thesis_alerts` card joins
 state/thesis/alerts_sent.jsonl rows to human text via
@@ -28,13 +29,9 @@ path-override hook. Tests still stay fixture-safe: alert_events() recomputes
 its events from live production state, so a fixture's deliberately-invented id
 (e.g. "status:FIXTURE_TICKER:...") can never collide with it, which exercises
 exactly the "fall back to id/ticker text" path the brief asks for.
-
-ETF-trades data source note: /root/ws/data/etf_holdings.db's `holdings` table
-only stores raw daily snapshots (date, etf_ticker, symbol, weight, shares) — the
-same inputs report.py's own compare.py logic diffs to produce the change
-report. There is no separate structured "what changed" file (JSON/CSV) per day;
-the report text at data/reports/report_{date}.txt is the only per-day record of
-that computation, so this module parses it (sanctioned fallback per the brief).
+build_reports() calls alert_events() once for the whole window (see
+_thesis_events_for_window()) rather than once per qualifying day; day_cards()
+still computes it fresh on demand when called standalone with no cache.
 """
 from __future__ import annotations
 
@@ -192,12 +189,16 @@ def _digest_sections(day: str, paths: Paths) -> list[dict]:
     for title, template in paths.streams:
         p = Path(template.format(date=day))
         if not p.exists():
+            log(f"reports: {day} digest/{title} missing")
             continue
         text = p.read_text(encoding="utf-8", errors="replace").strip()
         if not text:
+            log(f"reports: {day} digest/{title} empty")
             continue
         if title == "INSIDER ACTIVITY" and len(text.encode("utf-8")) < 300:
-            continue  # the "No conviction-level insider activity." stub
+            # the "No conviction-level insider activity." stub
+            log(f"reports: {day} digest/{title} stub dropped ({len(text.encode('utf-8'))} B)")
+            continue
         sections.append({"title": title, "text": text})
     return sections
 
@@ -205,22 +206,52 @@ def _digest_sections(day: str, paths: Paths) -> list[dict]:
 # ---------------------------------------------------------------------------
 # thesis_alerts card
 # ---------------------------------------------------------------------------
-def _thesis_alert_card(day: str, paths: Paths) -> dict | None:
+def _thesis_events_for_window(today: date, days: int) -> dict:
+    """One thesis_report.alert_events() call covering the whole
+    [today - (days-1) .. today] build window (plus alert_events' own
+    ALERT_LOOKBACK_DAYS margin), for build_reports() to compute ONCE and pass to
+    every day_cards() call instead of once per qualifying day -- each call
+    re-globs notes/*/[0-9]*-[1-4]Q[0-9][0-9].md and re-reads changes.jsonl/
+    evidence_log.jsonl in full. {} (not an error) when alert_events() itself is
+    unavailable; every row then falls back to its raw id text, same as the
+    per-day on-demand path below.
+    """
+    earliest = today - timedelta(days=max(days - 1, 0))
+    try:
+        since_ts = datetime.combine(
+            earliest - timedelta(days=thesis_report.ALERT_LOOKBACK_DAYS),
+            datetime.min.time(), timezone.utc).isoformat()
+        return {e["id"]: e for e in thesis_report.alert_events(since_ts, today)}
+    except Exception as exc:  # noqa: BLE001
+        log(f"thesis_alerts: alert_events() unavailable for the {days}-day window "
+            f"({exc}); falling back to id/ticker text for all rows")
+        return {}
+
+
+def _thesis_alert_card(day: str, paths: Paths, events_cache: dict = None) -> dict | None:
+    """events_cache is an optional {id: event} map from _thesis_events_for_window()
+    (build_reports() passes one, computed once for the whole window). None (the
+    day_cards()-standalone default) means compute it fresh for just this one day,
+    same as before -- day_cards() stays usable on its own.
+    """
     rows = [r for r in _read_jsonl(paths.thesis_state / "alerts_sent.jsonl")
             if str(r.get("ts", ""))[:10] == day]
     if not rows:
         return None
 
-    day_date = date.fromisoformat(day)
-    events_by_id: dict = {}
-    try:
-        since_ts = datetime.combine(
-            day_date - timedelta(days=thesis_report.ALERT_LOOKBACK_DAYS),
-            datetime.min.time(), timezone.utc).isoformat()
-        events_by_id = {e["id"]: e for e in thesis_report.alert_events(since_ts, day_date)}
-    except Exception as exc:  # noqa: BLE001
-        log(f"thesis_alerts {day}: alert_events() unavailable ({exc}); "
-            f"falling back to id/ticker text for all rows")
+    if events_cache is not None:
+        events_by_id = events_cache
+    else:
+        day_date = date.fromisoformat(day)
+        events_by_id = {}
+        try:
+            since_ts = datetime.combine(
+                day_date - timedelta(days=thesis_report.ALERT_LOOKBACK_DAYS),
+                datetime.min.time(), timezone.utc).isoformat()
+            events_by_id = {e["id"]: e for e in thesis_report.alert_events(since_ts, day_date)}
+        except Exception as exc:  # noqa: BLE001
+            log(f"thesis_alerts {day}: alert_events() unavailable ({exc}); "
+                f"falling back to id/ticker text for all rows")
 
     lines = []
     for r in rows:
@@ -286,10 +317,16 @@ def _stage_alert_card(day: str, paths: Paths) -> dict | None:
 # ---------------------------------------------------------------------------
 # day_cards
 # ---------------------------------------------------------------------------
-def day_cards(day: str, paths: Paths = None) -> list[dict]:
+def day_cards(day: str, paths: Paths = None, thesis_events_cache: dict = None) -> list[dict]:
     """All cards for one ISO date: premarket/postmarket news-digest emails, the
     5-section Daily Digest, thesis alerts, and stage alerts. Any stream that has
-    no content for `day` is silently omitted — never an error.
+    no content for `day` logs one line and is omitted — never an error.
+
+    `thesis_events_cache` is passed straight through to _thesis_alert_card(); see
+    _thesis_events_for_window() — build_reports() supplies one so alert_events()
+    runs once per build, not once per qualifying day. None (the default) means
+    day_cards() computes it on demand for just this one day, so it stays usable
+    standalone.
     """
     paths = paths or DEFAULT_PATHS
     cards = []
@@ -298,6 +335,7 @@ def day_cards(day: str, paths: Paths = None) -> list[dict]:
     for mode in ("premarket", "postmarket"):
         p = files.get(mode)
         if p is None:
+            log(f"reports: {day} {mode} absent")
             continue
         text = p.read_text(encoding="utf-8", errors="replace")
         first_line = text.splitlines()[0].strip() if text.strip() else ""
@@ -316,7 +354,7 @@ def day_cards(day: str, paths: Paths = None) -> list[dict]:
                       "title": f"Daily Digest — {day}", "text": text,
                       "bytes": len(text.encode("utf-8")), "sections": sections})
 
-    ta = _thesis_alert_card(day, paths)
+    ta = _thesis_alert_card(day, paths, events_cache=thesis_events_cache)
     if ta:
         cards.append(ta)
 
@@ -341,11 +379,12 @@ def build_reports(out_dir: Path, days: int = 14, paths: Paths = None,
     today = today or date.today()
     out_dir = Path(out_dir)
     reports_dir = out_dir / "data" / "reports"
+    events_cache = _thesis_events_for_window(today, days)
 
     summaries = []
     for i in range(days):
         d = (today - timedelta(days=i)).isoformat()
-        cards = day_cards(d, paths)
+        cards = day_cards(d, paths, thesis_events_cache=events_cache)
         if not cards:
             log(f"build_reports: no cards for {d}")
             continue
@@ -383,150 +422,3 @@ def upcoming(days: int = 14, paths: Paths = None) -> list[dict]:
         "(transcript_ingest.py fetches the FactSet calendar live and never "
         "persists it) -- returning []")
     return []
-
-
-# ---------------------------------------------------------------------------
-# etf_trades
-# ---------------------------------------------------------------------------
-_ETF_HEADER_RE = re.compile(r"^(?P<name>.+) \((?P<etf>[A-Z0-9]+)\)$")
-_DASH_LINE_RE = re.compile(r"^-{5,}$")
-_TABLE_DIVIDER_RE = re.compile(r"^-{5,}(\s+-{5,})+$")
-_SECTION_RE = re.compile(
-    r"^\s*(BOUGHT — NEW POSITIONS|SOLD — FULL EXIT|ADDED|TRIMMED) \(\d+\):\s*$")
-_SECTION_KIND = {
-    "BOUGHT — NEW POSITIONS": "new", "SOLD — FULL EXIT": "exits",
-    "ADDED": "added", "TRIMMED": "trimmed",
-}
-_BOUGHT_ROW_RE = re.compile(
-    r"^\s*\+\s+(?P<sym>\S+)\s+(?P<name>.+?)\s{2,}(?P<weight>[\d.]+)%\s+"
-    r"\((?P<shares>[\d,]+) shares\)\s*$")
-_SOLD_ROW_RE = re.compile(
-    r"^\s*-\s+(?P<sym>\S+)\s+(?P<name>.+?)\s{2,}\(was (?P<weight>[\d.]+)%, "
-    r"(?P<shares>[\d,]+) shares\)\s*$")
-_TABLE_ROW_RE = re.compile(
-    r"^\s*(?P<sym>\S+)\s+(?P<name>.+?)\s{2,}(?P<delta>[+-][\d.]+)pp\s+"
-    r"(?P<frm>[\d.]+)% → (?P<to>[\d.]+)%\s*$")
-
-
-def _is_etf_header(lines: list[str], i: int) -> re.Match | None:
-    """An ETF block header is a "Name (TICKER)" line immediately followed by a
-    dashed divider -- this two-line requirement is what keeps the parser from
-    tripping on the report's other ALL-CAPS banner lines (data-quality alert,
-    section titles), none of which are followed by a bare dash line."""
-    if i + 1 >= len(lines):
-        return None
-    m = _ETF_HEADER_RE.match(lines[i].strip())
-    if m and _DASH_LINE_RE.match(lines[i + 1].strip()):
-        return m
-    return None
-
-
-def _parse_ws_report(text: str) -> list[dict]:
-    """Parses the ws ETF-holdings daily-summary text into
-    [{etf, name, new:[{sym,name,weight,shares}], exits:[{sym,name,weight,shares}],
-      added:[{sym,name,delta_pp,from_weight,to_weight}],
-      trimmed:[{sym,name,delta_pp,from_weight,to_weight}]}].
-
-    added/trimmed use delta_pp/from_weight/to_weight rather than weight/shares --
-    a deliberate deviation from the brief's abbreviated {sym,name,weight,shares}
-    gloss (written for the `new` list specifically). The ADDED/TRIMMED table in
-    the source report never carries a share count, only an active-weight delta
-    and before/after weight, so there is nothing to put in a `shares` field for
-    those two lists.
-    """
-    lines = text.splitlines()
-    etfs: list[dict] = []
-    i, n = 0, len(lines)
-    while i < n:
-        m = _is_etf_header(lines, i)
-        if not m:
-            i += 1
-            continue
-        rec = {"etf": m.group("etf"), "name": m.group("name").strip(),
-               "new": [], "exits": [], "added": [], "trimmed": []}
-        i += 2  # past the header + its dash divider
-        section = None
-        while i < n and not _is_etf_header(lines, i):
-            line = lines[i]
-            stripped = line.strip()
-            sm = _SECTION_RE.match(line)
-            if sm:
-                section = _SECTION_KIND[sm.group(1)]
-                i += 1
-                continue
-            if stripped.startswith("Symbol") or _TABLE_DIVIDER_RE.match(stripped):
-                i += 1
-                continue
-            if section == "new":
-                rm = _BOUGHT_ROW_RE.match(line)
-                if rm:
-                    rec["new"].append({"sym": rm["sym"], "name": rm["name"].strip(),
-                                        "weight": float(rm["weight"]),
-                                        "shares": int(rm["shares"].replace(",", ""))})
-            elif section == "exits":
-                rm = _SOLD_ROW_RE.match(line)
-                if rm:
-                    rec["exits"].append({"sym": rm["sym"], "name": rm["name"].strip(),
-                                          "weight": float(rm["weight"]),
-                                          "shares": int(rm["shares"].replace(",", ""))})
-            elif section in ("added", "trimmed"):
-                rm = _TABLE_ROW_RE.match(line)
-                if rm:
-                    rec[section].append({"sym": rm["sym"], "name": rm["name"].strip(),
-                                          "delta_pp": float(rm["delta"]),
-                                          "from_weight": float(rm["frm"]),
-                                          "to_weight": float(rm["to"])})
-            i += 1
-        etfs.append(rec)
-    return etfs
-
-
-_ACTION_KEYS = ("new", "exits", "added", "trimmed")
-_ACTION_LABEL = {"new": "new", "exits": "exit", "added": "added", "trimmed": "trimmed"}
-
-
-def etf_trades(days: int = 14, out_dir: Path = None, paths: Paths = None,
-               today: date = None) -> dict:
-    """{as_of, days: [{date, etfs:[...]}, ...], by_ticker: {SYM: [{date, etf, action}]}}
-    over the trailing `days` days (including today), parsed from
-    /root/ws/data/reports/report_{date}.txt. Writes <out_dir>/data/etf_trades.json
-    when `out_dir` is given; always returns the dict either way. Days with no
-    report file (real gaps exist, e.g. weekends/holidays) are skipped with a log
-    line, never an error.
-    """
-    paths = paths or DEFAULT_PATHS
-    today = today or date.today()
-    days_out = []
-    by_ticker: dict[str, list] = {}
-
-    for i in range(days):
-        d = (today - timedelta(days=i)).isoformat()
-        p = paths.ws_reports / f"report_{d}.txt"
-        if not p.exists():
-            log(f"etf_trades: no ws report for {d}")
-            continue
-        text = p.read_text(encoding="utf-8", errors="replace")
-        etfs = _parse_ws_report(text)
-        if not etfs:
-            # A non-empty report file that yielded zero ETF blocks means the header
-            # regex didn't match something in this run (e.g. a ticker with a dot/dash
-            # the [A-Z0-9]+ pattern doesn't cover) -- silent-empty is exactly the
-            # failure mode a nightly build can't otherwise see, so this is a WARN,
-            # not a routine "no report today" skip.
-            log(f"etf_trades: WARNING — {p} parsed to 0 ETF blocks "
-                f"({len(text)} chars); header regex may be missing a symbol shape")
-            continue
-        days_out.append({"date": d, "etfs": etfs})
-        for rec in etfs:
-            for action_key in _ACTION_KEYS:
-                for item in rec[action_key]:
-                    by_ticker.setdefault(item["sym"], []).append(
-                        {"date": d, "etf": rec["etf"], "action": _ACTION_LABEL[action_key]})
-
-    result = {"as_of": today.isoformat(), "days": days_out, "by_ticker": by_ticker}
-    if out_dir is not None:
-        out_dir = Path(out_dir)
-        (out_dir / "data").mkdir(parents=True, exist_ok=True)
-        (out_dir / "data" / "etf_trades.json").write_text(
-            json.dumps(result, indent=1), encoding="utf-8")
-    return result
