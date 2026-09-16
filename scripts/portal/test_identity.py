@@ -183,8 +183,8 @@ def test_merge_names_dry_run_selects_correct_tickers_and_does_not_write():
     before = IDENTITY.read_text(encoding="utf-8")
     block, added = idm.merge_names(BACKFILL, identity_path=IDENTITY, write=False)
     assert added == ["BAR", "BAZ"], added   # FOO already present; A00FOO/simaai.pvt skipped
-    assert "BAR:" in block and "BAZ:" in block
-    assert "FOO:" not in block
+    assert '"BAR":' in block and '"BAZ":' in block
+    assert '"FOO":' not in block
     assert "A00FOO" not in block
     assert "simaai.pvt" not in block
     assert IDENTITY.read_text(encoding="utf-8") == before, "dry run must not touch the file"
@@ -201,7 +201,7 @@ def test_merge_names_block_format_is_exact():
     assert added == ["BAR"]
     expected = (
         "# ---- portal name backfill 2026-09-15 (source: unit test) ----\n"
-        "BAR:\n"
+        '"BAR":\n'
         '  name: "Bar Incorporated"\n'
         '  factset_id: "BAR-US"          # per id_maps default; foreign tickers keep their existing mapping if any\n'
         "  google: '\"Bar Incorporated\" OR BAR stock'\n"
@@ -250,6 +250,46 @@ def test_merge_names_write_appends_and_preserves_comments_and_existing_keys():
         block2, added2 = idm.merge_names(BACKFILL, identity_path=ident_path, write=True)
         assert added2 == [] and block2 == ""
         assert ident_path.read_text(encoding="utf-8") == after_text
+    finally:
+        shutil.rmtree(td)
+
+
+def test_merge_names_write_quotes_yaml11_boolean_word_tickers_and_is_idempotent():
+    # PyYAML (yaml 1.1 resolver) reads bare ON/OFF/YES/NO (any case) as booleans, not
+    # strings. An unquoted `ON:` key on write would (a) be silently mis-stored under
+    # the boolean key True instead of the string "ON", and (b) never match "already
+    # present" on a re-run, so it would be re-appended as a duplicate top-level key
+    # every time. This is the CRITICAL regression guard for that.
+    td = tempfile.mkdtemp()
+    try:
+        ident_path = Path(td) / "ticker_identity.yaml"
+        ident_path.write_text('FOO:\n  name: "Foo Corporation"\n')
+        json_path = Path(td) / "backfill.json"
+        json_path.write_text(json.dumps({
+            "as_of": "2026-09-15", "source": "unit test",
+            "names": {"ON": "ON Semiconductor", "OFF": "Off Company"},
+        }))
+
+        block, added = idm.merge_names(json_path, identity_path=ident_path, write=True)
+        assert added == ["OFF", "ON"], added
+        text = ident_path.read_text(encoding="utf-8")
+        assert text.count('"ON":') == 1, text
+        assert text.count('"OFF":') == 1, text
+
+        parsed = idm.yaml.safe_load(text)
+        assert True not in parsed, "ON must not have been coerced to the boolean key True"
+        assert "ON" in parsed and isinstance([k for k in parsed if k == "ON"][0], str)
+        assert parsed["ON"] == {"name": "ON Semiconductor", "factset_id": "ON-US",
+                                 "google": '"ON Semiconductor" OR ON stock'}
+        assert parsed["OFF"]["name"] == "Off Company"
+
+        # idempotent second run: no duplicate top-level key, nothing re-appended.
+        block2, added2 = idm.merge_names(json_path, identity_path=ident_path, write=True)
+        assert added2 == [] and block2 == ""
+        text2 = ident_path.read_text(encoding="utf-8")
+        assert text2 == text
+        assert text2.count('"ON":') == 1, text2
+
     finally:
         shutil.rmtree(td)
 
@@ -317,7 +357,7 @@ def test_main_merge_names_dry_run_prints_block_and_count():
                                                   / "names_backfill_20260915.json")])
         out = buf.getvalue()
         assert rc == 0
-        assert "BAR:" in out and "BAZ:" in out
+        assert '"BAR":' in out and '"BAZ":' in out
         assert "2 entries" in out
         assert "would append" in out
         # dry run: no --write, so the fixture file must be unchanged.
@@ -342,6 +382,16 @@ def test_main_missing_flag():
     finally:
         idm.REPO = orig_repo
         shutil.rmtree(td)
+
+
+def test_main_merge_names_missing_file_is_a_clean_one_line_error():
+    buf_out, buf_err = io.StringIO(), io.StringIO()
+    with contextlib.redirect_stdout(buf_out), contextlib.redirect_stderr(buf_err):
+        rc = idm.main(["--merge-names", "/nonexistent/does-not-exist.json"])
+    assert rc != 0
+    err = buf_err.getvalue()
+    assert err.strip() != "" and len(err.strip().splitlines()) == 1, err
+    assert "not found" in err
 
 
 if __name__ == "__main__":

@@ -20,13 +20,20 @@ Sources composed here:
     tickers/ids ticker_identity.yaml doesn't cover yet. display_names() reads
     it as a live source (not just a test fixture) so foreign/private ids that
     are deliberately never written into ticker_identity.yaml (see
-    _skip_from_yaml_write) still resolve to a real name at build time.
+    _skip_from_yaml_write) still resolve to a real name at build time. This
+    stays true even after a --merge-names --write run: A000660, UMG.AS,
+    2308.TW and simaai.pvt are permanently skipped from the YAML write (their
+    TICKER-US id would be wrong), so the backfill JSON remains the ONLY
+    source for their display names indefinitely -- it is not a one-time
+    scaffold that can be deleted once the write has happened.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
+import tempfile
 from pathlib import Path
 
 import yaml
@@ -202,9 +209,16 @@ def _skip_from_yaml_write(ticker: str) -> bool:
 
 
 def _backfill_entry_block(ticker: str, name: str) -> str:
+    # The key is ALWAYS double-quoted, even for plain-looking tickers, never bare
+    # `{ticker}:`. PyYAML (yaml 1.1, PyYAML's actual resolver behavior) treats bare
+    # ON/OFF/YES/NO/TRUE/FALSE/Y/N (any case) as booleans, not strings -- a bare `ON:`
+    # key silently becomes the boolean key True on reparse, which both mis-stores the
+    # entry AND breaks the "already present" check on every subsequent run (see
+    # merge_names' existing_keys), causing ON to be re-appended as a duplicate
+    # top-level key each time. json.dumps() gives correct YAML double-quote escaping.
     google_name = name.replace("'", "''")
     return (
-        f"{ticker}:\n"
+        f"{json.dumps(ticker)}:\n"
         f"  name: {json.dumps(name)}\n"
         f'  factset_id: "{ticker}-US"          '
         f"# per id_maps default; foreign tickers keep their existing mapping if any\n"
@@ -238,7 +252,21 @@ def _safe_append(path: Path, addition: str) -> None:
     if changed:
         raise MergeAbortedError(f"merge would alter/lose existing key(s): {sorted(changed)}")
 
-    path.write_text(new_text, encoding="utf-8")
+    # Atomic write: a sibling temp file (same directory -> same filesystem, so
+    # os.replace is a single atomic rename) rather than a direct write_text, so a
+    # crash mid-write can never leave `path` half-written.
+    fd, tmp_name = tempfile.mkstemp(prefix=".identity-merge-", suffix=".tmp",
+                                     dir=str(path.parent))
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(new_text)
+        os.replace(tmp_name, path)
+    except BaseException:
+        try:
+            os.unlink(tmp_name)
+        except OSError:
+            pass
+        raise
 
 
 def merge_names(json_path: Path, identity_path: Path | None = None,
@@ -254,7 +282,12 @@ def merge_names(json_path: Path, identity_path: Path | None = None,
     source = data.get("source", "")
 
     existing = _load_yaml(identity_path)
-    to_add = sorted(tk for tk in names if tk not in existing and not _skip_from_yaml_write(tk))
+    # Compare by str(k): a loaded key need not be a python str (e.g. a legacy bare
+    # ON/OFF/YES/NO-style key that YAML's boolean resolver already coerced before this
+    # module ever quoted its writes) -- `tk not in existing` would miss that and
+    # re-append a ticker that is, textually, already present.
+    existing_keys = {str(k) for k in existing}
+    to_add = sorted(tk for tk in names if tk not in existing_keys and not _skip_from_yaml_write(tk))
     if not to_add:
         return "", []
 
@@ -281,8 +314,12 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     if args.merge_names:
+        json_path = Path(args.merge_names)
+        if not json_path.exists():
+            print(f"ERROR: {json_path} not found", file=sys.stderr)
+            return 1
         try:
-            block, added = merge_names(Path(args.merge_names), write=args.write)
+            block, added = merge_names(json_path, write=args.write)
         except MergeAbortedError as exc:
             print(f"ABORTED: {exc}", file=sys.stderr)
             return 1
