@@ -16,5 +16,16 @@
     "id": "cand:dec1", "label": "decided one", "ngrams": ["p", "q", "r"],
     "n_exchanges": 5, "n_companies": 4, "n_banks": 3, "tickers": ["FIX", "ORPHAN"],
     "first_seen": "2026-05-01", "members": ["m4", "m5"]
+  },
+  {
+    "id": "cand:dec3", "label": "decided three (newest)", "ngrams": ["u", "v"],
+    "n_exchanges": 2, "n_companies": 2, "n_banks": 1, "tickers": ["FIX"],
+    "first_seen": "2026-05-15", "members": ["m8"]
+  },
+  {
+    "id": "cand:dec2", "label": "decided two (inline status, oldest)", "ngrams": ["s", "t"],
+    "n_exchanges": 1, "n_companies": 1, "n_banks": 1, "tickers": ["ORPHAN"],
+    "first_seen": "2026-08-01", "members": ["m6", "m7"], "status": "accepted",
+    "name": "decided_two_inline_name"
   }
 ]
