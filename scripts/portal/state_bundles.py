@@ -209,6 +209,50 @@ def _sha256_file(p: Path) -> str:
     return h.hexdigest()
 
 
+# scripts/portal/app/vendor/ is package code shipped alongside app.js/app2.js --
+# resolved via __file__ like identity.DEFAULT_BACKFILL_FIXTURE, NOT REPO-based,
+# because (like that fixture) it must resolve correctly from this worktree even
+# before this branch merges to the canonical REPO path (which has no vendor/ yet).
+_VENDOR_DIR = Path(__file__).resolve().parent / "app" / "vendor"
+_VENDOR_HEADER_RE = re.compile(r"^(\S+)\s+(\S+)\s+\(")
+
+
+def _vendor_manifest(vendor_dir: Path | None = None) -> dict:
+    """{lib_name: {"version": ..., "sha256": ...}} parsed from
+    scripts/portal/app/vendor/VERSIONS.txt's own entry-header lines (e.g.
+    "markdown-it 14.1.0  (UMD build, ...)" followed by an indented "file
+    <name>" line). `sha256` is always computed directly against the vendored
+    file on disk -- never trusted from VERSIONS.txt's own recorded value,
+    which is provenance documentation, not a live check. Returns {} if the
+    vendor dir (or its VERSIONS.txt) doesn't exist, and skips any entry whose
+    named file is missing -- never raises on a partially-populated vendor/.
+    """
+    vendor_dir = Path(vendor_dir) if vendor_dir is not None else _VENDOR_DIR
+    versions_path = vendor_dir / "VERSIONS.txt"
+    if not versions_path.is_file():
+        return {}
+
+    out: dict = {}
+    cur_name = cur_version = None
+    for raw_line in versions_path.read_text(encoding="utf-8").splitlines():
+        header = _VENDOR_HEADER_RE.match(raw_line)
+        if header:
+            cur_name, cur_version = header.group(1), header.group(2)
+            continue
+        stripped = raw_line.strip()
+        if not stripped:
+            cur_name = cur_version = None
+            continue
+        if cur_name is None:
+            continue
+        parts = stripped.split(None, 1)
+        if len(parts) == 2 and parts[0] == "file":
+            fpath = vendor_dir / parts[1].strip()
+            if fpath.is_file():
+                out[cur_name] = {"version": cur_version, "sha256": _sha256_file(fpath)}
+    return out
+
+
 def _git_sha(repo: Path) -> str | None:
     try:
         r = subprocess.run(["git", "-C", str(repo), "rev-parse", "--short", "HEAD"],
@@ -562,8 +606,6 @@ def manifest(ctx: Ctx = None) -> dict:
                 continue
             files[rel] = {"bytes": p.stat().st_size, "sha256": _sha256_file(p)}
 
-    log("manifest: vendor manifest not built yet (scripts/portal/app/vendor/ is Task 7-8) -- vendor={}")
-
     return {
         "built_at": datetime.now(timezone.utc).isoformat(), "git_sha": _git_sha(paths.repo), "format": "json",
         "counts": {"tickers": len(tickers_rows), "themes": len(themes_rows),
@@ -573,7 +615,7 @@ def manifest(ctx: Ctx = None) -> dict:
         "today": {"cards": today_cards}, "upcoming": upcoming,
         "health": {"stale_assumptions": stale_n, "tickers_without_notes": tickers_without_notes,
                   "themes_without_labels": themes_without_labels, "last_job_failures": _last_job_failures(paths.cron_log, today)},
-        "applied_ids": _applied_ids(paths.portal_state), "files": files, "vendor": {},
+        "applied_ids": _applied_ids(paths.portal_state), "files": files, "vendor": _vendor_manifest(),
     }
 
 

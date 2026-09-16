@@ -158,6 +158,31 @@ def test_factset_ids_uses_id_maps_and_config_default():
     assert ids["ZORK"] == "ZORK-US", ids        # id_maps default
 
 
+def test_factset_ids_none_for_non_plain_tickers_without_explicit_mapping():
+    # id_maps' TICKER-US default is fabricated for .pvt ids and foreign/digit
+    # tickers (there is no real "UMG.AS-US") -- factset_ids() must omit those
+    # (None) rather than pass the fabricated default through, UNLESS
+    # ticker_identity.yaml carries an explicit factset_id for that identifier.
+    with tempfile.TemporaryDirectory() as td:
+        repo = Path(td)
+        (repo / "config").mkdir()
+        (repo / "config" / "ticker_identity.yaml").write_text(
+            'FOO:\n  name: "Foo Corporation"\n'
+            '"2308.TW":\n  name: "Delta Electronics"\n  factset_id: "2308-TW"\n'
+        )
+        orig_repo = idm.ingest_metrics.REPO
+        idm.ingest_metrics.REPO = repo
+        try:
+            ids = idm.factset_ids(["simaai.pvt", "UMG.AS", "A000660", "2308.TW", "FOO"])
+        finally:
+            idm.ingest_metrics.REPO = orig_repo
+    assert ids["simaai.pvt"] is None, ids
+    assert ids["UMG.AS"] is None, ids
+    assert ids["A000660"] is None, ids
+    assert ids["2308.TW"] == "2308-TW", ids     # explicit mapping in ticker_identity.yaml wins
+    assert ids["FOO"] == "FOO-US", ids          # plain US ticker keeps id_maps default
+
+
 # ───────────────────────── _skip_from_yaml_write() ─────────────────────────
 
 def test_skip_from_yaml_write_plain_ticker_not_skipped():

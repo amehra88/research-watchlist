@@ -229,6 +229,11 @@ def test_main_check_passes_on_matching_hashes():
         assert rc == 0, (rc, out, err)
         obj = json.loads(out)
         assert "data/scores.json" in obj
+        # 7 published files (app.js/app2.js/styles.css/vendor/.../data/scores.json/
+        # data/tickers/AAPL.json/data/manifest.json) minus the manifest itself ==
+        # 6 actually hash-checked; the message must say so honestly, not claim
+        # the manifest (never compared to itself) was "verified" too.
+        assert "6/7 files hash-verified (manifest itself excluded)" in err, err
     finally:
         shutil.rmtree(root, ignore_errors=True)
 

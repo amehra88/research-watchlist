@@ -188,8 +188,13 @@ def main(argv: list[str] | None = None) -> int:
             for p in problems:
                 print(f"  - {p}", file=sys.stderr)
             return 3
-        print(f"check: {len(paths)}/{len(paths)} published files verified against "
-              f"data/manifest.json", file=sys.stderr)
+        # `paths` includes data/manifest.json itself (it's an ordinary owned file),
+        # but check_hashes() never compares it against its own `files` entry --
+        # manifest() doesn't hash itself (see that function's own docstring) --
+        # so only len(paths) - 1 files actually had a sha256 verified here.
+        n_checked = len(paths) - (1 if "data/manifest.json" in paths else 0)
+        print(f"check: {n_checked}/{len(paths)} files hash-verified "
+              f"(manifest itself excluded) against data/manifest.json", file=sys.stderr)
 
     print(json.dumps(files_map(out_dir), indent=1))
     return 0

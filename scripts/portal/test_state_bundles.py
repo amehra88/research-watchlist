@@ -17,6 +17,8 @@ cron-failure window and 180-day staleness window).
 No pytest in this env -- run directly:
     python3 scripts/portal/test_state_bundles.py
 """
+import contextlib
+import io
 import os
 import sys
 from datetime import date
@@ -152,7 +154,57 @@ def test_manifest_without_out_dir_leaves_today_and_files_empty():
     assert mani["today"]["cards"] == []
     assert mani["upcoming"] == []
     assert mani["files"] == {}
-    assert mani["vendor"] == {}
+    # vendor is independent of out_dir/files -- it reads the package's own
+    # checked-in scripts/portal/app/vendor/, present in this worktree (see
+    # test_vendor_manifest_* below for the isolated-tmp-dir cases).
+    assert "markdown-it" in mani["vendor"], mani["vendor"]
+
+
+# ───────────────────────── _vendor_manifest ─────────────────────────
+
+def test_vendor_manifest_reads_versions_txt_and_hashes_the_real_file():
+    import shutil
+    import tempfile
+    td = Path(tempfile.mkdtemp(prefix="ris4_vendor_test_"))
+    try:
+        content = b"/* pretend markdown-it build */"
+        (td / "fake-lib.min.js").write_bytes(content)
+        (td / "VERSIONS.txt").write_text(
+            "Vendored third-party assets for the RIS4 portal app.\n"
+            "Copied verbatim into <out>/vendor/.\n\n"
+            "fake-lib 9.9.9  (UMD build, global `fakeLib`, MIT)\n"
+            "  file    fake-lib.min.js\n"
+            "  bytes   32\n"
+            "  sha256  0000000000000000000000000000000000000000000000000000000000000000\n"
+            "  source  https://example.com/fake-lib.min.js\n"
+            "  pulled  2026-09-16\n"
+        )
+        vendor = sb._vendor_manifest(td)
+        assert list(vendor) == ["fake-lib"], vendor
+        assert vendor["fake-lib"]["version"] == "9.9.9"
+        # hashed directly off disk, not trusted from the (deliberately wrong)
+        # sha256 recorded in VERSIONS.txt above.
+        assert vendor["fake-lib"]["sha256"] == sb._sha256_file(td / "fake-lib.min.js")
+    finally:
+        shutil.rmtree(td, ignore_errors=True)
+
+
+def test_vendor_manifest_missing_dir_returns_empty():
+    assert sb._vendor_manifest(Path("/nonexistent/vendor/dir")) == {}
+
+
+def test_vendor_manifest_skips_entry_whose_file_is_missing():
+    import shutil
+    import tempfile
+    td = Path(tempfile.mkdtemp(prefix="ris4_vendor_test_"))
+    try:
+        (td / "VERSIONS.txt").write_text(
+            "some-lib 1.0.0  (MIT)\n"
+            "  file    some-lib.min.js\n"
+        )
+        assert sb._vendor_manifest(td) == {}
+    finally:
+        shutil.rmtree(td, ignore_errors=True)
 
 
 # ───────────────────────── news_sec.news_bundle ─────────────────────────
@@ -183,6 +235,21 @@ def test_news_bundle_respects_window():
     nb = news_sec.news_bundle(5, news_sec.Paths(notes=BASE_PATHS.notes), today=TODAY)
     total = sum(len(v["rows"]) for v in nb["shards"].values())
     assert total == 0       # all 3 fixture notes are > 5 days before 2026-09-16
+
+
+def test_news_bundle_skips_row_with_malformed_published_date():
+    # fixtures/state/notes/news/2026-09-10-bad-date-dddddddd.md carries
+    # published_date: not-a-real-date -- _iso_week_shard() can't parse that
+    # into a (year, month, day) int triple. The row must be skipped (logged),
+    # never abort the whole build; the 3 good fixture rows are unaffected.
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        nb = news_sec.news_bundle(30, news_sec.Paths(notes=BASE_PATHS.notes), today=TODAY)
+    total = sum(len(v["rows"]) for v in nb["shards"].values())
+    assert total == 3, nb["shards"]     # the bad-date row contributes nothing
+    all_headlines = [r["headline"] for shard in nb["shards"].values() for r in shard["rows"]]
+    assert "Fixture Headline Four" not in all_headlines
+    assert "bad-date-dddddddd.md" in buf.getvalue()
 
 
 # ───────────────────────── news_sec.sec_bundle ─────────────────────────

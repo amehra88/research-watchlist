@@ -179,14 +179,34 @@ def missing_names(watchlist_path: Path | None = None, identity_path: Path | None
 # FactSet ids
 # ---------------------------------------------------------------------------
 def factset_ids(tickers: list[str] | None = None, watchlist_path: Path | None = None,
-                 notes_dir: Path | None = None) -> dict[str, str]:
+                 notes_dir: Path | None = None) -> dict[str, str | None]:
     """ticker -> FactSet id via ingest_metrics.id_maps (TICKER-US default, overridden
-    per-ticker by config/ticker_identity.yaml's factset_id column).
+    per-ticker by config/ticker_identity.yaml's factset_id column) -- EXCEPT for any
+    ticker _skip_from_yaml_write() flags as not a plain US ticker (.pvt ids, and
+    foreign/digit-containing ids like A000660/UMG.AS/2308.TW): id_maps' TICKER-US
+    default is fabricated and simply wrong for those (there is no "UMG.AS-US"),
+    so they resolve to None here UNLESS config/ticker_identity.yaml itself carries
+    an explicit factset_id for that identifier (an operator-entered real mapping).
+
+    Reads config/ticker_identity.yaml from ingest_metrics.REPO -- the same path
+    id_maps() itself resolves against (tests monkeypatch that, not portal.REPO) --
+    so the explicit-mapping check always agrees with what id_maps() returned.
     """
     if tickers is None:
         tickers = [e["ticker"] for e in load_universe(watchlist_path, notes_dir)]
     tk_to_fid, _ = ingest_metrics.id_maps(tickers)
-    return tk_to_fid
+
+    idmap = _load_yaml(ingest_metrics.REPO / "config" / "ticker_identity.yaml")
+
+    result: dict[str, str | None] = {}
+    for tk in tickers:
+        entry = idmap.get(tk)
+        explicit = entry.get("factset_id") if isinstance(entry, dict) else None
+        if _skip_from_yaml_write(tk) and not explicit:
+            result[tk] = None
+        else:
+            result[tk] = tk_to_fid.get(tk)
+    return result
 
 
 # ---------------------------------------------------------------------------

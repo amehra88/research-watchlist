@@ -191,7 +191,11 @@ def news_bundle(days: int = 30, paths: Paths = None, today: date = None) -> dict
         if not fm:
             continue
         row_date = fm.get("published_date") or name[:10]
-        shard = _iso_week_shard(row_date)
+        try:
+            shard = _iso_week_shard(row_date)
+        except (ValueError, TypeError) as exc:
+            log(f"news_bundle: {name}: malformed published_date {row_date!r} ({exc}) -- skipping row")
+            continue
         urls = fm.get("source_urls") or []
         row = {
             "id": f"news/{name}", "date": row_date, "tickers": fm.get("tickers") or [],

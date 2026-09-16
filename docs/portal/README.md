@@ -25,14 +25,14 @@ Top level (builder-owned, see "Stale-file removal scope" below):
 | `data/ingest/<bucket>.json` | same stage, via `vault.ingest_bundles()` | the six ingest-channel buckets (`flows`, `foreign`, `podcasts`, `pvt`, `sector`, `substacks`) verbatim. No screen of its own — opened from **Search** result rows. |
 | `data/reports/<YYYY-MM-DD>.json` | `reports.build_reports()` | daily report cards (Daily Digest, news-digest emails, thesis/stage alerts, ETF update) for the last `--reports-days` (default 14). Read by **Today** and the **More → Reports** archive. |
 | `data/etf_trades.json` | `etf_trades.etf_trades()` | ws ETF holdings-change report, parsed, for the last `--reports-days`. Read by **More → ETF trades** and the per-ticker ETF tab. |
-| `data/themes.json` | `state_bundles`/`theme_ideas` (`themes_bundle()`) | the 62 P2 theme anchors + adjacency/diffusion/stage state. Read by the **Themes** screen and each ticker's Signals tab. |
+| `data/themes.json` | `state_bundles`/`theme_ideas` (`themes_bundle()`) | the **accepted theme notes** — every written `notes/themes/*.md` (40 today) union any theme already gated by P5b but without a note yet — plus adjacency/diffusion/stage state. Not the full P2 vocabulary (62 anchor slugs); a gated theme with no note shows up here with an empty body until one is written. Read by the **Themes** screen. |
 | `data/ideas.json` | `theme_ideas.ideas_bundle()` | the six-stream idea-surfacing bundle + pending candidates. Read by the **Ideas** screen (candidate accept/reject buttons are disabled — see "Known limitations"). |
-| `data/scores.json` | `state_bundles` | Tier 1–2 `ai_positioning`/`competitive_advantage`/`potential_investor_interest` score table + proposed changes. Read by **More → Scores**. |
-| `data/market.json` | `state_bundles` | market/price context bundle. Read by the Signals tab. |
+| `data/scores.json` | `state_bundles` | Tier 1–2 `ai_positioning`/`competitive_advantage`/`potential_investor_interest` score table + proposed changes. Read by **More → Scores** and each ticker's **Signals** tab. |
+| `data/market.json` | `state_bundles` | market/price context bundle. Not read by the Signals tab (that reads `data/scores.json` — see above); read as the fallback source for the per-ticker Insiders tab when `data/insiders.json` is absent (see the next row). |
 | `data/insiders.json` | `state_bundles` | InsiderScore-derived rows. Read by the per-ticker Insiders tab — **static until slice 4** (no live MCP call from the page yet). |
-| `data/sec_30d.json` | `news_sec.news_bundle()` | last 30 days of SEC filing rows. Read by each ticker's News/SEC tab. |
+| `data/sec_30d.json` | `news_sec.sec_bundle()` | last 30 days of SEC filing rows. Read by each ticker's News/SEC tab. |
 | `data/news/<YYYY-Www>.json` | `state_bundles` (news shards) | weekly news-item shards, last 30 days. Opened from ticker News tabs and Search result rows. |
-| `data/news_index.json` | `state_bundles` | index over the news shards (ticker/date/theme). Read by the News screen's filter chips. |
+| `data/news_index.json` | `state_bundles` | `{ticker: [[shard, row_index], ...]}` map into the news shards above. Read by each ticker's **News** tab to find which shard(s)/rows are that ticker's — not read by any filter-chip UI (there isn't one over this index; the News tab's own conf/date filtering runs client-side over already-fetched rows). |
 | `data/search.json` | `search_index.build_units()` + `write_index()` | the postings-based search index over notes, theme notes, news rows, and ingest items. Read by the **Search** screen — this is keyword search on the page; semantic search over pg arrives with Phase 5 (see `docs/superpowers/specs/2026-09-15-RIS4-plan.md`). |
 
 `smoke/` (2 files, `probe.json`/`probe.js`) is **not** in this table because
@@ -237,6 +237,12 @@ anything failed (0 if clean).
   renders pending candidates but every accept/reject control is a genuinely
   inert, visibly-disabled `<button>` (never a styled `<a>` that looks
   clickable) — see `app2.js`'s `slice5Btn()`.
+- **Opening a ticker's News tab fetches whole ISO-week shards, not a
+  per-ticker slice.** `data/news_index.json` only says which shard(s) hold
+  that ticker's rows; the News tab fetches up to two of those shard files in
+  full (`NEWS_SHARD_STEP = 2` in `app2.js`) — each one ~2.3–2.6 MB — to
+  render one ticker's handful of rows. A per-ticker news projection
+  (`data/news/<ticker>.json` or similar) is a slice-3 change, not built here.
 
 ## Slice roadmap
 
