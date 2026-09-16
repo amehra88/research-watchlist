@@ -94,14 +94,40 @@ clean left edge, because both registers were demonstrably live and silent
 beforehand. The identified-pair count is now the thing to watch: when it
 passes `LAG_MIN_N`, Tier 0 starts answering.
 
-## Open, and deliberately not bundled here
+## Open, and deliberately not bundled here: stage 4 is degenerate
 
 ```
 stages {'1': 13, '2': 158, '3': 52, '4': 408}
 ```
 
-408 of 631 pairs are stage 4 ("late / priced"); 13 are stage 1. A system built
-to find things early reports that two-thirds of what it tracks is already
-everywhere. That is either anchors too broad to isolate anything early, or a
-true statement about a well-covered universe. It is a threshold/anchor-design
-question, answerable now, and it deserves its own change.
+408 of 631 pairs are stage 4 ("late / priced"); 13 are stage 1. This is not
+anchors being too broad — it is a denominator bug.
+
+`stage()` calls a theme stage 4 when it is asked at >= 3 tickers **and** at
+more than half of `covered`, where `covered` is the set of tickers for which a
+(theme, ticker) pair exists in the index. But a pair only exists where the
+theme was *detected*. So for any theme the evidence side never matches,
+`covered == asked` and the majority test cannot fail:
+
+| theme | asked | covered | ratio | mdna |
+|---|---|---|---|---|
+| inference_compute_economics | 22 | 22 | 1.00 | 0 |
+| hyperscaler_capex_buildout | 20 | 20 | 1.00 | 0 |
+| enterprise_ai_adoption | 16 | 16 | 1.00 | 0 |
+| ai_compute_topology | 15 | 15 | 1.00 | 0 |
+| thermal_management_cooling | 14 | 14 | 1.00 | 0 |
+
+**24 of the 40 stage-4 themes have zero MD&A evidence anywhere, and 28 of 40
+sit at a ratio of exactly 1.00** (median across all stage-4 themes: 1.00).
+"Late / priced" is being assigned by construction to themes that are simply
+invisible to the evidence side.
+
+The denominator should be the companies where the theme *could have been*
+observed — those with call coverage in the window — not the companies where it
+*was* observed. With the current definition, thin evidence coverage is
+indistinguishable from broad analyst saturation, and the two have opposite
+meanings for an operator.
+
+Left unbundled on purpose: it changes the stage numbers in the daily email and
+`stage_alert.py` diffs pairs from the same snapshot, so it wants its own change
+and its own review.
