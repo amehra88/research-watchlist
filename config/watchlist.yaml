@@ -257,6 +257,31 @@ private_drivers:
     bctk_holding: true
     notes: "Fabless edge-AI silicon: MLSoC (machine-learning system-on-chip) for embedded and physical-AI inference at the edge rather than datacenter training. FIRST .pvt id that is a BCTK HOLDING rather than only a thesis driver, so it is registered here (the .pvt authority) AND listed in tier_1_bctk — see the tier_1 entry and the .pvt guards added to sec_filings.py / cron_earnings_reviewer.py on 2026-08-19. Read-through: edge/embedded inference is the segment NVDA serves with Jetson and where ARM, QCOM and AMD compete, so SiMa is a datapoint on where inference workloads land. Position and company details are OPERATOR-ASSERTED (2026-08-19); no public filings exist, so nothing here is verifiable against a primary document."
     added_date: 2026-08-19
+  # ---- added 2026-09-16 (operator request): four privates on the AI-silicon / photonics supply axis.
+  - name: "Ayar Labs"
+    pvt_id: ayarlabs.pvt
+    aliases: ["Ayar Labs", "Ayar Labs, Inc.", "AyarLabs", "TeraPHY", "SuperNova"]
+    affects: [NVDA, AMD, INTC, MRVL, AVGO, COHR, LITE, GFS, TSM]
+    notes: "Silicon-photonics optical I/O for AI scale-up: TeraPHY in-package optical chiplet (~8 Tbps, ~10ns latency, replaces electrical SerDes) paired with the SuperNova external multi-wavelength laser; chiplets fabbed at GlobalFoundries. $500M Series E led by Neuberger Berman (Mar 2026) at $3.75B valuation, then a further $150M — ~$650M raised in 2026, ~$870M+ lifetime; strategic investors NVDA, AMD, INTC, MediaTek, Wiwynn (rack-scale optically connected systems partnership). Volume co-packaged-optics production is the 2026 story (co_packaged_optics_ramp, ai_compute_topology). Read-through: a merchant CPO/optical-I/O supplier to the GPU/XPU vendors (NVDA/AMD/AVGO/MRVL) and a structural threat to pluggable-transceiver economics (COHR, LITE) if in-package optics displaces pluggables at the scale-up tier. Peer set: Avicena (microLED), Lightmatter, Celestial AI (now MRVL)."
+    added_date: 2026-09-16
+  - name: "d-Matrix"
+    pvt_id: dmatrix.pvt
+    aliases: ["d-Matrix", "D-Matrix", "dMatrix", "d-Matrix Corporation", "Corsair", "Raptor"]
+    affects: [NVDA, AMD, AVGO, MSFT, MU]
+    notes: "Santa Clara datacenter AI-INFERENCE accelerator startup using digital in-memory compute (DIMC). $275M Series C (Nov 2025) at $2B valuation, ~$450M lifetime; MSFT (M12) is an investor. First product Corsair (6nm) entered production 2026-06; next-gen Raptor (4nm, 3D-stacked DRAM directly on compute, '3DIMC') in final design targeting end-2026, and is being paired with NVDA rack-scale systems via NVLink Fusion (Sep 2026) — i.e. it is simultaneously an NVDA inference competitor and an NVLink-ecosystem member. Read-through: memory-centric inference silicon is a datapoint on ai_inference_margin_compression and silicon_architecture_competition; DRAM-on-compute stacking is an incremental HBM-alternative demand vector for MU. Peers: Groq, Cerebras (CBRS), SambaNova, Etched."
+    added_date: 2026-09-16
+  - name: "xLight"
+    pvt_id: xlight.pvt
+    aliases: ["xLight", "XLight", "Xlight", "xLight Inc."]
+    affects: [ASML, INTC, TSM, LRCX]
+    notes: "Palo Alto startup building a FREE-ELECTRON-LASER (particle-accelerator-driven) EUV light source as an alternative to ASML's laser-produced-plasma source; Pat Gelsinger (ex-INTC CEO) is executive chairman. $150M CHIPS Act award finalized with Commerce 2026-06-02 to build and demonstrate the first FEL system at Albany NanoTech (NY); ~$40M earlier private round; reported to be raising ~$350M (Boardman Bay, Bain Capital). Claims ~10x source efficiency and 30-40% higher wafer throughput; first wafers targeted 2028. Read-through: a long-dated challenge to ASML's light-source monopoly (lithography_roadmap) and a US-sovereign litho-supply-chain bet; INTC/TSM are the natural first adopters. Pre-revenue, multi-year; watch for demonstration milestones and ASML/Cymer response."
+    added_date: 2026-09-16
+  - name: "PsiQuantum"
+    pvt_id: psiquantum.pvt
+    aliases: ["PsiQuantum", "Psi Quantum", "PsiQuantum Corp", "Omega chipset"]
+    affects: [COHR, LITE, GFS, NVDA]
+    notes: "Palo Alto photonic quantum-computing company building million-qubit fault-tolerant machines out of silicon photonics. Omega chipset (Feb 2025: single-photon sources, superconducting detectors, BTO electro-optic phase shifters) manufactured at GlobalFoundries Fab 8 (300mm); $1B Series E (Sep 2025, BlackRock/Temasek/Baillie Gifford, NVDA NVentures) at $7B, then ~$1.5B (May 2026) at ~$10.5B; breaking ground on data-center-scale sites in Brisbane and Chicago in 2026. OPERATOR-ASSERTED (2026-09-16): will compete with COHR and LITE — the read-through is PsiQuantum's high-volume silicon-photonics / BTO modulator platform and GF photonics capacity being pointed at datacom optics, not quantum per se; the public record does not yet show a datacom product, so treat the COHR/LITE axis as a thesis to verify (laser_architecture_competition, co_packaged_optics_ramp)."
+    added_date: 2026-09-16
 
 # ---------------------------------------------------------------------------
 # External web sources to track over time. Includes company technical blogs,
