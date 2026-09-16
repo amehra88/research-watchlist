@@ -266,6 +266,21 @@ def test_operator_assignment_lets_the_same_theme_reach_stage_4():
     assert "t1" not in snap["stage4_not_assertable"]
 
 
+def test_every_theme_in_pairs_gets_a_published_denominator():
+    """stage_alert falls back to len(pairs) when the key is missing, which is
+    the legacy detected-set — the exact number this change removed. The
+    fallback exists only for a stale snapshot, so the guarantee that matters is
+    that diffusion always publishes one."""
+    rows = [_r(f"q{tk}", "question", tk, "2026-06-01", "CY2026-Q2", ["t1"], firm="Wolfe")
+            for tk in ("AAOI", "LITE")]
+    rows += [_r("m1", "evidence", "COHR", "2026-05-01", "CY2026-Q2", ["t2"], source="mdna"),
+             _r("m2", "evidence", "COHR", "2026-05-01", "CY2026-Q2", ["t2"], source="mdna")]
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-15", no_coverage={}, assigned={})
+    den = snap["stage4_denominator"]
+    for p in snap["pairs"]:
+        assert p["theme"] in den, f"{p['theme']} has no published denominator"
+
+
 def test_snapshot_pairs_and_stage_counts_cannot_disagree():
     """`pairs` is what stage_alert diffs and theme_notes renders. If it kept the
     legacy denominator while stage_counts used the new one, the snapshot would
