@@ -14,14 +14,19 @@ from dataclasses import dataclass
 from datetime import date, timedelta
 from pathlib import Path
 
-# Resolve scripts/ onto sys.path so `from portal import REPO` and `from thesis import
-# ...` both work regardless of whether this module is imported as `portal.vault` or as
-# a bare `vault` module (the test harness's no-pytest convention imports it bare, the
-# same way scripts/v3_ingest/test_transcript_ingest.py imports transcript_ingest).
-_SCRIPTS_DIR = Path(__file__).resolve().parent.parent
-if str(_SCRIPTS_DIR) not in sys.path:
-    sys.path.insert(0, str(_SCRIPTS_DIR))
+# Bootstrap ONLY to make this package importable when this module is loaded as a bare
+# `vault` module (the no-pytest test harness convention: sys.path.insert(0, dirname) +
+# `import vault`, same as scripts/v3_ingest/test_transcript_ingest.py). This uses
+# __file__ solely to find our OWN sibling __init__.py — it is never used to locate the
+# `thesis` package. Once REPO is known, thesis is always imported from the CANONICAL
+# REPO/scripts (the brief's literal form), so a worktree copy of vault.py never shadows
+# the canonical thesis package with its own scripts/thesis.
+_here_parent = str(Path(__file__).resolve().parent.parent)
+if _here_parent not in sys.path:
+    sys.path.insert(0, _here_parent)
 from portal import REPO  # noqa: E402
+
+sys.path.insert(0, str(REPO / "scripts"))
 from thesis import sources, thesis_io  # noqa: E402
 
 EXCLUDED_TOP = {"inbox", "news", "sec"}
@@ -185,31 +190,54 @@ def signal_reads(note: dict) -> dict | None:
 
 
 def ticker_bundle(ticker: str, refs: list[NoteRef], names: dict,
-                   known_tickers: set, known_themes: set) -> dict:
-    tier = thesis_io.tier_of(ticker) or "none"
-    _, entry = thesis_io.watchlist_entry(ticker)
-    themes = entry.get("themes") or []
-    scores = thesis_io.watchlist_scores(ticker)
+                   known_tickers: set, known_themes: set, meta: dict | None = None) -> dict:
+    """meta is an additive, optional override (default None -> production behaviour via
+    thesis_io, which hardcodes REPO and therefore always reads the LIVE watchlist —
+    never the fixture tree). Pass meta={"tier": ..., "themes": [...], "scores": {...}}
+    to bypass thesis_io entirely and make tier/themes/scores fixture-controlled; thesis
+    itself is always sourced from the `thesis` NoteRef's own file via load_note (not
+    thesis_io.load), so it is naturally fixture-isolated regardless of `meta` — the ref
+    already points at whichever tree discover() walked.
+    """
+    if meta is not None:
+        tier = meta.get("tier", "none")
+        themes = meta.get("themes") or []
+        scores = meta.get("scores") or {}
+    else:
+        tier = thesis_io.tier_of(ticker) or "none"
+        _, entry = thesis_io.watchlist_entry(ticker)
+        themes = entry.get("themes") or []
+        scores = thesis_io.watchlist_scores(ticker)
     name = names.get(ticker) or ticker
 
-    tfm = thesis_io.load(ticker)
-    if tfm:
-        body = tfm.get("_body", "")
-        fm_without_body = {k: v for k, v in tfm.items() if k != "_body"}
+    thesis_ref = next((r for r in refs if r.ticker == ticker and r.kind == "thesis"), None)
+    if thesis_ref:
+        tnote = load_note(thesis_ref)
+        thesis = {"fm_without_body": tnote["fm"],
+                  "body": resolve_wikilinks(tnote["body"], known_tickers, known_themes)}
     else:
-        body, fm_without_body = "", {}
-    thesis = {"fm_without_body": fm_without_body, "body": body}
+        thesis = {"fm_without_body": {}, "body": ""}
 
     ti_ref = next((r for r in refs if r.ticker == ticker and r.kind == "theme_index"), None)
-    theme_index_body = sources._fm_and_body(ti_ref.path)[1] if ti_ref else ""
+    theme_index_body = (resolve_wikilinks(load_note(ti_ref)["body"], known_tickers, known_themes)
+                        if ti_ref else "")
 
     profile_ref = next((r for r in refs if r.ticker == ticker
                         and r.kind in ("profile", "pvt_profile")), None)
-    profile = load_note(profile_ref) if profile_ref else None
+    if profile_ref:
+        profile = load_note(profile_ref)
+        profile["body"] = resolve_wikilinks(profile["body"], known_tickers, known_themes)
+    else:
+        profile = None
 
     excluded_kinds = ("thesis", "theme_index", "profile", "pvt_profile")
     note_refs = [r for r in refs if r.ticker == ticker and r.kind not in excluded_kinds]
-    notes = sorted((load_note(r) for r in note_refs), key=lambda n: n["date"] or "", reverse=True)
+    notes = []
+    for r in note_refs:
+        n = load_note(r)
+        n["body"] = resolve_wikilinks(n["body"], known_tickers, known_themes)
+        notes.append(n)
+    notes.sort(key=lambda n: n["date"] or "", reverse=True)
 
     return {
         "ticker": ticker, "name": name, "tier": tier, "themes": themes, "scores": scores,

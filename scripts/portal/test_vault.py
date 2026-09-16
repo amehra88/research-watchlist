@@ -122,6 +122,18 @@ def test_discover_on_empty_dir_is_empty():
         assert v.discover(Path(d)) == []
 
 
+def test_discover_falls_back_to_stem_when_no_h1_title():
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        notes_dir = Path(d)
+        (notes_dir / "NVDA").mkdir()
+        p = notes_dir / "NVDA" / "20260101-1Q26.md"
+        p.write_text("## 1. Headline read\n\nNo top-level heading in this file at all.\n")
+        refs = v.discover(notes_dir)
+        assert len(refs) == 1
+        assert refs[0].title == "20260101-1Q26"
+
+
 # ───────────────────────── load_note() frontmatter synthesis ─────────────────────────
 
 def test_load_note_synthesizes_fm_for_frontmatterless_earnings_note():
@@ -278,6 +290,10 @@ def test_ingest_bundles_podcast_item_shape_and_wikilinks_resolved():
     assert "themes" in item and "model_commoditization" in item["themes"]
     assert item["source"] == "All-In"
     assert item["date"] == "2026-06-08"
+    # the fixture body carries a bare [[NVDA]] wikilink; NVDA is a known ticker in this
+    # fixture tree (earnings/thesis/theme_index/synthesis refs), so it must resolve
+    assert "](#/ticker/NVDA)" in item["body"]
+    assert "[[NVDA]]" not in item["body"]
 
 
 def test_ingest_bundles_default_today_does_not_error():
@@ -288,17 +304,34 @@ def test_ingest_bundles_default_today_does_not_error():
 
 
 # ───────────────────────── ticker_bundle() ─────────────────────────
+#
+# All tests below pass `meta=` explicitly so tier/themes/scores are fixture-controlled
+# and thesis_io.tier_of/watchlist_entry/watchlist_scores are never called. thesis_io
+# (and the live watchlist.yaml it reads) is exercised ONLY by the live-vault smoke in
+# the report, never by this test suite.
+
+NVDA_META = {"tier": "tier_1_bctk", "themes": ["silicon_architecture_competition"],
+            "scores": {"ai_positioning": "5"}}
+
 
 def test_ticker_bundle_nvda_smoke():
     refs = v.discover(FIXTURES)
     b = v.ticker_bundle("NVDA", refs, {"NVDA": "NVIDIA"}, {"NVDA"},
-                        {"ai_inference_margin_compression"})
+                        {"ai_inference_margin_compression", "silicon_architecture_competition"},
+                        meta=NVDA_META)
     assert b["ticker"] == "NVDA" and b["name"] == "NVIDIA"
-    # live-data-coupled: tier_of() reads the real watchlist.yaml, not the fixture tree
-    assert b["tier"] in ("tier_1_bctk", "none")
+    assert b["tier"] == "tier_1_bctk"
+    assert b["themes"] == ["silicon_architecture_competition"]
+    assert b["scores"] == {"ai_positioning": "5"}
     assert b["thesis"]["body"].strip() != ""
     assert b["thesis"]["fm_without_body"]["doc_type"] == "thesis"
-    assert "ai_inference_margin_compression" in b["theme_index_body"]
+    # thesis body has a bare [[NVDA]] and a [[themes/...|...]] wikilink — both must resolve
+    assert "](#/ticker/NVDA)" in b["thesis"]["body"]
+    assert "](#/theme/silicon_architecture_competition)" in b["thesis"]["body"]
+    assert "[[" not in b["thesis"]["body"]
+    # theme_index body has [[themes/ai_inference_margin_compression|...]]
+    assert "](#/theme/ai_inference_margin_compression)" in b["theme_index_body"]
+    assert "[[" not in b["theme_index_body"]
     # thesis, theme_index AND profile are excluded from notes (profile: none exists
     # for NVDA in the fixtures anyway, but the exclusion list itself is asserted below
     # via the openai.pvt case)
@@ -311,7 +344,8 @@ def test_ticker_bundle_nvda_smoke():
 
 def test_ticker_bundle_unknown_ticker_falls_back_to_tier_none():
     refs = v.discover(FIXTURES)
-    b = v.ticker_bundle("ZZZZ", refs, {}, {"NVDA"}, set())
+    b = v.ticker_bundle("ZZZZ", refs, {}, {"NVDA"}, set(),
+                        meta={"tier": "none", "themes": [], "scores": {}})
     assert b["tier"] == "none"
     assert b["notes"] == []
     assert b["thesis"] == {"fm_without_body": {}, "body": ""}
@@ -321,12 +355,28 @@ def test_ticker_bundle_unknown_ticker_falls_back_to_tier_none():
 
 def test_ticker_bundle_pvt_profile_excluded_from_notes():
     refs = v.discover(FIXTURES)
-    b = v.ticker_bundle("openai.pvt", refs, {}, {"openai.pvt", "NVDA"}, set())
+    b = v.ticker_bundle("openai.pvt", refs, {}, {"openai.pvt", "NVDA"}, set(),
+                        meta={"tier": "none", "themes": [], "scores": {}})
     assert b["tier"] == "none"
     assert b["profile"] is not None
     assert b["profile"]["title"].startswith("OpenAI")
+    # the profile body has [[NVDA]] / [[AVGO]] wikilinks — NVDA is known, AVGO is not
+    # (not in the known_tickers set passed here), so it must degrade to plain text
+    assert "](#/ticker/NVDA)" in b["profile"]["body"]
+    assert "[[NVDA]]" not in b["profile"]["body"]
     # thesis, theme_index AND profile are excluded from notes (coordinator ruling)
     assert b["notes"] == []
+
+
+def test_ticker_bundle_meta_none_uses_thesis_io_and_hits_live_watchlist():
+    # exercises the today=None-equivalent production default path for meta; asserts
+    # only that it runs and returns the documented shape — the actual tier/themes/
+    # scores values are live-data-coupled (see report) so are intentionally not pinned
+    refs = v.discover(FIXTURES)
+    b = v.ticker_bundle("NVDA", refs, {}, {"NVDA"}, set())   # meta omitted -> None
+    assert set(b.keys()) == {"ticker", "name", "tier", "themes", "scores", "thesis",
+                             "theme_index_body", "notes", "profile"}
+    assert isinstance(b["tier"], str)
 
 
 if __name__ == "__main__":
