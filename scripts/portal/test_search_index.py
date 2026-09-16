@@ -155,6 +155,59 @@ def test_write_index_no_fallback_needed(tmp_path=None):
         assert stats["bytes"] == out.stat().st_size
 
 
+def test_write_index_no_snippet_stage_holds_all_news_rows():
+    # corpus A: heavy `sn` (100 chars * 8 news docs), light/shared `text` --
+    # the "no_snippet" stage alone (clear sn, keep every row + full text)
+    # is enough to clear a threshold the "full" stage misses.
+    import tempfile
+    other = [_unit("note/x#0", "chips")]
+    news = [_unit(f"news/{i}#0", "gpu demand", k="news", d="2026-09-14",
+                   f="data/news/x.json", sn="x" * 100, _headline_text="gpu demand")
+            for i in range(8)]
+    units = other + news
+    with tempfile.TemporaryDirectory() as td:
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            stats = si.write_index(td, units, today=TODAY, max_bytes=2500)
+        logged = buf.getvalue()
+        assert "news_mode=full" in logged and "news_mode=no_snippet" in logged
+        assert stats["news_mode"] == "no_snippet"
+        out = Path(td) / "data" / "search.json"
+        payload = json.loads(out.read_text())
+        assert payload["news_mode"] == "no_snippet"
+        news_docs = [d for d in payload["docs"] if d["k"] == "news"]
+        assert len(news_docs) == 8                    # every news row survived
+        assert all(d["sn"] == "" for d in news_docs)   # sn cleared, per the brief
+        assert "demand" in payload["terms"]            # rationale text still tokenized
+
+
+def test_write_index_headline_only_stage_holds_all_news_rows():
+    # corpus B: light `sn` (no_snippet barely shrinks it) but a large,
+    # high-cardinality `text`/rationale -- only "headline_only" (stop
+    # tokenizing rationale) clears the threshold; the row itself survives.
+    import tempfile
+    other = [_unit("note/x#0", "chips")]
+    news = [_unit(f"news/{i}#0", " ".join(f"uniqueterm{i}_{j}" for j in range(40)),
+                   k="news", d="2026-09-14", f="data/news/x.json", sn="s",
+                   _headline_text="gpu")
+            for i in range(8)]
+    units = other + news
+    with tempfile.TemporaryDirectory() as td:
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            stats = si.write_index(td, units, today=TODAY, max_bytes=2500)
+        logged = buf.getvalue()
+        assert "news_mode=no_snippet" in logged and "news_mode=headline_only" in logged
+        assert stats["news_mode"] == "headline_only"
+        out = Path(td) / "data" / "search.json"
+        payload = json.loads(out.read_text())
+        assert payload["news_mode"] == "headline_only"
+        news_docs = [d for d in payload["docs"] if d["k"] == "news"]
+        assert len(news_docs) == 8                     # every news row survived
+        assert "gpu" in payload["terms"]                # headline still tokenized
+        assert "uniqueterm0_0" not in payload["terms"]  # rationale no longer indexed
+
+
 def test_write_index_size_fallback_drops_news_progressively():
     import tempfile
     old_units = [_news_unit("news/old#0", "2026-08-01")]   # 45 days before TODAY
@@ -164,14 +217,16 @@ def test_write_index_size_fallback_drops_news_progressively():
     with tempfile.TemporaryDirectory() as td:
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
-            # threshold below the full-window size (forces the 7d drop) but
-            # above the size once the 45-day-old row alone is gone (so the
-            # 0d/all-news-dropped stage is never reached)
+            # threshold below every earlier stage's size (forces field cuts
+            # AND the window cut) but above the "none" size (so "none" --
+            # dropping the still-fresh recent row too -- is never reached)
             stats = si.write_index(td, units, today=TODAY, max_bytes=1500)
         logged = buf.getvalue()
-        assert "search.json" in logged and "news" in logged  # each step logged
+        assert "search.json" in logged and "news_mode" in logged  # each step logged
+        assert stats["news_mode"] == "7d"
         out = Path(td) / "data" / "search.json"
         payload = json.loads(out.read_text())
+        assert payload["news_mode"] == "7d"
         ids = {d["id"] for d in payload["docs"]}
         assert "note/x#0" in ids
         assert "news/old#0" not in ids   # older than 7d, dropped
@@ -187,9 +242,11 @@ def test_write_index_size_fallback_drops_all_news_when_still_oversize():
     with tempfile.TemporaryDirectory() as td:
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
-            si.write_index(td, units, today=TODAY, max_bytes=200)
+            stats = si.write_index(td, units, today=TODAY, max_bytes=200)
+        assert stats["news_mode"] == "none"
         out = Path(td) / "data" / "search.json"
         payload = json.loads(out.read_text())
+        assert payload["news_mode"] == "none"
         ids = {d["id"] for d in payload["docs"]}
         assert ids == {"note/x#0"}   # every news/* unit dropped, even the recent ones
 
@@ -203,6 +260,7 @@ def test_write_index_synthetic_oversize_corpus_with_lowered_threshold():
             stats = si.write_index(td, units, today=TODAY, max_bytes=500)
         assert "writing anyway" in buf.getvalue()
         assert stats["docs"] == 50   # non-news units are never dropped, only news
+        assert stats["news_mode"] == "none"  # no news in this corpus -- ladder runs to the end regardless
 
 
 # ───────────────────────── build_units() integration ─────────────────────────

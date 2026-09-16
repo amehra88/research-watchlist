@@ -21,7 +21,12 @@ TOKENIZER SPEC -- app.js (Task 8) mirrors this EXACTLY. Read this before
 touching TOKEN_RE, tokenize(), or STOPLIST; any drift here silently breaks
 query-vs-index matching in the browser.
 --------------------------------------------------------------------------
-1. Lowercase the whole input string first (`text.lower()`).
+1. Lowercase the whole input string first (`text.lower()`). CAVEAT: Python
+   `str.lower()` and JS `String.prototype.toLowerCase()` agree on ASCII
+   (the overwhelming case here -- tickers, note prose) but can diverge on a
+   handful of Unicode edge cases (e.g. Turkish dotless i, German ß
+   case-folding); not handled here, flagged for awareness rather than fixed
+   since the corpus is ASCII-dominant.
 2. Extract tokens with the regex `[a-z0-9][a-z0-9.\\-]+` (TOKEN_RE below),
    applied with a global "find all matches" scan (`re.findall` / JS
    `String.matchAll`) over the lowercased text -- NOT split-on-whitespace.
@@ -116,11 +121,22 @@ Doc record shape (per the Task 5 brief, verbatim):
          the news shard (news rows -- matches news_sec's own [shard, idx]
          index pairs), or item index within the ingest bucket's `items`
          list (ingest items).
-  sn  -- a <=120-char snippet (SNIPPET_LEN), whitespace-collapsed.
+  sn  -- a <=120-char snippet (SNIPPET_LEN), whitespace-collapsed. FIX ROUND
+         1: for a news doc, `sn` degrades to `""` once write_index()'s
+         fallback ladder reaches "no_snippet" or later (see NEWS_MODES) --
+         the app falls back to displaying `t` (the headline) when `sn` is
+         empty. Note-section and ingest-item docs never have `sn` cleared.
 
 build_index()'s internal unit shape adds one field beyond the doc record,
 "text" (the searchable body tokenize() runs over) -- build_index() strips
-it before emitting `docs`, so it never reaches search.json.
+it before emitting `docs`, so it never reaches search.json. News units
+additionally carry "_headline_text" (headline only, no rationale), used by
+write_index()'s "headline_only"/"7d" fallback stages; also stripped.
+
+`data/search.json`'s top-level shape is `{docs, terms, stoplist, news_mode}`
+-- `news_mode` (fix round 1) is one of NEWS_MODES, the fallback stage
+write_index() actually used for this build; Task 8's Status screen reads it
+to show the operator when news search has been degraded.
 """
 from __future__ import annotations
 
@@ -238,39 +254,69 @@ def build_index(units: list[dict]) -> dict:
 
 
 MAX_BYTES = 3 * 1024 * 1024   # 3 MB -- the brief's size-fallback threshold
-_FALLBACK_NEWS_DAYS = (None, 7, 0)   # None = units as given (no extra filter)
+
+# Ordered, CUMULATIVE degradation ladder (fix round 1, controller-directed:
+# news must stay searchable in production as long as possible, so cheap
+# per-doc field cuts come before window/row cuts). Each stage includes
+# every earlier stage's cut:
+#   "full"          -- units as given (the documented default upstream
+#                       window is the last 14 days of news, per
+#                       build_units()); no cuts.
+#   "no_snippet"    -- news docs' `sn` cleared to "" (app falls back to
+#                       `t`, the headline).
+#   "headline_only" -- ALSO: news docs are tokenized headline-only (the
+#                       `rationale` text stops contributing terms).
+#   "7d"            -- ALSO: the news window narrows from 14 to 7 days.
+#   "none"          -- every news unit is dropped.
+# Non-news units (note sections, ingest items) are never touched at any
+# stage. write_index() stops at the first stage whose serialized payload
+# fits under max_bytes and records it in the payload as "news_mode".
+NEWS_MODES = ("full", "no_snippet", "headline_only", "7d", "none")
 
 
-def _filter_news_window(units: list[dict], days: int | None, today: date) -> list[dict]:
-    """units unchanged when days is None; with days=0 every k=="news" unit is
-    dropped; otherwise a k=="news" unit is kept only if its date `d` is
-    within the trailing `days` days of `today` (missing/None `d` is dropped
-    defensively -- an undated "news" unit should never occur upstream, but
-    the fallback must never crash on one). Non-news units always pass
-    through untouched.
+def _apply_news_mode(units: list[dict], mode: str, today: date) -> list[dict]:
+    """One step of the NEWS_MODES ladder applied to `units`. Non-news units
+    (k != "news") always pass through unchanged, at every mode. A missing/
+    None `d` on a "7d" pass is treated as out-of-window (dropped
+    defensively -- an undated news row should never occur upstream, but
+    this must not crash on one).
     """
-    if days is None:
+    if mode == "full":
         return units
-    if days == 0:
-        return [u for u in units if u["k"] != "news"]
-    cutoff = (today - timedelta(days=days)).isoformat()
-    return [u for u in units if u["k"] != "news" or (u.get("d") and u["d"] >= cutoff)]
+    cutoff = (today - timedelta(days=7)).isoformat() if mode == "7d" else None
+    out = []
+    for u in units:
+        if u["k"] != "news":
+            out.append(u)
+            continue
+        if mode == "none":
+            continue
+        if mode == "7d":
+            d = u.get("d")
+            if d is None or d < cutoff:
+                continue
+        u2 = dict(u)
+        u2["sn"] = ""                                    # no_snippet and every stage after it
+        if mode in ("headline_only", "7d"):
+            u2["text"] = u.get("_headline_text", u["text"])
+        out.append(u2)
+    return out
 
 
 def write_index(out_dir, units: list[dict], today: date = None, max_bytes: int = MAX_BYTES) -> dict:
     """Writes `<out_dir>/data/search.json` and returns {path, bytes, docs,
-    terms} for the caller's own logging.
+    terms, news_mode} for the caller's own logging.
 
-    Size fallback (each step logged): build the full index (units as
-    given -- the documented default upstream window is the last 14 days of
-    news, per build_units()); if the serialized payload (including the
-    "stoplist" key) exceeds `max_bytes`, rebuild with news trimmed to the
-    trailing 7 days; if still too big, rebuild with ALL news dropped
-    (days=0). Non-news units (note sections, ingest items) are never
-    dropped at any stage -- only news is size-elastic, per the brief. If
-    the corpus is still oversized with zero news, the final build is
-    written anyway (logged), since there is nothing left this function is
-    allowed to cut.
+    Size fallback (fix round 1 -- each transition logged): walk NEWS_MODES
+    in order, stopping at the first stage whose serialized payload
+    (including "stoplist" and "news_mode") fits under `max_bytes`. See
+    NEWS_MODES' own comment for what each stage cuts. Non-news units are
+    never dropped or altered at any stage -- only news is size-elastic, per
+    the brief. The stage actually used is written into the payload as
+    `news_mode` (Task 8's Status screen reads it) and returned in the stats
+    dict. If the corpus is still oversized at "none" (every news unit
+    already dropped), the "none" build is written anyway (logged), since
+    there is nothing left this function is allowed to cut.
     """
     today = today or date.today()
     out_dir = Path(out_dir)
@@ -278,26 +324,27 @@ def write_index(out_dir, units: list[dict], today: date = None, max_bytes: int =
     data_dir.mkdir(parents=True, exist_ok=True)
     path = data_dir / "search.json"
 
-    idx, blob = {}, b""
-    for i, stage in enumerate(_FALLBACK_NEWS_DAYS):
-        filtered = _filter_news_window(units, stage, today)
+    idx, blob, mode = {}, b"", NEWS_MODES[0]
+    for i, mode in enumerate(NEWS_MODES):
+        filtered = _apply_news_mode(units, mode, today)
         idx = build_index(filtered)
         idx["stoplist"] = STOPLIST
+        idx["news_mode"] = mode
         blob = json.dumps(idx, separators=(",", ":")).encode("utf-8")
         over = len(blob) > max_bytes
         if not over:
-            if stage is not None:
-                log(f"search.json {len(blob)} bytes <= {max_bytes} after dropping news to {stage}d")
+            if mode != "full":
+                log(f"search.json {len(blob)} bytes <= {max_bytes} at news_mode={mode}")
             break
-        if stage == _FALLBACK_NEWS_DAYS[-1]:
-            log(f"search.json still {len(blob)} bytes > {max_bytes} after dropping all news -- writing anyway")
+        if mode == NEWS_MODES[-1]:
+            log(f"search.json still {len(blob)} bytes > {max_bytes} at news_mode={mode} -- writing anyway")
             break
-        nxt = _FALLBACK_NEWS_DAYS[i + 1]
-        log(f"search.json {len(blob)} bytes > {max_bytes} at news window "
-            f"{'given' if stage is None else f'{stage}d'} -- dropping news to {nxt}d")
+        nxt = NEWS_MODES[i + 1]
+        log(f"search.json {len(blob)} bytes > {max_bytes} at news_mode={mode} -- dropping to news_mode={nxt}")
 
     path.write_bytes(blob)
-    return {"path": str(path), "bytes": len(blob), "docs": len(idx["docs"]), "terms": len(idx["terms"])}
+    return {"path": str(path), "bytes": len(blob), "docs": len(idx["docs"]),
+            "terms": len(idx["terms"]), "news_mode": mode}
 
 
 # ---------------------------------------------------------------------------
@@ -375,12 +422,14 @@ def _news_units(news: dict, days: int, today: date) -> list[dict]:
             d = row.get("date")
             if d is not None and d < cutoff:
                 continue
+            headline = row.get("headline") or ""
             units.append({
-                "id": row["id"], "t": row.get("headline") or "", "k": "news",
+                "id": row["id"], "t": headline, "k": "news",
                 "tk": row.get("tickers") or [], "th": row.get("themes") or [],
                 "d": d, "f": f"data/news/{shard}.json", "s": idx,
-                "sn": _snippet(row.get("rationale") or row.get("headline") or ""),
-                "text": f"{row.get('headline') or ''}\n{row.get('rationale') or ''}",
+                "sn": _snippet(row.get("rationale") or headline),
+                "text": f"{headline}\n{row.get('rationale') or ''}",
+                "_headline_text": headline,   # fix round 1: NEWS_MODES "headline_only"/"7d"
             })
     return units
 
