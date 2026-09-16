@@ -1,0 +1,7 @@
+ETF FLOW DETAIL — full universe
+Flows as of 2026-01-05
+──────────────────────────────────────────────────────────────────────────────────────
+                         ---- past week ----         ---- past quarter ----
+ETF   tier            flow  % of fund rarity        flow   % of fund rarity  positioning
+······················································································
+COWZ  trigger      +$17.3M      +0.1%  +0.2σ      -$3.1B      -17.0%  -1.6σ  neutral

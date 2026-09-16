@@ -1,0 +1,11 @@
+NEWS FLOW — 2026-01-05 (postmarket)
+========================================
+top 1 of 12 · 1 company · 0 thematic · 0 macro
+
+COMPANY
+-------
+FIX — Fixture Corp closes up on fixture beat
+    • End-of-day fixture wrap story.
+    why: fixture rationale.
+    [Company: FIX] · 1 outlet: FactSet/SA · FactSet Neutral · conf=high
+    -> https://example.invalid/fixture-story-3

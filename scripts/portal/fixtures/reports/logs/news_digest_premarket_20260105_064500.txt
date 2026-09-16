@@ -1,0 +1,19 @@
+NEWS FLOW — 2026-01-05 (premarket)
+========================================
+top 2 of 40 · 2 company · 0 thematic · 0 macro
+
+COMPANY
+-------
+FIX — Fixture Corp reports fixture beat vs FactSet consensus
+    • Fixture Corp reported adjusted net income above FactSet consensus.
+    • The stock closed up on the fixture print.
+    why: fixture rationale line long enough to pad this file past the stub threshold so the dedupe test has a clear large/small contrast to pick between.
+    [Company: FIX] · 1 outlet: FactSet/SA · FactSet Neutral · conf=high
+    -> https://example.invalid/fixture-story-1
+
+TST — Test Industries fixture headline number two
+    • Second fixture story so the file has more than one item.
+    • Padding line to keep this file clearly the larger of the two premarket candidates for 2026-01-05.
+    why: second fixture rationale.
+    [Company: TST] · 1 outlet: FactSet/SA · FactSet Neutral · conf=high
+    -> https://example.invalid/fixture-story-2
