@@ -178,6 +178,70 @@ def test_build_removes_stale_files_no_longer_produced():
         shutil.rmtree(td, ignore_errors=True)
 
 
+def test_build_never_removes_unowned_content_outside_owned_paths():
+    # fix round 1 (Critical): stale-file removal is scoped to OWNED_PATHS
+    # ("data/", "vendor/", "index.html", "app.js", "styles.css"). Anything
+    # else already under out_dir -- e.g. an operator-placed smoke/ dir, the
+    # real incident that motivated this fix -- must survive every build,
+    # whether or not this build's own stages produce anything at all.
+    td = _tmpdir()
+    out_dir = td / "out"
+    try:
+        (out_dir / "smoke").mkdir(parents=True)
+        (out_dir / "smoke" / "probe.txt").write_text("unrelated Phase 0 artifact")
+
+        rc = bp.build(out_dir, [_stage("a", _write("data/a.json", b'{"a":1}'))])
+        assert rc == 0
+        assert (out_dir / "smoke" / "probe.txt").read_text() == "unrelated Phase 0 artifact", \
+            "unowned content outside OWNED_PATHS must never be touched"
+        assert (out_dir / "data" / "a.json").exists()
+
+        # a second build that ALSO doesn't produce anything under smoke/ must still
+        # leave it alone (it's not "stale" -- it was never this builder's to own)
+        rc2 = bp.build(out_dir, [_stage("a", _write("data/a.json", b'{"a":2}'))])
+        assert rc2 == 0
+        assert (out_dir / "smoke" / "probe.txt").exists()
+    finally:
+        shutil.rmtree(td, ignore_errors=True)
+
+
+def test_is_owned_matches_directory_prefixes_and_exact_filenames():
+    assert bp._is_owned("data/tickers/NVDA.json")
+    assert bp._is_owned("vendor/lib.js")
+    assert bp._is_owned("index.html")
+    assert bp._is_owned("app.js")
+    assert bp._is_owned("styles.css")
+    assert not bp._is_owned("smoke/probe.json")
+    assert not bp._is_owned("smoke/index.html")
+    assert not bp._is_owned("README.md")
+    # a prefix-only partial match must not be treated as owned
+    assert not bp._is_owned("datafoo.json")
+    assert not bp._is_owned("vendorish/x.js")
+
+
+def test_build_prunes_empty_dirs_only_under_data_or_vendor():
+    td = _tmpdir()
+    out_dir = td / "out"
+    try:
+        (out_dir / "smoke" / "empty_sub").mkdir(parents=True)
+        rc = bp.build(out_dir, [
+            _stage("a", _write("data/sub/a.json", b"{}")),
+            _stage("v", _write("vendor/sub/lib.js", b"//")),
+        ])
+        assert rc == 0
+        # now a rebuild that stops producing data/sub/a.json and vendor/sub/lib.js --
+        # the now-empty data/sub/ and vendor/sub/ dirs get pruned, smoke/empty_sub/
+        # (outside OWNED_PATHS) is left alone even though it's also empty
+        rc2 = bp.build(out_dir, [_stage("b", _write("data/b.json", b"{}"))])
+        assert rc2 == 0
+        assert not (out_dir / "data" / "sub").exists(), "empty data/ subdir should be pruned"
+        assert not (out_dir / "vendor").exists(), "empty vendor/ tree should be pruned"
+        assert (out_dir / "smoke" / "empty_sub").is_dir(), \
+            "empty dirs outside data/ or vendor/ must never be pruned"
+    finally:
+        shutil.rmtree(td, ignore_errors=True)
+
+
 # ───────────────────────── build(): atomic replace on a failing stage ─────────────────────────
 
 def test_atomic_replace_exception_mid_build_leaves_previous_tree_intact():
@@ -246,6 +310,41 @@ def test_budget_breach_leaves_a_prior_good_build_untouched():
         assert (out_dir / "data" / "a.json").read_bytes() == before
     finally:
         budget.MAX_TOTAL_BYTES = orig
+        shutil.rmtree(td, ignore_errors=True)
+
+
+# ───────────────────────── build(): mid-publish failure (fix round 1, Important) ─────────────────────────
+
+def test_publish_failure_returns_nonzero_and_leaves_no_tmp_dir():
+    # Monkeypatch os.replace so the SECOND file it's asked to move raises --
+    # simulating a real mid-publish failure (e.g. ENOSPC, a permissions
+    # error). build() must catch it, log, discard whatever's left of tmp_dir,
+    # and return non-zero rather than reporting success. See _publish()'s own
+    # "ATOMICITY NOTE" docstring: the first file may already be live under
+    # out_dir at this point -- publishing is atomic per file, not per tree --
+    # this test only asserts the process-level contract (exit code, no
+    # leftover tmp dir), not that out_dir ends up fully rolled back.
+    td = _tmpdir()
+    out_dir = td / "out"
+    orig_replace = os.replace
+    calls = {"n": 0}
+
+    def flaky_replace(src, dst):
+        calls["n"] += 1
+        if calls["n"] == 2:
+            raise OSError("simulated mid-publish failure")
+        return orig_replace(src, dst)
+
+    try:
+        bp.os.replace = flaky_replace
+        rc = bp.build(out_dir, [
+            _stage("a", _write("data/a.json", b"one")),
+            _stage("b", _write("data/b.json", b"two")),
+        ])
+        assert rc == 1, rc
+        assert not list(out_dir.glob(".tmp-*")), "no leftover tmp dir after a publish failure"
+    finally:
+        bp.os.replace = orig_replace
         shutil.rmtree(td, ignore_errors=True)
 
 

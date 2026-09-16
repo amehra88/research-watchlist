@@ -8,11 +8,15 @@ Two halves, deliberately kept separate (see the brief's "Code Organization"):
     `_publish`) that knows nothing about vault/reports/etc. -- it just runs an
     ordered list of `(name, fn(tmp_dir) -> stats_dict)` stages into a fresh
     `<out_dir>/.tmp-<pid>`, then EITHER publishes every file into `out_dir`
-    via `os.replace` (removing any file under `out_dir` this build did not
-    produce) OR discards the tmp tree entirely and leaves `out_dir` exactly
-    as it was -- on a stage exception (exit 1) or a budget.check() violation
-    (exit 2). This half is what test_build_portal.py exercises directly,
-    against synthetic stage lists, with no live REPO/notes access at all.
+    via `os.replace` (removing any file already under `out_dir`, under an
+    OWNED_PATHS prefix (see that constant's own comment), that this build
+    did not produce -- never anything outside OWNED_PATHS, e.g. an
+    operator-placed `smoke/` dir survives untouched) OR discards the tmp
+    tree entirely and leaves `out_dir` exactly as it was -- on a stage
+    exception, a publish-time exception, (both exit 1) or a budget.check()
+    violation (exit 2). This half is what test_build_portal.py exercises
+    directly, against synthetic stage lists, with no live REPO/notes access
+    at all.
   - the PRODUCTION stage list (`_default_stages`) that wires the five real
     builder modules together in the brief's mandated order and is only
     exercised by the real, live `python3 build_portal.py --out ...` run (see
@@ -189,14 +193,46 @@ def _new_tmp_dir(out_dir: Path) -> Path:
     return tmp_dir
 
 
+# fix round 1 (Critical, controller-directed): stale-file removal must be
+# scoped to exactly what this builder is allowed to own. The unscoped version
+# deleted portal_build/smoke/ (a Phase 0 artifact source that ISN'T builder
+# output) in the first live run. OWNED_PATHS is the exhaustive list of
+# top-level things build_portal.py is ever allowed to write, publish-replace,
+# or remove-as-stale -- a directory entry (trailing "/") matches by prefix,
+# a bare name matches exactly. Anything else already under out_dir (e.g.
+# smoke/, or any other operator-placed content) is invisible to `_publish` --
+# never listed, never removed, never pruned -- no matter what `stages`
+# produced or didn't produce this run.
+OWNED_PATHS = ("data/", "vendor/", "index.html", "app.js", "styles.css")
+
+
+def _is_owned(rel: str) -> bool:
+    return any(rel == p or (p.endswith("/") and rel.startswith(p)) for p in OWNED_PATHS)
+
+
 def _publish(tmp_dir: Path, out_dir: Path) -> tuple[int, int]:
     """os.replace every file from tmp_dir (assumed to be `<out_dir>/.tmp-*`)
     into its matching path under out_dir, then remove any file already under
-    out_dir that this build did NOT produce (stale removal), then prune any
-    now-empty directory. Returns (n_published, n_removed_stale). Any other
-    `.tmp-*` sibling directory under out_dir (a DIFFERENT pid's in-flight
-    build) is left completely alone by both the publish and the stale-removal
-    passes.
+    out_dir, UNDER AN OWNED_PATHS PREFIX, that this build did NOT produce
+    (stale removal -- see OWNED_PATHS' own comment for why the scope check
+    exists), then prune any now-empty directory strictly under data/ or
+    vendor/. Returns (n_published, n_removed_stale). Any other `.tmp-*`
+    sibling directory under out_dir (a DIFFERENT pid's in-flight build) is
+    left completely alone by both the publish and the stale-removal passes,
+    as is everything outside OWNED_PATHS.
+
+    ATOMICITY NOTE (fix round 1, Important): publishing itself is atomic
+    PER FILE (each `os.replace` is a single atomic rename), not atomic as a
+    whole tree -- if this function raises partway through (a later
+    `os.replace` fails, e.g. ENOSPC or a permissions error), every file
+    replaced before the failure is already live under out_dir and every file
+    not yet reached is unaffected; there is a narrow window where out_dir can
+    hold a MIX of a new build's files and a prior build's files. The caller
+    (`build()`) catches any such exception, discards tmp_dir, and returns a
+    non-zero exit rather than silently reporting success -- see its own
+    docstring. This is a real, accepted gap (full per-tree atomicity would
+    need a swappable top-level symlink, out of scope here), not a claim that
+    it can't happen.
     """
     produced = set()
     for p in sorted(tmp_dir.rglob("*")):
@@ -213,13 +249,17 @@ def _publish(tmp_dir: Path, out_dir: Path) -> tuple[int, int]:
         rel_parts = p.relative_to(out_dir).parts
         if not rel_parts or rel_parts[0].startswith(".tmp-"):
             continue
+        rel = p.relative_to(out_dir).as_posix()
         if p.is_file():
-            rel = p.relative_to(out_dir).as_posix()
+            if not _is_owned(rel):
+                continue   # never touch anything outside OWNED_PATHS
             if rel not in produced:
                 p.unlink()
                 removed += 1
                 log(f"removed stale file: {rel}")
         elif p.is_dir():
+            if rel_parts[0] not in ("data", "vendor"):
+                continue   # only prune empty dirs strictly under data/ or vendor/
             try:
                 p.rmdir()   # only succeeds once empty -- a harmless no-op otherwise
             except OSError:
@@ -232,8 +272,10 @@ def _publish(tmp_dir: Path, out_dir: Path) -> tuple[int, int]:
 def build(out_dir: Path, stages: list[tuple[str, Callable[[Path], dict]]]) -> int:
     """Run `stages` into a fresh `<out_dir>/.tmp-<pid>`, print the budget
     table, then either publish (0) or leave `out_dir` untouched and return
-    1 (a stage raised) or 2 (budget.check() violation) -- a failing stage or
-    a budget breach never reaches `out_dir` at all, so whatever a prior
+    1 (a stage raised, OR publishing itself raised -- see _publish()'s own
+    "ATOMICITY NOTE" docstring section for the narrow per-file-not-per-tree
+    exception) or 2 (budget.check() violation) -- a failing stage or a
+    budget breach never reaches `out_dir` at all, so whatever a prior
     successful build already published there survives unchanged.
     """
     out_dir = Path(out_dir)
@@ -256,7 +298,21 @@ def build(out_dir: Path, stages: list[tuple[str, Callable[[Path], dict]]]) -> in
         shutil.rmtree(tmp_dir, ignore_errors=True)
         return 2
 
-    n_published, n_removed = _publish(tmp_dir, out_dir)
+    try:
+        n_published, n_removed = _publish(tmp_dir, out_dir)
+    except Exception as exc:  # noqa: BLE001 -- fix round 1 (Important): a mid-publish
+        # failure must not be silently swallowed or reported as success. Some files may
+        # already be live under out_dir (each os.replace() is atomic per-file, not the
+        # whole tree -- see _publish()'s own "ATOMICITY NOTE"); this only discards
+        # whatever's left in tmp_dir and reports failure, it does not attempt to roll
+        # back files already replaced.
+        log(f"PUBLISH FAILED: {type(exc).__name__}: {exc} -- discarding remaining "
+            f"{tmp_dir}; {out_dir} may be PARTIALLY updated (files already replaced "
+            f"before the failure stay published -- publishing is atomic per file, "
+            f"not per tree)")
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+        return 1
+
     elapsed = time.monotonic() - t_start
     log(f"published {n_published} file(s), removed {n_removed} stale file(s), "
         f"total {elapsed:.1f}s")
