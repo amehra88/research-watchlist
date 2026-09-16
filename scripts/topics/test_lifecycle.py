@@ -196,6 +196,51 @@ def test_map_is_fresh_rejects_a_map_older_than_its_inputs():
         assert not lc.map_is_fresh(Path(d) / "missing.jsonl", [x])[0]
 
 
+# ───────── stages 1 and 2 assert a silence (2026-09-15) ─────────
+#
+# Stage 1 ("nobody has asked anywhere") and stage 2 ("asked elsewhere, not
+# here") are both negative claims. They are only observations if we pulled the
+# company's calls. Measured on the live map: 61 of 631 pairs asserted a silence
+# that was never observed — 4 at stage 1 and 57 at stage 2, on tickers with no
+# call rows at all. GOOGL/antitrust_action sat at stage 1, the strongest signal
+# the system emits, for a company we have never once queried.
+
+def test_stage_1_is_withheld_when_the_company_was_never_heard():
+    """`called` is the set of tickers whose calls we actually pulled. A ticker
+    outside it cannot be said to have stayed silent."""
+    rows = [_m("t1", "GOOGL"), _m("t1", "GOOGL", "2026-06-01")]
+    idx = lc.build_index(rows)
+    assert lc.stage(idx, "t1", "GOOGL", assigned={}, called={"AAOI"}) is None
+    # ...and it IS stage 1 once we have heard the company
+    assert lc.stage(idx, "t1", "GOOGL", assigned={}, called={"GOOGL"}) == 1
+
+
+def test_stage_2_is_withheld_when_the_company_was_never_heard():
+    """'Asked at another name, not here' is the same negative claim about
+    THIS company, so it needs the same observation."""
+    rows = [_q("t1", "AAOI"), _m("t1", "WMT")]
+    idx = lc.build_index(rows)
+    assert lc.stage(idx, "t1", "WMT", assigned={}, called={"AAOI"}) is None
+    assert lc.stage(idx, "t1", "WMT", assigned={}, called={"AAOI", "WMT"}) == 2
+
+
+def test_stages_3_and_4_never_need_the_guard():
+    """They rest on a POSITIVE observation — this company was asked — so being
+    heard is implied. Withholding them would discard real evidence."""
+    rows = [_q("t1", tk) for tk in ("A", "B", "C")]
+    idx = lc.build_index(rows)
+    # `called` deliberately omits the asked tickers; stage 3/4 must survive
+    assert lc.stage(idx, "t1", "A", assigned={}, called=set()) in (3, 4)
+
+
+def test_the_guard_is_off_when_no_coverage_information_is_supplied():
+    """Back-compat: callers that pass neither assigned nor called get the old
+    behaviour, so the pre-existing stage tests still mean what they meant."""
+    rows = [_m("t1", "GOOGL"), _m("t1", "GOOGL", "2026-06-01")]
+    idx = lc.build_index(rows)
+    assert lc.stage(idx, "t1", "GOOGL") == 1
+
+
 # ───────────── stage-4 denominator (2026-09-15) ─────────────
 #
 # `covered` used to be "tickers where a (theme, ticker) pair exists", and a

@@ -146,10 +146,14 @@ def test_snapshot_applies_the_mdna_block_rule_before_staging():
 def test_snapshot_stages_on_mdna_evidence_only_and_counts_corprep_separately():
     rows = [_r("e1", "evidence", "COHR", "2026-05-01", "CY2026-Q2", ["t1"]),                     # corprep speech
             _r("c1", "evidence", "LITE", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna"),
-            _r("c2", "evidence", "LITE", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna")]
+            _r("c2", "evidence", "LITE", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna"),
+            # an unrelated LITE question, so LITE counts as HEARD and t1 can be
+            # staged at all; without it the pair is withheld as unobserved
+            _r("qL", "question", "LITE", "2026-06-01", "CY2026-Q2", ["t2"], firm="Wolfe")]
     snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-10", no_coverage={})
     assert [(e["theme"], e["ticker"]) for e in snap["stage1"]] == [("t1", "LITE")]
-    assert snap["metrics"][0]["n_corprep_companies"] == 1
+    m = next(m for m in snap["metrics"] if m["theme"] == "t1")
+    assert m["n_corprep_companies"] == 1
 
 
 def test_snapshot_carries_the_identified_lag_and_why_pairs_were_dropped():
@@ -239,6 +243,73 @@ def test_the_note_names_the_call_backfill_gap():
     assert "backfill" in joined and "first observed call" in joined.lower(), joined[-500:]
 
 
+def test_a_never_heard_company_is_left_unstaged_and_counted():
+    """WMT filed on the theme but we never pulled a WMT call, so 'nobody asked'
+    is not something we observed. The pair survives with its evidence and no
+    stage, and the withholding is COUNTED — silently dropping it would hide a
+    coverage gap behind a clean-looking report."""
+    rows = [_r("m1", "evidence", "WMT", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("m2", "evidence", "WMT", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna")]
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-15", no_coverage={}, assigned={})
+    assert snap["stage_counts"] == {}, snap["stage_counts"]
+    assert snap["stage1"] == []
+    assert snap["unheard"]["n_pairs"] == 1
+    assert snap["unheard"]["tickers"] == ["WMT"]
+    assert [p["ticker"] for p in snap["pairs"]] == ["WMT"]      # carried, not dropped
+
+
+def test_hearing_the_company_restores_the_stage():
+    rows = [_r("m1", "evidence", "WMT", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("m2", "evidence", "WMT", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("q1", "question", "WMT", "2026-06-01", "CY2026-Q2", ["t2"], firm="Wolfe")]
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-15", no_coverage={}, assigned={})
+    t1 = [p for p in snap["pairs"] if p["theme"] == "t1"]
+    assert t1 and t1[0]["stage"] == 1, snap["pairs"]
+    assert snap["unheard"]["n_pairs"] == 0
+
+
+def test_the_report_names_the_unheard_companies():
+    rows = [_r("m1", "evidence", "WMT", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("m2", "evidence", "WMT", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna")]
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-15", no_coverage={}, assigned={})
+    with tempfile.TemporaryDirectory() as d:
+        md = df.write_report(snap, Path(d) / "r.md")
+    assert "WMT" in md and "never pulled" in md, md[md.find("### Lifecycle"):][:600]
+
+
+def test_snapshot_records_the_universe_it_was_computed_over():
+    """A coverage change and a diffusion change look identical in a raw count.
+    Recording the universe is what lets a later reader tell them apart."""
+    rows = [_r("q1", "question", "AAOI", "2026-06-01", "CY2026-Q2", ["t1"], firm="Wolfe"),
+            _r("m1", "evidence", "WMT", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("m2", "evidence", "WMT", "2026-05-01", "CY2026-Q2", ["t1"], source="mdna")]
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-15", no_coverage={}, assigned={})
+    u = snap["universe"]
+    assert u["n_tickers"] == 2 and u["n_heard"] == 1
+    assert u["as_of"] == "2026-09-15"
+
+
+def test_universe_log_records_only_changes():
+    """One line per change, not per run. A daily append would bury the handful
+    of moments the universe actually moved."""
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "universe_log.jsonl"
+        u = {"as_of": "2026-09-15", "n_tickers": 63, "n_heard": 63, "n_pairs": 631}
+        assert df.record_universe(p, u) is True
+        assert df.record_universe(p, dict(u, as_of="2026-09-16")) is False, "unchanged"
+        grown = dict(u, as_of="2026-09-17", n_tickers=174, n_heard=63, n_pairs=900)
+        assert df.record_universe(p, grown) is True
+        recs = [json.loads(x) for x in p.read_text().splitlines() if x.strip()]
+        assert [r["n_tickers"] for r in recs] == [63, 174], recs
+
+
+def test_universe_log_ignores_an_empty_universe():
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "u.jsonl"
+        assert df.record_universe(p, {"as_of": "x", "n_tickers": 0}) is False
+        assert not p.exists()
+
+
 def test_snapshot_holds_an_unassertable_theme_at_stage_3_and_names_it():
     """Three companies asked, nothing independent says the theme is relevant
     anywhere else, so 'asked at most covered names' cannot come out false."""
@@ -296,7 +367,10 @@ def test_snapshot_pairs_and_stage_counts_cannot_disagree():
 def test_snapshot_pairs_carry_stage_and_dates_per_theme_ticker():
     rows = [_r("c1", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna"),
             _r("c2", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna"),
-            _r("q1", "question", "AAOI", "2026-08-06", "CY2026-Q3", ["t1"], firm="Raymond James")]
+            _r("q1", "question", "AAOI", "2026-08-06", "CY2026-Q3", ["t1"], firm="Raymond James"),
+            # COHR must be HEARD for its stage-2 claim ("asked at AAOI, not here")
+            # to be an observation rather than an absence of one
+            _r("qC", "question", "COHR", "2026-08-06", "CY2026-Q3", ["t2"], firm="Wolfe")]
     snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-10", no_coverage={})
     pairs = {(p["theme"], p["ticker"]): p for p in snap["pairs"]}
     assert pairs[("t1", "COHR")]["stage"] == 2 and pairs[("t1", "COHR")]["lag_days"] is None
