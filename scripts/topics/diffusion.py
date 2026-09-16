@@ -28,6 +28,7 @@ STATE = REPO / "state" / "topics"
 TOPIC_MAP = STATE / "topic_map.jsonl"
 DIFFUSION = STATE / "diffusion.json"
 DETECTIONS = STATE / "detections.jsonl"
+UNIVERSE_LOG = STATE / "universe_log.jsonl"
 EXCHANGES = REPO / "state" / "transcripts" / "exchanges.jsonl"
 CLAIMS = REPO / "state" / "evidence" / "claims.jsonl"
 NO_COVERAGE = REPO / "state" / "transcripts" / "_no_coverage.json"
@@ -265,6 +266,34 @@ def _date_span(rows, pred) -> tuple:
     return (ds[0], ds[-1]) if ds else (None, None)
 
 
+def record_universe(path: Path, universe: dict) -> bool:
+    """Append a dated line when the universe CHANGES. -> True if appended.
+
+    Every cross-sectional number this system reports — n_banks, n_companies,
+    the stage-4 denominator — is a count over the set of companies we watch. A
+    change in that set and a change in the world look identical in the count.
+    Writing the size down on the day it moves is what makes the difference
+    recoverable later; it costs one line and cannot be reconstructed after the
+    fact."""
+    if not universe.get("n_tickers"):
+        return False
+    prev = None
+    if Path(path).exists():
+        for line in Path(path).read_text().splitlines():
+            if line.strip():
+                try:
+                    prev = json.loads(line)
+                except ValueError:
+                    continue
+    keys = ("n_tickers", "n_heard", "n_pairs")
+    if prev and all(prev.get(k) == universe.get(k) for k in keys):
+        return False                      # unchanged: nothing worth recording
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    with Path(path).open("a") as fh:
+        fh.write(json.dumps(universe, sort_keys=True) + "\n")
+    return True
+
+
 def _asked_any(idx: dict, theme: str) -> bool:
     return any(p["first_question_date"] for (th, _tk), p in idx.items() if th == theme)
 
@@ -327,6 +356,19 @@ def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None,
     # as the justification for a rule that requires more than half.
     stage4_denominator = {th: len(lc.stage4_universe(idx, th, assigned, called))
                           for th in {t for (t, _k) in idx}}
+    # Pairs whose company we never heard: stages 1 and 2 are withheld for them
+    # (lc.stage returns None), so they must be COUNTED and named. Dropping them
+    # silently would hide a coverage gap behind a tidy-looking report — the
+    # failure this whole family of guards exists to prevent.
+    unheard_pairs = [(th, tk) for (th, tk) in idx if tk not in called]
+    unheard = {"n_pairs": len(unheard_pairs),
+               "tickers": sorted({tk for _th, tk in unheard_pairs}),
+               "note": "stage withheld: we never pulled this company's calls, so "
+                       "'nobody asked' is not an observation"}
+    universe = {"as_of": as_of,
+                "n_tickers": len({tk for _th, tk in idx}),
+                "n_heard": len(called),
+                "n_pairs": len(idx)}
     stage_counts = collections.Counter()
     stage1 = []
     for (theme, ticker), p in idx.items():
@@ -386,8 +428,11 @@ def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None,
             "denominators": denominators(rows), "no_coverage": excl,
             "metrics": [dict(theme=t, cal_quarter=q, **v) for (t, q), v in sorted(m.items())],
             "movers": movers(m, cur, prev) if cur and prev else [],
-            "stage_counts": {str(k): v for k, v in sorted(stage_counts.items()) if k},
-            "stage4_not_assertable": not_assertable,
+            # None is a real outcome now (withheld: never heard, or no theme), so
+            # filter BEFORE sorting — None and int do not compare.
+            "stage_counts": {str(k): v for k, v in sorted(
+                (kv for kv in stage_counts.items() if kv[0] is not None))},
+            "stage4_not_assertable": not_assertable, "unheard": unheard, "universe": universe,
             "stage4_denominator": stage4_denominator,
             "lag_summary": lc.summarize(lags), "lag_identified": lag_identified, "stage1": stage1,
             "stage2": detector_asked_elsewhere(idx, graph, as_of), "newly_said": newly_said(rows), "pairs": pairs,
@@ -456,6 +501,15 @@ def write_report(snap: dict, path: Path = REPORT) -> str:
                  f"(|lag| <= {ident.get('same_event_days')}d) with no timing content. Do not quote these as a "
                  f"result; see the censoring note above.")
     L.append("Stage counts (theme, company): " + ", ".join(f"stage {k}: {v}" for k, v in snap["stage_counts"].items()))
+    uh = snap.get("unheard") or {}
+    if uh.get("n_pairs"):
+        tks, n = uh.get("tickers") or [], uh["n_pairs"]
+        L.append(f"**{n} {'pair is' if n == 1 else 'pairs are'} unstaged** because we have **never pulled** "
+                 f"{'that company' if len(tks) == 1 else 'those companies'}' earnings calls, so \"nobody has "
+                 f"asked\" is not something we observed — it would be a false stage 1/2. "
+                 f"{len(tks)} {'company' if len(tks) == 1 else 'companies'}: "
+                 + ", ".join(f"`{t}`" for t in tks[:20]) + ("…" if len(tks) > 20 else "")
+                 + ". These need transcript coverage, not analysis.")
     na = snap.get("stage4_not_assertable") or []
     if na:
         L.append(f"Stage 4 is **not assertable** for {len(na)} theme(s): every company where the theme is known to be "
@@ -511,7 +565,13 @@ def run(args) -> int:
     text = write_report(snap)
     log(f"report -> {REPORT}")
     if not args.no_log:
-        n = lc.append_detections(DETECTIONS, snap["stage1"], args.as_of)
+        # Stamp the coverage each detection was computed at. `detected_on` is
+        # permanent by design, so without this a reader in three years cannot
+        # tell a real stage 1 from one produced by a coverage change.
+        u = snap.get("universe") or {}
+        pct = (100.0 * u["n_heard"] / u["n_tickers"]) if u.get("n_tickers") else None
+        n = lc.append_detections(DETECTIONS, snap["stage1"], args.as_of, coverage_pct=pct)
+        record_universe(UNIVERSE_LOG, u)
         log(f"{n} new stage-1 detections appended -> {DETECTIONS} (first-seen dates never restamped)")
     if args.email:
         from newsdigest.email_send import send

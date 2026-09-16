@@ -200,13 +200,22 @@ def stage(idx: dict, theme: str, ticker: str, assigned=None, called=None) -> int
     detected-set is used and behaviour is unchanged."""
     if (theme, ticker) not in idx:
         return None
+    legacy = assigned is None and called is None
+    # Stages 1 and 2 are NEGATIVE claims about this company — "nobody has asked"
+    # and "not asked here". Either is an observation only if we pulled this
+    # company's calls. Measured 2026-09-15: 61 of 631 pairs asserted a silence
+    # nobody observed, including GOOGL/antitrust_action at stage 1 on a company
+    # never once queried. Unstaged (None) rather than dropped: the pair still
+    # carries its evidence, it just makes no lifecycle claim.
+    heard = legacy or ticker in (called or ())
     asked = _asked_tickers(idx, theme)
     if not asked:
-        return 1                                   # nobody has asked anywhere
+        return 1 if heard else None                # nobody has asked anywhere
     here = idx[(theme, ticker)]["first_question_date"] is not None
     if not here:
-        return 2                                   # asked elsewhere, not here
-    legacy = assigned is None and called is None
+        return 2 if heard else None                # asked elsewhere, not here
+    # stages 3 and 4 rest on a POSITIVE observation (this company WAS asked),
+    # so being heard is implied and no guard is needed.
     if not legacy and not stage4_assertable(idx, theme, assigned, called):
         return 3                                   # breadth not establishable
     covered = stage4_universe(idx, theme, assigned, called)
