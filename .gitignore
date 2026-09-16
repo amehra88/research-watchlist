@@ -127,3 +127,8 @@ state/topics/mean.npy
 
 # P3b evidence side: regenerable from notes/sec by scripts/topics/mdna_evidence.py
 state/evidence/
+
+# RIS portal (2026-09-15): the artifact bundle is regenerated on the droplet and published
+# from a session; committing it would push ~20MB every 15 min via auto_sync (see the
+# etf_flows.jsonl note above for the same trap). Only scripts/portal/ is tracked.
+portal_build/

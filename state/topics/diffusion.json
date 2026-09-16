@@ -6657,8 +6657,92 @@
  "stage_counts": {
   "1": 13,
   "2": 158,
-  "3": 52,
-  "4": 408
+  "3": 245,
+  "4": 215
+ },
+ "stage4_not_assertable": [
+  "advanced_materials_ai_infra",
+  "agentic_commerce",
+  "ai_generated_content",
+  "ai_inference_margin_compression",
+  "ai_regulation",
+  "chip_design_competition",
+  "cybersecurity_competitive_landscape",
+  "datacenter_buildout_pacing",
+  "defense_drones",
+  "energy_storage_buildout",
+  "foundation_model_economics",
+  "handset_competition",
+  "hbm_competitive_landscape",
+  "inference_compute_economics",
+  "lithography_roadmap",
+  "local_commerce_delivery",
+  "model_commoditization",
+  "nand_demand_cycle",
+  "networking_margin_trajectory",
+  "nuclear_energy_buildout",
+  "surveillance_security_tech"
+ ],
+ "stage4_denominator": {
+  "thermal_management_cooling": 15,
+  "datacenter_buildout_pacing": 18,
+  "surveillance_security_tech": 1,
+  "vertical_ai_applications": 7,
+  "autonomous_vehicle_competition": 4,
+  "model_commoditization": 1,
+  "ai_inference_margin_compression": 15,
+  "lithography_roadmap": 14,
+  "antitrust_action": 2,
+  "capex_vs_opex_shift": 35,
+  "ai_agent_monetization": 11,
+  "frontier_model_competition": 8,
+  "data_center_deployment_constraints": 26,
+  "aerospace_defense_aftermarket": 6,
+  "nand_demand_cycle": 19,
+  "networking_margin_trajectory": 19,
+  "observability_competitive_landscape": 5,
+  "ai_generated_content": 2,
+  "inference_compute_economics": 22,
+  "ai_infrastructure_software": 13,
+  "ai_regulation": 5,
+  "nuclear_energy_buildout": 3,
+  "ai_native_vertical": 9,
+  "advanced_materials_ai_infra": 15,
+  "search_disruption": 5,
+  "networking_competitive_landscape": 15,
+  "ad_market_strength": 7,
+  "china_export_controls": 12,
+  "chip_design_competition": 5,
+  "ai_compute_topology": 19,
+  "handset_competition": 3,
+  "humanoid_robotics_competition": 7,
+  "sovereign_ai_deployments": 4,
+  "defense_drones": 1,
+  "pc_demand": 5,
+  "agent_framework_landscape": 13,
+  "fed_policy_tech": 0,
+  "semiconductor_cycle": 23,
+  "china_consumer_demand": 4,
+  "model_efficiency_evolution": 15,
+  "energy_storage_buildout": 15,
+  "platform_take_rate": 8,
+  "silicon_architecture_competition": 14,
+  "ai_infrastructure_capex": 30,
+  "space_supply_chain": 2,
+  "hbm_competitive_landscape": 10,
+  "china_ai_infrastructure_demand": 3,
+  "hyperscaler_capex_buildout": 21,
+  "foundry_capacity": 13,
+  "hyperscaler_revenue_concentration": 24,
+  "local_commerce_delivery": 3,
+  "software_seat_pricing_pressure": 39,
+  "enterprise_ai_adoption": 18,
+  "ai_re_architected_incumbent": 14,
+  "automotive_semiconductor_demand": 19,
+  "solar_supply_chain": 21,
+  "cybersecurity_competitive_landscape": 9,
+  "agentic_commerce": 4,
+  "foundation_model_economics": 5
  },
  "lag_summary": {
   "n": 53,
@@ -11860,7 +11944,7 @@
   {
    "theme": "ad_market_strength",
    "ticker": "AAPL",
-   "stage": 3,
+   "stage": 4,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-29",
@@ -11886,7 +11970,7 @@
   {
    "theme": "ad_market_strength",
    "ticker": "DASH",
-   "stage": 3,
+   "stage": 4,
    "first_evidence_date": "2026-05-06",
    "first_filing_date": "2026-05-06",
    "first_question_date": "2026-05-06",
@@ -11902,7 +11986,7 @@
   {
    "theme": "ad_market_strength",
    "ticker": "GOOG",
-   "stage": 3,
+   "stage": 4,
    "first_evidence_date": "2026-02-05",
    "first_filing_date": "2026-02-05",
    "first_question_date": "2026-05-14",
@@ -11929,7 +12013,7 @@
   {
    "theme": "ad_market_strength",
    "ticker": "META",
-   "stage": 3,
+   "stage": 4,
    "first_evidence_date": "2026-01-29",
    "first_filing_date": "2026-01-29",
    "first_question_date": "2026-01-28",
@@ -11943,7 +12027,7 @@
   {
    "theme": "ad_market_strength",
    "ticker": "RDDT",
-   "stage": 3,
+   "stage": 4,
    "first_evidence_date": "2026-02-06",
    "first_filing_date": "2026-02-06",
    "first_question_date": "2026-09-08",
@@ -11993,7 +12077,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "AAOI",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-09",
@@ -12010,7 +12094,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "AMAT",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-12",
@@ -12029,7 +12113,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "CIEN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-13",
@@ -12043,7 +12127,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "COHR",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-04",
@@ -12069,7 +12153,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "CRDO",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-01",
@@ -12085,7 +12169,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "ENTG",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-10",
@@ -12102,7 +12186,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "FN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-10",
@@ -12123,7 +12207,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "GLW",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-28",
@@ -12145,7 +12229,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "LITE",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2026-05-06",
    "first_filing_date": "2026-05-06",
    "first_question_date": "2025-12-03",
@@ -12169,7 +12253,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "LRCX",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-03",
@@ -12187,7 +12271,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "MPWR",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-05",
@@ -12204,7 +12288,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "MRVL",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-10",
@@ -12220,7 +12304,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "MTRN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-12",
@@ -12237,7 +12321,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "NVMI",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-08",
@@ -12251,7 +12335,7 @@
   {
    "theme": "advanced_materials_ai_infra",
    "ticker": "NXPI",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
@@ -12539,7 +12623,7 @@
   {
    "theme": "agentic_commerce",
    "ticker": "AMZN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-05",
@@ -12554,7 +12638,7 @@
   {
    "theme": "agentic_commerce",
    "ticker": "BABA",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-08-20",
@@ -12568,7 +12652,7 @@
   {
    "theme": "agentic_commerce",
    "ticker": "DASH",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-18",
@@ -12584,7 +12668,7 @@
   {
    "theme": "agentic_commerce",
    "ticker": "GOOG",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-05-14",
@@ -12960,7 +13044,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "AMD",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-11",
@@ -12974,7 +13058,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "ANET",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-05-19",
@@ -12988,7 +13072,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "ARM",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-05-06",
@@ -13003,7 +13087,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "AVGO",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-04",
@@ -13019,7 +13103,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "BIDU",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-08-18",
@@ -13033,7 +13117,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "CBRS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-23",
@@ -13051,7 +13135,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "CRWV",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-03",
@@ -13068,7 +13152,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "DDOG",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-08",
@@ -13082,7 +13166,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "DOCN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-24",
@@ -13100,7 +13184,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "GOOG",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-04",
@@ -13115,7 +13199,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "GWRE",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-04",
@@ -13129,7 +13213,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "LITE",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-09",
@@ -13143,7 +13227,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "META",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-07-29",
@@ -13157,7 +13241,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "MSFT",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-04",
@@ -13172,7 +13256,7 @@
   {
    "theme": "ai_inference_margin_compression",
    "ticker": "NVDA",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-08-26",
@@ -13186,7 +13270,7 @@
   {
    "theme": "ai_infrastructure_capex",
    "ticker": "AMD",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-03",
@@ -13200,7 +13284,7 @@
   {
    "theme": "ai_infrastructure_capex",
    "ticker": "CRWV",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-03",
@@ -13214,7 +13298,7 @@
   {
    "theme": "ai_infrastructure_capex",
    "ticker": "MRVL",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-06",
@@ -13362,7 +13446,7 @@
   {
    "theme": "ai_native_vertical",
    "ticker": "CRWD",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-02",
@@ -13377,7 +13461,7 @@
   {
    "theme": "ai_native_vertical",
    "ticker": "DOCN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-03",
@@ -13391,7 +13475,7 @@
   {
    "theme": "ai_native_vertical",
    "ticker": "PANW",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-01",
@@ -13405,7 +13489,7 @@
   {
    "theme": "ai_native_vertical",
    "ticker": "ZS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-03",
@@ -13420,7 +13504,7 @@
   {
    "theme": "ai_re_architected_incumbent",
    "ticker": "DDOG",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-08-12",
@@ -13434,7 +13518,7 @@
   {
    "theme": "ai_re_architected_incumbent",
    "ticker": "GOOG",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-04",
@@ -13448,7 +13532,7 @@
   {
    "theme": "ai_re_architected_incumbent",
    "ticker": "IOT",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-04",
@@ -13462,7 +13546,7 @@
   {
    "theme": "ai_re_architected_incumbent",
    "ticker": "NOW",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
@@ -13477,7 +13561,7 @@
   {
    "theme": "ai_regulation",
    "ticker": "CRWD",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-26",
@@ -13491,7 +13575,7 @@
   {
    "theme": "ai_regulation",
    "ticker": "CRWV",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-05-27",
@@ -13505,7 +13589,7 @@
   {
    "theme": "ai_regulation",
    "ticker": "GOOG",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-05-14",
@@ -13519,7 +13603,7 @@
   {
    "theme": "ai_regulation",
    "ticker": "MSFT",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-11",
@@ -13533,7 +13617,7 @@
   {
    "theme": "ai_regulation",
    "ticker": "ZS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
@@ -14706,7 +14790,7 @@
   {
    "theme": "chip_design_competition",
    "ticker": "AMD",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-03",
@@ -14727,7 +14811,7 @@
   {
    "theme": "chip_design_competition",
    "ticker": "ARM",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-24",
@@ -14741,7 +14825,7 @@
   {
    "theme": "chip_design_competition",
    "ticker": "AVGO",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-11",
@@ -14756,7 +14840,7 @@
   {
    "theme": "chip_design_competition",
    "ticker": "INTC",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-03",
@@ -14772,7 +14856,7 @@
   {
    "theme": "chip_design_competition",
    "ticker": "MPWR",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-04-30",
@@ -14786,7 +14870,7 @@
   {
    "theme": "cybersecurity_competitive_landscape",
    "ticker": "CRWD",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2026-06-04",
    "first_filing_date": "2026-06-04",
    "first_question_date": "2025-12-02",
@@ -14815,7 +14899,7 @@
   {
    "theme": "cybersecurity_competitive_landscape",
    "ticker": "CSCO",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2026-02-17",
    "first_filing_date": "2026-02-17",
    "first_question_date": "2026-09-08",
@@ -14829,7 +14913,7 @@
   {
    "theme": "cybersecurity_competitive_landscape",
    "ticker": "DDOG",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-12",
@@ -14845,7 +14929,7 @@
   {
    "theme": "cybersecurity_competitive_landscape",
    "ticker": "GWRE",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-04",
@@ -14863,7 +14947,7 @@
   {
    "theme": "cybersecurity_competitive_landscape",
    "ticker": "IOT",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-04",
@@ -14880,7 +14964,7 @@
   {
    "theme": "cybersecurity_competitive_landscape",
    "ticker": "MDB",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
@@ -14894,7 +14978,7 @@
   {
    "theme": "cybersecurity_competitive_landscape",
    "ticker": "NOW",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
@@ -14909,7 +14993,7 @@
   {
    "theme": "cybersecurity_competitive_landscape",
    "ticker": "PANW",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2026-02-18",
    "first_filing_date": "2026-02-18",
    "first_question_date": "2026-09-01",
@@ -14939,7 +15023,7 @@
   {
    "theme": "cybersecurity_competitive_landscape",
    "ticker": "ZS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-03",
@@ -15333,7 +15417,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "AMD",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-11-11",
@@ -15347,7 +15431,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "AMZN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-07-30",
@@ -15361,7 +15445,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "ANET",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-03",
@@ -15375,7 +15459,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "AVGO",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-11",
@@ -15390,7 +15474,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "BE",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2026-02-09",
    "first_filing_date": "2026-02-09",
    "first_question_date": "2026-02-05",
@@ -15408,7 +15492,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "CBRS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-23",
@@ -15424,7 +15508,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "CIEN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-11",
@@ -15438,7 +15522,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "COHR",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-11-25",
@@ -15452,7 +15536,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "CRWV",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-02",
@@ -15472,7 +15556,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "DOCN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-01",
@@ -15495,7 +15579,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "FN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-17",
@@ -15510,7 +15594,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "FPS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-05-14",
@@ -15524,7 +15608,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "FRVO",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-22",
@@ -15543,7 +15627,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "GDS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-17",
@@ -15559,7 +15643,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "GEV",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-09",
@@ -15579,7 +15663,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "LITE",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-03",
@@ -15594,7 +15678,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "MRVL",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-06",
@@ -15608,7 +15692,7 @@
   {
    "theme": "datacenter_buildout_pacing",
    "ticker": "NBIS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
@@ -15653,7 +15737,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "AMD",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-02",
@@ -15667,7 +15751,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "AVGO",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-11",
@@ -15681,7 +15765,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "BE",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2026-02-09",
    "first_filing_date": "2026-02-09",
    "first_question_date": "2026-02-05",
@@ -15706,7 +15790,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "CBRS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-23",
@@ -15720,7 +15804,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "CIEN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-03",
@@ -15734,7 +15818,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "CRS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-04-29",
@@ -15748,7 +15832,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "CRWV",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-08",
@@ -15762,7 +15846,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "DOCN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-01",
@@ -15781,7 +15865,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "FPS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-16",
@@ -15796,7 +15880,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "FRVO",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-22",
@@ -15818,7 +15902,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "GDS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-17",
@@ -15833,7 +15917,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "GEV",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-09",
@@ -15861,7 +15945,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "GLW",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-03",
@@ -15877,7 +15961,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "MTRN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-12",
@@ -15891,7 +15975,7 @@
   {
    "theme": "energy_storage_buildout",
    "ticker": "NBIS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
@@ -16213,7 +16297,7 @@
   {
    "theme": "foundation_model_economics",
    "ticker": "ANET",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-09",
@@ -16227,7 +16311,7 @@
   {
    "theme": "foundation_model_economics",
    "ticker": "META",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-07-29",
@@ -16241,7 +16325,7 @@
   {
    "theme": "foundation_model_economics",
    "ticker": "MSFT",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-02",
@@ -16258,7 +16342,7 @@
   {
    "theme": "foundation_model_economics",
    "ticker": "NBIS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
@@ -16272,7 +16356,7 @@
   {
    "theme": "foundation_model_economics",
    "ticker": "NOW",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
@@ -16472,7 +16556,7 @@
   {
    "theme": "handset_competition",
    "ticker": "AAPL",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-29",
@@ -16496,7 +16580,7 @@
   {
    "theme": "handset_competition",
    "ticker": "GLW",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
@@ -16510,7 +16594,7 @@
   {
    "theme": "handset_competition",
    "ticker": "LRCX",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-05-27",
@@ -16524,7 +16608,7 @@
   {
    "theme": "hbm_competitive_landscape",
    "ticker": "000660.KS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-28",
@@ -16548,7 +16632,7 @@
   {
    "theme": "hbm_competitive_landscape",
    "ticker": "005930.KS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-28",
@@ -16565,7 +16649,7 @@
   {
    "theme": "hbm_competitive_landscape",
    "ticker": "AAPL",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-07-30",
@@ -16579,7 +16663,7 @@
   {
    "theme": "hbm_competitive_landscape",
    "ticker": "AMAT",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-11-13",
@@ -16599,7 +16683,7 @@
   {
    "theme": "hbm_competitive_landscape",
    "ticker": "ASML",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-04-15",
@@ -16615,7 +16699,7 @@
   {
    "theme": "hbm_competitive_landscape",
    "ticker": "ENTG",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-08-04",
@@ -16629,7 +16713,7 @@
   {
    "theme": "hbm_competitive_landscape",
    "ticker": "HPQ",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-08",
@@ -16643,7 +16727,7 @@
   {
    "theme": "hbm_competitive_landscape",
    "ticker": "INTC",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-03",
@@ -16658,7 +16742,7 @@
   {
    "theme": "hbm_competitive_landscape",
    "ticker": "LRCX",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-02",
@@ -16681,7 +16765,7 @@
   {
    "theme": "hbm_competitive_landscape",
    "ticker": "STX",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
@@ -17400,7 +17484,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "AMBA",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-03",
@@ -17414,7 +17498,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "AMD",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-10",
@@ -17430,7 +17514,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "AMZN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-04-29",
@@ -17444,7 +17528,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "ANET",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-02",
@@ -17464,7 +17548,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "ARM",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-05-06",
@@ -17479,7 +17563,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "AVGO",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-04",
@@ -17495,7 +17579,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "CBRS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-23",
@@ -17516,7 +17600,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "CRWV",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-02",
@@ -17535,7 +17619,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "DDOG",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-08",
@@ -17549,7 +17633,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "DOCN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-24",
@@ -17568,7 +17652,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "FN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-17",
@@ -17582,7 +17666,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "GOOG",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-07-22",
@@ -17597,7 +17681,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "GWRE",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-04",
@@ -17611,7 +17695,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "INTC",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-04-23",
@@ -17627,7 +17711,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "LITE",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-09",
@@ -17641,7 +17725,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "LRCX",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-05-27",
@@ -17656,7 +17740,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "MDB",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-10",
@@ -17670,7 +17754,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "META",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-07-29",
@@ -17684,7 +17768,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "MRVL",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-10",
@@ -17698,7 +17782,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "MSFT",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-04",
@@ -17713,7 +17797,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "NBIS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
@@ -17727,7 +17811,7 @@
   {
    "theme": "inference_compute_economics",
    "ticker": "NVDA",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-08-26",
@@ -17741,7 +17825,7 @@
   {
    "theme": "lithography_roadmap",
    "ticker": "AAOI",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-05-07",
@@ -17755,7 +17839,7 @@
   {
    "theme": "lithography_roadmap",
    "ticker": "AMAT",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2025-12-12",
    "first_filing_date": "2025-12-12",
    "first_question_date": "2025-11-13",
@@ -17783,7 +17867,7 @@
   {
    "theme": "lithography_roadmap",
    "ticker": "AMD",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-05-05",
@@ -17797,7 +17881,7 @@
   {
    "theme": "lithography_roadmap",
    "ticker": "ASML",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-28",
@@ -17825,7 +17909,7 @@
   {
    "theme": "lithography_roadmap",
    "ticker": "COHR",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-04",
@@ -17840,7 +17924,7 @@
   {
    "theme": "lithography_roadmap",
    "ticker": "ENTG",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-10",
@@ -17862,7 +17946,7 @@
   {
    "theme": "lithography_roadmap",
    "ticker": "GLW",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-05-19",
@@ -17878,7 +17962,7 @@
   {
    "theme": "lithography_roadmap",
    "ticker": "INTC",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-22",
@@ -17896,7 +17980,7 @@
   {
    "theme": "lithography_roadmap",
    "ticker": "LITE",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-03",
@@ -17911,7 +17995,7 @@
   {
    "theme": "lithography_roadmap",
    "ticker": "LRCX",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2026-04-23",
    "first_filing_date": "2026-04-23",
    "first_question_date": "2025-12-02",
@@ -17938,7 +18022,7 @@
   {
    "theme": "lithography_roadmap",
    "ticker": "MRVL",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-06",
@@ -17952,7 +18036,7 @@
   {
    "theme": "lithography_roadmap",
    "ticker": "MTRN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-12",
@@ -17969,7 +18053,7 @@
   {
    "theme": "lithography_roadmap",
    "ticker": "NVMI",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-08",
@@ -17995,7 +18079,7 @@
   {
    "theme": "lithography_roadmap",
    "ticker": "TSM",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-15",
@@ -18015,7 +18099,7 @@
   {
    "theme": "local_commerce_delivery",
    "ticker": "AMZN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-07-30",
@@ -18029,7 +18113,7 @@
   {
    "theme": "local_commerce_delivery",
    "ticker": "BABA",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-08-20",
@@ -18043,7 +18127,7 @@
   {
    "theme": "local_commerce_delivery",
    "ticker": "DASH",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2026-05-06",
    "first_filing_date": "2026-05-06",
    "first_question_date": "2026-02-18",
@@ -18298,7 +18382,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "000660.KS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-28",
@@ -18324,7 +18408,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "005930.KS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-28",
@@ -18345,7 +18429,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "AAPL",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-29",
@@ -18363,7 +18447,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "AMAT",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-11-13",
@@ -18389,7 +18473,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "AMBA",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-03",
@@ -18404,7 +18488,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "AMD",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-03",
@@ -18418,7 +18502,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "ANET",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-12",
@@ -18433,7 +18517,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "ARM",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-04",
@@ -18448,7 +18532,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "ASML",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-28",
@@ -18466,7 +18550,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "ENTG",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-10",
@@ -18485,7 +18569,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "HPQ",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-08",
@@ -18499,7 +18583,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "INDI",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-08-06",
@@ -18514,7 +18598,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "INTC",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-03",
@@ -18530,7 +18614,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "IOT",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-05",
@@ -18545,7 +18629,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "LRCX",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-02",
@@ -18570,7 +18654,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "MPWR",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-05",
@@ -18598,7 +18682,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "NVMI",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-08",
@@ -18612,7 +18696,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "STX",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
@@ -18627,7 +18711,7 @@
   {
    "theme": "nand_demand_cycle",
    "ticker": "TSM",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-15",
@@ -18900,7 +18984,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "AAOI",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-09",
@@ -18918,7 +19002,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "AAPL",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-04-30",
@@ -18932,7 +19016,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "ADI",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-08-19",
@@ -18946,7 +19030,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "AMAT",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-08-13",
@@ -18960,7 +19044,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "ANET",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2026-02-17",
    "first_filing_date": "2026-02-17",
    "first_question_date": "2026-02-12",
@@ -18979,7 +19063,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "AVGO",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-03",
@@ -18993,7 +19077,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "CIEN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2025-12-12",
    "first_filing_date": "2025-12-12",
    "first_question_date": "2026-01-13",
@@ -19012,7 +19096,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "COHR",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-04",
@@ -19033,7 +19117,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "CRDO",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-01",
@@ -19047,7 +19131,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "CRS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-29",
@@ -19061,7 +19145,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "FN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2026-02-03",
    "first_filing_date": "2026-02-03",
    "first_question_date": "2025-12-10",
@@ -19084,7 +19168,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "FPS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-05-14",
@@ -19099,7 +19183,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "GLW",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2026-05-01",
    "first_filing_date": "2026-05-01",
    "first_question_date": "2026-01-28",
@@ -19119,7 +19203,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "HPE",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2026-03-10",
    "first_filing_date": "2026-03-10",
    "first_question_date": "2026-09-02",
@@ -19136,7 +19220,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "LITE",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": "2026-02-04",
    "first_filing_date": "2026-02-04",
    "first_question_date": "2025-12-03",
@@ -19157,7 +19241,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "MPWR",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-02-05",
@@ -19176,7 +19260,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "MRVL",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-10",
@@ -19193,7 +19277,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "MTRN",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-04-29",
@@ -19209,7 +19293,7 @@
   {
    "theme": "networking_margin_trajectory",
    "ticker": "NXPI",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
@@ -19223,7 +19307,7 @@
   {
    "theme": "nuclear_energy_buildout",
    "ticker": "FPS",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-05-14",
@@ -19237,7 +19321,7 @@
   {
    "theme": "nuclear_energy_buildout",
    "ticker": "FRVO",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-06-22",
@@ -19252,7 +19336,7 @@
   {
    "theme": "nuclear_energy_buildout",
    "ticker": "GEV",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-01-28",
@@ -21239,7 +21323,7 @@
   {
    "theme": "vertical_ai_applications",
    "ticker": "GWRE",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-03-05",
@@ -21256,7 +21340,7 @@
   {
    "theme": "vertical_ai_applications",
    "ticker": "IOT",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2025-12-04",
@@ -21273,7 +21357,7 @@
   {
    "theme": "vertical_ai_applications",
    "ticker": "SNOW",
-   "stage": 4,
+   "stage": 3,
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-02",
@@ -21289,9 +21373,9 @@
   "challenging_rate (spec \u00a75) is not computed: exchange rows carry no challenging flag and 99% of analyst turns are sentiment=Neutral.",
   "P3 foreign evidence is not built: stages and lags use US MD&A evidence only; Chinese filers appear only in the exclusions list. Corprep transcript speech is reported as a count (n_corprep_companies) but does not set a stage: at its 0.30 threshold it mis-paired 3 of 5 spot-checked stage-2 rows.",
   "MD&A counts need >= 2 mapped blocks per filer-quarter and are lower-confidence than transcript counts (mdna precision ~0.4 at its threshold).",
-  "The Tier-0 lag runs from MD&A filing dates only (corprep answers share the question's date). Both windows are truncated \u2014 questions 2025-11-11..2026-09-11, filings 2025-12-10..2026-09-11 \u2014 but the binding problem is PER-TICKER, not global: 21 tickers have MD&A coverage starting >30d after their call coverage (CRWD +93d, IOT +102d, AAOI +79d), and those names produce the entire negative tail. A pair is only counted once the register that produced its SECOND event had been observed for 30d beforehand; today 26 negative and 21 positive pairs fail that test. Applying the guard to negative lags alone would move the same corpus from 34.2% to 86.2% evidence-led, which is why it is applied in both directions.",
-  "Call-side backfill is the binding gap and it is fixable: 20 of 63 tickers with any call coverage have their FIRST observed call in the last 45 days, i.e. one call and no question history at all. Nothing about those names can be identified in either direction, and they account for most of the dropped positive pairs (HPQ, PANW, HPE, NXPI, RDDT). More transcript history moves this number; more statistics does not.",
-  "Pairs whose filing and question fall within 3d are excluded as one reporting event rather than a disclosure and a response: the call-to-filing offset for the same quarter runs median +1d (p25 0, p75 2). Tier 0 therefore measures leads and lags longer than one reporting cycle; a genuinely simultaneous disclosure is out of scope by construction, not absent from the data.",
+  "The Tier-0 lag runs from MD&A filing dates only (corprep answers share the question's date). Both windows are truncated \u2014 questions 2025-11-11..2026-09-11, filings 2025-12-10..2026-09-11 \u2014 but the binding problem is PER-TICKER, not global: 21 tickers have MD&A coverage starting >30d after their call coverage, and those names produce the negative tail. A pair is only counted once the register that produced its SECOND event had been observed for 30d beforehand; today 26 negative and 21 positive pairs fail that test. The guard runs in BOTH directions on purpose: applying it to negative lags alone moved the same corpus from 34.2% to 86.2% evidence-led (measured 2026-09-15), which is not a correction but the discarding of every observation that disagreed.",
+  "Call-side backfill is the binding gap and it is fixable: 20 of 63 tickers with any call coverage have their FIRST observed call in the last 45 days, i.e. one call and no question history at all. Nothing about those names can be identified in either direction, and they account for most of the dropped positive pairs. More transcript history moves this number; more statistics does not.",
+  "Pairs whose filing and question fall within 3d are excluded as one reporting event rather than a disclosure and a response: the call-to-filing offset for the same quarter ran median +1d (p25 0, p75 2) when measured 2026-09-15. Tier 0 therefore measures leads and lags longer than one reporting cycle; a genuinely simultaneous disclosure is out of scope by construction, not absent from the data.",
   "No trend lines by design: three or four observations per theme support a comparison, not a slope."
  ]
 }
