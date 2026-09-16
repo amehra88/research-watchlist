@@ -196,6 +196,108 @@ def test_map_is_fresh_rejects_a_map_older_than_its_inputs():
         assert not lc.map_is_fresh(Path(d) / "missing.jsonl", [x])[0]
 
 
+# ───────────── stage-4 denominator (2026-09-15) ─────────────
+#
+# `covered` used to be "tickers where a (theme, ticker) pair exists", and a
+# pair only exists where the theme was DETECTED. For any theme the evidence
+# side never matches, covered == asked and "asked at > half of covered" cannot
+# fail. Measured: 24 of 40 stage-4 themes had zero MD&A evidence anywhere and
+# 28 of 40 sat at a ratio of exactly 1.00, which is how 408 of 631 pairs came
+# to read "late / priced".
+
+def _q(theme, ticker, date="2026-06-01"):
+    return {"unit_id": f"q-{theme}-{ticker}", "register": "question", "ticker": ticker,
+            "themes": [{"theme": theme}], "event_date": date, "firm": "Wolfe"}
+
+
+def _m(theme, ticker, date="2026-05-01"):
+    return {"unit_id": f"m-{theme}-{ticker}", "register": "evidence", "source": "mdna",
+            "ticker": ticker, "themes": [{"theme": theme}], "event_date": date}
+
+
+def test_theme_assignments_reads_every_tier():
+    w = {"tier_1_bctk": [{"ticker": "COHR", "themes": ["t1", "t2"]}],
+         "tier_3_watchlist": [{"ticker": "LITE", "themes": ["t1"]}],
+         "tier_4_ecosystem": [{"id": "innolight.cn", "themes": ["t1"]}]}
+    a = lc.theme_assignments(w)
+    assert a["t1"] == {"COHR", "LITE", "innolight.cn"}
+    assert a["t2"] == {"COHR"}
+
+
+def test_stage_without_relevance_info_keeps_the_old_denominator():
+    """Back-compat. Callers that pass nothing get exactly today's behaviour, so
+    the change is opt-in at the call site and the old tests still mean what
+    they meant."""
+    rows = [_q("t1", tk) for tk in ("A", "B", "C")]
+    idx = lc.build_index(rows)
+    assert lc.stage(idx, "t1", "A") == 4
+
+
+def test_a_theme_only_ever_detected_where_it_was_asked_cannot_reach_stage_4():
+    """The bug. Three tickers asked, nothing else known about the theme — so
+    there is no company where it was relevant and NOT asked, and 'asked at most
+    covered names' is unfalsifiable. Stage 3 is the honest ceiling."""
+    rows = [_q("t1", tk) for tk in ("A", "B", "C")]
+    idx = lc.build_index(rows)
+    called = {"A", "B", "C", "D", "E"}
+    assert lc.stage(idx, "t1", "A", assigned={}, called=called) == 3
+    assert lc.stage4_assertable(idx, "t1", assigned={}, called=called) is False
+
+
+def test_operator_assignment_supplies_the_missing_denominator():
+    """Assigned to five covered names, asked at three of them -> a real 3/5
+    majority, and stage 4 becomes assertable and true."""
+    rows = [_q("t1", tk) for tk in ("A", "B", "C")]
+    idx = lc.build_index(rows)
+    assigned = {"t1": {"A", "B", "C", "D", "E"}}
+    called = {"A", "B", "C", "D", "E"}
+    assert lc.stage4_assertable(idx, "t1", assigned=assigned, called=called) is True
+    assert lc.stage(idx, "t1", "A", assigned=assigned, called=called) == 4
+
+
+def test_assignment_that_is_broad_enough_keeps_a_theme_at_stage_3():
+    """Asked at 3 of 9 relevant covered names is not 'late / priced'."""
+    rows = [_q("t1", tk) for tk in ("A", "B", "C")]
+    idx = lc.build_index(rows)
+    assigned = {"t1": set("ABCDEFGHI")}
+    assert lc.stage(idx, "t1", "A", assigned=assigned, called=set("ABCDEFGHI")) == 3
+
+
+def test_relevant_names_whose_calls_we_never_heard_do_not_count():
+    """A theme must not be held back from stage 4 because WE failed to ingest a
+    company's call — that is the same censoring trap as the Tier-0 lag. Only
+    companies we actually heard can be counted as having stayed silent."""
+    rows = [_q("t1", tk) for tk in ("A", "B", "C")]
+    idx = lc.build_index(rows)
+    assigned = {"t1": set("ABCDEFGHI")}
+    # we only ever heard A..E; F..I are assigned but unheard
+    assert lc.stage(idx, "t1", "A", assigned=assigned, called=set("ABCDE")) == 4
+
+
+def test_evidence_only_names_count_toward_relevance():
+    """A company that DISCLOSED the theme but was never asked about it is the
+    most informative kind of denominator entry — it is the §6.2 gap itself."""
+    rows = ([_q("t1", tk) for tk in ("A", "B", "C")]
+            + [_m("t1", tk) for tk in ("D", "E", "F", "G")])
+    idx = lc.build_index(rows)
+    called = set("ABCDEFG")
+    assert lc.stage4_assertable(idx, "t1", assigned={}, called=called) is True
+    # 4 companies disclosed it and were never asked, so 3 of 7 is not a majority
+    assert lc.stage(idx, "t1", "A", assigned={}, called=called) == 3
+    assert lc.stage4_universe(idx, "t1", assigned={}, called=called) == set("ABCDEFG")
+
+
+def test_asked_is_always_inside_the_universe():
+    """If a ticker could be in `asked` but not in the denominator, the ratio
+    exceeds 1.0 and stage 4 goes automatic again — the same bug wearing a
+    different denominator."""
+    rows = [_q("t1", tk) for tk in ("A", "B", "C")]
+    idx = lc.build_index(rows)
+    u = lc.stage4_universe(idx, "t1", assigned={}, called=set())   # nothing 'called'
+    asked = {tk for (th, tk), p in idx.items() if th == "t1" and p["first_question_date"]}
+    assert asked <= u, (asked, u)
+
+
 # ────────────── Tier-0 identification guard (2026-09-15) ──────────────
 #
 # Measured on the live map: the raw lag says evidence led 34.2% of the time

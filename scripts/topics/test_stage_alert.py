@@ -26,6 +26,27 @@ def test_diff_emits_forward_moves_only_and_collapses_theme_level_kinds():
     print("  ✓ forward moves + first gate crossing; regression u|X 4->3 and birth t|D at 2 are silent")
 
 
+def test_stage4_line_quotes_the_snapshot_denominator_not_len_pairs():
+    """render used to compute n = len(pairs), the legacy detected-set, while the
+    stage was decided on the relevance universe. On live data that produced
+    "`ad_market_strength` is now stage 4 (late): asked at 5 of 10 covered names"
+    — a justification that does not clear the >half rule it claims to have met."""
+    snap = {"current_quarter": "CY2026-Q3",
+            "pairs": [_pair("t", tk, 4, fq="2026-06-01") for tk in ("A", "B", "C")]
+                     + [_pair("t", tk, 2, fe="2026-05-01") for tk in ("D", "E", "F", "G")],
+            "stage4_denominator": {"t": 5},
+            "metrics": []}
+    line = sa.render({"kind": "stage4", "theme": "t"}, snap, [], {}, "2026-09-15")
+    assert "3 of 5 covered names" in line, line
+    k, n = 3, 5
+    assert k > n / 2, "the quoted ratio must actually clear the rule"
+    # and with no denominator published it falls back rather than crashing
+    legacy = sa.render({"kind": "stage4", "theme": "t"},
+                       {**snap, "stage4_denominator": {}}, [], {}, "2026-09-15")
+    assert "3 of 7 covered names" in legacy, legacy
+    print("  ✓ stage-4 line quotes the snapshot's denominator, with a safe fallback")
+
+
 def test_stage4_is_one_line_per_theme():
     ev = sa.diff_events({"pairs": {"t|A": 3, "t|B": 3}, "gated": ["t"]},
                         {"pairs": {"t|A": 4, "t|B": 4}, "gated": ["t"]})

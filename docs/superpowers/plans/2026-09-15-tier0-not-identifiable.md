@@ -121,7 +121,7 @@ clean left edge, because both registers were demonstrably live and silent
 beforehand. The identified-pair count is now the thing to watch: when it
 passes `LAG_MIN_N`, Tier 0 starts answering.
 
-## Open, and deliberately not bundled here: stage 4 is degenerate
+## FIXED (2026-09-15, follow-up): stage 4 was degenerate
 
 ```
 stages {'1': 13, '2': 158, '3': 52, '4': 408}
@@ -155,6 +155,40 @@ observed — those with call coverage in the window — not the companies where 
 indistinguishable from broad analyst saturation, and the two have opposite
 meanings for an operator.
 
-Left unbundled on purpose: it changes the stage numbers in the daily email and
-`stage_alert.py` diffs pairs from the same snapshot, so it wants its own change
-and its own review.
+### The fix
+
+The denominator is now the companies where the theme is **relevant** and whose
+call we **actually heard**. Relevance comes from two sources that do not depend
+on who asked: the operator's per-ticker `themes:` in `watchlist.yaml` (157 of
+191 entries carry one; all 50 tokens are anchor slugs), and companies that
+disclosed the theme without being asked — the §6.2 gap itself.
+
+Intersecting with heard calls cuts both ways, which is how you know it is the
+right restriction: it stops a theme being held back from stage 4 because *we*
+never ingested a call, and it is why `ad_market_strength` legitimately **rises**
+to stage 4 — 3 of its 10 "covered" names were names we never heard.
+
+**Result: stage 4 408 → 215, stage 3 52 → 245.**
+
+Where relevance is unknown the claim is vacuous, so stage 4 is *not assertable*
+and the pair is held at 3. The 21 affected themes are named in the report:
+holding them at 3 for an unexplained reason would just trade a wrong number for
+a mysterious one, and assigning them in `watchlist.yaml` is the concrete lever
+that makes stage 4 computable for them.
+
+### Two consistency traps found while wiring it
+
+- `pairs` in the snapshot still called `lc.stage()` without the new
+  denominator. That is what `stage_alert` diffs and `theme_notes` renders, so
+  the snapshot would have disagreed with its own `stage_counts`.
+- `stage_alert.render` computed `n = len(pairs)` itself — the legacy detected
+  set. The live dry-run printed *"asked at 5 of 10 covered names"* as the
+  justification for stage 4, a ratio that does not clear the >half rule it
+  claims to have met. The denominator is now published in the snapshot and
+  quoted from there.
+
+### Migration
+
+None needed. `diff_events` absorbs downgrades silently (`if st <= was:
+continue`), so the 193 pairs moving 4→3 emit nothing. The live dry-run produces
+exactly one event: the genuine `ad_market_strength` upgrade.

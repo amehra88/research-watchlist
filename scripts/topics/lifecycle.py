@@ -132,18 +132,84 @@ def build_index(rows) -> dict:
     return idx
 
 
-def stage(idx: dict, theme: str, ticker: str) -> int | None:
-    """§6.3 staging, read across every company carrying the topic."""
+def theme_assignments(watchlist: dict) -> dict:
+    """-> {theme: {tickers the OPERATOR assigned it to}}, across every tier.
+
+    This is the only non-circular statement of where a theme is relevant. The
+    detector cannot supply one: it knows where a theme was found, which is
+    precisely the quantity stage 4 is trying to normalise. Measured on
+    config/watchlist.yaml: 157 of 191 entries carry a themes list, median 3
+    each, and all 50 distinct tokens are anchor-vocabulary slugs."""
+    out: dict = {}
+    for tier in ("tier_1_bctk", "tier_2_active_candidates",
+                 "tier_3_watchlist", "tier_4_ecosystem"):
+        for e in (watchlist.get(tier) or []):
+            key = e.get("ticker") or e.get("id")
+            if not key:
+                continue
+            for t in (e.get("themes") or []):
+                out.setdefault(t, set()).add(key)
+    return out
+
+
+def _asked_tickers(idx: dict, theme: str) -> set:
+    return {tk for (th, tk), p in idx.items()
+            if th == theme and p["first_question_date"]}
+
+
+def stage4_universe(idx: dict, theme: str, assigned=None, called=None) -> set:
+    """The companies stage 4 normalises against: where this theme is relevant
+    AND we actually heard the call.
+
+    Relevance comes from two sources that do not depend on who asked — the
+    operator's assignment, and companies that DISCLOSED the theme without being
+    asked (which is the §6.2 gap itself). Intersecting with `called` matters:
+    counting a relevant company whose call we never ingested would hold a theme
+    back from stage 4 because of OUR coverage gap, which is the same censoring
+    trap as the Tier-0 lag.
+
+    `asked` is unioned in last so it is always a subset of the universe. If it
+    were not, the ratio could exceed 1.0 and stage 4 would go automatic again —
+    the original bug wearing a different denominator.
+
+    With neither `assigned` nor `called` supplied this returns the legacy
+    detected-set, so existing callers are unchanged."""
+    detected = {tk for (th, tk) in idx if th == theme}
+    if assigned is None and called is None:
+        return detected
+    u = detected | set((assigned or {}).get(theme) or ())
+    if called is not None:
+        u &= set(called)
+    return u | _asked_tickers(idx, theme)
+
+
+def stage4_assertable(idx: dict, theme: str, assigned=None, called=None) -> bool:
+    """Is there any company where this theme is relevant and was NOT asked?
+
+    If not, "asked at most covered names" has no way to come out false and the
+    claim is vacuous. Stage 4 is then not assertable — which is a statement
+    about the evidence, not about the theme."""
+    u = stage4_universe(idx, theme, assigned, called)
+    return bool(u - _asked_tickers(idx, theme))
+
+
+def stage(idx: dict, theme: str, ticker: str, assigned=None, called=None) -> int | None:
+    """§6.3 staging, read across every company carrying the topic.
+
+    `assigned`/`called` supply the stage-4 denominator; omitted, the legacy
+    detected-set is used and behaviour is unchanged."""
     if (theme, ticker) not in idx:
         return None
-    asked = {tk for (th, tk), p in idx.items()
-             if th == theme and p["first_question_date"]}
+    asked = _asked_tickers(idx, theme)
     if not asked:
         return 1                                   # nobody has asked anywhere
     here = idx[(theme, ticker)]["first_question_date"] is not None
     if not here:
         return 2                                   # asked elsewhere, not here
-    covered = {tk for (th, tk) in idx if th == theme}
+    legacy = assigned is None and called is None
+    if not legacy and not stage4_assertable(idx, theme, assigned, called):
+        return 3                                   # breadth not establishable
+    covered = stage4_universe(idx, theme, assigned, called)
     if len(asked) >= STAGE4_MIN_TICKERS and len(asked) > len(covered) / 2:
         return 4                                   # late / priced
     return 3                                       # consensus forming

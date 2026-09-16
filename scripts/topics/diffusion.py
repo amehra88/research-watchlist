@@ -238,6 +238,9 @@ def detector_asked_elsewhere(idx: dict, graph: dict, as_of: str) -> list:
             asked_by_theme[theme][ticker] = p["first_question_date"]
     out = []
     for (theme, ticker), p in idx.items():
+        # No denominator needed: stage 2 is decided before the stage-4 branch
+        # (asked somewhere, not here), so the relevance universe cannot change
+        # this answer.
         if lc.stage(idx, theme, ticker) != 2:
             continue
         nbrs = graph.get(ticker, {})
@@ -262,7 +265,23 @@ def _date_span(rows, pred) -> tuple:
     return (ds[0], ds[-1]) if ds else (None, None)
 
 
-def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None) -> dict:
+def _asked_any(idx: dict, theme: str) -> bool:
+    return any(p["first_question_date"] for (th, _tk), p in idx.items() if th == theme)
+
+
+def load_theme_assignments(path: Path = REPO / "config" / "watchlist.yaml") -> dict:
+    """Operator-assigned theme relevance, the stage-4 denominator's independent
+    half. Missing or unreadable -> {}, which falls back to the detected set."""
+    try:
+        import yaml                                        # noqa: PLC0415
+        return lc.theme_assignments(yaml.safe_load(path.read_text()) or {})
+    except Exception:                                      # noqa: BLE001
+        log(f"WARNING: could not read {path}; stage 4 falls back to the detected set")
+        return {}
+
+
+def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None,
+                   assigned: dict | None = None) -> dict:
     rows = apply_mdna_block_rule(rows)          # single-block MD&A themes never reach a stage or a count
     qs = quarters_in(rows)
     cur = qs[-1] if qs else None
@@ -293,10 +312,25 @@ def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None) -> d
                           1 for c in cov.values() if c["question"]
                           and (lc._d(as_of) - lc._d(c["question"])).days < SINGLE_CALL_DAYS),
                       "n_tickers_with_calls": sum(1 for c in cov.values() if c["question"])}
+    # Stage-4 denominator (see lc.stage4_universe). `called` is every ticker
+    # whose analyst call we actually heard; without it a theme would be held
+    # back from stage 4 by OUR ingest gaps rather than by the market.
+    assigned = {} if assigned is None else assigned
+    called = {r["ticker"] for r in staged_rows
+              if r.get("register") == "question" and r.get("ticker")}
+    not_assertable = sorted({th for (th, _tk) in idx
+                             if _asked_any(idx, th)
+                             and not lc.stage4_assertable(idx, th, assigned, called)})
+    # Published so stage_alert can quote the SAME denominator the stage was
+    # decided on. It used to recompute len(pairs) itself, which is the legacy
+    # detected-set — an alert would have read "asked at 5 of 10 covered names"
+    # as the justification for a rule that requires more than half.
+    stage4_denominator = {th: len(lc.stage4_universe(idx, th, assigned, called))
+                          for th in {t for (t, _k) in idx}}
     stage_counts = collections.Counter()
     stage1 = []
     for (theme, ticker), p in idx.items():
-        st = lc.stage(idx, theme, ticker)
+        st = lc.stage(idx, theme, ticker, assigned=assigned, called=called)
         stage_counts[st] += 1
         if st == 1 and p["first_evidence_date"]:
             stage1.append({"theme": theme, "ticker": ticker, "stage": 1, "first_evidence_date": p["first_evidence_date"],
@@ -305,7 +339,11 @@ def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None) -> d
     stage1.sort(key=lambda e: (-(e["open_lag_days"] or 0), e["theme"], e["ticker"]))
     pairs = []
     for (theme, ticker), p in sorted(idx.items()):
-        pairs.append({"theme": theme, "ticker": ticker, "stage": lc.stage(idx, theme, ticker),
+        # MUST use the same denominator as stage_counts above: `pairs` is what
+        # stage_alert diffs and theme_notes renders, so a legacy stage here
+        # would make the snapshot disagree with itself.
+        pairs.append({"theme": theme, "ticker": ticker,
+                      "stage": lc.stage(idx, theme, ticker, assigned=assigned, called=called),
                       "first_evidence_date": p["first_evidence_date"], "first_filing_date": p["first_filing_date"],
                       "first_question_date": p["first_question_date"],
                       "lag_days": lc.lag_days(p["first_filing_date"], p["first_question_date"]),
@@ -349,6 +387,8 @@ def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None) -> d
             "metrics": [dict(theme=t, cal_quarter=q, **v) for (t, q), v in sorted(m.items())],
             "movers": movers(m, cur, prev) if cur and prev else [],
             "stage_counts": {str(k): v for k, v in sorted(stage_counts.items()) if k},
+            "stage4_not_assertable": not_assertable,
+            "stage4_denominator": stage4_denominator,
             "lag_summary": lc.summarize(lags), "lag_identified": lag_identified, "stage1": stage1,
             "stage2": detector_asked_elsewhere(idx, graph, as_of), "newly_said": newly_said(rows), "pairs": pairs,
             "notes": notes}
@@ -416,6 +456,13 @@ def write_report(snap: dict, path: Path = REPORT) -> str:
                  f"(|lag| <= {ident.get('same_event_days')}d) with no timing content. Do not quote these as a "
                  f"result; see the censoring note above.")
     L.append("Stage counts (theme, company): " + ", ".join(f"stage {k}: {v}" for k, v in snap["stage_counts"].items()))
+    na = snap.get("stage4_not_assertable") or []
+    if na:
+        L.append(f"Stage 4 is **not assertable** for {len(na)} theme(s): every company where the theme is known to be "
+                 "relevant has already been asked about it, so \"asked at most covered names\" has nothing to come out "
+                 "false against and those pairs are held at stage 3. Assigning these themes to companies in "
+                 "`config/watchlist.yaml` is what makes stage 4 computable for them: "
+                 + ", ".join(f"`{t}`" for t in na[:12]) + ("…" if len(na) > 12 else "") + ".")
     L.append("")
     L.append(f"### Stage 2 — asked at another name, not here ({len(snap['stage2'])}; verified-adjacent askers first)")
     L.append("| theme | company | adjacent asked (route, first question) | other askers | first evidence | open days | evidence |")
@@ -455,7 +502,7 @@ def run(args) -> int:
     meta = load_exchange_meta()
     graph = adjmod.load_adjacency()
     nc = json.loads(NO_COVERAGE.read_text()) if NO_COVERAGE.exists() else {}
-    snap = build_snapshot(rows, meta, graph, args.as_of, nc)
+    snap = build_snapshot(rows, meta, graph, args.as_of, nc, load_theme_assignments())
     log(f"{len(rows)} rows, {len(snap['metrics'])} (theme, quarter) cells, quarters {snap['quarters']}, "
         f"stages {snap['stage_counts']}, stage2 {len(snap['stage2'])}, stage1 {len(snap['stage1'])}, "
         f"newly_said {len(snap['newly_said'])}, lag {snap['lag_summary']}")
