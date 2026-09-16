@@ -357,7 +357,7 @@ to `challenged`, but a human decides. Nothing auto-downgrades a thesis.
 
 ---
 
-## ADDENDUM 2026-08-25 — the share test is now an actual calculation, and margins cut against the price-competition reading
+## ADDENDUM 2026-08-25 — the share test is now an actual revenue-share calculation (company totals), and margins cut against the price-competition reading
 
 The CNINFO channel completed on 2026-08-25: **38 filings across all four Chinese filers**
 (Innolight 10, Eoptolink 10, Accelink 10, HG Genuine 8), 4,817 chunks. The Aug-21 first cut
@@ -378,7 +378,7 @@ rather than mismatched fiscal years:
 | 2026-03-31 | 2,765 | 4,069 | 59.5% |
 | **2026-06-30** | **3,244** | **5,217** | **61.7%** |
 
-**+22.3 pts over eight quarters.** China's absolute revenue is now ~1.6x the US panel's, and
+**+22.3 pts in the two years to 2026-06-30.** China's absolute revenue is now ~1.6x the US panel's, and
 Innolight alone ($3,273mn) out-revenues all of Coherent ($2,045mn) in the same quarter. The
 June quarter was added only because FactSet published Innolight's on 08-21 and Eoptolink's on
 08-25; before that the panel truncated at March.
@@ -391,17 +391,33 @@ RMB 20.91bn, which at the implied rate gives Q2 = $1,844mn against FactSet's $1,
 
 This document's own criteria say share gain counts as capability only if it is *"sustained
 with margin (price-cutting alone is not capability)"*, and lists *"competing on assembly/price
-rather than component tech"* as CONFIRMING the assumption. The H1-2026 filings fail that test:
+rather than component tech"* as CONFIRMING the assumption. The H1-2026 filings fail that test
+on **segment gross margin** — the cleanest available measure, above all the non-operating
+noise:
 
-| | revenue y/y | net profit y/y | net margin | vs H1-25 |
-|---|---|---|---|---|
-| Innolight | +182.5% | **+241.7%** | 32.7% | **+5.7 pts** |
-| Eoptolink | +100.3% | +91.0% | 36.0% | −1.8 pts |
+| | segment | gross margin H1-25 -> H1-26 | change |
+|---|---|---|---|
+| Innolight | optical interconnect | 47.48% -> **48.46%** | +1.0 pt |
+| Eoptolink | optical transceiver modules | 39.96% -> **46.59%** | **+6.6 pts** |
 
-Innolight's profit is growing **faster than revenue** — margin expanding while roughly
-tripling. Eoptolink holds a 36% net margin. Firms winning on price do not post 33-36% net
-margins with margins flat-to-up. By the standard set out above, the share gain is being taken
-**with** margin, which is the condition this document said would challenge the assumption.
+Both expanded gross margin while roughly doubling-to-tripling revenue. A vendor buying share
+with price does not widen gross margin doing it.
+
+**The obvious confounds were checked and they cut the other way.** Net margin at a Chinese
+A-share filer can be flattered by FX gains on USD receivables or by government grants, so:
+- **FX was a LOSS, not a gain, at both.** Innolight finance costs RMB 562mn, +1,528.7%,
+  explicitly *"mainly due to increased exchange losses"* (`主要原因是本期汇兑损失增加`);
+  Eoptolink RMB 644mn, +409.7%, same cause. The RMB move HURT reported profit and they
+  expanded margin regardless.
+- **Government grants are immaterial.** Innolight's grant income is RMB 14.8mn against
+  RMB 13.65bn of net profit — about 0.1%.
+- **Ex-non-recurring profit confirms it.** Innolight's 扣非 net profit is RMB 13.09bn,
+  +229.3% y/y; only ~4% of reported profit is non-recurring.
+
+Net margins are consistent with this (Innolight 27.0% -> 32.7%, +5.7 pts; Eoptolink 37.8% ->
+36.0%), and Eoptolink's small net decline is explained by the FX loss below the line while its
+gross margin rose 6.6 pts. By the standard set out above, the share gain is being taken
+**with** margin — the condition this document said would challenge the assumption.
 
 ### Second-vendor breadth on the SiPh route
 
