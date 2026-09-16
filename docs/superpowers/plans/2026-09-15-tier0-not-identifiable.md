@@ -77,13 +77,40 @@ negative and an `if/elif` guard skipped it.
 ## What shipped
 
 `lifecycle.coverage_starts`, `lifecycle.lag_is_identified`,
-`lifecycle.identified_lags`, and `LAG_MIN_N`. The report now leads with the
+`lifecycle.identified_lags`, `SAME_EVENT_DAYS` and `LAG_MIN_N`. The report now leads with the
 identified count and, below the floor, states in words that the lag is not yet
 measurable. Raw figures remain in the snapshot for continuity, explicitly
 labelled "not a finding".
 
-Live output: *"Only 2 identified pair(s) … the lag is not yet measurable from
+Live output: *"Only 1 identified pair … the lag is not yet measurable from
 this corpus, in either direction."*
+
+## Review pass (same day): two corrections to the guard above
+
+**A same-day filing is one reporting event, not a response.** One of the two
+pairs the guard first called identified was AMBA — filed 2026-09-04, asked
+2026-09-03, lag −1. That is the 10-Q that accompanies the call, not a company
+reacting to an analyst. Half the surviving sample was the reporting calendar.
+The corpus-wide call-to-filing offset for the same quarter is median +1d
+(p25 0, p75 2), so pairs within 3 days now get their own bucket — kept apart
+from the censoring counts, because they are well observed and simply carry no
+timing content. 5 of 53 pairs. Identified pairs: 2 → 1.
+
+Consequence worth stating: Tier 0 now measures leads and lags **longer than
+one reporting cycle**. Simultaneous disclosure is out of scope by
+construction, not missing from the data.
+
+**The actionable finding, which the statistics were burying.** 20 of 63
+tickers with any call coverage have their *first* observed call within the
+last 45 days — one call, no question history at all. Nothing about those names
+can be identified in either direction, and they account for 21 of the dropped
+positive pairs (HPQ, PANW, HPE, NXPI, RDDT). This is a **transcript-backfill
+gap, not a statistical one**: more call history moves the identified count,
+more statistics does not. It is the cheapest lever on Tier 0 becoming
+answerable sooner than "wait a year".
+
+Current accounting: 1 identified + 26 negative-censored + 21 positive-censored
++ 5 same-event = 53 pairs.
 
 ## What is answerable
 
