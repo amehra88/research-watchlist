@@ -41,10 +41,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 2.5
+    confirm: 3.5
     challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-15'
   draft: true
 - id: aapl_active_device_2b_at_scoring
   statement: Active installed base at scoring stood at or above 2 billion devices
@@ -89,7 +89,7 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 8.0
+    confirm: 9.0
     challenge: 0
     window_days: 90
     last_evidence: '2026-09-15'
@@ -140,10 +140,10 @@ assumptions:
   status: challenged
   status_source: evidence
   pressure:
-    confirm: 0.5
+    confirm: 2.5
     challenge: 9.0
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-15'
   draft: true
 - id: aapl_fcf_buyback_inv_int_support
   statement: FCF generation magnitude and buyback activity were, at scoring, the primary

@@ -42,9 +42,9 @@ assumptions:
   status_source: evidence
   pressure:
     confirm: 12.5
-    challenge: 0
+    challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-15'
   draft: true
 - id: bedrock_anthropic_closes_model_gap
   statement: The Bedrock + Anthropic partnership closes the model-layer capability

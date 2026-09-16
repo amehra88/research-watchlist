@@ -34,10 +34,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-15'
   draft: true
 - id: leading_edge_fab_euv_required
   statement: At scoring, no volume sub-3nm node had been demonstrated at a leading-edge
@@ -57,10 +57,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-15'
   draft: true
 - id: china_export_drag_at_scoring_scope
   statement: At scoring, Dutch and US export-control restrictions were limiting ASML
@@ -126,10 +126,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 33.0
+    confirm: 35.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-15'
+    last_evidence: '2026-09-16'
   draft: true
 - id: ai_demand_one_step_removed
   statement: At scoring, ASML's AI-driven revenue exposure was mediated entirely through

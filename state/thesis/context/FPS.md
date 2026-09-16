@@ -1,4 +1,4 @@
-# Context for FPS (generated 2026-09-15T06:31:55+00:00)
+# Context for FPS (generated 2026-09-16T06:31:35+00:00)
 
 ## Open thesis assumptions (from notes/FPS/_thesis.md)
 ```yaml
@@ -40,10 +40,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-15'
   draft: true
 - id: fps_indirect_ai_exposure_power_only
   statement: FPS's AI-infrastructure exposure is indirect—via datacenter power and
@@ -94,10 +94,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-15'
   draft: true
 - id: fps_competes_on_capacity_not_innovation
   statement: FPS's competitive position in heavy electrical equipment is driven by
@@ -164,10 +164,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-15'
   draft: true
 ```
 

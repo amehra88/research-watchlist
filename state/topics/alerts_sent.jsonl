@@ -10,3 +10,6 @@
 {"as_of": "2026-09-12", "id": "stage4:local_commerce_delivery", "kind": "stage4", "theme": "local_commerce_delivery", "ticker": null, "ts": "2026-09-12T16:45:04.135065+00:00"}
 {"as_of": "2026-09-12", "id": "gate:search_disruption", "kind": "gate", "theme": "search_disruption", "ticker": null, "ts": "2026-09-12T16:45:04.135065+00:00"}
 {"as_of": "2026-09-12", "id": "stage3:sovereign_ai_deployments:NBIS", "kind": "stage3", "theme": "sovereign_ai_deployments", "ticker": "NBIS", "ts": "2026-09-12T16:45:04.135065+00:00"}
+{"as_of": "2026-09-16", "id": "stage3:automotive_semiconductor_demand:ANET", "kind": "stage3", "theme": "automotive_semiconductor_demand", "ticker": "ANET", "ts": "2026-09-16T16:57:09.091509+00:00"}
+{"as_of": "2026-09-16", "id": "stage3:capex_vs_opex_shift:ANET", "kind": "stage3", "theme": "capex_vs_opex_shift", "ticker": "ANET", "ts": "2026-09-16T16:57:09.091509+00:00"}
+{"as_of": "2026-09-16", "id": "stage3:pc_demand:ANET", "kind": "stage3", "theme": "pc_demand", "ticker": "ANET", "ts": "2026-09-16T16:57:09.091509+00:00"}

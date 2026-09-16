@@ -34,10 +34,10 @@ assumptions:
   status: challenged
   status_source: evidence
   pressure:
-    confirm: 6.0
-    challenge: 17.5
+    confirm: 8.0
+    challenge: 19.5
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-13'
   draft: true
 - id: roadmap_2yr_named_platforms
   statement: At scoring date, NVDA has publicly named successor platforms with disclosed
@@ -115,13 +115,13 @@ assumptions:
     driver of gross margin change with average selling price flat or higher QoQ
   - An HBM or memory supplier earnings disclosure citing higher contracted prices
     with hyperscaler-facing customers in the relevant quarters
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 3.5
-    challenge: 0
+    confirm: 7.5
+    challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-13'
   draft: true
 - id: valuation_is_sole_investor_score_cap
   statement: At scoring date, the stated basis for the potential_investor_interest
@@ -143,9 +143,9 @@ assumptions:
   status_source: evidence
   pressure:
     confirm: 0
-    challenge: 5.5
+    challenge: 14.5
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-14'
   draft: true
 - id: fifty_pct_fcf_return_structural
   statement: At scoring date, the capital return posture of approximately 50% of FCF

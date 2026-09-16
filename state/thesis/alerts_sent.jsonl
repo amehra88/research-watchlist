@@ -90,3 +90,13 @@
 {"id": "status:GEV:gev_dc_power_order_conditions:challenged:2026-09-15", "ticker": "GEV", "ts": "2026-09-15T19:45:03.653064+00:00"}
 {"id": "status:META:meta_capex_100b_commitment:confirmed:2026-09-15", "ticker": "META", "ts": "2026-09-15T19:45:03.653064+00:00"}
 {"id": "status:NVDA:valuation_is_sole_investor_score_cap:challenged:2026-09-15", "ticker": "NVDA", "ts": "2026-09-15T19:45:03.653064+00:00"}
+{"id": "note:FPS:20260915-4Q26.md", "ticker": "FPS", "ts": "2026-09-16T10:20:02.892405+00:00"}
+{"id": "chal3:FPS:notes/FPS/20260915-4Q26.md#4b:fps_below_two_public_earnings_cycles:fps_below_two_public_earnings_cycles", "ticker": "FPS", "ts": "2026-09-16T19:45:02.652218+00:00"}
+{"id": "chal3:FPS:notes/FPS/20260915-4Q26.md:fps_below_two_public_earnings_cycles", "ticker": "FPS", "ts": "2026-09-16T19:45:02.652218+00:00"}
+{"id": "status:FPS:fps_below_two_public_earnings_cycles:challenged:2026-09-16", "ticker": "FPS", "ts": "2026-09-16T19:45:02.652218+00:00"}
+{"id": "status:FPS:fps_competes_on_capacity_not_innovation:confirmed:2026-09-16", "ticker": "FPS", "ts": "2026-09-16T19:45:02.652218+00:00"}
+{"id": "status:FPS:fps_datacenter_revenue_material:confirmed:2026-09-16", "ticker": "FPS", "ts": "2026-09-16T19:45:02.652218+00:00"}
+{"id": "status:FPS:fps_indirect_ai_exposure_power_only:confirmed:2026-09-16", "ticker": "FPS", "ts": "2026-09-16T19:45:02.652218+00:00"}
+{"id": "status:FPS:fps_lockup_overhang_active_at_scoring:confirmed:2026-09-16", "ticker": "FPS", "ts": "2026-09-16T19:45:02.652218+00:00"}
+{"id": "status:FPS:transformer_supply_constrained_at_scoring:confirmed:2026-09-16", "ticker": "FPS", "ts": "2026-09-16T19:45:02.652218+00:00"}
+{"id": "status:NVDA:gm_compression_input_cost_not_pricing:confirmed:2026-09-16", "ticker": "NVDA", "ts": "2026-09-16T19:45:02.652218+00:00"}

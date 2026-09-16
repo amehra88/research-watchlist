@@ -142,7 +142,7 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 9.0
+    confirm: 13.0
     challenge: 4.0
     window_days: 90
     last_evidence: '2026-09-15'

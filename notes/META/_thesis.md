@@ -39,10 +39,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 3.0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-15'
   draft: true
 - id: meta_llama_below_frontier
   statement: Llama open-weight models ranked below OpenAI, Google, and Anthropic frontier

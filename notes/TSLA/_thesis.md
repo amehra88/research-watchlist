@@ -36,9 +36,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 2.0
-    challenge: 0
+    challenge: 3.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-15'
   draft: true
 - id: custom_inference_silicon_active
   statement: At scoring, Tesla's custom inference silicon was in active production
@@ -62,9 +62,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 3.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-16'
   draft: true
 - id: optimus_program_active
   statement: At scoring, Optimus humanoid was an active development program — not
@@ -110,10 +110,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 4.0
+    confirm: 6.0
     challenge: 3.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-15'
   draft: true
 - id: auto_base_under_financial_pressure
   statement: At scoring, conditions of pricing pressure or delivery volume softness
@@ -162,10 +162,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 2.0
-    challenge: 3.0
+    confirm: 3.0
+    challenge: 7.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-15'
   draft: true
 ---
 ## Rationale

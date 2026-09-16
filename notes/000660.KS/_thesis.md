@@ -78,10 +78,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 7.0
+    confirm: 9.0
     challenge: 4.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-15'
   draft: true
 - id: hynix_hbm_share_beyond_nvda
   statement: At scoring, SK Hynix held leading HBM share across the broad memory customer
@@ -148,9 +148,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 12.0
+    challenge: 15.0
     window_days: 90
-    last_evidence: '2026-09-15'
+    last_evidence: '2026-09-16'
   draft: true
 ---
 ## Rationale

@@ -39,9 +39,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 1.0
-    challenge: 0
+    challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-15'
   draft: true
 - id: sk_hynix_hbm_lead_intact
   statement: At the time of scoring, SK Hynix led MU on HBM — the gap that caps MU's
@@ -167,7 +167,7 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 17.0
+    confirm: 20.0
     challenge: 5.0
     window_days: 90
     last_evidence: '2026-09-15'

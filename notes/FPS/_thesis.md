@@ -34,13 +34,13 @@ assumptions:
     disclosing a datacenter revenue segment
   - Customer concentration table in 10-K listing hyperscalers or datacenter operators
     among top customers
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 2.0
+    confirm: 12.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-15'
+    last_evidence: '2026-09-16'
   draft: true
 - id: fps_indirect_ai_exposure_power_only
   statement: FPS's AI-infrastructure exposure is indirect—via datacenter power and
@@ -61,13 +61,13 @@ assumptions:
     switchgear product lines
   - Absence of R&D or segment disclosures referencing semiconductor, software, or
     AI-model products
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 7.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-15'
   draft: true
 - id: transformer_supply_constrained_at_scoring
   statement: Power-transformer supply into datacenter projects was constrained at
@@ -88,10 +88,10 @@ assumptions:
     or after scoring date
   - Peer earnings call or industry survey confirming transformer supply still tight
     post-scoring
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 3.0
+    confirm: 8.0
     challenge: 0
     window_days: 90
     last_evidence: '2026-09-15'
@@ -113,13 +113,13 @@ assumptions:
     as primary competitive levers
   - Capital expenditure disclosures focused on plant expansion with R&D spend below
     a minimal threshold
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 6.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-15'
   draft: true
 - id: fps_lockup_overhang_active_at_scoring
   statement: The IPO lock-up period was in effect at the scoring date, with insider
@@ -135,13 +135,13 @@ assumptions:
   - Form 4 filings showing insider sales executed before the scoring date
   confirmed_by:
   - Prospectus or S-1 filing confirming lock-up expiration date falls after 2026-06-02
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 6.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-15'
   draft: true
 - id: fps_below_two_public_earnings_cycles
   statement: At scoring, FPS had completed fewer than two quarterly earnings cycles
@@ -158,11 +158,11 @@ assumptions:
     guidance and delivery
   confirmed_by:
   - SEC EDGAR filing history showing fewer than two 10-Q filings as of 2026-06-02
-  status: open
-  status_source: draft
+  status: challenged
+  status_source: evidence
   pressure:
     confirm: 1.0
-    challenge: 0
+    challenge: 6.0
     window_days: 90
     last_evidence: '2026-09-15'
   draft: true

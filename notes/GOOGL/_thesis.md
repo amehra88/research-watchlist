@@ -83,10 +83,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.5
+    confirm: 2.5
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-16'
   draft: true
 - id: cloud_backlog_no_material_cancel
   statement: The $462B Cloud backlog disclosed at 1Q26 has not experienced material
@@ -134,10 +134,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-16'
   draft: true
 - id: tpu_rev_skewed_to_2027
   statement: TPU hardware sale agreements signed through 1Q26 will recognize the significant
