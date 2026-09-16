@@ -1,0 +1,24 @@
+Vendored third-party assets for the RIS4 portal app (scripts/portal/app/vendor/).
+Copied verbatim into <out>/vendor/ by build_portal.py's "app" stage and served
+same-origin from the published Artifact. Nothing here is fetched at runtime.
+
+markdown-it 14.1.0  (UMD build, global `markdownit`, MIT)
+  file    markdown-it.min.js
+  bytes   123618
+  sha256  38c70a1e7ca91ab40e2d9e6e60129851a717ed1c7d4acbbdd41bf9503791cf68
+  source  https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js
+  pulled  2026-09-16
+
+  SOURCE DEVIATION (deliberate, Task 7): the brief names
+  https://cdnjs.cloudflare.com/ajax/libs/markdown-it/14.1.0/markdown-it.min.js.
+  cdnjs lists 14.1.0 in its API but serves 404 for every file path under that
+  version (14.1.0/markdown-it.min.js, /markdown-it.js, /index.js all 404; the
+  cdnjs files/rawFiles/sri lists for 14.1.0 come back empty) -- the version is
+  registered but was never published to the CDN. 13.0.2 is the newest markdown-it
+  cdnjs actually serves. Rather than downgrade the pinned version, the same
+  14.1.0 artifact was taken from jsdelivr (also on the Artifact CSP allowlist)
+  and verified: the byte-identical file from unpkg
+  (https://unpkg.com/markdown-it@14.1.0/dist/markdown-it.min.js) hashes to the
+  same sha256 above, so two independent mirrors of the npm tarball agree.
+  Nothing is loaded from either host at runtime -- index.html references only
+  the relative, same-origin vendor/markdown-it.min.js.

@@ -247,6 +247,15 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
   FactSet fundamentals into synthesis (currently stubbed; see §5).
 - **Gmail-poller → wrapper auto-trigger** — no automatic handoff from poller to the from-PDF note
   wrapper; remediate via a sweep cron.
+- **RIS4 portal (mobile-web bundle) — slice 2 built 2026-09-16, not yet live.** Builder
+  `scripts/portal/` reads the vault read-only and stages a static JSON+HTML bundle in
+  `portal_build/`, published by hand as the **Research Desk** Claude Artifact (iPhone-first,
+  `fetch()`-only, no server — see `docs/portal/README.md`'s "as of `built_at`" model). Two
+  build-cron lines are staged (not yet installed) in `docs/portal/cron.txt`; the full
+  build/publish runbook (incl. the `--check` sha256 verification step and the
+  `identity.py --merge-names --write` one-time name backfill) lives in `docs/portal/README.md`.
+  Read-only, no live MCP calls yet (Insiders is a build-time snapshot); slice 3+ adds Ask,
+  live panels, and an input channel — see that README's "Slice roadmap".
 - **Sub-document retrieval (chunking) — the answer to the old "vector store at ~200 docs"
   question, now being built.** `docs/chunking-strategy.md` is the design (decisions locked in §9
   there). Status: chunker + file-backed Store A pipeline is **code-complete (step 4)**; ranking +
@@ -260,6 +269,14 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
 
 ## 9. Recent milestones (most recent first)
 
+- **2026-09-16** — **RIS4 portal slice 2 built** (`scripts/portal/`): read-only vault → static
+  JSON+HTML bundle (`portal_build/`), builder split across `vault.py`/`identity.py`/`reports.py`+
+  `etf_trades.py`/`state_bundles.py`+`news_sec.py`+`theme_ideas.py`/`budget.py`+`build_portal.py`
+  (Tasks 1–6), the **Research Desk** frontend shell + Themes/Ideas/Scores/Signals/News/Insiders/
+  ETF/Reports/Search screens (Tasks 7–8, vendored `markdown-it` for note rendering), and the
+  `publish_files.py` publish helper + manual runbook (Task 9). ~145 files / ~26.6 MB per build,
+  ~50s. Not yet live: publishing is the six-step manual runbook in `docs/portal/README.md`; the
+  two build crons are staged, not installed, in `docs/portal/cron.txt`.
 - **2026-09-10** — **P3b MD&A evidence** (`scripts/topics/{evidence_store,mdna_evidence}.py`, ported
   from `worktree-idea-surfacing-spec`): windowed QoQ added-prose claims with `first_evidence_date`,
   diffed only within a form family (the cross-type diff had reported ~1,100 annual blocks as new);

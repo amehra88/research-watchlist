@@ -1,0 +1,148 @@
+============================================================
+  ⚠  ETF DATA QUALITY ALERT — 2026-01-05
+============================================================
+
+The following ETFs returned suspicious holdings data today and may
+need a manual re-fetch before trusting the position-change report:
+
+  [WARNING ] BAI   — iShares CSV did not land today (1d stale); using fallback holdings
+  [WARNING ] TEK   — iShares CSV did not land today (1d stale); using fallback holdings
+
+============================================================
+  ETF HOLDINGS DAILY SUMMARY  —  2026-01-05
+============================================================
+  What each manager actively traded, in percentage points of
+  their own portfolio. Net of price moves and of fund flows:
+  a fund that simply deploys new cash pro rata scores zero.
+
+SPEAR Alpha ETF (SPRX)
+----------------------------------------
+  No active trades.
+
+JPMorgan U.S. Tech Leaders ETF (JTEK)
+----------------------------------------
+
+  BOUGHT — NEW POSITIONS (2):
+    + ADSK     AUTODESK INC COMMON                 0.25%  (47,525 shares)
+    + GENB     GENERATE BIOMEDICINES               0.01%  (41,440 shares)
+
+  ADDED (4):
+    Symbol   Name                                    Active Δ  Weight
+    -------  -------------------------------------   --------  ----------------
+    SHOP     SHOPIFY INC COMMON STOCK                 +0.24pp  1.87% → 2.17%
+    ADBE     ADOBE INC COMMON STOCK                   +0.20pp  1.43% → 1.70%
+    MDB      MONGODB INC COMMON STOCK                 +0.10pp  0.67% → 0.81%
+    OKTA     OKTA INC COMMON STOCK                    +0.10pp  0.50% → 0.66%
+
+  TRIMMED (2):
+    Symbol   Name                                    Active Δ  Weight
+    -------  -------------------------------------   --------  ----------------
+    ORCL     ORACLE CORP COMMON STOCK                 -0.83pp  1.18% → 0.32%
+    ON       ON SEMICONDUCTOR CORP                    -0.13pp  0.29% → 0.13%
+
+Columbia Select Technology ETF (SEMI)
+----------------------------------------
+  No active trades.
+
+Franklin Intelligent Machines ETF (IQM)
+----------------------------------------
+  No active trades.
+
+iShares Technology Opportunities Active ETF (TEK)
+----------------------------------------
+
+  ADDED (1):
+    Symbol   Name                                    Active Δ  Weight
+    -------  -------------------------------------   --------  ----------------
+    AMKR     AMKOR TECHNOLOGY                         +0.19pp  0.34% → 0.50%
+
+  TRIMMED (1):
+    Symbol   Name                                    Active Δ  Weight
+    -------  -------------------------------------   --------  ----------------
+    VRT      VERTIV HOLDINGS CLASS A                  -0.20pp  0.70% → 0.46%
+
+Goldman Sachs Future Tech Leaders ETF (GTEK)
+----------------------------------------
+  No active trades.
+
+iShares A.I. Innovation and Tech Active ETF (BAI)
+----------------------------------------
+  No active trades.
+
+Janus Henderson Global Artificial Intelligence ETF (JHAI)
+----------------------------------------
+  No active trades.
+
+Lazard Next Gen Technologies ETF (TEKY)
+----------------------------------------
+  No active trades.
+
+Alger AI Enablers & Adopters ETF (ALAI)
+----------------------------------------
+
+  BOUGHT — NEW POSITIONS (1):
+    + DELL     DELL TECHNOLOGIES INC USD 0.01      0.20%  (4,664 shares)
+
+  ADDED (3):
+    Symbol   Name                                    Active Δ  Weight
+    -------  -------------------------------------   --------  ----------------
+    GOOG     ALPHABET INC CLASS C                     +0.55pp  3.65% → 4.39%
+    META     META PLATFORMS INC USD 0.000006          +0.15pp  3.90% → 4.23%
+    PANW     PALO ALTO NETWORKS INC USD 0.0001        +0.08pp  0.07% → 0.16%
+
+  TRIMMED (24):
+    Symbol   Name                                    Active Δ  Weight
+    -------  -------------------------------------   --------  ----------------
+    NVDA     NVIDIA CORP USD 0.001                    -0.59pp  13.85% → 13.06%
+    TSM      TAIWAN SEMICONDUCTOR M TWD 10.0 ADR      -0.22pp  5.79% → 5.48%
+    MU       MICRON TECHNOLOGY INC USD 0.1            -0.21pp  2.17% → 1.88%
+    HOOD     ROBINHOOD MKTS INC USD 0.0001            -0.21pp  1.62% → 1.47%
+    AMD      ADVANCED MICRO DEVICES INC USD 0.01      -0.20pp  2.21% → 1.95%
+    NBIS     NEBIUS GROUP N.V.                        -0.20pp  3.81% → 3.47%
+    WDC      WESTERN DIGITAL CORP USD 0.01            -0.16pp  2.16% → 1.95%
+    CLSK     CLEANSPARK INC USD 0.001                 -0.15pp  0.90% → 0.74%
+    AMZN     AMAZON COM INC USD 0.01                  -0.15pp  6.14% → 6.04%
+    AVGO     BROADCOM INC NPV                         -0.12pp  4.33% → 4.08%
+    SKHYV    SK HYNIX INC KRW 5000.0 ADR              -0.11pp  0.57% → 0.42%
+    ALAB     ASTERA LABS INC USD 0.0001               -0.11pp  1.32% → 1.08%
+    CRWV     COREWEAVE INC USD 0.0001                 -0.10pp  0.19% → 0.09%
+    ANET     ARISTA NETWORKS INC USD 0.0001           -0.10pp  0.46% → 0.35%
+    ASML     ASML HOLDING NV EUR 0.09 ADR             -0.09pp  0.65% → 0.52%
+    TLN      TALEN ENERGY CORP NEW USD 0.001          -0.09pp  1.46% → 1.27%
+    AAOI     APPLIED OPTOELECTRONICS I USD 0.001      -0.08pp  0.19% → 0.09%
+    GEV      GE VERNOVA INC USD 0.01                  -0.08pp  0.64% → 0.51%
+    LITE     LUMENTUM HLDGS INC USD 0.001             -0.08pp  1.98% → 1.75%
+    APH      AMPHENOL CORP NEW USD 0.001              -0.07pp  0.38% → 0.29%
+    ETN      EATON CORP PLC USD 0.01                  -0.07pp  0.63% → 0.52%
+    SPCX     SPACE EXPL TECHNOLOGIES C USD 0.001      -0.07pp  1.92% → 1.85%
+    NOK      NOKIA CORP NPV ADR                       -0.07pp  0.42% → 0.31%
+    FCX      FREEPORT-MCMORAN INC USD 0.1             -0.06pp  0.63% → 0.57%
+
+Neuberger Berman Disrupters ETF (NBDS)
+----------------------------------------
+  No active trades.
+
+Bastion Energy ETF (BESF)
+----------------------------------------
+  No active trades.
+
+VistaShares Artificial Intelligence Supercycle ETF (AIS)
+----------------------------------------
+
+  BOUGHT — NEW POSITIONS (1):
+    + 688008 CH Montage Technology Co Ltd           1.04%  (350,078 shares)
+
+  SOLD — FULL EXIT (1):
+    - 688008 C1 Montage Technology Co Ltd           (was 1.01%, 351,334 shares)
+
+Baron Technology ETF (BCTK)
+----------------------------------------
+  No active trades.
+
+Dan IVES Wedbush AI Revolution ETF (IVES)
+----------------------------------------
+  No active trades.
+
+============================================================
+  Generated: 2026-01-05
+============================================================

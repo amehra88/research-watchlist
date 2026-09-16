@@ -12,6 +12,10 @@ Thumbs.db
 # Dependencies
 node_modules/
 vendor/
+# ...except the portal app's pinned, vendored browser libraries: build_portal.py
+# copies scripts/portal/app/vendor/ into the published bundle, so a clone that
+# lacks it builds a portal whose notes silently render as plain text.
+!scripts/portal/app/vendor/
 venv/
 env/
 __pycache__/

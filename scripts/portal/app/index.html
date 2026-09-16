@@ -1,0 +1,38 @@
+<title>Research Desk</title>
+<link rel="stylesheet" href="styles.css">
+
+<!-- Research Desk -- RIS4 portal (Task 7: shell, Today, Tickers, Notes, Thesis, Status).
+     No <!DOCTYPE>/<html>/<head>/<body> here: the Artifact publisher supplies that
+     skeleton (charset + viewport-fit=cover + safe-area padding on :root). Every
+     asset below is relative and same-origin -- no external host is contacted. -->
+
+<header class="topbar">
+  <div class="topbar-in">
+    <button type="button" id="btn-back" class="backbtn" hidden>&#8249;&nbsp;Back</button>
+    <div class="topbar-titles">
+      <h1 id="page-title">Research Desk</h1>
+      <p id="page-sub">loading bundle</p>
+    </div>
+  </div>
+</header>
+
+<main id="view" class="view" tabindex="-1">
+  <p class="skeleton">Loading today&#8217;s desk&#8230;</p>
+  <noscript>
+    <p class="empty">This desk is a JavaScript app over a static JSON bundle. Enable JavaScript to read it.</p>
+  </noscript>
+</main>
+
+<nav class="tabbar" aria-label="Sections">
+  <div class="tabbar-in">
+    <a class="tab" href="#/today" data-tab="today">Today</a>
+    <a class="tab" href="#/tickers" data-tab="tickers">Tickers</a>
+    <a class="tab" href="#/themes" data-tab="themes">Themes</a>
+    <a class="tab" href="#/ideas" data-tab="ideas">Ideas</a>
+    <a class="tab" href="#/more" data-tab="more">More</a>
+  </div>
+</nav>
+
+<script src="vendor/markdown-it.min.js"></script>
+<script src="app.js"></script>
+<script src="app2.js"></script>

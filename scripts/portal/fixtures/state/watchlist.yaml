@@ -1,0 +1,36 @@
+# Trimmed fixture watchlist for scripts/portal/test_state_bundles.py. Shapes
+# only -- not real tickers/companies.
+tier_1_bctk:
+  - ticker: FIX
+    themes: [fixture_theme_a]
+    added_date: 2026-01-01
+    ai_positioning:
+      score: "4"
+      notes: "fixture"
+    competitive_advantage:
+      innovation_rate: "4"
+      distribution: "3"
+      overall: "4"
+      notes: "fixture"
+    potential_investor_interest:
+      score: "3"
+      notes: "fixture"
+
+tier_2_active_candidates:
+  - ticker: AAA
+    themes: [fixture_theme_a]
+    added_date: 2026-02-01
+  - ticker: BARESTR
+    themes: [fixture_theme_a]
+    added_date: 2026-02-02
+    ai_positioning: "4+"
+    competitive_advantage:
+      innovation_rate: "3"
+      distribution: "3"
+      overall: "3"
+    potential_investor_interest: "3-"
+
+tier_3_watchlist:
+  - ticker: BBB
+    themes: [fixture_theme_b]
+    added_date: 2026-03-01

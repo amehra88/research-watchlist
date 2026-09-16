@@ -1,0 +1,54 @@
+{
+  "as_of": "2026-09-15",
+  "quarters": ["CY2026-Q1", "CY2026-Q2"],
+  "current_quarter": "CY2026-Q2",
+  "in_progress": true,
+  "denominators": {
+    "CY2026-Q1": {"earnings_call": 2, "conference": 1, "mdna_filers": 2},
+    "CY2026-Q2": {"earnings_call": 2, "conference": 1, "mdna_filers": 2}
+  },
+  "no_coverage": {"no_results": [], "incomplete": [], "no_factset_id": []},
+  "metrics": [
+    {"theme": "fixture_theme_a", "cal_quarter": "CY2026-Q1", "n_banks": 2, "banks": ["BofA Securities, Inc."],
+     "n_host_excluded": 0, "n_companies": 2, "companies": ["FIX", "ORPHAN"], "n_exchanges": 2,
+     "n_disclosing": 1, "disclosing": ["FIX"], "n_corprep_companies": 1, "first_seen_quarter": "CY2026-Q1"},
+    {"theme": "fixture_theme_a", "cal_quarter": "CY2026-Q2", "n_banks": 3, "banks": ["BofA Securities, Inc.", "Goldman Sachs & Co. LLC"],
+     "n_host_excluded": 0, "n_companies": 3, "companies": ["FIX", "ORPHAN", "AAA"], "n_exchanges": 3,
+     "n_disclosing": 1, "disclosing": ["FIX"], "n_corprep_companies": 1, "first_seen_quarter": "CY2026-Q1"},
+    {"theme": "fixture_theme_b", "cal_quarter": "CY2026-Q2", "n_banks": 0, "banks": [],
+     "n_host_excluded": 0, "n_companies": 0, "companies": [], "n_exchanges": 0,
+     "n_disclosing": 4, "disclosing": ["FIX", "ORPHAN", "AAA", "BBB"], "n_corprep_companies": 3, "first_seen_quarter": "CY2026-Q2"},
+    {"theme": "fixture_theme_gate_only", "cal_quarter": "CY2026-Q2", "n_banks": 0, "banks": [],
+     "n_host_excluded": 0, "n_companies": 0, "companies": [], "n_exchanges": 0,
+     "n_disclosing": 1, "disclosing": ["FIX"], "n_corprep_companies": 1, "first_seen_quarter": "CY2026-Q2"}
+  ],
+  "movers": [
+    {"theme": "fixture_theme_a", "n_banks": 3, "prev_banks": 2, "delta_banks": 1, "n_companies": 3, "prev_companies": 2,
+     "n_disclosing": 1, "prev_disclosing": 1}
+  ],
+  "stage_counts": {"1": 1, "2": 1},
+  "lag_summary": {"n": 1, "min": 0, "p25": 0, "median": 0, "p75": 0, "max": 0, "n_negative": 0, "n_zero": 1, "share_evidence_led": 100.0},
+  "lag_identified": {"summary": {"n": 0}, "dropped_pos": 0, "dropped_neg": 0, "dropped_same_event": 0,
+                      "buffer_days": 30, "same_event_days": 5, "n_tickers_mdna_starts_late": 0,
+                      "n_tickers_single_call": 0, "n_tickers_with_calls": 1},
+  "stage1": [
+    {"theme": "fixture_theme_gate_only", "ticker": "FIX", "stage": 1, "first_evidence_date": "2026-02-01",
+     "first_filing_date": "2026-02-01", "n_evidence": 1, "evidence_sources": ["mdna"], "open_lag_days": 226}
+  ],
+  "stage2": [],
+  "newly_said": [
+    {"ticker": "FIX", "theme": "fixture_theme_a", "cal_quarter": "CY2026-Q2", "source": "exchange",
+     "register": "question", "n_rows": 1, "baseline_quarters": ["CY2025-Q4", "CY2026-Q1"]},
+    {"ticker": "ORPHAN", "theme": "fixture_theme_b", "cal_quarter": "CY2026-Q1", "source": "exchange",
+     "register": "question", "n_rows": 1, "baseline_quarters": ["CY2025-Q3", "CY2025-Q4"]}
+  ],
+  "pairs": [
+    {"theme": "fixture_theme_a", "ticker": "FIX", "stage": 2, "first_evidence_date": "2026-01-10",
+     "first_filing_date": "2026-01-10", "first_question_date": null, "lag_days": null,
+     "n_evidence": 1, "n_question": 0, "banks": []},
+    {"theme": "fixture_theme_gate_only", "ticker": "FIX", "stage": 1, "first_evidence_date": "2026-02-01",
+     "first_filing_date": "2026-02-01", "first_question_date": null, "lag_days": null,
+     "n_evidence": 1, "n_question": 0, "banks": []}
+  ],
+  "notes": ["fixture diffusion.json for scripts/portal/test_state_bundles.py -- shapes only, not real data"]
+}

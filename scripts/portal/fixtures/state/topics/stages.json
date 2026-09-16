@@ -1,0 +1,5 @@
+{
+  "as_of": "2026-09-15",
+  "pairs": {"fixture_theme_a|FIX": 2, "fixture_theme_gate_only|FIX": 1},
+  "gated": ["fixture_theme_a", "fixture_theme_gate_only"]
+}

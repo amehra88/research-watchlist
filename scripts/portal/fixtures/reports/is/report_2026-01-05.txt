@@ -1,0 +1,13 @@
+INSIDER ACTIVITY — 2026-01-05
+Source: InsiderScore/VerityData | conviction-filtered | filings 2026-01-03..2026-01-04
+
+--- WATCHLIST ---
+BUYS
+  None.
+
+SELLS (conviction-ranked)
+  GH     Kumud Kalia (Officer)  $632K  sold 9.1% of stake · 0.6x usual size · off-plan
+  SITM   Vincent P. Pangrazio (Officer)  $1.9M  sold 6.3% of stake · 1.3x usual size · off-plan
+
+--- MARKET NOTABLE (outside watchlist, $10B+) ---
+  THC    Richard J. Mark (Director)  $2.6M  sold 28.5% of stake · first sale in 12mo · off-plan

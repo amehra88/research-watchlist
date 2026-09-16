@@ -1,0 +1,2 @@
+{"detected_on": "2026-09-01", "evidence_sources": ["mdna"], "first_evidence_date": "2026-02-01", "first_filing_date": "2026-02-01", "n_evidence": 1, "open_lag_days": 210, "stage": 1, "theme": "fixture_theme_gate_only", "ticker": "FIX"}
+{"detected_on": "2026-09-05", "evidence_sources": ["mdna"], "first_evidence_date": "2026-03-01", "first_filing_date": "2026-03-01", "n_evidence": 2, "open_lag_days": 180, "stage": 1, "theme": "fixture_theme_a", "ticker": "ORPHAN"}

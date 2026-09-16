@@ -1,0 +1,295 @@
+"""
+Unit tests for scripts/portal/reports.py (RIS4 slice 2, Task 3).
+
+Fixtures in fixtures/reports/ are hand-built day sets for every stream (is,
+podcasts, logs/etfflows(+table), logs/news_digest_*, and the "ETF UPDATE"
+digest section text, which now points at fixtures/etf_trades/ws/ -- reports.py
+only treats that file as opaque digest text, it doesn't parse it; the parser
+itself and its own fixtures moved to etf_trades.py / test_etf_trades.py in fix
+round 1), plus thesis_state/topics_ok/topics_degrade/transcripts_ok for the two
+alert ledgers. Tests run ONLY against these fixtures via explicit `paths: Paths`
+overrides — reports.py's own zero-arg REPO-backed defaults are never exercised
+here, EXCEPT the one documented case (thesis_alerts' join to
+thesis_report.alert_events(), which has no override hook — see reports.py's
+module docstring for why that is still fixture-safe).
+
+No pytest in this env — run directly:
+    python3 scripts/portal/test_reports.py
+"""
+import contextlib
+import io
+import os
+import sys
+from pathlib import Path
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import reports as rp  # noqa: E402
+
+FIXTURES = Path(__file__).parent / "fixtures" / "reports"
+ETF_FIXTURES = Path(__file__).parent / "fixtures" / "etf_trades"
+
+BASE_PATHS = rp.Paths(
+    is_reports=FIXTURES / "is",
+    podcasts_reports=FIXTURES / "podcasts",
+    logs=FIXTURES / "logs",
+    thesis_state=FIXTURES / "thesis_state",
+    topics_state=FIXTURES / "topics_ok",
+    transcripts_state=FIXTURES / "transcripts_ok",
+    evidence_state=FIXTURES / "does_not_exist",
+    streams=[
+        ("ETF UPDATE", str((ETF_FIXTURES / "ws" / "report_{date}.txt"))),
+        ("ETF FLOWS & CROWDING", str((FIXTURES / "logs" / "report_etfflows_{date}.txt"))),
+        ("INSIDER ACTIVITY", str((FIXTURES / "is" / "report_{date}.txt"))),
+        ("PODCAST DIGEST", str((FIXTURES / "podcasts" / "report_{date}.txt"))),
+        ("ETF FLOW DETAIL", str((FIXTURES / "logs" / "report_etfflows_table_{date}.txt"))),
+    ],
+)
+
+DEGRADE_PATHS = rp.Paths(
+    is_reports=FIXTURES / "is",
+    podcasts_reports=FIXTURES / "podcasts", logs=FIXTURES / "logs",
+    thesis_state=FIXTURES / "thesis_state",
+    topics_state=FIXTURES / "topics_degrade",
+    transcripts_state=FIXTURES / "does_not_exist",
+    evidence_state=FIXTURES / "does_not_exist",
+    streams=BASE_PATHS.streams,
+)
+
+DAY1, DAY2 = "2026-01-05", "2026-01-06"
+
+
+# ───────────────────────── news_digest_files ─────────────────────────
+
+def test_news_digest_dedupe_keeps_the_largest():
+    files = rp.news_digest_files(DAY1, BASE_PATHS)
+    assert files["premarket"].name == "news_digest_premarket_20260105_064500.txt", files
+    assert files["premarket"].stat().st_size > 500, files["premarket"].stat().st_size
+
+
+def test_news_digest_ignores_brief_mode_files():
+    files = rp.news_digest_files(DAY1, BASE_PATHS)
+    assert all("brief" not in p.name for p in files.values())
+
+
+def test_news_digest_single_file_per_mode_on_day2():
+    files = rp.news_digest_files(DAY2, BASE_PATHS)
+    assert set(files) == {"premarket", "postmarket"}
+
+
+# ───────────────────────── digest sections / IS stub ─────────────────────────
+
+def test_digest_drops_is_stub_under_300_bytes():
+    cards = rp.day_cards(DAY2, BASE_PATHS)
+    digest = next(c for c in cards if c["kind"] == "digest")
+    titles = [s["title"] for s in digest["sections"]]
+    assert "INSIDER ACTIVITY" not in titles, titles
+
+
+def test_digest_keeps_is_section_when_over_300_bytes():
+    cards = rp.day_cards(DAY1, BASE_PATHS)
+    digest = next(c for c in cards if c["kind"] == "digest")
+    titles = [s["title"] for s in digest["sections"]]
+    assert "INSIDER ACTIVITY" in titles, titles
+
+
+def test_digest_tolerates_a_missing_stream():
+    # day2 fixtures have no podcasts/report_2026-01-06.txt -- a real, documented gap.
+    cards = rp.day_cards(DAY2, BASE_PATHS)
+    digest = next(c for c in cards if c["kind"] == "digest")
+    titles = [s["title"] for s in digest["sections"]]
+    assert "PODCAST DIGEST" not in titles, titles
+    assert "ETF UPDATE" in titles, titles
+
+
+def test_digest_text_banners_each_section_title():
+    cards = rp.day_cards(DAY1, BASE_PATHS)
+    digest = next(c for c in cards if c["kind"] == "digest")
+    assert "INSIDER ACTIVITY\n" in digest["text"], digest["text"][:200]
+
+
+# ───────────────────────── gap logging: exactly one line per omission ─────────────────────────
+
+def test_digest_logs_one_line_for_a_missing_stream():
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rp.day_cards(DAY2, BASE_PATHS)
+    lines = [ln for ln in buf.getvalue().splitlines() if "PODCAST DIGEST" in ln]
+    assert lines == [f"[reports] reports: {DAY2} digest/PODCAST DIGEST missing"], buf.getvalue()
+
+
+def test_digest_logs_one_line_for_the_is_stub_drop():
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rp.day_cards(DAY2, BASE_PATHS)
+    lines = [ln for ln in buf.getvalue().splitlines() if "INSIDER ACTIVITY" in ln]
+    assert lines == [f"[reports] reports: {DAY2} digest/INSIDER ACTIVITY stub dropped (157 B)"], buf.getvalue()
+
+
+def test_digest_logs_one_line_for_an_empty_stream():
+    # fixtures/reports/logs/report_etfflows_2026-01-08.txt is a real 0-byte file;
+    # every other stream for that day is also absent, so this isolates the "empty"
+    # branch (distinct from "missing" and from the IS-stub "dropped" branch).
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rp.day_cards("2026-01-08", BASE_PATHS)
+    lines = [ln for ln in buf.getvalue().splitlines() if "ETF FLOWS & CROWDING" in ln]
+    assert lines == ["[reports] reports: 2026-01-08 digest/ETF FLOWS & CROWDING empty"], buf.getvalue()
+
+
+def test_premarket_and_postmarket_each_log_one_absent_line():
+    # 2026-01-07 has no logs/news_digest_* fixtures at all -> both modes absent.
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rp.day_cards("2026-01-07", BASE_PATHS)
+    out = buf.getvalue().splitlines()
+    assert out.count("[reports] reports: 2026-01-07 premarket absent") == 1, out
+    assert out.count("[reports] reports: 2026-01-07 postmarket absent") == 1, out
+
+
+# ───────────────────────── day with no sources ─────────────────────────
+
+def test_no_sources_day_yields_no_cards():
+    assert rp.day_cards("2026-01-09", BASE_PATHS) == []
+
+
+def test_build_reports_skips_the_no_source_day():
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        out = Path(td)
+        summaries = rp.build_reports(out, 1, BASE_PATHS, today=__import__("datetime").date(2026, 1, 9))
+        assert summaries == []
+        assert not (out / "data" / "reports" / "2026-01-09.json").exists()
+        # mkdir is lazy: a caller can tell "no reports in range" (no dir at all)
+        # apart from "ran but everything landed under it".
+        assert not (out / "data").exists()
+
+
+# ───────────────────────── build_reports writes + summarizes ─────────────────────────
+
+def test_build_reports_writes_a_file_and_returns_summaries():
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        out = Path(td)
+        today = __import__("datetime").date(2026, 1, 5)
+        summaries = rp.build_reports(out, 1, BASE_PATHS, today=today)
+        out_path = out / "data" / "reports" / "2026-01-05.json"
+        assert out_path.exists()
+        import json
+        data = json.loads(out_path.read_text())
+        assert data["date"] == "2026-01-05"
+        assert len(data["cards"]) == len(summaries)
+        for s in summaries:
+            assert set(s) == {"id", "kind", "date", "title", "bytes", "file"}
+            assert s["file"] == "data/reports/2026-01-05.json"
+
+
+# ───────────────────────── thesis_alerts: fallback join ─────────────────────────
+
+def test_thesis_alerts_falls_back_to_id_when_not_in_live_alert_events():
+    cards = rp.day_cards(DAY1, BASE_PATHS)
+    ta = next((c for c in cards if c["kind"] == "thesis_alerts"), None)
+    assert ta is not None, cards
+    assert "FIXTURE_TICKER" in ta["text"]
+    # This fixture id is invented and can never appear in the live repo's real
+    # alert_events() output, so the join must fall back to the raw id text.
+    assert "status:FIXTURE_TICKER:fake_assumption:confirmed:2026-01-05" in ta["text"]
+
+
+def test_thesis_alerts_absent_on_a_day_with_no_rows():
+    cards = rp.day_cards(DAY2, BASE_PATHS)
+    assert not any(c["kind"] == "thesis_alerts" for c in cards)
+
+
+def test_thesis_alerts_absent_when_ledger_file_missing():
+    p = rp.Paths(
+        is_reports=FIXTURES / "is", podcasts_reports=FIXTURES / "podcasts",
+        logs=FIXTURES / "logs", thesis_state=FIXTURES / "does_not_exist",
+        topics_state=FIXTURES / "topics_ok", transcripts_state=FIXTURES / "transcripts_ok",
+        evidence_state=FIXTURES / "does_not_exist", streams=BASE_PATHS.streams,
+    )
+    cards = rp.day_cards(DAY1, p)
+    assert not any(c["kind"] == "thesis_alerts" for c in cards)
+
+
+def test_build_reports_calls_alert_events_once_for_the_whole_window():
+    # thesis_state/alerts_sent.jsonl has qualifying rows on BOTH 2026-01-05 and
+    # 2026-01-04 -- without the fix round 1 cache this would be 2 alert_events()
+    # calls (one per qualifying day); with it, exactly 1 for the whole build.
+    import datetime as dt
+    import json
+    import tempfile
+
+    calls = []
+    orig = rp.thesis_report.alert_events
+
+    def counting(*a, **kw):
+        calls.append(a)
+        return orig(*a, **kw)
+
+    rp.thesis_report.alert_events = counting
+    try:
+        with tempfile.TemporaryDirectory() as td:
+            out = Path(td)
+            rp.build_reports(out, 2, BASE_PATHS, today=dt.date(2026, 1, 5))
+            d1 = json.loads((out / "data" / "reports" / "2026-01-05.json").read_text())
+            d0 = json.loads((out / "data" / "reports" / "2026-01-04.json").read_text())
+    finally:
+        rp.thesis_report.alert_events = orig
+
+    assert len(calls) == 1, calls
+    ta1 = next(c for c in d1["cards"] if c["kind"] == "thesis_alerts")
+    ta0 = next(c for c in d0["cards"] if c["kind"] == "thesis_alerts")
+    assert "FIXTURE_TICKER" in ta1["text"] and "FIXTURE_TICKER3" not in ta1["text"]
+    assert "FIXTURE_TICKER3" in ta0["text"]
+
+
+def test_day_cards_standalone_still_computes_on_demand_without_a_cache():
+    # No thesis_events_cache passed -> day_cards() must still work on its own.
+    cards = rp.day_cards("2026-01-04", BASE_PATHS)
+    ta = next(c for c in cards if c["kind"] == "thesis_alerts")
+    assert "FIXTURE_TICKER3" in ta["text"], ta["text"]
+
+
+# ───────────────────────── stage_alerts: render() success + degrade ─────────────────────────
+
+def test_stage_alerts_renders_via_stage_alert_when_inputs_load():
+    cards = rp.day_cards(DAY1, BASE_PATHS)
+    sa = next((c for c in cards if c["kind"] == "stage_alerts"), None)
+    assert sa is not None, cards
+    assert "fixture_theme" in sa["text"] and "breadth gate" in sa["text"], sa["text"]
+
+
+def test_stage_alerts_degrades_when_state_files_absent():
+    cards = rp.day_cards(DAY2, DEGRADE_PATHS)
+    sa = next((c for c in cards if c["kind"] == "stage_alerts"), None)
+    assert sa is not None, cards
+    assert sa["text"] == "- stage3 · fixture_theme_missing · ZZZ", sa["text"]
+
+
+def test_stage_alerts_absent_on_a_day_with_no_rows():
+    cards = rp.day_cards(DAY2, BASE_PATHS)
+    assert not any(c["kind"] == "stage_alerts" for c in cards)
+
+
+# ───────────────────────── upcoming ─────────────────────────
+
+def test_upcoming_returns_empty_list_without_calling_factset():
+    assert rp.upcoming(14, BASE_PATHS) == []
+
+
+if __name__ == "__main__":
+    fns = [v for k, v in sorted(globals().items())
+           if k.startswith("test_") and callable(v)]
+    failed = 0
+    for fn in fns:
+        try:
+            fn()
+            print(f"  ✓ {fn.__name__}")
+        except AssertionError as e:
+            failed += 1
+            print(f"  ✗ {fn.__name__}: {e}")
+        except Exception as e:                        # noqa: BLE001
+            failed += 1
+            print(f"  ✗ {fn.__name__}: {type(e).__name__}: {e}")
+    print(f"\n{len(fns) - failed}/{len(fns)} pass")
+    sys.exit(1 if failed else 0)

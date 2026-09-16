@@ -1,0 +1,11 @@
+NEWS FLOW — 2026-01-06 (postmarket)
+========================================
+top 1 of 9 · 1 company · 0 thematic · 0 macro
+
+COMPANY
+-------
+ZZZ — Fixture Zeta closes down on guidance cut
+    • End-of-day fixture wrap for day 2.
+    why: fixture rationale day 2 postmarket.
+    [Company: ZZZ] · 1 outlet: FactSet/SA · FactSet Negative · conf=high
+    -> https://example.invalid/fixture-story-5
