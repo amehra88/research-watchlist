@@ -203,7 +203,7 @@ def _new_tmp_dir(out_dir: Path) -> Path:
 # smoke/, or any other operator-placed content) is invisible to `_publish` --
 # never listed, never removed, never pruned -- no matter what `stages`
 # produced or didn't produce this run.
-OWNED_PATHS = ("data/", "vendor/", "index.html", "app.js", "styles.css")
+OWNED_PATHS = ("data/", "vendor/", "index.html", "app.js", "app2.js", "styles.css")
 
 
 def _is_owned(rel: str) -> bool:
@@ -419,7 +419,7 @@ def _stage_build_state(ctx: sb.Ctx) -> Callable[[Path], dict]:
 
 
 def _copy_app(tmp_dir: Path, app_src: Path = None) -> dict:
-    """Copies index.html/styles.css/app.js + every file under vendor/ from
+    """Copies index.html/styles.css/app.js/app2.js + every file under vendor/ from
     scripts/portal/app/ (Task 7/8, does not exist yet) into tmp_dir's root
     (NOT under data/ -- these are top-level, served alongside data/). Missing
     app_src entirely (the current, pre-Task-7/8 state) is a clean no-op, not
@@ -431,7 +431,7 @@ def _copy_app(tmp_dir: Path, app_src: Path = None) -> dict:
         return {"copied": 0}
 
     copied = 0
-    for rel_name in ("index.html", "styles.css", "app.js"):
+    for rel_name in ("index.html", "styles.css", "app.js", "app2.js"):
         src = app_src / rel_name
         if not src.is_file():
             log(f"app: {rel_name} missing under {app_src} -- skipped")

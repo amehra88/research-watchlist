@@ -51,6 +51,31 @@
   function arr(v) { return Array.isArray(v) ? v : []; }
   function href(parts) { return '#/' + parts.map(encodeURIComponent).join('/'); }
 
+  /* Every link that leaves the app \u2014 news `url`, SEC `filing_url`, a markdown
+   * link in a note \u2014 opens in a new context. A plain navigation inside the
+   * phone's in-app web view replaces the desk with no chrome to come back from.
+   * One helper, used by the markdown-it link_open rule AND by every hand-built
+   * anchor, so the two can never drift. In-app "#/..." routes get nothing. */
+  function extAttrs(url) {
+    var s = (url === null || url === undefined) ? '' : String(url);
+    return s.charAt(0) === '#' ? '' : ' target="_blank" rel="noopener noreferrer"';
+  }
+
+  /* Bundle-supplied URLs are data, not code: only http(s) ever becomes an href,
+   * so a `javascript:` or `data:` string in a news row renders as inert text. */
+  function safeURL(url) {
+    var s = (url === null || url === undefined) ? '' : String(url).trim();
+    return /^https?:\/\//i.test(s) ? s : '';
+  }
+
+  /* An external link, or the plain escaped text when the URL is not http(s). */
+  function extLink(url, text, cls) {
+    var u = safeURL(url);
+    var label = esc(text === undefined || text === null || text === '' ? url : text);
+    if (!u) return label;
+    return '<a' + (cls ? ' class="' + cls + '"' : '') + ' href="' + esc(u) + '"' + extAttrs(u) + '>' + label + '</a>';
+  }
+
   function kb(n) {
     if (typeof n !== 'number' || !isFinite(n)) return '\u2014';
     if (n < 1024) return n + ' B';
@@ -108,9 +133,9 @@
     if (!list.length) return '';
     return '<ul class="chips">' + list.map(function (item) {
       var text = esc(item);
-      return hrefFn
-        ? '<li><a class="chip" href="' + esc(hrefFn(item)) + '">' + text + '</a></li>'
-        : '<li><span class="chip">' + text + '</span></li>';
+      if (!hrefFn) return '<li><span class="chip">' + text + '</span></li>';
+      var target = hrefFn(item);
+      return '<li><a class="chip" href="' + esc(target) + '"' + extAttrs(target) + '>' + text + '</a></li>';
     }).join('') + '</ul>';
   }
 
@@ -199,7 +224,25 @@
 
   var jsonCache = {};
 
+  /* Every fetch path on this desk comes out of the bundle itself (manifest
+   * `card.file`, a news shard name, a search doc's `f`), so it is data, not a
+   * constant. Nothing but a literal data/<name>.json under the bundle root is
+   * ever fetched; anything else \u2014 an absolute URL, a traversal, a non-JSON
+   * name \u2014 rejects here and lands in the caller's existing "could not load"
+   * empty state. The `..` check is not redundant: the character class allows
+   * both `.` and `/`, so "data/../secrets.json" matches the pattern. */
+  var DATA_PATH_RE = /^data\/[A-Za-z0-9_.\-\/]+\.json$/;
+
+  function isDataPath(path) {
+    var p = (path === null || path === undefined) ? '' : String(path);
+    return DATA_PATH_RE.test(p) && p.indexOf('..') < 0;
+  }
+
   function loadJSON(path) {
+    if (!isDataPath(path)) {
+      /* A rejected promise, not a throw: callers handle failure in .catch(). */
+      return Promise.reject(new Error('refused non-bundle path ' + path));
+    }
     if (jsonCache[path]) return jsonCache[path];
     var p = fetch(path).then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + path);
@@ -253,7 +296,7 @@
   function dot(unread) { return unread ? '<span class="dot"></span>' : '<span class="dot-slot"></span>'; }
 
   function row(link, top, meta) {
-    return '<a class="row" href="' + esc(link) + '"><div class="row-top">' + top + '</div>' +
+    return '<a class="row" href="' + esc(link) + '"' + extAttrs(link) + '><div class="row-top">' + top + '</div>' +
       (meta ? '<div class="row-meta">' + meta + '</div>' : '') + '</a>';
   }
 
@@ -363,19 +406,36 @@
     return { title: 'Today', html: html };
   }
 
+  /* A card id is "<kind>:<YYYY-MM-DD>" in every shard this builder writes, so an
+   * archive card (More \u2192 Reports, any of the last 14 days) resolves to its own
+   * shard without a second route: take the date off the id, and only accept the
+   * path if the manifest actually lists that file. Today's cards still resolve
+   * from manifest.today.cards, which carries title/bytes for the head. */
+  function archiveCardFile(id) {
+    var s = String(id);
+    var cut = s.lastIndexOf(':');
+    var day = cut < 0 ? '' : s.slice(cut + 1);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return null;
+    var path = 'data/reports/' + day + '.json';
+    var files = isObj(STATE.manifest.files) ? STATE.manifest.files : {};
+    return Object.prototype.hasOwnProperty.call(files, path) ? path : null;
+  }
+
   function viewCard(parts) {
     var id = parts[1];
     var meta = null;
     arr(STATE.manifest.today && STATE.manifest.today.cards).forEach(function (c) {
       if (c && String(c.id) === String(id)) meta = c;
     });
-    if (!meta) {
-      return { title: 'Report', html: emptyState('That report is not in this build. Open Today for the cards this bundle actually carries.') };
+    var file = (meta && meta.file) || archiveCardFile(id);
+    if (!meta && !file) {
+      return { title: 'Report', html: emptyState('That report is not in this build. Open Today for the cards this bundle actually carries, or More \u2192 Reports for the archive.') };
     }
-    if (!meta.file) {
-      return { title: meta.title || 'Report', html: emptyState('This card has no report file in the bundle.') };
+    if (!file) {
+      return { title: (meta && meta.title) || 'Report', html: emptyState('This card has no report file in the bundle.') };
     }
-    return loadJSON(meta.file).then(function (payload) {
+    meta = meta || { id: id, title: id, file: file };
+    return loadJSON(file).then(function (payload) {
       var card = meta;
       arr(payload && payload.cards).forEach(function (c) { if (c && String(c.id) === String(id)) card = c; });
       markRead('cards', id);
@@ -400,7 +460,7 @@
       }
       return { title: card.title || 'Report', html: head + body };
     }).catch(function () {
-      return { title: meta.title || 'Report', html: emptyState('Could not load ' + meta.file + ' from this bundle.') };
+      return { title: meta.title || 'Report', html: emptyState('Could not load ' + file + ' from this bundle.') };
     });
   }
 
@@ -677,19 +737,12 @@
     return html;
   }
 
-  function placeholderTab(label) {
-    return function () {
-      return emptyState(label + ' arrives in the next build of the desk. The data it reads is already in this bundle.');
-    };
-  }
-
+  /* notes/thesis read the ticker bundle the router already fetched; app2.js adds
+   * signals/news/insiders/etf, each of which fetches a bundle of its own and so
+   * returns a promise of HTML (viewTicker accepts either). */
   var tickerTabs = {
     notes: notesTab,
-    thesis: thesisTab,
-    signals: placeholderTab('Signals'),
-    news: placeholderTab('News'),
-    insiders: placeholderTab('Insiders'),
-    etf: placeholderTab('ETF trades')
+    thesis: thesisTab
   };
 
   function viewTicker(parts) {
@@ -715,9 +768,12 @@
 
     var path = bundlePath(id);
     return loadJSON(path).then(function (bundle) {
-      var body = isNote
+      /* A tab may need a second bundle of its own (scores, news, market), so it
+       * is allowed to return a promise of HTML as well as a string. */
+      return Promise.resolve(isNote
         ? noteView(bundle, id, parts[3])
-        : tickerTabs[tab](bundle, meta, id);
+        : tickerTabs[tab](bundle, meta, id));
+    }).then(function (body) {
       return { title: id, html: shell + body };
     }).catch(function () {
       return { title: id, html: shell + emptyState('Could not load ' + path + ' from this bundle.') };
@@ -803,13 +859,8 @@
     return { title: 'Status', html: html };
   }
 
-  var morePages = {
-    status: viewStatus,
-    scores: function () { return { title: 'Scores', html: emptyState('The scores table arrives in the next build of the desk.') }; },
-    etf: function () { return { title: 'ETF trades', html: emptyState('The ETF trades archive arrives in the next build of the desk.') }; },
-    reports: function () { return { title: 'Reports', html: emptyState('The 14-day report archive arrives in the next build of the desk.') }; },
-    search: function () { return { title: 'Search', html: emptyState('Search arrives in the next build of the desk.') }; }
-  };
+  /* scores/etf/reports/search are registered by app2.js. */
+  var morePages = { status: viewStatus };
 
   function viewMore(parts) {
     var page = parts[1];
@@ -837,30 +888,11 @@
 
   /* =========================================================== ROUTER ===== */
 
+  /* themes/theme/ideas are registered by app2.js. */
   var views = {
     today: function (parts) { return parts.length > 1 ? viewCard(parts) : viewToday(parts); },
     tickers: viewTickers,
     ticker: viewTicker,
-    themes: function () {
-      return {
-        title: 'Themes',
-        html: emptyState('Themes arrive in the next build of the desk. This bundle already carries ' +
-          arr(STATE.manifest.themes).length + ' of them.')
-      };
-    },
-    theme: function (parts) {
-      return {
-        title: parts[1] ? String(parts[1]) : 'Theme',
-        html: emptyState('Theme pages arrive in the next build of the desk.')
-      };
-    },
-    ideas: function () {
-      return {
-        title: 'Ideas',
-        html: emptyState('Ideas arrive in the next build of the desk. This bundle already carries ' +
-          ((STATE.manifest.counts && STATE.manifest.counts.ideas) || 0) + ' of them.')
-      };
-    },
     more: viewMore
   };
 
@@ -991,16 +1023,66 @@
       .catch(function (err) { if (token === renderToken) paint(errorRes(err), parts); });
   }
 
+  /* Two delegated registries so a screen never wires its own listener (and never
+   * leaks one when the view is replaced): `controls` keyed by element id for
+   * input/change, `actions` keyed by data-act for clicks. A screen adds an entry
+   * and re-renders its own sub-container; the router owns everything else. */
+  var controls = {};
+  var actions = {};
+
+  controls['q-tickers'] = function (t) {
+    tickersUI.q = t.value || '';
+    var box = document.getElementById('ticker-rows');
+    if (box) box.innerHTML = tickerRowsHTML();
+  };
+  controls['sort-tickers'] = function (t) {
+    tickersUI.sort = t.value || 'last';
+    var box = document.getElementById('ticker-rows');
+    if (box) box.innerHTML = tickerRowsHTML();
+  };
+
   function onControl(ev) {
     var t = ev.target;
     if (!t || !t.id) return;
-    if (t.id === 'q-tickers' || t.id === 'sort-tickers') {
-      if (t.id === 'q-tickers') tickersUI.q = t.value || '';
-      else tickersUI.sort = t.value || 'last';
-      var box = document.getElementById('ticker-rows');
-      if (box) box.innerHTML = tickerRowsHTML();
-    }
+    var fn = controls[t.id];
+    if (!fn) return;
+    try { fn(t, ev); } catch (e) { /* a broken control must not blank the screen */ }
   }
+
+  function onClick(ev) {
+    var node = ev.target;
+    while (node && node !== ev.currentTarget) {
+      if (node.getAttribute && node.getAttribute('data-act')) break;
+      node = node.parentNode;
+    }
+    if (!node || node === ev.currentTarget || !node.getAttribute) return;
+    if (node.disabled) return;
+    var fn = actions[node.getAttribute('data-act')];
+    if (!fn) return;
+    ev.preventDefault();
+    try { fn(node, ev); } catch (e) { /* same \u2014 a broken action is not fatal */ }
+  }
+
+  /* --------------------------------------------------------- app2.js ------ */
+
+  /* Task 8's screens live in app2.js (this file would be past 2,300 lines with
+   * them inlined). They are not a second app: they are handed these helpers and
+   * they REGISTER into the same `views` / `tickerTabs` / `morePages` / `controls`
+   * / `actions` objects, so the router, the delegated listeners and the "as of"
+   * footer keep their single implementation here. app2.js is a plain script
+   * loaded after this one; boot() below runs on DOMContentLoaded, by which time
+   * its registrations are in place. If it fails to load, this app still runs --
+   * the unregistered routes fall through to the router's own "no such screen"
+   * empty state instead of breaking a screen that did load. */
+  window.RIS = {
+    esc: esc, arr: arr, isObj: isObj, href: href, kb: kb,
+    chips: chips, emptyState: emptyState, section: section, fold: fold, md: md,
+    row: row, dot: dot, wrapWide: wrapWide,
+    loadJSON: loadJSON, findTicker: findTicker,
+    safeURL: safeURL, extLink: extLink, isRead: isRead,
+    STATE: STATE, views: views, tickerTabs: tickerTabs, morePages: morePages,
+    controls: controls, actions: actions
+  };
 
   function boot() {
     try {
@@ -1021,7 +1103,7 @@
         };
         STATE.md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
           var target = tokens[idx].attrGet('href') || '';
-          if (target.charAt(0) !== '#') {
+          if (extAttrs(target)) {
             tokens[idx].attrSet('target', '_blank');
             tokens[idx].attrSet('rel', 'noopener noreferrer');
           }
@@ -1040,6 +1122,7 @@
     var view = document.getElementById('view');
     view.addEventListener('input', onControl);
     view.addEventListener('change', onControl);
+    view.addEventListener('click', onClick);
     window.addEventListener('hashchange', render);
 
     loadJSON(MANIFEST_PATH).then(function (m) {
