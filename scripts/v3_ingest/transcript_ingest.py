@@ -118,10 +118,38 @@ CONFERENCE_WINDOW_DAYS = 8                        # weekly cron with one day of 
 # p75 64) and a page holds 50, and paging over ties leaves gaps — so two semantic
 # queries per event, one page each: analyst Q&A first (the register topic_map keys on),
 # prepared remarks second. vector_id dedup absorbs the overlap.
-EARNINGS_QUERIES = ("What did analysts ask in the question and answer session?",
-                    "What did management say in prepared remarks about results and guidance?")
+# Twelve diverse probes, not two generic ones. Semantic search returns what is NEAR
+# the query, so two generic probes keep pulling the same central mass of a call.
+# Measured within a single call (2026-09-15, docs/superpowers/plans/
+# 2026-09-15-transcript-coverage-saturation.md): ANET 2026-08-04 went 65.3% of
+# turns with one probe -> 95.8% with eleven, saturating there; DDOG 2026-08-06
+# (a longer call) 45.3% -> 83.0% and still climbing at fourteen. Probes aimed at
+# margins, competition, capital allocation, supply and pricing each reach turns
+# the generic pair never touches. Order matters only for ledger-resume ordering.
+EARNINGS_QUERIES = (
+    "What did analysts ask in the question and answer session?",
+    "What did management say in prepared remarks about results and guidance?",
+    "What did management say about gross margin and operating expenses?",
+    "What did management say about competition and market share?",
+    "What did management say about customer demand and the order book?",
+    "What did management say about capital allocation, buybacks and the balance sheet?",
+    "What did management say about product roadmap and new offerings?",
+    "What did management say about supply, capacity and lead times?",
+    "What did the chief executive say about the long term strategy?",
+    "What questions did analysts ask about the outlook for next quarter?",
+    "What did management say about pricing?",
+    "What did management say about headcount, hiring and operating leverage?",
+)
 EARNINGS_WINDOW_DAYS = 3                          # weekday cron with two days of overlap
 ABORT = threading.Event()                         # set on ToolUnavailableError: stop all workers
+# Set the first time the tool is actually invoked in this run. ToolUnavailableError
+# is ambiguous: it fires both when the connector is not loaded (identical for every
+# name, so aborting saves N wasted calls) AND when the model simply declines to place
+# the call once. Measured 2026-09-16 on the first --replay-events run: 75 pages
+# succeeded, one ANET offset=100 page came back with no tool_use, ABORT fired, and
+# DDOG never started. Once the tool has been seen working, a declined call is a
+# retryable `failed` page like any other — not an outage.
+TOOL_SEEN = threading.Event()
 
 # Calendar-driven conference mode (2026-09-10). Measured on AVGO (Goldman session + Q3 call
 # in one 8-day window): pages at offset 0 and 50 of the same query overlapped on 22 of 50
@@ -636,12 +664,15 @@ def fetch_page(factset_id, query, start, end, offset, limit=PAGE_LIMIT,
                                   mcp_tool=TOOL, model=model or MODEL, cwd=str(REPO_ROOT),
                                   timeout=timeout)
     except claude_p.ToolUnavailableError as e:
-        ABORT.set()
+        if not TOOL_SEEN.is_set():
+            ABORT.set()                # never worked this run: a genuine outage
         return [], f"failed: tool unavailable ({str(e)[:120]})", None
     except subprocess.TimeoutExpired:
         return [], "failed: timeout", None
     except Exception as e:                                   # noqa: BLE001
         return [], f"failed: {type(e).__name__}: {str(e)[:160]}", None
+
+    TOOL_SEEN.set()                    # run_mcp raises if the tool was never called
 
     # The model is the only thing between us and the API. Whatever it placed is what
     # the page answers; a drifted argument is a different page under the same ledger key.
@@ -812,6 +843,43 @@ def fetch_calendar(entries: list, start: str, end: str, timeout=CLAUDE_TIMEOUT_S
     return events
 
 
+def events_from_exchanges(path: Path, entries: list) -> list:
+    """Calendar-shaped Earnings events synthesised from the call days already on
+    disk: one per distinct (factset_id, event_date) earnings_call row, for names in
+    the resolved universe. -> [{"eventType", "requestId", "eventDateTime"}].
+
+    Why this exists: FactSet_CalendarEvents reaches back at most 90 days, so
+    `--earnings DAYS` can re-pull last quarter correctly but not the Nov-2025 to
+    Jun-2026 calls. Those came from the wide-window theme backfill and sit at ~57%
+    turn coverage. Their dates are already in exchanges.jsonl, so replay derives
+    the same narrow per-event windows the live feed uses and hands them to the
+    same planner — no second planning path to drift.
+
+    Shaped exactly like a CalendarEvents row on purpose, so `plan_from_events`
+    cannot tell the difference and everything downstream (window clamp, ledger
+    key, dedupe) is reused untouched."""
+    by_id = {e.factset_id for e in entries}
+    seen, out = set(), []
+    if not Path(path).exists():
+        return out
+    for line in Path(path).read_text().splitlines():
+        if not line.strip():
+            continue
+        try:
+            r = json.loads(line)
+        except ValueError:
+            continue                                   # torn last line from a kill
+        if r.get("event_type") != "earnings_call":
+            continue
+        fsid, day = r.get("factset_id"), str(r.get("event_date") or "")[:10]
+        if fsid not in by_id or len(day) < 10 or (fsid, day) in seen:
+            continue
+        seen.add((fsid, day))
+        out.append({"eventType": "Earnings", "requestId": fsid, "eventDateTime": day})
+    out.sort(key=lambda e: (e["requestId"], e["eventDateTime"]))
+    return out
+
+
 def plan_from_events(entries: list, events: list, today: dt.date | None = None,
                      event_type: str = "Conference", queries: tuple = (CONFERENCE_QUERY,)) -> list:
     """(entry, query, (start, end)) per (name, event day) x query, matched on the
@@ -862,6 +930,11 @@ def main(argv=None) -> int:
                          f"name, themes not required (weekly cron: {CONFERENCE_WINDOW_DAYS}). "
                          "Calendar-driven: one pull per (name, conference day) from "
                          "CalendarEvents, each over a 3-day window that fits one page")
+    ap.add_argument("--replay-events", action="store_true",
+                    help="re-pull every earnings call already in exchanges.jsonl over its own "
+                         "narrow event window with the full EARNINGS_QUERIES set. The calendar "
+                         "reaches back 90 days; this reaches back as far as the data does. "
+                         "Ledger keys carry query+window, so it is resumable and never re-spends")
     ap.add_argument("--scan", action="store_true",
                     help="with --conferences: page the whole trailing window per name instead "
                          "of asking the calendar (the 2026-09-10 first run; leaves gaps)")
@@ -871,13 +944,15 @@ def main(argv=None) -> int:
     ap.add_argument("--query", action="append",
                     help="replace the theme queries with this sentence (repeatable)")
     args = ap.parse_args(argv)
+    ABORT.clear(); TOOL_SEEN.clear()      # a run's outage/seen state is its own
     if bool(args.start) != bool(args.end):
         ap.error("--start and --end go together")
-    if args.conferences and args.earnings:
-        ap.error("--earnings and --conferences are separate feeds; run one at a time")
-    if (args.conferences or args.earnings) and args.start:
-        ap.error("--conferences/--earnings set their own window; drop --start/--end")
-    feed = "Conference" if args.conferences else ("Earnings" if args.earnings else None)
+    if args.conferences and (args.earnings or args.replay_events):
+        ap.error("--earnings/--replay-events and --conferences are separate feeds; run one at a time")
+    if (args.conferences or args.earnings or args.replay_events) and args.start:
+        ap.error("feeds set their own windows; drop --start/--end")
+    feed = "Conference" if args.conferences else (
+        "Earnings" if (args.earnings or args.replay_events) else None)
     feed_queries = None
     if feed:
         feed_queries = list(args.query) if args.query else (
@@ -893,7 +968,15 @@ def main(argv=None) -> int:
         entries = [e for e in entries if e.ticker in wanted]
 
     entries.sort(key=lambda e: e.ticker)
-    if feed:
+    replay_events = None
+    if args.replay_events:
+        # The span is only for the log line; each event gets its own narrow window
+        # from plan_from_events, exactly as a calendar event would.
+        replay_events = events_from_exchanges(EXCHANGES_PATH, entries)
+        days = [ev["eventDateTime"] for ev in replay_events] or [dt.date.today().isoformat()]
+        start, end = min(days), max(days)
+        window, override = (start, end), feed_queries
+    elif feed:
         start, end = conference_window(args.conferences or args.earnings)
         window, override = (start, end), feed_queries
     elif args.start:
@@ -917,11 +1000,17 @@ def main(argv=None) -> int:
 
     # plan items: (entry, query, (start, end), ledger window-key or None)
     if feed and not args.scan:
-        try:
-            events = fetch_calendar(entries, start, end, model=args.model, event_types=(feed,))
-        except CalendarError as e:
-            log(f"ABORT: {e}")
-            return 1
+        if replay_events is not None:
+            events = replay_events
+            log(f"replay: {len(events)} earnings-call days already on disk in "
+                f"{EXCHANGES_PATH.name} for {len({ev['requestId'] for ev in events})} names")
+        else:
+            try:
+                events = fetch_calendar(entries, start, end, model=args.model,
+                                        event_types=(feed,))
+            except CalendarError as e:
+                log(f"ABORT: {e}")
+                return 1
         plan = [(e, q, w, w) for e, q, w in
                 plan_from_events(entries, events, event_type=feed, queries=tuple(feed_queries))]
         n_typed = sum(1 for ev in events if isinstance(ev, dict) and ev.get("eventType") == feed)

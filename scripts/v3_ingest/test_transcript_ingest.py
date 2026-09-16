@@ -300,6 +300,100 @@ def test_real_config_resolves_a_universe_with_aaoi_and_no_pvt():
     print(f"    (real config: {len(entries)} names, {len(unresolved)} unresolved)")
 
 
+# ───────────── replay: re-pull historical calls narrowly (2026-09-16) ─────────────
+#
+# Measured within a single call: the two generic earnings probes over a wide
+# window gave 27.7% of ANET 2026-08-04's turns; one probe over a 3-day window
+# gave 65.3%, and 11 diverse probes gave 95.8%. Median corpus coverage is 56.9%
+# because everything before the 2026-09-11 feed came from the wide-window theme
+# backfill. The calendar only reaches back 90 days, so historical calls are
+# replayed from the event dates already on disk.
+
+def test_earnings_queries_are_diverse_and_tool_legal():
+    qs = ti.EARNINGS_QUERIES
+    assert len(qs) >= 10, "two generic probes keep hitting the same central mass"
+    assert len(set(qs)) == len(qs), "duplicate probes buy nothing"
+    for q in qs:
+        assert q.endswith("?"), q                          # natural-language question
+        assert ti.QUERY_CHARSET_RE.fullmatch(q), q         # tool contract
+
+
+def test_events_from_exchanges_yields_one_event_per_call_day_for_resolved_names():
+    rows = [
+        {"ticker": "ANET", "factset_id": "ANET-US", "event_type": "earnings_call",
+         "event_date": "2026-08-04", "vector_id": "a1"},
+        {"ticker": "ANET", "factset_id": "ANET-US", "event_type": "earnings_call",
+         "event_date": "2026-08-04", "vector_id": "a2"},          # same call: one event
+        {"ticker": "ANET", "factset_id": "ANET-US", "event_type": "earnings_call",
+         "event_date": "2026-05-05", "vector_id": "a3"},          # earlier call: second event
+        {"ticker": "LITE", "factset_id": "LITE-US", "event_type": "conference",
+         "event_date": "2026-06-10", "vector_id": "l1"},          # conference: excluded
+        {"ticker": "ZZZZ", "factset_id": "ZZZZ-US", "event_type": "earnings_call",
+         "event_date": "2026-07-01", "vector_id": "z1"},          # not in universe: excluded
+    ]
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "exchanges.jsonl"
+        p.write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+        entries = [ti.UniverseEntry("ANET", "ANET-US"), ti.UniverseEntry("LITE", "LITE-US")]
+        events = ti.events_from_exchanges(p, entries)
+    assert sorted((e["requestId"], e["eventDateTime"]) for e in events) == [
+        ("ANET-US", "2026-05-05"), ("ANET-US", "2026-08-04")]
+    assert all(e["eventType"] == "Earnings" for e in events)
+
+
+def test_replay_events_flow_through_the_calendar_planner_unchanged():
+    """The whole point: no new planning code. A synthesised event must be
+    indistinguishable to plan_from_events from a calendar one, and the plan
+    is events x probes over the narrow event window."""
+    entries = [ti.UniverseEntry("ANET", "ANET-US")]
+    events = [{"eventType": "Earnings", "requestId": "ANET-US", "eventDateTime": "2026-08-04"},
+              {"eventType": "Earnings", "requestId": "ANET-US", "eventDateTime": "2026-05-05"}]
+    plan = ti.plan_from_events(entries, events, today=dt.date(2026, 9, 16),
+                               event_type="Earnings", queries=tuple(ti.EARNINGS_QUERIES))
+    assert len(plan) == 2 * len(ti.EARNINGS_QUERIES)
+    windows = {w for _e, _q, w in plan}
+    assert windows == {("2026-08-04", "2026-08-06"), ("2026-05-05", "2026-05-07")}
+
+
+def test_events_from_exchanges_tolerates_missing_file_and_torn_lines():
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "exchanges.jsonl"
+        assert ti.events_from_exchanges(p, [ti.UniverseEntry("ANET", "ANET-US")]) == []
+        p.write_text('{"ticker": "ANET", "factset_id": "ANET-US", "event_type": "earnings_call", '
+                     '"event_date": "2026-08-04"}\n{"torn')
+        ev = ti.events_from_exchanges(p, [ti.UniverseEntry("ANET", "ANET-US")])
+        assert [e["eventDateTime"] for e in ev] == ["2026-08-04"]
+
+
+def test_one_declined_tool_call_does_not_abort_a_run_where_the_tool_has_worked():
+    """ABORT exists for a genuinely missing connector, where every name would
+    fail identically. But the same exception fires when the model simply does
+    not place the call once. Measured 2026-09-16 on the first --replay-events
+    run: 75 pages succeeded, then ONE ANET offset=100 page came back with no
+    tool_use, ABORT fired, and DDOG — sorted after ANET — never ran. A single
+    flaky page must not kill a 1,572-pull backfill once the tool has been seen
+    working in this run."""
+    orig = ti.claude_p.run_mcp
+
+    def declined(*_a, **_k):
+        raise ti.claude_p.ToolUnavailableError("no tool_use in transcript")
+    ti.claude_p.run_mcp = declined
+    try:
+        ti.ABORT.clear(); ti.TOOL_SEEN.clear()
+        _c, status, _s = ti.fetch_page("ANET-US", "q", "2026-08-04", "2026-08-06", 0)
+        assert status.startswith("failed: tool unavailable"), status
+        assert ti.ABORT.is_set(), "tool never seen this run: a genuine outage must abort"
+
+        ti.ABORT.clear(); ti.TOOL_SEEN.set()
+        _c, status, _s = ti.fetch_page("ANET-US", "q", "2026-08-04", "2026-08-06", 100)
+        assert status.startswith("failed: tool unavailable"), status
+        assert not ti.ABORT.is_set(), \
+            "tool already worked this run: one declined call is a retryable page, not an outage"
+    finally:
+        ti.claude_p.run_mcp = orig
+        ti.ABORT.clear(); ti.TOOL_SEEN.clear()
+
+
 # ───────────────────────── ledger ─────────────────────────
 
 def test_ledger_distinguishes_empty_from_failed():
@@ -518,7 +612,9 @@ def test_fetch_page_tool_unavailable_is_a_failure_that_aborts_the_run():
         raise ti.claude_p.ToolUnavailableError("no tool_use")
     orig = ti.claude_p.run_mcp
     ti.claude_p.run_mcp = fake
-    ti.ABORT.clear()
+    # TOOL_SEEN must be clear too: an earlier test exercised fetch_page successfully
+    # and the abort is now conditional on the tool never having worked this run.
+    ti.ABORT.clear(); ti.TOOL_SEEN.clear()
     try:
         chunks, status, source = ti.fetch_page("AMD-US", "q?", "2026-09-02", "2026-09-10", 0, 50)
     finally:
@@ -668,15 +764,18 @@ def test_fetch_calendar_failure_is_loud():
 
 # ───────────────────────── earnings mode (P5b, 2026-09-11) ─────────────────────────
 
-def test_earnings_plan_makes_two_query_pulls_per_event():
+def test_earnings_plan_makes_one_pull_per_query_per_event():
+    """One Earnings event -> one pull per probe over the narrow event window, in
+    probe order; the Conference event on the next day is not an Earnings pull.
+    Count-agnostic on purpose: the probe set went 2 -> 12 on 2026-09-16 and a
+    literal here would have to change every time the set is tuned."""
     e = ti.UniverseEntry("NVDA", "NVDA-US", [], ["tier_1"])
     events = [{"eventType": "Earnings", "requestId": "NVDA-US", "eventDateTime": "2026-08-27T20:00:00Z"},
               {"eventType": "Conference", "requestId": "NVDA-US", "eventDateTime": "2026-08-28T15:00:00Z"}]
     plan = ti.plan_from_events([e], events, today=dt.date(2026, 9, 11),
                                event_type="Earnings", queries=ti.EARNINGS_QUERIES)
     assert [(p[0].ticker, p[1], p[2]) for p in plan] == [
-        ("NVDA", ti.EARNINGS_QUERIES[0], ("2026-08-27", "2026-08-29")),
-        ("NVDA", ti.EARNINGS_QUERIES[1], ("2026-08-27", "2026-08-29"))], plan
+        ("NVDA", q, ("2026-08-27", "2026-08-29")) for q in ti.EARNINGS_QUERIES], plan
 
 
 def test_conference_plan_default_is_unchanged():
@@ -694,7 +793,7 @@ def test_calendar_prompt_carries_the_event_type():
 
 
 def test_earnings_queries_are_tool_legal_and_distinct():
-    assert len(set(ti.EARNINGS_QUERIES)) == 2
+    assert len(set(ti.EARNINGS_QUERIES)) == len(ti.EARNINGS_QUERIES)
     for q in ti.EARNINGS_QUERIES:
         assert ti.QUERY_CHARSET_RE.fullmatch(q), q
 
