@@ -1,0 +1,2 @@
+2026-09-15T09:00:00Z  job=fixture_ok          exit=0    cmd=/bin/true
+2026-09-15T09:05:00Z  job=fixture_fail        exit=1    cmd=/bin/false

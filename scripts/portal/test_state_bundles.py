@@ -1,0 +1,387 @@
+"""
+Unit tests for scripts/portal/state_bundles.py + scripts/portal/news_sec.py
+(RIS4 slice 2, Task 4).
+
+Fixtures live under fixtures/state/ (topics/, thesis/, notes/, docs/,
+state_portal/, watchlist.yaml, ticker_identity.yaml, cron_runs_fixture.txt) -- see that
+directory's README-equivalent in the task-4 report for what each file exercises.
+Every test pins `today` to 2026-09-16 for deterministic windowing (news/sec
+30-day cutoffs, market_bundle's 14-day ETF-flows window, manifest's 7-day
+cron-failure window and 180-day staleness window).
+
+No pytest in this env -- run directly:
+    python3 scripts/portal/test_state_bundles.py
+"""
+import os
+import sys
+from datetime import date
+from pathlib import Path
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import identity            # noqa: E402
+import news_sec            # noqa: E402
+import state_bundles as sb  # noqa: E402
+import vault                # noqa: E402
+
+FIXTURES = Path(__file__).parent / "fixtures" / "state"
+TODAY = date(2026, 9, 16)
+
+BASE_PATHS = sb.Paths(
+    notes=FIXTURES / "notes",
+    watchlist=FIXTURES / "watchlist.yaml",
+    topics_state=FIXTURES / "topics",
+    thesis_state=FIXTURES / "thesis",
+    portal_state=FIXTURES / "state_portal",
+    docs=FIXTURES / "docs",
+    cron_log=FIXTURES / "cron_runs_fixture.txt",
+    etf_lookthrough=FIXTURES / "does_not_exist_lookthrough.json",
+    etf_flows=FIXTURES / "does_not_exist_flows.jsonl",
+)
+
+NO_PORTAL_STATE = sb.Paths(
+    notes=FIXTURES / "notes", watchlist=FIXTURES / "watchlist.yaml", topics_state=FIXTURES / "topics",
+    thesis_state=FIXTURES / "thesis", portal_state=FIXTURES / "does_not_exist_portal",
+    docs=FIXTURES / "docs", cron_log=FIXTURES / "cron_runs_fixture.txt",
+    etf_lookthrough=FIXTURES / "does_not_exist_lookthrough.json",
+    etf_flows=FIXTURES / "does_not_exist_flows.jsonl",
+)
+
+
+def _build_ticker_bundles(paths: sb.Paths) -> dict:
+    """Same composition build_state() does, using only PUBLIC vault/identity
+    functions -- exercises the real integration path rather than a private
+    helper."""
+    refs = vault.discover(paths.notes)
+    universe = identity.load_universe(paths.watchlist, paths.notes)
+    names = identity.display_names(paths.watchlist, notes_dir=paths.notes)
+    known_tickers = {r.ticker for r in refs if r.ticker}
+    known_themes = {Path(r.rel).stem for r in refs if r.kind == "theme"}
+    return {e["ticker"]: vault.ticker_bundle(e["ticker"], refs, names, known_tickers, known_themes, meta=e)
+            for e in universe}
+
+
+# ───────────────────────── themes_bundle ─────────────────────────
+
+def test_themes_bundle_written_note_is_in_vocab():
+    tb = sb.themes_bundle(BASE_PATHS)
+    by_slug = {t["slug"]: t for t in tb["themes"]}
+    assert set(by_slug) == {"fixture_theme_a", "fixture_theme_b", "fixture_theme_gate_only"}
+    a = by_slug["fixture_theme_a"]
+    assert a["in_vocab"] is True
+    assert a["fm"]["theme"] == "fixture_theme_a" and a["fm"]["status"] == "approved"
+    assert set(a["fm"]) == set(sb._THEME_FM_KEYS)
+    assert "[[FIX/_thesis" not in a["body"] or "#/ticker/FIX" in a["body"], a["body"]
+
+
+def test_themes_bundle_gate_only_theme_is_not_in_vocab():
+    tb = sb.themes_bundle(BASE_PATHS)
+    by_slug = {t["slug"]: t for t in tb["themes"]}
+    g = by_slug["fixture_theme_gate_only"]
+    assert g["in_vocab"] is False
+    assert g["body"] == ""
+    assert g["fm"]["stage"] == 1
+    assert g["fm"]["tickers"] == ["FIX"]
+    assert g["fm"]["updated"] == "2026-09-15"           # diffusion.as_of, no real note
+    assert g["stages_by_ticker"] == {"FIX": 1}
+
+
+def test_themes_bundle_diffusion_is_trimmed():
+    tb = sb.themes_bundle(BASE_PATHS)
+    d = tb["diffusion"]
+    assert set(d) == {"as_of", "current_quarter", "metrics", "movers", "stage_counts", "lag_summary"}
+    assert d["current_quarter"] == "CY2026-Q2"
+    assert len(d["metrics"]) == 4        # both fixture quarters kept (Q1 + Q2)
+
+
+def test_themes_bundle_candidates_pending_and_decided():
+    tb = sb.themes_bundle(BASE_PATHS)
+    pending_ids = {c["id"] for c in tb["candidates"]}
+    assert pending_ids == {"cand:pend1", "cand:pend2"}
+    p1 = next(c for c in tb["candidates"] if c["id"] == "cand:pend1")
+    assert len(p1["ngrams"]) == 8         # capped, fixture has 9
+    assert len(tb["decided"]) == 1
+    assert tb["decided"][0]["id"] == "cand:dec1"
+    assert tb["decided"][0]["status"] == "accepted"
+    assert tb["decided"][0]["name"] == "decided_theme_name"   # backfilled from decisions.jsonl
+
+
+def test_themes_bundle_degrades_when_diffusion_and_stages_are_missing():
+    missing_state = sb.Paths(
+        notes=FIXTURES / "notes", watchlist=FIXTURES / "watchlist.yaml",
+        topics_state=FIXTURES / "does_not_exist_topics", thesis_state=FIXTURES / "thesis",
+        portal_state=FIXTURES / "state_portal", docs=FIXTURES / "docs", cron_log=FIXTURES / "cron_runs_fixture.txt",
+        etf_lookthrough=FIXTURES / "does_not_exist_lookthrough.json",
+        etf_flows=FIXTURES / "does_not_exist_flows.jsonl",
+    )
+    tb = sb.themes_bundle(missing_state)
+    # written notes still surface (they're on disk regardless of diffusion.json);
+    # stages_by_ticker degrades to {} rather than raising.
+    assert {t["slug"] for t in tb["themes"]} == {"fixture_theme_a", "fixture_theme_b"}
+    assert all(t["stages_by_ticker"] == {} for t in tb["themes"])
+    assert tb["candidates"] == [] and tb["decided"] == [] and tb["stage_events"] == []
+    ib = sb.ideas_bundle(missing_state)
+    # candidate/newly_said/gap/stage all source off diffusion.json/candidates.json
+    # (all missing here) -- only screen: (docs/ai-screen-report-*.md, untouched by
+    # this override) still produces ideas.
+    assert {i["stream"] for i in ib["ideas"]} == {"screen"}
+
+
+def test_themes_bundle_stage_events_is_a_tail():
+    tb = sb.themes_bundle(BASE_PATHS)
+    assert len(tb["stage_events"]) == 2
+    assert tb["stage_events"][0]["theme"] == "fixture_theme_gate_only"
+
+
+# ───────────────────────── ideas_bundle ─────────────────────────
+
+def test_ideas_bundle_candidate_stream_honors_dismissal():
+    ib = sb.ideas_bundle(BASE_PATHS)
+    ids = [i["id"] for i in ib["ideas"] if i["stream"] == "candidate"]
+    assert ids == ["candidate:cand:pend2"]     # pend1 dismissed via state_portal/ideas_decisions.jsonl
+
+
+def test_ideas_bundle_candidate_stream_without_dismissal_file():
+    ib = sb.ideas_bundle(NO_PORTAL_STATE)
+    ids = {i["id"] for i in ib["ideas"] if i["stream"] == "candidate"}
+    assert ids == {"candidate:cand:pend1", "candidate:cand:pend2"}
+
+
+def test_ideas_bundle_newly_said_is_current_quarter_only():
+    ib = sb.ideas_bundle(BASE_PATHS)
+    newly = [i for i in ib["ideas"] if i["stream"] == "newly_said"]
+    assert len(newly) == 1
+    assert newly[0]["id"] == "newly_said:fixture_theme_a|FIX|CY2026-Q2"
+    assert newly[0]["score"] == 3              # n_banks off the (theme, cq) metrics cell
+
+
+def test_ideas_bundle_gap_stream_uses_disclosing_vs_asked():
+    ib = sb.ideas_bundle(BASE_PATHS)
+    gaps = {i["id"]: i for i in ib["ideas"] if i["stream"] == "gap"}
+    assert set(gaps) == {"gap:fixture_theme_b|CY2026-Q2", "gap:fixture_theme_gate_only|CY2026-Q2"}
+    assert gaps["gap:fixture_theme_b|CY2026-Q2"]["score"] == 4       # 4 disclosing / 0 asked
+    assert gaps["gap:fixture_theme_gate_only|CY2026-Q2"]["score"] == 1
+    # fixture_theme_a never qualifies (1 disclosing <= n_companies in both quarters)
+    assert not any(i["theme"] == "fixture_theme_a" for i in gaps.values())
+
+
+def test_ideas_bundle_stage_stream_ids_are_stable_and_not_recomputed():
+    ib1 = sb.ideas_bundle(BASE_PATHS)
+    ib2 = sb.ideas_bundle(BASE_PATHS)
+    ids1 = sorted(i["id"] for i in ib1["ideas"] if i["stream"] == "stage")
+    ids2 = sorted(i["id"] for i in ib2["ideas"] if i["stream"] == "stage")
+    assert ids1 == ids2 == [
+        "stage:fixture_theme_a|ORPHAN|2026-09-05",
+        "stage:fixture_theme_gate_only|FIX|2026-09-01",
+    ]
+
+
+def test_ideas_bundle_screen_stream_skips_tracked_rows():
+    ib = sb.ideas_bundle(BASE_PATHS)
+    screens = {i["id"]: i for i in ib["ideas"] if i["stream"] == "screen"}
+    assert set(screens) == {"screen:NOTR", "screen:ANO"}   # FIX is *tracked*, excluded
+    assert screens["screen:NOTR"]["score"] == 3
+
+
+def test_ideas_bundle_novel_stream_degrades_to_empty_when_absent():
+    ib = sb.ideas_bundle(BASE_PATHS)
+    assert [i for i in ib["ideas"] if i["stream"] == "novel"] == []
+
+
+def test_ideas_bundle_all_ids_unique():
+    ib = sb.ideas_bundle(BASE_PATHS)
+    ids = [i["id"] for i in ib["ideas"]]
+    assert len(ids) == len(set(ids)), ids
+
+
+# ───────────────────────── scores_bundle ─────────────────────────
+
+def test_scores_bundle_reads_are_newest_first():
+    bundles = _build_ticker_bundles(BASE_PATHS)
+    sbnd = sb.scores_bundle(bundles, as_of="2026-09-16")
+    fix = sbnd["tickers"]["FIX"]
+    dates = [r["date"] for r in fix["reads"]]
+    assert dates == ["2026-09-01", "2026-03-01"], dates
+    assert fix["reads"][0]["note_id"] == "FIX/20260901-3Q26.md"
+
+
+def test_scores_bundle_current_shape_and_proposed():
+    bundles = _build_ticker_bundles(BASE_PATHS)
+    sbnd = sb.scores_bundle(bundles)
+    fix = sbnd["tickers"]["FIX"]
+    assert fix["current"] == {
+        "ai_positioning": "4",
+        "competitive_advantage": {"innovation_rate": "4", "distribution": "3", "overall": "4"},
+        "investor_interest": "3",
+    }
+    assert "ai_positioning" in fix["proposed"]
+    assert any(p["key"] == "ai_positioning" for p in fix["pending_proposals"])
+
+
+def test_scores_bundle_handles_bare_scalar_score_variant():
+    # config/watchlist.yaml carries two schema variants for ai_positioning /
+    # potential_investor_interest -- a bare scalar on some live entries
+    # (AMZN/BE/GOOG/NVDA/MSFT) and {score, notes} on the rest. BARESTR fixture
+    # exercises the bare-scalar path (caught live during the Task 4 live check).
+    bundles = _build_ticker_bundles(BASE_PATHS)
+    sbnd = sb.scores_bundle(bundles)
+    bare = sbnd["tickers"]["BARESTR"]
+    assert bare["current"]["ai_positioning"] == "4+"
+    assert bare["current"]["investor_interest"] == "3-"
+    assert bare["current"]["competitive_advantage"]["overall"] == "3"
+
+
+def test_scores_bundle_scope_is_t1_t2_plus_thesis():
+    bundles = _build_ticker_bundles(BASE_PATHS)
+    sbnd = sb.scores_bundle(bundles)
+    # AAA is tier_2 (in scope even with no thesis/notes); BBB is tier_3 with no
+    # thesis (out of scope); ORPHAN has no tier and no thesis (out of scope).
+    assert "AAA" in sbnd["tickers"]
+    assert "BBB" not in sbnd["tickers"]
+    assert "ORPHAN" not in sbnd["tickers"]
+
+
+# ───────────────────────── market_bundle ─────────────────────────
+
+def test_market_bundle_glob_for_latest_picks_newest_ranking():
+    mb = sb.market_bundle(BASE_PATHS, today=TODAY)
+    assert mb["ranking"]["date"] == "2026-09-14"    # not the older 2026-09-10 fixture
+
+
+def test_market_bundle_drops_raw_from_insiders():
+    mb = sb.market_bundle(BASE_PATHS, today=TODAY)
+    assert len(mb["insiders"]) == 1
+    assert "_raw" not in mb["insiders"][0]
+    assert mb["insiders"][0]["insider"] == "Jane Doe"   # the newer (09-13) file, not 09-06
+
+
+def test_market_bundle_degrades_when_etf_files_absent():
+    mb = sb.market_bundle(BASE_PATHS, today=TODAY)
+    assert mb["etf_lookthrough"] == {}
+    assert mb["etf_flows_14d"] == []
+
+
+# ───────────────────────── manifest ─────────────────────────
+
+def test_manifest_ticker_rows_include_orphan():
+    mani = sb.manifest(sb.Ctx(today=TODAY, paths=BASE_PATHS))
+    by_ticker = {t["ticker"]: t for t in mani["tickers"]}
+    assert "ORPHAN" in by_ticker
+    o = by_ticker["ORPHAN"]
+    assert o["orphan_notes"] is True
+    assert o["tier"] == "none"
+    assert o["has_notes"] is True and o["n_notes"] >= 1
+
+
+def test_manifest_health_and_applied_ids():
+    mani = sb.manifest(sb.Ctx(today=TODAY, paths=BASE_PATHS))
+    h = mani["health"]
+    assert h["stale_assumptions"] >= 1     # FIX's fixture_assumption, last_evidence 2026-01-05
+    assert "fixture_theme_gate_only" in h["themes_without_labels"]
+    assert "fixture_theme_a" not in h["themes_without_labels"]
+    assert len(h["last_job_failures"]) == 1
+    assert h["last_job_failures"][0]["job"] == "fixture_fail"
+    assert mani["applied_ids"] == ["gap:fixture_theme_b|CY2026-Q2"]
+
+
+def test_manifest_without_out_dir_leaves_today_and_files_empty():
+    mani = sb.manifest(sb.Ctx(today=TODAY, paths=BASE_PATHS))
+    assert mani["today"]["cards"] == []
+    assert mani["upcoming"] == []
+    assert mani["files"] == {}
+    assert mani["vendor"] == {}
+
+
+# ───────────────────────── news_sec.news_bundle ─────────────────────────
+
+def test_news_bundle_shards_by_iso_week_and_indexes_tickers():
+    nb = news_sec.news_bundle(30, news_sec.Paths(notes=BASE_PATHS.notes), today=TODAY)
+    assert set(nb["shards"]) == {"2026-W36", "2026-W37"}
+    assert len(nb["shards"]["2026-W36"]["rows"]) == 1
+    assert len(nb["shards"]["2026-W37"]["rows"]) == 2
+    assert "FIX" in nb["index"] and "ORPHAN" in nb["index"]
+    shard, idx = nb["index"]["FIX"][0]
+    row = nb["shards"][shard]["rows"][idx]
+    assert row["tickers"] == ["FIX"] or "FIX" in row["tickers"]
+
+
+def test_news_bundle_row_shape_headline_and_url():
+    nb = news_sec.news_bundle(30, news_sec.Paths(notes=BASE_PATHS.notes), today=TODAY)
+    row = nb["shards"]["2026-W36"]["rows"][0]
+    assert row["headline"] == "Fixture Headline One"
+    assert row["url"] == "https://news.example.com/one"
+    # third fixture note has no source_urls -> url must be None, not an error
+    week37 = nb["shards"]["2026-W37"]["rows"]
+    no_url_row = next(r for r in week37 if r["url"] is None)
+    assert no_url_row["headline"] == "Fixture Headline Three"
+
+
+def test_news_bundle_respects_window():
+    nb = news_sec.news_bundle(5, news_sec.Paths(notes=BASE_PATHS.notes), today=TODAY)
+    total = sum(len(v["rows"]) for v in nb["shards"].values())
+    assert total == 0       # all 3 fixture notes are > 5 days before 2026-09-16
+
+
+# ───────────────────────── news_sec.sec_bundle ─────────────────────────
+
+def test_sec_bundle_is_frontmatter_only():
+    secb = news_sec.sec_bundle(30, news_sec.Paths(notes=BASE_PATHS.notes), today=TODAY)
+    assert len(secb["rows"]) == 1
+    row = secb["rows"][0]
+    assert row == {
+        "ticker": "FIX", "form_type": "8-K", "items": ["1"], "filed_date": "2026-09-01",
+        "filing_url": "https://www.sec.gov/Archives/fixture-8k.htm",
+        "press_release_url": "", "themes": ["fixture_theme_a"],
+    }
+
+
+def test_sec_bundle_respects_window():
+    secb = news_sec.sec_bundle(5, news_sec.Paths(notes=BASE_PATHS.notes), today=TODAY)
+    assert secb["rows"] == []
+
+
+# ───────────────────────── build_state (integration) ─────────────────────────
+
+def test_build_state_writes_every_bundle(tmp_out_dir):
+    stats = sb.build_state(tmp_out_dir, sb.Ctx(today=TODAY, paths=BASE_PATHS, report_summaries=[]))
+    data = tmp_out_dir / "data"
+    for name in ("themes.json", "ideas.json", "scores.json", "market.json",
+                 "news_index.json", "sec_30d.json", "manifest.json"):
+        assert (data / name).exists(), name
+    assert (data / "news" / "2026-W36.json").exists()
+    assert stats["themes"] == 3
+    assert stats["sec_rows"] == 1
+    import json
+    mani = json.loads((data / "manifest.json").read_text())
+    assert "data/themes.json" in mani["files"]
+    assert "data/manifest.json" not in mani["files"]
+
+
+def _run_with_tmp_out_dir(fn):
+    import shutil
+    import tempfile
+    tmp = Path(tempfile.mkdtemp(prefix="ris4_state_bundles_test_"))
+    try:
+        fn(tmp)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+if __name__ == "__main__":
+    fns = [v for k, v in sorted(globals().items())
+           if k.startswith("test_") and callable(v)]
+    failed = 0
+    for fn in fns:
+        try:
+            if fn.__code__.co_argcount == 1:
+                _run_with_tmp_out_dir(fn)
+            else:
+                fn()
+            print(f"  ✓ {fn.__name__}")
+        except AssertionError as e:
+            failed += 1
+            print(f"  ✗ {fn.__name__}: {e}")
+        except Exception as e:                        # noqa: BLE001
+            failed += 1
+            print(f"  ✗ {fn.__name__}: {type(e).__name__}: {e}")
+    print(f"\n{len(fns) - failed}/{len(fns)} pass")
+    sys.exit(1 if failed else 0)

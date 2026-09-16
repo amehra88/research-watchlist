@@ -1,0 +1,20 @@
+[
+  {
+    "id": "cand:pend1", "label": "pending one", "ngrams": ["a","b","c","d","e","f","g","h","i"],
+    "register": "mixed", "n_exchanges": 3, "n_companies": 2, "n_banks": 1, "tickers": ["FIX"],
+    "firms": ["Barclays Capital, Inc."], "first_seen": "2026-06-01",
+    "members": ["m1", "m2"],
+    "examples": [{"id": "m1", "ticker": "FIX", "date": "2026-06-01", "firm": "Barclays Capital, Inc.", "text": "fixture example text"}],
+    "suggested_name": "pending_one_name", "suggested_why": "fixture rationale for pending one"
+  },
+  {
+    "id": "cand:pend2", "label": "pending two", "ngrams": ["x", "y"],
+    "n_exchanges": 1, "n_companies": 1, "n_banks": 0, "tickers": ["ORPHAN"],
+    "first_seen": "2026-07-01", "members": ["m3"]
+  },
+  {
+    "id": "cand:dec1", "label": "decided one", "ngrams": ["p", "q", "r"],
+    "n_exchanges": 5, "n_companies": 4, "n_banks": 3, "tickers": ["FIX", "ORPHAN"],
+    "first_seen": "2026-05-01", "members": ["m4", "m5"]
+  }
+]
