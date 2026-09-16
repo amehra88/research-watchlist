@@ -152,6 +152,63 @@ def test_snapshot_stages_on_mdna_evidence_only_and_counts_corprep_separately():
     assert snap["metrics"][0]["n_corprep_companies"] == 1
 
 
+def test_snapshot_carries_the_identified_lag_and_why_pairs_were_dropped():
+    """A censored pair: AAOI's MD&A coverage begins the day of the filing, so
+    'the analyst asked before the company wrote it' cannot be tested — there
+    was no observable filing register when the question was asked."""
+    rows = [_r("q1", "question", "AAOI", "2026-01-10", "CY2026-Q1", ["t1"], firm="Wolfe"),
+            _r("c1", "evidence", "AAOI", "2026-06-01", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("c2", "evidence", "AAOI", "2026-06-01", "CY2026-Q2", ["t1"], source="mdna")]
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-10", no_coverage={})
+    ident = snap["lag_identified"]
+    assert ident["summary"]["n"] == 0, "a censored pair must not be counted"
+    assert ident["dropped_neg"] == 1, ident
+    # the raw number still exists for continuity, and still shows the artifact
+    assert snap["lag_summary"]["n"] == 1
+
+
+def test_the_report_never_headlines_the_raw_evidence_led_percentage():
+    """The raw share swings 34.2% -> 86.2% on the same corpus depending on
+    which censoring correction you apply, so it is not a result. It may appear
+    only behind an explicit 'not a finding' label."""
+    rows = [_r("q1", "question", "AAOI", "2026-01-10", "CY2026-Q1", ["t1"], firm="Wolfe"),
+            _r("c1", "evidence", "AAOI", "2026-06-01", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("c2", "evidence", "AAOI", "2026-06-01", "CY2026-Q2", ["t1"], source="mdna")]
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-10", no_coverage={})
+    with tempfile.TemporaryDirectory() as d:
+        md = df.write_report(snap, Path(d) / "report.md")
+    sec = md[md.find("### Lifecycle"):]
+    sec = sec[:sec.find("### Stage 2")]
+    assert "No identified pairs" in sec, sec[:400]
+    i_raw = sec.find("Raw (censored, not a finding)")
+    assert i_raw != -1, "the raw line must carry its disclaimer"
+    # inside this section, no evidence-led figure may precede that label
+    i_led = sec.find("evidence-led")
+    assert i_led == -1 or i_led > i_raw, sec[:400]
+    # and the identified statement must come first
+    assert sec.find("No identified pairs") < i_raw
+
+
+def test_a_handful_of_identified_pairs_reports_no_percentage():
+    """Live data produced exactly 2 identified pairs, both negative, which the
+    first cut rendered as 'evidence led in 0.0%'. That is a stronger claim than
+    two observations can carry — and the same failure, in the other direction,
+    as the raw 39.6% it replaced."""
+    ident = {"summary": {"n": 2, "min": -79, "median": -40.0, "max": -1,
+                         "share_evidence_led": 0.0},
+             "dropped_pos": 22, "dropped_neg": 29, "buffer_days": 30,
+             "n_tickers_mdna_starts_late": 21}
+    rows = [_r("c1", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna"),
+            _r("c2", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna")]
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-15", no_coverage={})
+    snap["lag_identified"] = ident
+    with tempfile.TemporaryDirectory() as d:
+        md = df.write_report(snap, Path(d) / "r.md")
+    sec = md[md.find("### Lifecycle"):]
+    assert "0.0%" not in sec, sec[:400]
+    assert "not yet measurable" in sec, sec[:400]
+
+
 def test_snapshot_pairs_carry_stage_and_dates_per_theme_ticker():
     rows = [_r("c1", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna"),
             _r("c2", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna"),

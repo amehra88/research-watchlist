@@ -271,6 +271,15 @@ def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None) -> d
                           or (r.get("register") == "evidence" and r.get("source") in STAGE_EVIDENCE_SOURCES)])
     lags = [lc.lag_days(p["first_filing_date"], p["first_question_date"]) for p in idx.values()
             if p["first_filing_date"] and p["first_question_date"]]
+    cov = lc.coverage_starts([r for r in rows if r.get("register") == "question"
+                              or (r.get("register") == "evidence" and r.get("source") in STAGE_EVIDENCE_SOURCES)])
+    _ident = lc.identified_lags(idx, cov)
+    lag_identified = {"summary": lc.summarize(_ident["lags"]),
+                      "dropped_pos": _ident["dropped_pos"], "dropped_neg": _ident["dropped_neg"],
+                      "buffer_days": _ident["buffer_days"],
+                      "n_tickers_mdna_starts_late": sum(
+                          1 for c in cov.values() if c["question"] and c["mdna"]
+                          and (lc._d(c["mdna"]) - lc._d(c["question"])).days > 30)}
     stage_counts = collections.Counter()
     stage1 = []
     for (theme, ticker), p in idx.items():
@@ -302,16 +311,21 @@ def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None) -> d
              f"MD&A counts need >= {MDNA_MIN_BLOCKS} mapped blocks per filer-quarter and are lower-confidence "
              "than transcript counts (mdna precision ~0.4 at its threshold).",
              f"The Tier-0 lag runs from MD&A filing dates only (corprep answers share the question's date). Both "
-             f"windows are truncated — questions {q_span[0]}..{q_span[1]}, filings {f_span[0]}..{f_span[1]} — so a "
-             "question dated before the first filing in the window can only look question-first (left-censoring); "
-             "negative lags near the window start are not evidence against the premise.",
+             f"windows are truncated — questions {q_span[0]}..{q_span[1]}, filings {f_span[0]}..{f_span[1]} — but the "
+             f"binding problem is PER-TICKER, not global: {lag_identified['n_tickers_mdna_starts_late']} tickers have "
+             "MD&A coverage starting >30d after their call coverage (CRWD +93d, IOT +102d, AAOI +79d), and those names "
+             "produce the entire negative tail. A pair is only counted once the register that produced its SECOND "
+             f"event had been observed for {lag_identified['buffer_days']}d beforehand; today "
+             f"{lag_identified['dropped_neg']} negative and {lag_identified['dropped_pos']} positive pairs fail that "
+             "test. Applying the guard to negative lags alone would move the same corpus from 34.2% to 86.2% "
+             "evidence-led, which is why it is applied in both directions.",
              "No trend lines by design: three or four observations per theme support a comparison, not a slope."]
     return {"as_of": as_of, "quarters": qs, "current_quarter": cur, "in_progress": bool(cur) and _quarter_of(as_of) == cur,
             "denominators": denominators(rows), "no_coverage": excl,
             "metrics": [dict(theme=t, cal_quarter=q, **v) for (t, q), v in sorted(m.items())],
             "movers": movers(m, cur, prev) if cur and prev else [],
             "stage_counts": {str(k): v for k, v in sorted(stage_counts.items()) if k},
-            "lag_summary": lc.summarize(lags), "stage1": stage1,
+            "lag_summary": lc.summarize(lags), "lag_identified": lag_identified, "stage1": stage1,
             "stage2": detector_asked_elsewhere(idx, graph, as_of), "newly_said": newly_said(rows), "pairs": pairs,
             "notes": notes}
 
@@ -347,11 +361,32 @@ def write_report(snap: dict, path: Path = REPORT) -> str:
                      f"{e['prev_companies']} | {e['n_disclosing']} | {e['prev_disclosing']} |")
         L.append("")
     s = snap["lag_summary"]
+    ident = snap.get("lag_identified") or {}
+    isum = ident.get("summary") or {}
     L.append("### Lifecycle (spec §6.3) — Tier-0 lag = first analyst question minus first MD&A filing, days")
+    # The headline is the IDENTIFIED count, never the raw percentage. A pair is
+    # identified only if the register that produced the second event was already
+    # being observed when the first one happened. On the raw set the same corpus
+    # reads 34.2% evidence-led; drop only the negative lags that censoring
+    # threatens and it reads 86.2%. Publishing either number as a finding would
+    # be publishing an artifact of which correction you happened to pick.
+    if isum.get("n", 0) >= lc.LAG_MIN_N:
+        L.append(f"**Identified pairs: n={isum['n']}** (both registers observed >= {ident.get('buffer_days')}d before "
+                 f"the first event): min {isum['min']}, median {isum['median']}, max {isum['max']}; "
+                 f"evidence led in {isum['share_evidence_led']}%.")
+    elif isum.get("n"):
+        L.append(f"**Only {isum['n']} identified pair(s)** (both registers observed >= {ident.get('buffer_days')}d "
+                 f"before the first event) — fewer than the {lc.LAG_MIN_N} needed to state a distribution, so no "
+                 f"share is reported. The lag is **not yet measurable from this corpus**, in either direction.")
+    else:
+        L.append(f"**No identified pairs.** Not one (theme, company) pair has both registers observed "
+                 f"{ident.get('buffer_days', lc.LAG_GUARD_DAYS)}d before its first event, so the lag is **not measurable "
+                 f"from this corpus** — in either direction.")
     if s.get("n"):
-        L.append(f"n={s['n']} (theme, company) pairs with both a filing and a question: min {s['min']}, p25 {s['p25']}, "
-                 f"median {s['median']}, p75 {s['p75']}, max {s['max']}; evidence led in {s['share_evidence_led']}% "
-                 f"({s['n_negative']} negative = question came first, {s['n_zero']} same-day). See the censoring note above.")
+        L.append(f"_Raw (censored, not a finding):_ n={s['n']} pairs with both a filing and a question — median "
+                 f"{s['median']}, {s['share_evidence_led']}% evidence-led, {s['n_negative']} negative. "
+                 f"{ident.get('dropped_neg', 0)} negative and {ident.get('dropped_pos', 0)} positive pairs fail the "
+                 f"observation test. Do not quote these as a result; see the censoring note above.")
     L.append("Stage counts (theme, company): " + ", ".join(f"stage {k}: {v}" for k, v in snap["stage_counts"].items()))
     L.append("")
     L.append(f"### Stage 2 — asked at another name, not here ({len(snap['stage2'])}; verified-adjacent askers first)")

@@ -196,6 +196,95 @@ def test_map_is_fresh_rejects_a_map_older_than_its_inputs():
         assert not lc.map_is_fresh(Path(d) / "missing.jsonl", [x])[0]
 
 
+# ────────────── Tier-0 identification guard (2026-09-15) ──────────────
+#
+# Measured on the live map: the raw lag says evidence led 34.2% of the time
+# (median -1d). Drop only the negative lags whose question predates observable
+# MD&A and it becomes 86.2% (median +174d). Apply the guard in both directions
+# and nothing survives. A number that swings 34% -> 86% -> n=0 on which
+# defensible correction you pick is not a measurement, and these tests pin the
+# rule that says so.
+
+def _pair(theme="t1", ticker="AAOI", filing=None, question=None):
+    return {"theme": theme, "ticker": ticker, "first_filing_date": filing,
+            "first_question_date": question}
+
+
+def test_coverage_starts_takes_the_earliest_date_per_register():
+    rows = [
+        {"ticker": "AAOI", "register": "question", "event_date": "2026-03-01",
+         "themes": [{"theme": "t1"}]},
+        {"ticker": "AAOI", "register": "question", "event_date": "2026-01-05",
+         "themes": [{"theme": "t1"}]},
+        {"ticker": "AAOI", "register": "evidence", "source": "mdna",
+         "event_date": "2026-05-01", "themes": [{"theme": "t1"}]},
+        {"ticker": "AAOI", "register": "evidence", "source": "exchange",
+         "event_date": "2025-01-01", "themes": [{"theme": "t1"}]},
+    ]
+    s = lc.coverage_starts(rows)["AAOI"]
+    assert s["question"] == "2026-01-05"
+    # corprep/exchange rows are NOT MD&A and must not move the filing start
+    assert s["mdna"] == "2026-05-01", s
+
+
+def test_a_negative_lag_is_unidentified_when_mdna_was_not_yet_observed():
+    """The dangerous direction. 'The analyst asked before the company wrote
+    it' requires that no earlier filing said it — untestable if MD&A was not
+    being ingested yet. CRWD's MD&A starts 93 days after its call coverage, and
+    those names produce the entire negative tail."""
+    starts = {"AAOI": {"question": "2025-11-01", "mdna": "2026-05-01"}}
+    p = _pair(filing="2026-05-07", question="2025-12-09")    # lag -149
+    assert lc.lag_is_identified(p, starts, buf=30) is False
+
+
+def test_a_positive_lag_is_unidentified_when_questions_were_not_yet_observed():
+    """The mirror case, and the reason the guard cannot be one-sided. If the
+    call register started late, an earlier question may exist unseen and the
+    true order could be the other way round."""
+    starts = {"AAOI": {"question": "2026-05-01", "mdna": "2025-11-01"}}
+    p = _pair(filing="2026-05-07", question="2026-09-01")    # lag +117
+    assert lc.lag_is_identified(p, starts, buf=30) is False
+
+
+def test_a_pair_observed_on_both_sides_well_before_either_event_is_identified():
+    starts = {"AAOI": {"question": "2025-11-01", "mdna": "2025-11-01"}}
+    p = _pair(filing="2026-03-01", question="2026-06-01")
+    assert lc.lag_is_identified(p, starts, buf=30) is True
+
+
+def test_a_same_day_pair_must_clear_BOTH_guards():
+    """lag == 0 is neither positive nor negative, so a branch written as
+    if/elif skips it entirely. Measured consequence: the only four pairs that
+    survived a 30-day guard were all same-day call/filing coincidences sitting
+    on a coverage boundary (FPS, DASH, ZS, HPE) — artifacts that looked like
+    the sample."""
+    starts = {"AAOI": {"question": "2025-11-01", "mdna": "2026-05-14"}}
+    p = _pair(filing="2026-05-14", question="2026-05-14")
+    assert lc.lag_is_identified(p, starts, buf=30) is False
+
+
+def test_identified_lags_reports_why_pairs_were_dropped():
+    """The dropped counts ARE the diagnostic. Collapsing them into one number
+    hides which direction the censoring runs in."""
+    starts = {"A": {"question": "2025-11-01", "mdna": "2026-05-01"},
+              "B": {"question": "2025-11-01", "mdna": "2025-11-01"}}
+    idx = {
+        ("t1", "A"): _pair("t1", "A", "2026-05-07", "2025-12-09"),   # neg, unid
+        ("t1", "B"): _pair("t1", "B", "2026-03-01", "2026-06-01"),   # +92, kept
+    }
+    out = lc.identified_lags(idx, starts, buf=30)
+    assert out["lags"] == [92], out
+    assert out["dropped_neg"] == 1 and out["dropped_pos"] == 0, out
+    assert out["buffer_days"] == 30
+
+
+def test_identified_lags_ignores_pairs_missing_a_side():
+    starts = {"A": {"question": "2025-11-01", "mdna": "2025-11-01"}}
+    idx = {("t1", "A"): _pair("t1", "A", "2026-03-01", None)}
+    out = lc.identified_lags(idx, starts, buf=30)
+    assert out["lags"] == [] and out["dropped_pos"] == 0 and out["dropped_neg"] == 0
+
+
 # ───────────────────────── runner ─────────────────────────
 
 if __name__ == "__main__":

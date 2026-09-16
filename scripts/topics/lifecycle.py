@@ -149,6 +149,106 @@ def stage(idx: dict, theme: str, ticker: str) -> int | None:
     return 3                                       # consensus forming
 
 
+#: days a register must have been observed BEFORE an event for that event's
+#: ordering to be falsifiable. 30 is well inside a quarterly reporting cadence,
+#: so it demands real observed silence without demanding a second filing.
+LAG_GUARD_DAYS = 30
+
+#: below this many identified pairs, report the COUNT and no distribution.
+#: Two pairs that both happen to be negative render as "evidence led in 0.0%",
+#: which is a stronger claim than "we have two observations" and is exactly the
+#: kind of headline this guard exists to stop.
+LAG_MIN_N = 20
+
+
+def coverage_starts(rows) -> dict:
+    """-> {ticker: {"question": earliest analyst date, "mdna": earliest filing date}}
+
+    When each register actually began for each ticker. Coverage does NOT start
+    at the same time for both: measured 2026-09-15, 21 of 51 tickers have MD&A
+    beginning >30 days after their call coverage (CRWD +93d, IOT +102d), and
+    those names produce the entire negative tail of the lag distribution.
+
+    Only `source == "mdna"` counts as filing coverage — a corprep transcript
+    turn is evidence, but it shares its date with the question that prompted
+    it, so it says nothing about when the company first wrote something down.
+    """
+    out: dict = {}
+    for r in rows:
+        ticker, date = r.get("ticker"), str(r.get("event_date") or "")[:10]
+        if not ticker or not date:
+            continue
+        s = out.setdefault(ticker, {"question": None, "mdna": None})
+        if r.get("register") == "question":
+            key = "question"
+        elif r.get("register") == "evidence" and r.get("source") == "mdna":
+            key = "mdna"
+        else:
+            continue
+        if s[key] is None or date < s[key]:
+            s[key] = date
+    return out
+
+
+def lag_is_identified(pair: dict, starts: dict,
+                      buf: int = LAG_GUARD_DAYS) -> bool:
+    """Is the ORDER of this pair's two first events actually falsifiable?
+
+    The rule: whichever register produced the SECOND event must already have
+    been under observation, by `buf` days, when the FIRST event happened.
+    Otherwise the second event may have had an unobserved earlier twin that
+    would flip the sign, and the pair is evidence of nothing.
+
+    It has to run in both directions. A one-sided version — guarding only the
+    negative lags, whose "the analyst asked first" claim is the one censoring
+    obviously threatens — takes the same corpus from 34.2% evidence-led to
+    86.2%. That is not a correction, it is discarding exactly the observations
+    that disagree with the premise, and it is the single easiest mistake to
+    make here.
+
+    `lag == 0` must clear BOTH guards. Written as if/elif it clears neither:
+    measured, the only four pairs surviving a 30-day guard were same-day
+    call/filing coincidences sitting on a coverage boundary.
+    """
+    te, tq = pair.get("first_filing_date"), pair.get("first_question_date")
+    if not te or not tq:
+        return False
+    s = starts.get(pair.get("ticker")) or {}
+    lag = lag_days(te, tq)
+    checks = []
+    if lag >= 0:                 # question came second (or same day)
+        checks.append((te, s.get("question")))
+    if lag <= 0:                 # filing came second (or same day)
+        checks.append((tq, s.get("mdna")))
+    for event, start in checks:
+        if not start or (_d(event) - _d(start)).days < buf:
+            return False
+    return True
+
+
+def identified_lags(idx: dict, starts: dict,
+                    buf: int = LAG_GUARD_DAYS) -> dict:
+    """-> {"lags", "dropped_pos", "dropped_neg", "buffer_days"}
+
+    The two dropped counts are the diagnostic and are kept apart on purpose:
+    which direction the censoring runs in is the whole story, and one combined
+    number would hide it."""
+    lags, dropped_pos, dropped_neg = [], 0, 0
+    for p in idx.values():
+        te, tq = p.get("first_filing_date"), p.get("first_question_date")
+        if not te or not tq:
+            continue
+        lag = lag_days(te, tq)
+        if lag_is_identified(p, starts, buf):
+            lags.append(lag)
+        elif lag < 0:
+            dropped_neg += 1
+        else:
+            dropped_pos += 1
+    return {"lags": lags, "dropped_pos": dropped_pos,
+            "dropped_neg": dropped_neg, "buffer_days": buf}
+
+
 def summarize(lags: list) -> dict:
     """Distribution, not a mean. A mean over a skewed, small sample would be
     the easiest way to overstate what this measures."""
