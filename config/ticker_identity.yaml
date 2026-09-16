@@ -425,3 +425,373 @@ WMT:
   name: "Walmart"
   factset_id: "WMT-US"
   google: '"Walmart" OR WMT stock'
+
+# ---- portal name backfill 2026-09-15 (source: InsiderScore get_company_info (91) + manual (LAZR, A000660, UMG.AS, 2308.TW, simaai.pvt)) ----
+"AAON":
+  name: "AAON"
+  factset_id: "AAON-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"AAON" OR AAON stock'
+"ADPT":
+  name: "Adaptive Biotechnologies"
+  factset_id: "ADPT-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Adaptive Biotechnologies" OR ADPT stock'
+"AEIS":
+  name: "Advanced Energy Industries"
+  factset_id: "AEIS-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Advanced Energy Industries" OR AEIS stock'
+"AKAM":
+  name: "Akamai Technologies"
+  factset_id: "AKAM-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Akamai Technologies" OR AKAM stock'
+"ALAB":
+  name: "Astera Labs"
+  factset_id: "ALAB-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Astera Labs" OR ALAB stock'
+"AMKR":
+  name: "Amkor Technology"
+  factset_id: "AMKR-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Amkor Technology" OR AMKR stock'
+"APP":
+  name: "AppLovin"
+  factset_id: "APP-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"AppLovin" OR APP stock'
+"ASMIY":
+  name: "ASM International"
+  factset_id: "ASMIY-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"ASM International" OR ASMIY stock'
+"ASX":
+  name: "ASE Technology Holding"
+  factset_id: "ASX-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"ASE Technology Holding" OR ASX stock'
+"AUR":
+  name: "Aurora Innovation"
+  factset_id: "AUR-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Aurora Innovation" OR AUR stock'
+"BESIY":
+  name: "BE Semiconductor Industries"
+  factset_id: "BESIY-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"BE Semiconductor Industries" OR BESIY stock'
+"CEG":
+  name: "Constellation Energy"
+  factset_id: "CEG-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Constellation Energy" OR CEG stock'
+"CHRW":
+  name: "C.H. Robinson Worldwide"
+  factset_id: "CHRW-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"C.H. Robinson Worldwide" OR CHRW stock'
+"CLBT":
+  name: "Cellebrite DI"
+  factset_id: "CLBT-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Cellebrite DI" OR CLBT stock'
+"CLS":
+  name: "Celestica"
+  factset_id: "CLS-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Celestica" OR CLS stock'
+"CRS":
+  name: "Carpenter Technology"
+  factset_id: "CRS-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Carpenter Technology" OR CRS stock'
+"CRUS":
+  name: "Cirrus Logic"
+  factset_id: "CRUS-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Cirrus Logic" OR CRUS stock'
+"CVNA":
+  name: "Carvana"
+  factset_id: "CVNA-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Carvana" OR CVNA stock'
+"DE":
+  name: "Deere & Co"
+  factset_id: "DE-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Deere & Co" OR DE stock'
+"DELL":
+  name: "Dell Technologies"
+  factset_id: "DELL-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Dell Technologies" OR DELL stock'
+"DUOL":
+  name: "Duolingo"
+  factset_id: "DUOL-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Duolingo" OR DUOL stock'
+"EBAY":
+  name: "eBay"
+  factset_id: "EBAY-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"eBay" OR EBAY stock'
+"EQIX":
+  name: "Equinix"
+  factset_id: "EQIX-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Equinix" OR EQIX stock'
+"ESTC":
+  name: "Elastic"
+  factset_id: "ESTC-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Elastic" OR ESTC stock'
+"EVLV":
+  name: "Evolv Technologies"
+  factset_id: "EVLV-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Evolv Technologies" OR EVLV stock'
+"FDS":
+  name: "FactSet Research Systems"
+  factset_id: "FDS-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"FactSet Research Systems" OR FDS stock'
+"FFIV":
+  name: "F5"
+  factset_id: "FFIV-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"F5" OR FFIV stock'
+"FROG":
+  name: "JFrog"
+  factset_id: "FROG-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"JFrog" OR FROG stock'
+"GEHC":
+  name: "GE HealthCare Technologies"
+  factset_id: "GEHC-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"GE HealthCare Technologies" OR GEHC stock'
+"GFS":
+  name: "GlobalFoundries"
+  factset_id: "GFS-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"GlobalFoundries" OR GFS stock'
+"GH":
+  name: "Guardant Health"
+  factset_id: "GH-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Guardant Health" OR GH stock'
+"IBM":
+  name: "IBM"
+  factset_id: "IBM-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"IBM" OR IBM stock'
+"IRTC":
+  name: "iRhythm Holdings"
+  factset_id: "IRTC-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"iRhythm Holdings" OR IRTC stock'
+"ISRG":
+  name: "Intuitive Surgical"
+  factset_id: "ISRG-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Intuitive Surgical" OR ISRG stock'
+"KDK":
+  name: "Kodiak AI"
+  factset_id: "KDK-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Kodiak AI" OR KDK stock'
+"KLAC":
+  name: "KLA"
+  factset_id: "KLAC-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"KLA" OR KLAC stock'
+"LAZR":
+  name: "Luminar Technologies"
+  factset_id: "LAZR-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Luminar Technologies" OR LAZR stock'
+"LSCC":
+  name: "Lattice Semiconductor"
+  factset_id: "LSCC-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Lattice Semiconductor" OR LSCC stock'
+"MBLY":
+  name: "Mobileye Global"
+  factset_id: "MBLY-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Mobileye Global" OR MBLY stock'
+"MCHP":
+  name: "Microchip Technology"
+  factset_id: "MCHP-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Microchip Technology" OR MCHP stock'
+"MELI":
+  name: "MercadoLibre"
+  factset_id: "MELI-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"MercadoLibre" OR MELI stock'
+"MKSI":
+  name: "MKS"
+  factset_id: "MKSI-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"MKS" OR MKSI stock'
+"MSI":
+  name: "Motorola Solutions"
+  factset_id: "MSI-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Motorola Solutions" OR MSI stock'
+"MTRN":
+  name: "Materion"
+  factset_id: "MTRN-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Materion" OR MTRN stock'
+"MTSI":
+  name: "MACOM Technology Solutions"
+  factset_id: "MTSI-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"MACOM Technology Solutions" OR MTSI stock'
+"MXL":
+  name: "MaxLinear"
+  factset_id: "MXL-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"MaxLinear" OR MXL stock'
+"NFLX":
+  name: "Netflix"
+  factset_id: "NFLX-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Netflix" OR NFLX stock'
+"NOK":
+  name: "Nokia"
+  factset_id: "NOK-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Nokia" OR NOK stock'
+"NP":
+  name: "Neptune Insurance Holdings"
+  factset_id: "NP-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Neptune Insurance Holdings" OR NP stock'
+"NTRA":
+  name: "Natera"
+  factset_id: "NTRA-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Natera" OR NTRA stock'
+"ON":
+  name: "ON Semiconductor"
+  factset_id: "ON-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"ON Semiconductor" OR ON stock'
+"ONTO":
+  name: "Onto Innovation"
+  factset_id: "ONTO-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Onto Innovation" OR ONTO stock'
+"OPEN":
+  name: "Opendoor Technologies"
+  factset_id: "OPEN-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Opendoor Technologies" OR OPEN stock'
+"PI":
+  name: "Impinj"
+  factset_id: "PI-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Impinj" OR PI stock'
+"PINS":
+  name: "Pinterest"
+  factset_id: "PINS-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Pinterest" OR PINS stock'
+"PL":
+  name: "Planet Labs"
+  factset_id: "PL-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Planet Labs" OR PL stock'
+"QCOM":
+  name: "Qualcomm"
+  factset_id: "QCOM-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Qualcomm" OR QCOM stock'
+"RBLX":
+  name: "Roblox"
+  factset_id: "RBLX-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Roblox" OR RBLX stock'
+"RDNT":
+  name: "RadNet"
+  factset_id: "RDNT-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"RadNet" OR RDNT stock'
+"RELX":
+  name: "RELX"
+  factset_id: "RELX-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"RELX" OR RELX stock'
+"RKLB":
+  name: "Rocket Lab"
+  factset_id: "RKLB-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Rocket Lab" OR RKLB stock'
+"RKT":
+  name: "Rocket Companies"
+  factset_id: "RKT-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Rocket Companies" OR RKT stock'
+"RMBS":
+  name: "Rambus"
+  factset_id: "RMBS-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Rambus" OR RMBS stock'
+"RXRX":
+  name: "Recursion Pharmaceuticals"
+  factset_id: "RXRX-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Recursion Pharmaceuticals" OR RXRX stock'
+"SITM":
+  name: "SiTime"
+  factset_id: "SITM-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"SiTime" OR SITM stock'
+"SLAB":
+  name: "Silicon Laboratories"
+  factset_id: "SLAB-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Silicon Laboratories" OR SLAB stock'
+"SMCI":
+  name: "Super Micro Computer"
+  factset_id: "SMCI-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Super Micro Computer" OR SMCI stock'
+"SMTC":
+  name: "Semtech"
+  factset_id: "SMTC-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Semtech" OR SMTC stock'
+"SOLS":
+  name: "Solstice Advanced Materials"
+  factset_id: "SOLS-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Solstice Advanced Materials" OR SOLS stock'
+"SONY":
+  name: "Sony Group"
+  factset_id: "SONY-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Sony Group" OR SONY stock'
+"SPGI":
+  name: "S&P Global"
+  factset_id: "SPGI-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"S&P Global" OR SPGI stock'
+"STM":
+  name: "STMicroelectronics"
+  factset_id: "STM-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"STMicroelectronics" OR STM stock'
+"STX":
+  name: "Seagate Technology"
+  factset_id: "STX-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Seagate Technology" OR STX stock'
+"SWKS":
+  name: "Skyworks Solutions"
+  factset_id: "SWKS-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Skyworks Solutions" OR SWKS stock'
+"TCEHY":
+  name: "Tencent Holdings"
+  factset_id: "TCEHY-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Tencent Holdings" OR TCEHY stock'
+"TEAM":
+  name: "Atlassian"
+  factset_id: "TEAM-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Atlassian" OR TEAM stock'
+"TEM":
+  name: "Tempus AI"
+  factset_id: "TEM-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Tempus AI" OR TEM stock'
+"TER":
+  name: "Teradyne"
+  factset_id: "TER-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Teradyne" OR TER stock'
+"TOELY":
+  name: "Tokyo Electron"
+  factset_id: "TOELY-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Tokyo Electron" OR TOELY stock'
+"TRI":
+  name: "Thomson Reuters"
+  factset_id: "TRI-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Thomson Reuters" OR TRI stock'
+"TTD":
+  name: "The Trade Desk"
+  factset_id: "TTD-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"The Trade Desk" OR TTD stock'
+"TTMI":
+  name: "TTM Technologies"
+  factset_id: "TTMI-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"TTM Technologies" OR TTMI stock'
+"TWLO":
+  name: "Twilio"
+  factset_id: "TWLO-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Twilio" OR TWLO stock'
+"U":
+  name: "Unity Software"
+  factset_id: "U-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Unity Software" OR U stock'
+"UMC":
+  name: "United Microelectronics"
+  factset_id: "UMC-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"United Microelectronics" OR UMC stock'
+"UPST":
+  name: "Upstart Holdings"
+  factset_id: "UPST-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Upstart Holdings" OR UPST stock'
+"VIAV":
+  name: "Viavi Solutions"
+  factset_id: "VIAV-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Viavi Solutions" OR VIAV stock'
+"VICR":
+  name: "Vicor"
+  factset_id: "VICR-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Vicor" OR VICR stock'
+"VRT":
+  name: "Vertiv Holdings"
+  factset_id: "VRT-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Vertiv Holdings" OR VRT stock'
+"VST":
+  name: "Vistra"
+  factset_id: "VST-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Vistra" OR VST stock'
+"WOLF":
+  name: "Wolfspeed"
+  factset_id: "WOLF-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Wolfspeed" OR WOLF stock'
+"Z":
+  name: "Zillow Group"
+  factset_id: "Z-US"          # per id_maps default; foreign tickers keep their existing mapping if any
+  google: '"Zillow Group" OR Z stock'
