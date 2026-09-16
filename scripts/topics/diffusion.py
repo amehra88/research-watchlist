@@ -37,6 +37,7 @@ MDNA_MIN_BLOCKS = 2        # memory mdna-evidence-p3b: one mapped MD&A block is 
 STAGE_EVIDENCE_SOURCES = ("mdna",)   # §6.3: the evidence clock is filings. Corprep speech (thr 0.30, P~0.31) drove
                                      # 3 of the 5 first spot-checked stage-2 pairs wrong; it stays a reported count
 NEWLY_SAID_BASELINE = 2    # findings R5: absent from the filer's two prior quarters
+SINGLE_CALL_DAYS = 45      # a ticker whose FIRST observed call is this recent has one call and no question history
 _FIRM_ALIASES = {"bankofamerica": "bofa", "jpmorgansecurities": "jpmorgan", "jpmorgan": "jpmorgan"}
 
 
@@ -267,12 +268,16 @@ def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None) -> d
     cur = qs[-1] if qs else None
     prev = qs[-2] if len(qs) > 1 else None
     m = metrics(rows, meta)
-    idx = lc.build_index([r for r in rows if r.get("register") == "question"
-                          or (r.get("register") == "evidence" and r.get("source") in STAGE_EVIDENCE_SOURCES)])
+    # One list, deliberately: build_index and coverage_starts MUST see the same
+    # rows. If the two filters drifted apart, the guard would compare a pair's
+    # dates against a coverage window computed from a different population and
+    # silently mis-identify — the exact failure class this guard exists to stop.
+    staged_rows = [r for r in rows if r.get("register") == "question"
+                   or (r.get("register") == "evidence" and r.get("source") in STAGE_EVIDENCE_SOURCES)]
+    idx = lc.build_index(staged_rows)
     lags = [lc.lag_days(p["first_filing_date"], p["first_question_date"]) for p in idx.values()
             if p["first_filing_date"] and p["first_question_date"]]
-    cov = lc.coverage_starts([r for r in rows if r.get("register") == "question"
-                              or (r.get("register") == "evidence" and r.get("source") in STAGE_EVIDENCE_SOURCES)])
+    cov = lc.coverage_starts(staged_rows)
     _ident = lc.identified_lags(idx, cov)
     lag_identified = {"summary": lc.summarize(_ident["lags"]),
                       "dropped_pos": _ident["dropped_pos"], "dropped_neg": _ident["dropped_neg"],
@@ -286,7 +291,7 @@ def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None) -> d
                       # a backfill gap, not a statistical one, and it is fixable
                       "n_tickers_single_call": sum(
                           1 for c in cov.values() if c["question"]
-                          and (lc._d(as_of) - lc._d(c["question"])).days < 45),
+                          and (lc._d(as_of) - lc._d(c["question"])).days < SINGLE_CALL_DAYS),
                       "n_tickers_with_calls": sum(1 for c in cov.values() if c["question"])}
     stage_counts = collections.Counter()
     stage1 = []
@@ -321,21 +326,23 @@ def build_snapshot(rows, meta, graph, as_of: str, no_coverage: dict | None) -> d
              f"The Tier-0 lag runs from MD&A filing dates only (corprep answers share the question's date). Both "
              f"windows are truncated — questions {q_span[0]}..{q_span[1]}, filings {f_span[0]}..{f_span[1]} — but the "
              f"binding problem is PER-TICKER, not global: {lag_identified['n_tickers_mdna_starts_late']} tickers have "
-             "MD&A coverage starting >30d after their call coverage (CRWD +93d, IOT +102d, AAOI +79d), and those names "
-             "produce the entire negative tail. A pair is only counted once the register that produced its SECOND "
-             f"event had been observed for {lag_identified['buffer_days']}d beforehand; today "
+             f"MD&A coverage starting >{lag_identified['buffer_days']}d after their call coverage, and those names "
+             "produce the negative tail. A pair is only counted once the register that produced its SECOND event had "
+             f"been observed for {lag_identified['buffer_days']}d beforehand; today "
              f"{lag_identified['dropped_neg']} negative and {lag_identified['dropped_pos']} positive pairs fail that "
-             "test. Applying the guard to negative lags alone would move the same corpus from 34.2% to 86.2% "
-             "evidence-led, which is why it is applied in both directions.",
+             "test. The guard runs in BOTH directions on purpose: applying it to negative lags alone moved the same "
+             "corpus from 34.2% to 86.2% evidence-led (measured 2026-09-15), which is not a correction but the "
+             "discarding of every observation that disagreed.",
              f"Call-side backfill is the binding gap and it is fixable: {lag_identified['n_tickers_single_call']} of "
              f"{lag_identified['n_tickers_with_calls']} tickers with any call coverage have their FIRST observed call "
-             "in the last 45 days, i.e. one call and no question history at all. Nothing about those names can be "
-             "identified in either direction, and they account for most of the dropped positive pairs (HPQ, PANW, "
-             "HPE, NXPI, RDDT). More transcript history moves this number; more statistics does not.",
+             f"in the last {SINGLE_CALL_DAYS} days, i.e. one call and no question history at all. Nothing about those "
+             "names can be identified in either direction, and they account for most of the dropped positive pairs. "
+             "More transcript history moves this number; more statistics does not.",
              f"Pairs whose filing and question fall within {lag_identified['same_event_days']}d are excluded as one "
              "reporting event rather than a disclosure and a response: the call-to-filing offset for the same quarter "
-             "runs median +1d (p25 0, p75 2). Tier 0 therefore measures leads and lags longer than one reporting "
-             "cycle; a genuinely simultaneous disclosure is out of scope by construction, not absent from the data.",
+             "ran median +1d (p25 0, p75 2) when measured 2026-09-15. Tier 0 therefore measures leads and lags longer "
+             "than one reporting cycle; a genuinely simultaneous disclosure is out of scope by construction, not "
+             "absent from the data.",
              "No trend lines by design: three or four observations per theme support a comparison, not a slope."]
     return {"as_of": as_of, "quarters": qs, "current_quarter": cur, "in_progress": bool(cur) and _quarter_of(as_of) == cur,
             "denominators": denominators(rows), "no_coverage": excl,
