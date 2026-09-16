@@ -111,6 +111,9 @@ def test_build_reports_skips_the_no_source_day():
         summaries = rp.build_reports(out, 1, BASE_PATHS, today=__import__("datetime").date(2026, 1, 9))
         assert summaries == []
         assert not (out / "data" / "reports" / "2026-01-09.json").exists()
+        # mkdir is lazy: a caller can tell "no reports in range" (no dir at all)
+        # apart from "ran but everything landed under it".
+        assert not (out / "data").exists()
 
 
 # ───────────────────────── build_reports writes + summarizes ─────────────────────────
@@ -236,10 +239,18 @@ def test_etf_trades_writes_file_when_out_dir_given():
 
 
 def test_etf_trades_no_write_without_out_dir():
+    import os
     import tempfile
     with tempfile.TemporaryDirectory() as td:
-        rp.etf_trades(1, paths=BASE_PATHS, today=__import__("datetime").date(2026, 1, 5))
-        assert not (Path(td) / "data").exists()
+        cwd = os.getcwd()
+        os.chdir(td)
+        try:
+            rp.etf_trades(1, paths=BASE_PATHS, today=__import__("datetime").date(2026, 1, 5))
+            # A stray relative-path write (the out_dir=None branch writing anyway)
+            # would land under this cwd -- assert the whole tree stayed empty.
+            assert list(Path(td).iterdir()) == []
+        finally:
+            os.chdir(cwd)
 
 
 if __name__ == "__main__":

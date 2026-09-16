@@ -42,7 +42,7 @@ import importlib.util
 import json
 import re
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
@@ -117,7 +117,7 @@ class Paths:
     topics_state: Path = None
     transcripts_state: Path = None
     evidence_state: Path = None
-    streams: list = field(default=None)
+    streams: list = None
 
     def __post_init__(self):
         self.ws_reports = self.ws_reports or Path("/root/ws/data/reports")
@@ -307,7 +307,11 @@ def day_cards(day: str, paths: Paths = None) -> list[dict]:
 
     sections = _digest_sections(day, paths)
     if sections:
-        text = "\n\n".join(s["text"] for s in sections)
+        # Banner each section's own title into the blob (matching the live email's
+        # own "#### TITLE ####" banners) so a `text`-only consumer (e.g. the Reports
+        # archive screen) doesn't show five unlabeled sections run together --
+        # `sections` still carries the titles separately for a richer renderer.
+        text = "\n\n".join(f"{s['title']}\n{s['text']}" for s in sections)
         cards.append({"id": f"digest:{day}", "kind": "digest", "date": day,
                       "title": f"Daily Digest — {day}", "text": text,
                       "bytes": len(text.encode("utf-8")), "sections": sections})
@@ -337,7 +341,6 @@ def build_reports(out_dir: Path, days: int = 14, paths: Paths = None,
     today = today or date.today()
     out_dir = Path(out_dir)
     reports_dir = out_dir / "data" / "reports"
-    reports_dir.mkdir(parents=True, exist_ok=True)
 
     summaries = []
     for i in range(days):
@@ -346,6 +349,9 @@ def build_reports(out_dir: Path, days: int = 14, paths: Paths = None,
         if not cards:
             log(f"build_reports: no cards for {d}")
             continue
+        # mkdir lazily -- a caller must be able to tell "no reports in range" (no
+        # dir at all) apart from "ran but everything landed under it".
+        reports_dir.mkdir(parents=True, exist_ok=True)
         out_path = reports_dir / f"{d}.json"
         out_path.write_text(json.dumps({"date": d, "cards": cards}, indent=1), encoding="utf-8")
         rel = str(out_path.relative_to(out_dir))
@@ -502,6 +508,13 @@ def etf_trades(days: int = 14, out_dir: Path = None, paths: Paths = None,
         text = p.read_text(encoding="utf-8", errors="replace")
         etfs = _parse_ws_report(text)
         if not etfs:
+            # A non-empty report file that yielded zero ETF blocks means the header
+            # regex didn't match something in this run (e.g. a ticker with a dot/dash
+            # the [A-Z0-9]+ pattern doesn't cover) -- silent-empty is exactly the
+            # failure mode a nightly build can't otherwise see, so this is a WARN,
+            # not a routine "no report today" skip.
+            log(f"etf_trades: WARNING — {p} parsed to 0 ETF blocks "
+                f"({len(text)} chars); header regex may be missing a symbol shape")
             continue
         days_out.append({"date": d, "etfs": etfs})
         for rec in etfs:
