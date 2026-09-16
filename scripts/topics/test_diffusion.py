@@ -239,6 +239,45 @@ def test_the_note_names_the_call_backfill_gap():
     assert "backfill" in joined and "first observed call" in joined.lower(), joined[-500:]
 
 
+def test_snapshot_holds_an_unassertable_theme_at_stage_3_and_names_it():
+    """Three companies asked, nothing independent says the theme is relevant
+    anywhere else, so 'asked at most covered names' cannot come out false."""
+    rows = [_r(f"q{tk}", "question", tk, "2026-06-01", "CY2026-Q2", ["t1"], firm="Wolfe")
+            for tk in ("AAOI", "LITE", "COHR")]
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-15", no_coverage={}, assigned={})
+    assert snap["stage_counts"].get("4") is None, snap["stage_counts"]
+    assert snap["stage4_not_assertable"] == ["t1"]
+    assert all(p["stage"] == 3 for p in snap["pairs"]), snap["pairs"]
+
+
+def test_operator_assignment_lets_the_same_theme_reach_stage_4():
+    """Stage 4 needs an observed SILENCE: a company where the theme is relevant,
+    whose call we actually heard, and which did not raise it. FN and NVDA are
+    assigned t1 and their calls are in the corpus (they discussed t2), so their
+    not raising t1 is a real observation rather than a gap in our ingest."""
+    rows = [_r(f"q{tk}", "question", tk, "2026-06-01", "CY2026-Q2", ["t1"], firm="Wolfe")
+            for tk in ("AAOI", "LITE", "COHR")]
+    rows += [_r(f"o{tk}", "question", tk, "2026-06-01", "CY2026-Q2", ["t2"], firm="Wolfe")
+             for tk in ("FN", "NVDA")]
+    assigned = {"t1": {"AAOI", "LITE", "COHR", "FN", "NVDA"}}
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-15", no_coverage={}, assigned=assigned)
+    t1 = {p["ticker"]: p["stage"] for p in snap["pairs"] if p["theme"] == "t1"}
+    assert set(t1.values()) == {4}, t1          # asked at 3 of the 5 relevant heard names
+    assert "t1" not in snap["stage4_not_assertable"]
+
+
+def test_snapshot_pairs_and_stage_counts_cannot_disagree():
+    """`pairs` is what stage_alert diffs and theme_notes renders. If it kept the
+    legacy denominator while stage_counts used the new one, the snapshot would
+    contradict itself and the alert stream would follow the wrong copy."""
+    rows = [_r(f"q{tk}", "question", tk, "2026-06-01", "CY2026-Q2", ["t1"], firm="Wolfe")
+            for tk in ("AAOI", "LITE", "COHR")]
+    snap = df.build_snapshot(rows, {}, {}, as_of="2026-09-15", no_coverage={}, assigned={})
+    from collections import Counter
+    from_pairs = Counter(str(p["stage"]) for p in snap["pairs"] if p["stage"])
+    assert dict(from_pairs) == snap["stage_counts"], (from_pairs, snap["stage_counts"])
+
+
 def test_snapshot_pairs_carry_stage_and_dates_per_theme_ticker():
     rows = [_r("c1", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna"),
             _r("c2", "evidence", "COHR", "2026-04-20", "CY2026-Q2", ["t1"], source="mdna"),
