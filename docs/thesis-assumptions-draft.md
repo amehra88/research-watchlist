@@ -354,3 +354,79 @@ to `challenged`, but a human decides. Nothing auto-downgrades a thesis.
    review unchanged.
 3. **The COHR/LITE tension** — should COHR's vertical integration be an explicit bear
    input to LITE's thesis?
+
+---
+
+## ADDENDUM 2026-08-25 — the share test is now an actual calculation, and margins cut against the price-competition reading
+
+The CNINFO channel completed on 2026-08-25: **38 filings across all four Chinese filers**
+(Innolight 10, Eoptolink 10, Accelink 10, HG Genuine 8), 4,817 chunks. The Aug-21 first cut
+above carried three caveats in its own text. Two are now closed and one is narrowed.
+
+**CLOSED — "FX assumed ~7.2 CNY/USD, not looked up."** The panel now uses FactSet `FF_SALES`
+QTR in USD, so no FX assumption is made anywhere. The implied rate is **~6.86**, not 7.2,
+which means the Aug-21 RMB→USD conversions **understated the Chinese side by ~5%**.
+
+**CLOSED — "indicative magnitudes, not a share calculation."** It is a share calculation now,
+on a balanced panel (same six module makers in every quarter), aligned on calendar quarter-end
+rather than mismatched fiscal years:
+
+| quarter | US $mn | China $mn | China share |
+|---|---|---|---|
+| 2024-06-30 | 1,666 | 1,084 | 39.4% |
+| 2025-06-30 | 2,113 | 2,068 | 49.5% |
+| 2026-03-31 | 2,765 | 4,069 | 59.5% |
+| **2026-06-30** | **3,244** | **5,217** | **61.7%** |
+
+**+22.3 pts over eight quarters.** China's absolute revenue is now ~1.6x the US panel's, and
+Innolight alone ($3,273mn) out-revenues all of Coherent ($2,045mn) in the same quarter. The
+June quarter was added only because FactSet published Innolight's on 08-21 and Eoptolink's on
+08-25; before that the panel truncated at March.
+
+**Corroborated independently, not taken on vendor faith.** Eoptolink's own H1 filing reports
+RMB 20.91bn, which at the implied rate gives Q2 = $1,844mn against FactSet's $1,846.9mn — a
+0.2% match. Innolight's H1 (RMB 41.78bn, +182.5%) likewise corroborates its FactSet quarter.
+
+### The finding that matters: this is not price-cutting
+
+This document's own criteria say share gain counts as capability only if it is *"sustained
+with margin (price-cutting alone is not capability)"*, and lists *"competing on assembly/price
+rather than component tech"* as CONFIRMING the assumption. The H1-2026 filings fail that test:
+
+| | revenue y/y | net profit y/y | net margin | vs H1-25 |
+|---|---|---|---|---|
+| Innolight | +182.5% | **+241.7%** | 32.7% | **+5.7 pts** |
+| Eoptolink | +100.3% | +91.0% | 36.0% | −1.8 pts |
+
+Innolight's profit is growing **faster than revenue** — margin expanding while roughly
+tripling. Eoptolink holds a 36% net margin. Firms winning on price do not post 33-36% net
+margins with margins flat-to-up. By the standard set out above, the share gain is being taken
+**with** margin, which is the condition this document said would challenge the assumption.
+
+### Second-vendor breadth on the SiPh route
+
+The Aug-21 entry noted SiPh as "a route AROUND the InP laser bottleneck" based on Innolight
+alone. Eoptolink's H1-2026 filing shows the same route at a second vendor: a full 400G/800G/
+1.6T line on **silicon photonics and thin-film lithium niobate** platforms, with the 800G
+portfolio spanning **VCSEL, EML and SiPh** across 100m–10km
+(`公司已成功推出基于硅光（SiPh）和薄膜铌酸锂（TFLN）技术的400G、800G和1.6T全系列光模块产品`).
+It also cites SiPh penetration of datacom interconnect rising from ~38% (2025) to ~73% (2030).
+
+**Sourcing caveat:** the penetration forecast and the "world-first SiPh 1.6T" claim are both
+sourced to CIC (灼识咨询), a paid consultancy, in the company's own filing. Treat as company
+claims, not independent verification. The product-line disclosure is a primary-source fact;
+the market forecast is not.
+
+### What this does NOT establish
+
+- **Still company totals, not datacom segment.** COHR carries lasers/industrial and LITE
+  legacy telecom, so the US side is overstated as datacom and 61.7% remains a FLOOR.
+- **The Chinese side is still undercounted** — Hisense Broadband (unlisted) and Source
+  Photonics (private) are absent, and O-Net has no data since going private.
+- **Revenue share is not unit share.** If Chinese ASPs are lower, unit share is higher.
+- **Nothing here resolves laser YIELD.** The margin evidence is an inference about competitive
+  conduct, not a yield disclosure. The corpus still holds no Chinese laser yield data.
+- **Operator sign-off still pending** on narrowing `chinese_laser_capability` from "cannot
+  manufacture high-quality lasers" to "has not closed the HIGH-END gap and still depends on
+  external supply for high-end optical chip materials." This addendum strengthens the case for
+  narrowing it, but does not make the change.
