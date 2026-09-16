@@ -15,7 +15,7 @@ No transcript coverage — no results: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB,
 - challenging_rate (spec §5) is not computed: exchange rows carry no challenging flag and 99% of analyst turns are sentiment=Neutral.
 - P3 foreign evidence is not built: stages and lags use US MD&A evidence only; Chinese filers appear only in the exclusions list. Corprep transcript speech is reported as a count (n_corprep_companies) but does not set a stage: at its 0.30 threshold it mis-paired 3 of 5 spot-checked stage-2 rows.
 - MD&A counts need >= 2 mapped blocks per filer-quarter and are lower-confidence than transcript counts (mdna precision ~0.4 at its threshold).
-- The Tier-0 lag runs from MD&A filing dates only (corprep answers share the question's date). Both windows are truncated — questions 2025-11-11..2026-09-11, filings 2025-12-10..2026-09-11 — so a question dated before the first filing in the window can only look question-first (left-censoring); negative lags near the window start are not evidence against the premise.
+- The Tier-0 lag runs from MD&A filing dates only (corprep answers share the question's date). Both windows are truncated — questions 2025-11-11..2026-09-11, filings 2025-12-10..2026-09-11 — but the binding problem is PER-TICKER, not global: 21 tickers have MD&A coverage starting >30d after their call coverage (CRWD +93d, IOT +102d, AAOI +79d), and those names produce the entire negative tail. A pair is only counted once the register that produced its SECOND event had been observed for 30d beforehand; today 29 negative and 22 positive pairs fail that test. Applying the guard to negative lags alone would move the same corpus from 34.2% to 86.2% evidence-led, which is why it is applied in both directions.
 - No trend lines by design: three or four observations per theme support a comparison, not a slope.
 
 ### Movers — CY2026-Q3 vs CY2026-Q2 (n_banks first, then n_companies; host banks excluded at their own conferences)
@@ -63,7 +63,8 @@ No transcript coverage — no results: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB,
 | space_supply_chain | 0 | 0 | +0 | 0 | 0 | 1 | 1 |
 
 ### Lifecycle (spec §6.3) — Tier-0 lag = first analyst question minus first MD&A filing, days
-n=53 (theme, company) pairs with both a filing and a question: min -184, p25 -77, median -4, p75 174, max 272; evidence led in 39.6% (31 negative = question came first, 1 same-day). See the censoring note above.
+**Only 2 identified pair(s)** (both registers observed >= 30d before the first event) — fewer than the 20 needed to state a distribution, so no share is reported. The lag is **not yet measurable from this corpus**, in either direction.
+_Raw (censored, not a finding):_ n=53 pairs with both a filing and a question — median -4, 39.6% evidence-led, 31 negative. 29 negative and 22 positive pairs fail the observation test. Do not quote these as a result; see the censoring note above.
 Stage counts (theme, company): stage 1: 13, stage 2: 158, stage 3: 52, stage 4: 408
 
 ### Stage 2 — asked at another name, not here (158; verified-adjacent askers first)

@@ -6671,6 +6671,23 @@
   "n_zero": 1,
   "share_evidence_led": 39.6
  },
+ "lag_identified": {
+  "summary": {
+   "n": 2,
+   "min": -79,
+   "p25": -79,
+   "median": -40.0,
+   "p75": -1,
+   "max": -1,
+   "n_negative": 2,
+   "n_zero": 0,
+   "share_evidence_led": 0.0
+  },
+  "dropped_pos": 22,
+  "dropped_neg": 29,
+  "buffer_days": 30,
+  "n_tickers_mdna_starts_late": 21
+ },
  "stage1": [
   {
    "theme": "foundry_capacity",
@@ -21268,7 +21285,7 @@
   "challenging_rate (spec \u00a75) is not computed: exchange rows carry no challenging flag and 99% of analyst turns are sentiment=Neutral.",
   "P3 foreign evidence is not built: stages and lags use US MD&A evidence only; Chinese filers appear only in the exclusions list. Corprep transcript speech is reported as a count (n_corprep_companies) but does not set a stage: at its 0.30 threshold it mis-paired 3 of 5 spot-checked stage-2 rows.",
   "MD&A counts need >= 2 mapped blocks per filer-quarter and are lower-confidence than transcript counts (mdna precision ~0.4 at its threshold).",
-  "The Tier-0 lag runs from MD&A filing dates only (corprep answers share the question's date). Both windows are truncated \u2014 questions 2025-11-11..2026-09-11, filings 2025-12-10..2026-09-11 \u2014 so a question dated before the first filing in the window can only look question-first (left-censoring); negative lags near the window start are not evidence against the premise.",
+  "The Tier-0 lag runs from MD&A filing dates only (corprep answers share the question's date). Both windows are truncated \u2014 questions 2025-11-11..2026-09-11, filings 2025-12-10..2026-09-11 \u2014 but the binding problem is PER-TICKER, not global: 21 tickers have MD&A coverage starting >30d after their call coverage (CRWD +93d, IOT +102d, AAOI +79d), and those names produce the entire negative tail. A pair is only counted once the register that produced its SECOND event had been observed for 30d beforehand; today 29 negative and 22 positive pairs fail that test. Applying the guard to negative lags alone would move the same corpus from 34.2% to 86.2% evidence-led, which is why it is applied in both directions.",
   "No trend lines by design: three or four observations per theme support a comparison, not a slope."
  ]
 }
