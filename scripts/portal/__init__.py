@@ -20,8 +20,16 @@ Module map (RIS4 slice 2):
                       state_bundles.py imports theme_ideas back for use in
                       manifest()/build_state() — see theme_ideas.py's own
                       docstring for why that two-way import is safe.
-  - budget.py, build_portal.py (Task 6) — CLI + size-budget checks (not yet built).
-  - app/              (Tasks 7-8) — the static mobile-web frontend (not yet built).
+  - budget.py, build_portal.py (Task 6) — CLI + size-budget checks.
+  - app/              (Tasks 7-8) — the static mobile-web frontend: index.html,
+                      styles.css, app.js + app2.js, vendor/.
+  - publish_files.py  (Task 9) — read-only helper: prints the `files` map a
+                      session's Artifact publish call needs (every OWNED_PATHS
+                      file under --out except index.html/smoke/dotfiles), plus
+                      a --check mode that verifies sha256 against
+                      data/manifest.json. See docs/portal/README.md for the
+                      full publish runbook and docs/portal/cron.txt for the
+                      two build-cron lines (not yet installed).
 """
 from pathlib import Path
 
