@@ -207,6 +207,17 @@ def test_vendor_manifest_skips_entry_whose_file_is_missing():
         shutil.rmtree(td, ignore_errors=True)
 
 
+# ───────────────────────── news_sec._iso_week_shard ─────────────────────────
+
+def test_iso_week_shard_accepts_a_real_date_object():
+    # An unquoted `published_date: 2026-09-10` in frontmatter YAML parses as a
+    # real datetime.date, not a str -- _iso_week_shard() must handle that
+    # (str() first) rather than TypeError on a perfectly valid date and have
+    # the news_bundle() malformed-date guard silently swallow a good row.
+    assert news_sec._iso_week_shard(date(2026, 9, 10)) == "2026-W37"
+    assert news_sec._iso_week_shard("2026-09-10") == "2026-W37"
+
+
 # ───────────────────────── news_sec.news_bundle ─────────────────────────
 
 def test_news_bundle_shards_by_iso_week_and_indexes_tickers():
