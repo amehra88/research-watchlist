@@ -902,3 +902,10 @@ blockquote.quote .qa {
 /* The More list's Ask row lives in its own <ul> (it exists only when the
    capability does), so the rule between it and the row above it belongs here. */
 .askrows .row { border-top: 1px solid var(--line-soft); }
+/* An answer a failure cut off: the marker above the partial it left behind. */
+.askmark {
+  margin: 10px 0 6px;
+  color: var(--warn);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
