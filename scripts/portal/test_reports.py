@@ -292,7 +292,7 @@ def test_thesis_alerts_absent_on_a_day_with_no_rows():
 def test_thesis_alerts_absent_when_ledger_file_missing():
     p = rp.Paths(
         is_reports=FIXTURES / "is", podcasts_reports=FIXTURES / "podcasts",
-        logs=FIXTURES / "logs", thesis_state=FIXTURES / "does_not_exist",
+        logs=FIXTURES / "logs", notes=FIXTURES / "notes", thesis_state=FIXTURES / "does_not_exist",
         topics_state=FIXTURES / "topics_ok", transcripts_state=FIXTURES / "transcripts_ok",
         evidence_state=FIXTURES / "does_not_exist", streams=BASE_PATHS.streams,
     )
@@ -383,6 +383,96 @@ def test_stage_alerts_degrades_when_state_files_absent():
 def test_stage_alerts_absent_on_a_day_with_no_rows():
     cards = rp.day_cards(DAY2, BASE_PATHS)
     assert not any(c["kind"] == "stage_alerts" for c in cards)
+
+
+# ───────────────────────── stage_alerts: Task 2 enrichment ─────────────────────────
+# fixtures/stage/ (shared with test_evidence.py): diffusion.json pairs FTHM (tier_1,
+# stage 3, first_question_date 2026-01-10) and OTHR (tier_2) on fixture_theme_enriched
+# across two cal_quarters; exchanges.jsonl carries FTHM's cited question + 2 management
+# rows in docA-t plus 3 noise rows (different ticker) in docB-t; watchlist.yaml gives
+# FTHM tier_1, OTHR tier_2, ZZZZ tier_3 (unpaired, must never appear); alerts_sent.jsonl
+# has a gate row (no ticker -- exercises trend/tier_names on a kind with no citation)
+# and the FTHM stage3 row (exercises exchange too); notes/themes/ has a matching note
+# so theme_link resolves to a real path.
+DAY_STAGE = "2026-01-10"
+STAGE_FIXTURES = Path(__file__).parent / "fixtures" / "stage"
+STAGE_PATHS = rp.Paths(
+    is_reports=FIXTURES / "is", podcasts_reports=FIXTURES / "podcasts", logs=FIXTURES / "logs",
+    notes=STAGE_FIXTURES / "notes", watchlist=STAGE_FIXTURES / "watchlist.yaml",
+    thesis_state=FIXTURES / "does_not_exist",
+    topics_state=STAGE_FIXTURES, transcripts_state=STAGE_FIXTURES,
+    evidence_state=FIXTURES / "does_not_exist", streams=BASE_PATHS.streams,
+)
+
+
+def test_stage_alerts_items_shape_and_backward_compatible_text():
+    cards = rp.day_cards(DAY_STAGE, STAGE_PATHS)
+    sa = next((c for c in cards if c["kind"] == "stage_alerts"), None)
+    assert sa is not None, cards
+    assert len(sa["items"]) == 2, sa["items"]
+    gate = next(i for i in sa["items"] if i["kind"] == "gate")
+    stage3 = next(i for i in sa["items"] if i["kind"] == "stage3")
+    # text always STARTS with the item's own `line` -- the pre-enrichment text --
+    # with any enrichment appended after it on the same line (see
+    # _render_stage_item_text), never on its own line.
+    assert sa["text"].splitlines()[0].startswith(f"- {gate['line']}"), sa["text"]
+    assert stage3["line"] in sa["text"], sa["text"]
+
+
+def test_stage_alerts_stage3_item_carries_exchange():
+    cards = rp.day_cards(DAY_STAGE, STAGE_PATHS)
+    sa = next(c for c in cards if c["kind"] == "stage_alerts")
+    stage3 = next(i for i in sa["items"] if i["kind"] == "stage3")
+    assert stage3["id"] == "stage3:fixture_theme_enriched:FTHM", stage3
+    assert stage3["stage"] == 3
+    exch = stage3["exchange"]
+    assert exch is not None, stage3
+    assert exch["speaker_name"] == "Jane Analyst"
+    assert exch["speaker_firm"] == "Fixture Capital LLC"
+    assert "pipeline breakdown" in exch["answer"]
+    assert "noise" not in exch["answer"].lower()
+
+
+def test_stage_alerts_trend_and_tier_names_populate_even_without_a_ticker():
+    # 'gate' events have no single cited ticker (exchange stays None), but trend and
+    # tier_names are per-theme -- they must still populate.
+    cards = rp.day_cards(DAY_STAGE, STAGE_PATHS)
+    sa = next(c for c in cards if c["kind"] == "stage_alerts")
+    gate = next(i for i in sa["items"] if i["kind"] == "gate")
+    assert gate["exchange"] is None, gate
+    assert gate["trend"] == {
+        "current_quarter": "CY2026-Q1", "n_banks": 3, "n_companies": 4, "n_disclosing": 2,
+        "prev_quarter": "CY2025-Q4", "prev_n_banks": 1, "prev_n_companies": 2,
+    }, gate["trend"]
+    assert gate["tier_names"] == {"tier_1": ["FTHM"], "tier_2": ["OTHR"]}, gate["tier_names"]
+
+
+def test_stage_alerts_theme_link_resolves_when_note_exists():
+    cards = rp.day_cards(DAY_STAGE, STAGE_PATHS)
+    sa = next(c for c in cards if c["kind"] == "stage_alerts")
+    stage3 = next(i for i in sa["items"] if i["kind"] == "stage3")
+    assert stage3["theme_link"] == "notes/themes/fixture_theme_enriched.md", stage3
+
+
+def test_stage_alerts_text_includes_qa_breadth_and_tier_segments():
+    cards = rp.day_cards(DAY_STAGE, STAGE_PATHS)
+    sa = next(c for c in cards if c["kind"] == "stage_alerts")
+    assert 'Q: "Can you quantify' in sa["text"], sa["text"]
+    assert '— A: "Sure' in sa["text"], sa["text"]
+    assert "breadth 3 banks / 4 cos (prev 1/2)" in sa["text"], sa["text"]
+    assert "tier 1/2 on theme: FTHM, OTHR" in sa["text"], sa["text"]
+
+
+def test_stage_alerts_degrade_still_nulls_exchange_trend_and_empties_tier_names():
+    # the pre-existing degrade fixture (topics_degrade/does_not_exist) -- diffusion.json
+    # and topic_map.jsonl are both missing, so snap is None and every enrichment field
+    # must be null/empty, matching the byte-identical fallback text this test already
+    # asserted on before Task 2.
+    cards = rp.day_cards(DAY2, DEGRADE_PATHS)
+    sa = next(c for c in cards if c["kind"] == "stage_alerts")
+    item = sa["items"][0]
+    assert item["exchange"] is None and item["trend"] is None and item["tier_names"] == {}, item
+    assert item["line"] == "stage3 · fixture_theme_missing · ZZZ" == sa["text"][2:], item
 
 
 # ───────────────────────── upcoming ─────────────────────────

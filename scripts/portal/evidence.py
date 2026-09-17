@@ -31,6 +31,48 @@ Two other public functions build on the index:
     matching evidence rows still gets its own key, mapped to `[]` -- never
     silently dropped, so the frontend can render "no evidence yet" instead of
     treating a missing key as "not fetched".
+
+Slice 3 Task 2 adds stage-alert enrichment (three pure functions, no file I/O
+of their own -- reports.py's `_stage_alert_card` loads state/topics/diffusion.json,
+state/topics/topic_map.jsonl and state/transcripts/exchanges.jsonl exactly the way
+it already did via `theme_notes.load_sources()`/`stage_alert.render()`, and hands
+the loaded structures in here):
+  - `exchange_for(event, tm_rows, ex)` -- the analyst exchange stage_alert.render()
+    itself would cite for `event = {theme, ticker, date}`, enriched with the
+    management answer that immediately follows it in the same document. Deviates
+    from the brief's `exchange_for(event, ex_rows)` shorthand by taking `tm_rows`
+    too: stage_alert.first_question_cite() -- the rule this MUST replicate, not
+    reinvent -- picks the cited analyst row by topic_map's own per-row theme
+    score (see `stage_alert._score`), and that score lives only in topic_map
+    rows, never in a raw exchange row. `ex` doubles as both the vector_id lookup
+    first_question_cite() itself uses AND the source for the sibling-row scan
+    (grouped once via `index_exchanges_by_document`), so exchanges.jsonl (30 MB
+    in production) is read exactly once per build -- the same read
+    `_stage_alert_render_inputs` already pays for the plain citation text,
+    never a second scoped pass.
+  - `index_exchanges_by_document(ex)` -- {document_id: [row, ...]} from `ex`'s
+    values, each document's rows ordered by transcript turn (see `_doc_num_key`
+    -- `doc_num` values repeat across a split turn, e.g. two rows both
+    "qna_19"; the trailing `_N` on `vector_id` breaks that tie). Built once per
+    card and passed into `exchange_for` so a multi-event day doesn't re-group
+    ~16K rows per event.
+  - `breadth_trend(theme, diffusion)` -- the two most recent `cal_quarter` cells
+    for `theme` in `diffusion["metrics"]` (string sort works: "CY2026-Q1" <
+    "CY2026-Q2"). None when the theme has no metrics cells at all; a
+    first-quarter theme still returns a dict with `prev_*` fields None -- there
+    is legitimately no prior breadth to compare against, which is different
+    from "diffusion.json itself is missing".
+  - `tier_names_on_theme(theme, diffusion, universe)` -- every ticker paired
+    with `theme` in `diffusion["pairs"]` (a stage means "on theme"; a bare
+    mention in `metrics.companies` without a pair does not), split into
+    `{tier_1: [...], tier_2: [...]}` by intersecting with `universe`'s
+    (`identity.load_universe()`'s own shape) `tier_1_bctk`/
+    `tier_2_active_candidates` tiers. `tier_3_watchlist` and orphan-notes
+    entries are excluded by construction -- the output dict only ever has
+    these two keys.
+None of the three ever raises on a gap (empty/absent input) -- reports.py's own
+try/except per-call still logs the one line the brief asks for; these
+functions just return the "nothing to report" value (None/[]/{}) quietly.
 """
 from __future__ import annotations
 
@@ -161,3 +203,169 @@ def attach_thesis(bundle: dict, index: dict) -> None:
             continue
         ev[aid] = top(index.get((ticker, aid), []))
     thesis["evidence"] = ev
+
+
+# ---------------------------------------------------------------------------
+# stage alert enrichment (Task 2): exchange citations, breadth trend, tiers
+# ---------------------------------------------------------------------------
+_QUESTION_CAP, _ANSWER_CAP = 400, 400
+
+
+def _theme_score(row: dict, theme: str) -> float:
+    """Identical to stage_alert._score -- replicated (not imported; stage_alert.py
+    is out of scope for this task) because first_question_cite()'s candidate
+    selection depends on it and this module needs the same tie-break."""
+    return max((t.get("score", 0.0) for t in row.get("themes") or [] if t.get("theme") == theme),
+               default=0.0)
+
+
+def _cited_question_row(theme: str, ticker: str, date: str, tm_rows: list, ex: dict) -> dict | None:
+    """The raw exchange row (document_id, doc_num, vector_id and all) for the analyst
+    question stage_alert.first_question_cite() would cite -- the IDENTICAL candidate
+    filter and highest-cosine tie-break, replicated here because first_question_cite()
+    itself only returns {speaker, firm, event}, never the document_id/doc_num this
+    module needs to find the paired answer. Returns None in exactly the same cases
+    first_question_cite() would (no candidate rows, or the winning row's id isn't in
+    `ex`)."""
+    cands = [r for r in tm_rows if r.get("register") == "question" and r.get("ticker") == ticker
+             and str(r.get("event_date") or "")[:10] == date and _theme_score(r, theme) > 0
+             and r.get("id") in ex]
+    if not cands:
+        return None
+    best = max(cands, key=lambda r: _theme_score(r, theme))
+    return ex[best["id"]]
+
+
+def _doc_num_key(row: dict) -> tuple:
+    """Sort key for one document's transcript turns. `doc_num` (e.g. "qna_19") is not
+    unique within a document -- a turn split across multiple vector rows repeats the
+    same doc_num (observed live: 2,429 duplicate (document_id, doc_num) pairs in
+    production exchanges.jsonl) -- so the trailing `_N` on `vector_id` (the split
+    index FactSet assigns, e.g. "..._qna_19_0", "..._qna_19_1") is the tie-break, not
+    file order (file order is NOT chronological -- verified against a live
+    transcript)."""
+    dn = row.get("doc_num") or ""
+    sect, _, num = dn.rpartition("_")
+    try:
+        num = int(num)
+    except ValueError:
+        num = 0
+    vid = row.get("vector_id") or ""
+    try:
+        idx = int(vid.rsplit("_", 1)[-1])
+    except ValueError:
+        idx = 0
+    return (sect, num, idx)
+
+
+def index_exchanges_by_document(ex: dict) -> dict:
+    """{document_id: [row, ...]} from `ex`'s values (the vector_id -> raw-row map
+    theme_notes.load_sources() already produces), each document's rows ordered by
+    `_doc_num_key`. Built once per card/build, not once per event -- see this
+    module's docstring."""
+    by_doc: dict = {}
+    for r in (ex or {}).values():
+        by_doc.setdefault(r.get("document_id"), []).append(r)
+    for doc_id, rows in by_doc.items():
+        rows.sort(key=_doc_num_key)
+    return by_doc
+
+
+def _management_answer(cited: dict, doc_rows: list) -> str | None:
+    """Joins the consecutive corprep ("management-side") rows immediately after
+    `cited` within `doc_rows` (already sorted by `_doc_num_key`). Rows with no
+    recorded speaker_type are skipped WITHOUT stopping the scan -- a known gap in a
+    handful of ingested transcripts where genuine management answers carry no
+    speaker_type at all (verified live: e.g. document 3449181-t) -- but the scan
+    stops the instant it hits an unambiguous turn change (`analyst` or `operator`).
+    None when the cited row isn't found in `doc_rows`, or nothing corprep follows it
+    before that turn change."""
+    try:
+        i = next(idx for idx, r in enumerate(doc_rows) if r.get("vector_id") == cited.get("vector_id"))
+    except StopIteration:
+        return None
+    parts = []
+    for r in doc_rows[i + 1:]:
+        st = r.get("speaker_type")
+        if st in ("analyst", "operator"):
+            break
+        if st == "corprep" and r.get("text"):
+            parts.append(r["text"])
+    return " ".join(parts) if parts else None
+
+
+def exchange_for(event: dict, tm_rows: list | None, ex: dict | None,
+                  ex_by_doc: dict | None = None) -> dict | None:
+    """{date, event_name, speaker_name, speaker_firm, question, answer, view_url} for
+    `event = {theme, ticker, date}` -- `date` is the SAME first_question_date
+    stage_alert.render() itself resolved for this event (see reports.py's
+    `_cite_target`, which mirrors render()'s own per-kind picks; this function does
+    not re-derive which ticker/date a stage2/stage3 event cites, only which exchange
+    row that triple points at). `ex_by_doc` is `index_exchanges_by_document(ex)` --
+    passed in so a multi-event build doesn't re-group `ex` per event; omitting it
+    (the default) groups on the fly for standalone/test use.
+    Returns None -- never raises -- when `tm_rows`/`ex` are absent (gap: no
+    diffusion/exchanges data loaded), `theme`/`ticker`/`date` are incomplete (gate/
+    stage4 events cite no single ticker), or no matching analyst row exists.
+    """
+    theme, ticker, edate = (event or {}).get("theme"), (event or {}).get("ticker"), (event or {}).get("date")
+    if not theme or not ticker or not edate or tm_rows is None or ex is None:
+        return None
+    cited = _cited_question_row(theme, ticker, edate, tm_rows, ex)
+    if cited is None:
+        return None
+    by_doc = ex_by_doc if ex_by_doc is not None else index_exchanges_by_document(ex)
+    answer = _management_answer(cited, by_doc.get(cited.get("document_id"), []))
+    return {
+        "date": str(cited.get("event_date") or edate)[:10],
+        "event_name": cited.get("event_name"),
+        "speaker_name": cited.get("speaker_name"),
+        "speaker_firm": cited.get("speaker_firm"),
+        "question": str(cited.get("text") or "")[:_QUESTION_CAP],
+        "answer": answer[:_ANSWER_CAP] if answer else None,
+        "view_url": cited.get("view_url"),
+    }
+
+
+def breadth_trend(theme: str, diffusion: dict | None) -> dict | None:
+    """{current_quarter, n_banks, n_companies, n_disclosing, prev_quarter,
+    prev_n_banks, prev_n_companies} from the two most recent `cal_quarter` cells for
+    `theme` in `diffusion["metrics"]`. None when `diffusion` is absent or the theme
+    has zero cells -- never raises."""
+    cells = sorted((m for m in (diffusion or {}).get("metrics", []) if m.get("theme") == theme),
+                   key=lambda m: m.get("cal_quarter") or "")
+    if not cells:
+        return None
+    cur, prev = cells[-1], (cells[-2] if len(cells) >= 2 else None)
+    return {
+        "current_quarter": cur.get("cal_quarter"),
+        "n_banks": cur.get("n_banks", 0),
+        "n_companies": cur.get("n_companies", 0),
+        "n_disclosing": cur.get("n_disclosing", 0),
+        "prev_quarter": prev.get("cal_quarter") if prev else None,
+        "prev_n_banks": prev.get("n_banks") if prev else None,
+        "prev_n_companies": prev.get("n_companies") if prev else None,
+    }
+
+
+def tier_names_on_theme(theme: str, diffusion: dict | None, universe: list | None) -> dict:
+    """{tier_1: [ticker, ...], tier_2: [ticker, ...]} (sorted) -- every ticker paired
+    with `theme` in `diffusion["pairs"]` that also appears in `universe`
+    (`identity.load_universe()`'s own shape) under `tier_1_bctk`/
+    `tier_2_active_candidates`. Both lists are empty when `diffusion`/`universe` is
+    absent or nothing overlaps -- never raises, and the shape is always the same two
+    keys (reports.py substitutes the brief's literal `{}` itself for the "snap never
+    loaded at all" gap case, alongside `exchange`/`trend` going null -- see
+    `_stage_alert_card`)."""
+    out = {"tier_1": [], "tier_2": []}
+    if not diffusion or not universe:
+        return out
+    tickers = {p.get("ticker") for p in diffusion.get("pairs", []) if p.get("theme") == theme}
+    tier_key = {"tier_1_bctk": "tier_1", "tier_2_active_candidates": "tier_2"}
+    for u in universe:
+        tk, tier = u.get("ticker"), u.get("tier")
+        if tk in tickers and tier in tier_key:
+            out[tier_key[tier]].append(tk)
+    out["tier_1"].sort()
+    out["tier_2"].sort()
+    return out

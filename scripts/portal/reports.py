@@ -50,6 +50,25 @@ compatible) but is now rendered from `items`, one paragraph per item — see
 _render_thesis_item_text(). Both the evidence index and (like events_cache)
 the alert_events() join are computed once per build window, not once per
 qualifying day.
+
+Slice 3 Task 2: the `stage_alerts` card now also carries `items` (one per
+alerts_sent.jsonl row, in ledger order): `{id, kind, theme, ticker, stage,
+line, exchange, trend, tier_names, theme_link}` — `line` is render()'s own
+unchanged existing text (kept so `text` stays backward compatible: it is
+always `line` first, with enrichment appended only when there is any, so a
+fully-degraded row's `text` is byte-identical to the old plain-text card).
+`exchange` (evidence.exchange_for) is the analyst question + management
+answer render()'s own `_cite()` would point at, resolved via `_cite_target()`
+(mirrors render()'s stage2/stage3 ticker/date picks exactly — gate/stage4
+cite nothing, matching render() itself). `trend` (evidence.breadth_trend) and
+`tier_names` (evidence.tier_names_on_theme, via `identity.load_universe()`)
+are per-theme, so every kind gets them, not just stage2/stage3. All three are
+gated on the SAME `snap is not None` check the existing line already used —
+a load failure (any of diffusion.json/topic_map.jsonl/exchanges.jsonl
+missing) degrades `exchange`/`trend` to `None` and `tier_names` to `{}` for
+every row that day, one log line, never an error. `ex_by_doc`
+(evidence.index_exchanges_by_document) and `universe` are each built once per
+card, not once per event.
 """
 from __future__ import annotations
 
@@ -78,6 +97,7 @@ _here_str = str(Path(__file__).resolve().parent)
 if _here_str not in sys.path:
     sys.path.insert(0, _here_str)
 import evidence  # noqa: E402
+import identity  # noqa: E402
 import vault  # noqa: E402
 
 sys.path.insert(0, str(REPO / "scripts"))
@@ -138,6 +158,7 @@ class Paths:
     podcasts_reports: Path = None
     logs: Path = None
     notes: Path = None
+    watchlist: Path = None
     thesis_state: Path = None
     topics_state: Path = None
     transcripts_state: Path = None
@@ -150,6 +171,7 @@ class Paths:
         self.podcasts_reports = self.podcasts_reports or Path("/root/podcasts/data/reports")
         self.logs = self.logs or (self.repo / "logs")
         self.notes = self.notes or (self.repo / "notes")
+        self.watchlist = self.watchlist or (self.repo / "config" / "watchlist.yaml")
         self.thesis_state = self.thesis_state or (self.repo / "state" / "thesis")
         self.topics_state = self.topics_state or (self.repo / "state" / "topics")
         self.transcripts_state = self.transcripts_state or (self.repo / "state" / "transcripts")
@@ -484,6 +506,60 @@ def _stage_alert_render_inputs(paths: Paths):
         return None, None, None
 
 
+_STAGE_NUM = {"stage2": 2, "stage3": 3, "stage4": 4}  # gate has no single stage number
+_TIER_TEXT_CAP = 8
+
+
+def _cite_target(kind: str, theme: str, ticker: str | None, snap: dict) -> tuple | None:
+    """(theme, ticker, date) for the SAME analyst exchange stage_alert.render()'s own
+    `_cite()` calls would resolve for this event -- deliberately calls stage_alert's
+    "private" `_theme_pairs()` (leading underscore) rather than reimplementing its
+    filter, so a future change to what counts as an "asked" pair can never silently
+    drift between render()'s own line and this card's exchange/trend enrichment.
+    gate/stage4 events cite no single ticker -- render() itself never calls `_cite`
+    for those kinds either, so this returns None for them by construction (the `if`
+    chain below simply has no branch for them)."""
+    pairs = stage_alert._theme_pairs(snap, theme)  # noqa: SLF001 -- see docstring
+    if kind == "stage3" and ticker:
+        p = next((p for p in pairs if p["ticker"] == ticker), None)
+        fq = p.get("first_question_date") if p else None
+        return (theme, ticker, fq) if fq else None
+    if kind == "stage2":
+        asked = [p for p in pairs if p.get("first_question_date")]
+        if not asked:
+            return None
+        first = min(asked, key=lambda p: p["first_question_date"])
+        return (theme, first["ticker"], first["first_question_date"])
+    return None
+
+
+def _render_stage_item_text(line: str, exch: dict | None, trend: dict | None,
+                             tier_names: dict | None) -> str:
+    """`line` (render()'s own existing text) stays first and unchanged -- backward
+    compatible with every consumer of the old plain-text card. Each enrichment
+    segment is appended only when it has something to say, so a row with no
+    exchange/trend/tier_names data (a gap, or a gate/stage4 kind with no citation)
+    renders IDENTICAL to the pre-enrichment text -- see
+    test_stage_alerts_degrades_when_state_files_absent."""
+    parts = [line]
+    if exch and (exch.get("question") or exch.get("answer")):
+        q = (exch.get("question") or "")[:200]
+        a = (exch.get("answer") or "")[:200]
+        parts.append(f'Q: "{q}" — A: "{a}"')
+    if trend:
+        prev_b = trend.get("prev_n_banks")
+        prev_c = trend.get("prev_n_companies")
+        parts.append(f"breadth {trend.get('n_banks', 0)} banks / {trend.get('n_companies', 0)} cos "
+                      f"(prev {prev_b if prev_b is not None else '-'}/"
+                      f"{prev_c if prev_c is not None else '-'})")
+    names = ((tier_names.get("tier_1") or []) + (tier_names.get("tier_2") or [])) if tier_names else []
+    if names:
+        shown = ", ".join(names[:_TIER_TEXT_CAP])
+        suffix = f" (+{len(names) - _TIER_TEXT_CAP} more)" if len(names) > _TIER_TEXT_CAP else ""
+        parts.append(f"tier 1/2 on theme: {shown}{suffix}")
+    return " ".join(parts)
+
+
 def _stage_alert_card(day: str, paths: Paths) -> dict | None:
     rows = [r for r in _read_jsonl(paths.topics_state / "alerts_sent.jsonl")
             if r.get("as_of") == day]
@@ -491,24 +567,63 @@ def _stage_alert_card(day: str, paths: Paths) -> dict | None:
         return None
 
     snap, tm_rows, ex = _stage_alert_render_inputs(paths)
-    lines = []
+    ex_by_doc = evidence.index_exchanges_by_document(ex) if ex is not None else None
+    universe = None
+    if snap is not None:
+        try:
+            universe = identity.load_universe(paths.watchlist, paths.notes)
+        except Exception as exc:  # noqa: BLE001
+            log(f"stage_alerts {day}: load_universe() unavailable ({exc}); tier_names will be {{}}")
+
+    items, lines = [], []
     for r in rows:
         kind, theme, ticker = r.get("kind", "?"), r.get("theme", "?"), r.get("ticker")
-        text = None
+        line = None
         if snap is not None:
             try:
                 e = {"kind": kind, "theme": theme, "ticker": ticker}
-                text = stage_alert.render(e, snap, tm_rows, ex, day)
+                line = stage_alert.render(e, snap, tm_rows, ex, day)
             except Exception as exc:  # noqa: BLE001
                 log(f"stage_alerts {day}: render() failed for {kind}/{theme}/{ticker} "
                     f"({exc}); degrading this row")
-        if text is None:
-            text = f"{kind} · {theme}" + (f" · {ticker}" if ticker else "")
-        lines.append(f"- {text}")
+        if line is None:
+            line = f"{kind} · {theme}" + (f" · {ticker}" if ticker else "")
+
+        exch, trend, tier_names = None, None, {}
+        if snap is not None:
+            target = _cite_target(kind, theme, ticker, snap)
+            if target:
+                try:
+                    exch = evidence.exchange_for({"theme": target[0], "ticker": target[1], "date": target[2]},
+                                                  tm_rows, ex, ex_by_doc)
+                except Exception as exc:  # noqa: BLE001
+                    log(f"stage_alerts {day}: exchange_for() failed for {kind}/{theme}/{ticker} "
+                        f"({exc}); exchange=null")
+            try:
+                trend = evidence.breadth_trend(theme, snap)
+            except Exception as exc:  # noqa: BLE001
+                log(f"stage_alerts {day}: breadth_trend() failed for {theme} ({exc}); trend=null")
+            if universe is not None:
+                try:
+                    tier_names = evidence.tier_names_on_theme(theme, snap, universe)
+                except Exception as exc:  # noqa: BLE001
+                    log(f"stage_alerts {day}: tier_names_on_theme() failed for {theme} "
+                        f"({exc}); tier_names={{}}")
+        else:
+            log(f"stage_alerts {day}: no diffusion snapshot for {kind}/{theme}/{ticker}; "
+                f"exchange/trend null, tier_names {{}}")
+
+        theme_link = f"notes/themes/{theme}.md" if (paths.notes / "themes" / f"{theme}.md").exists() else None
+        item = {"id": r.get("id"), "kind": kind, "theme": theme, "ticker": ticker,
+                "stage": _STAGE_NUM.get(kind), "line": line, "exchange": exch, "trend": trend,
+                "tier_names": tier_names, "theme_link": theme_link}
+        items.append(item)
+        lines.append(f"- {_render_stage_item_text(line, exch, trend, tier_names)}")
+
     body = "\n".join(lines)
     return {"id": f"stage_alerts:{day}", "kind": "stage_alerts", "date": day,
             "title": f"Stage alerts — {day}", "text": body,
-            "bytes": len(body.encode("utf-8"))}
+            "bytes": len(body.encode("utf-8")), "items": items}
 
 
 # ---------------------------------------------------------------------------
