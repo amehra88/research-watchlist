@@ -467,7 +467,12 @@ def _thesis_alert_card(day: str, paths: Paths, events_cache: dict = None,
         else:
             statement = _statement_lookup(ticker, aid, bundles_by_ticker, paths)
             evid_rows = ev_index.get((ticker, aid), [])
-            ev_top = [r for r in evidence.top(evid_rows, 3) if _within_days(r.get("date"), day, 7)]
+            # Window THEN cap: evidence.top() ranks strength-desc/date-desc with
+            # no age filter by design (see its own docstring), so filtering the
+            # window after capping at 3 can drop a real in-window row entirely
+            # when three older, stronger rows fill all three slots first.
+            windowed = [r for r in evid_rows if _within_days(r.get("date"), day, 7)]
+            ev_top = evidence.top(windowed, 3)
             strength3 = sum(1 for r in evid_rows
                              if r.get("direction") == "challenge" and r.get("strength") == 3)
             note_links = sorted({r["ref"] for r in evid_rows if str(r.get("ref") or "").startswith("notes/")})

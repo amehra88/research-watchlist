@@ -278,14 +278,19 @@ because nothing in that slice used one. Slice 3's `ask.js` needs the
 `sample` capability, so **the next publish must pass
 `capabilities: {"sample": {}}`** on the `Artifact` call.
 
-The rule that makes this a one-time action, not a per-publish one: passing
-an empty object (`{}`, with or without `sample` inside it) **clears** the
-stored declaration for anything not named, while **omitting** the
-`capabilities` field entirely on a redeploy **keeps** whatever is already
-stored. So once a publish sends `capabilities: {"sample": {}}`, later
-redeploys may omit `capabilities` altogether and `sample` stays granted — the
-same way slice 2's `{}` had to be resent on every one of its redeploys
-(nothing to keep) but this slice's declaration, once sent, does not.
+`capabilities` is a full replacement of the declaration set: a passed object
+clears anything it does not name, so `{}` (naming nothing) clears
+everything, while `{"sample": {}}` declares `sample`. Omitting the field
+entirely on a redeploy keeps whatever is already stored.
+
+That is the rule that makes this a one-time action, not a per-publish one:
+once a publish sends `capabilities: {"sample": {}}`, later redeploys may
+omit `capabilities` altogether and `sample` stays granted. Slice 2's
+redeploys passed `{}` every time, but that was never load-bearing — there
+was nothing declared yet to clear or keep either way. Slice 3's declaration
+IS load-bearing from the moment it is first sent: a later redeploy that
+passes `{}` instead of omitting the field would clear `sample` right back
+off.
 
 Everything else about the call is unchanged from slice 2: the same
 `file_path`/`root`/`files` (the map form from
@@ -317,21 +322,29 @@ verify at the end):
    own `data/manifest.json`, so a bad build can't silently reach the
    Artifact.) Copy the printed JSON — it's the exact `files` argument for the
    next step.
-4. **Publish with the `Artifact` tool.** This is the exact call shape
-   verified against the live artifact — every part of it matters:
+4. **Publish with the `Artifact` tool.** Slice 2 is already published at
+   `https://claude.ai/artifact/BRc8rhxBgBDjtwGpzGS4N1` (version 3), so
+   slice 3's publish is a **redeploy of that same artifact, not a first
+   publish**: pass `url=` (from any session) or the same `file_path` (only
+   from the session that originally published it) — never a fresh publish
+   with neither, which creates a second artifact and a new URL. This is the
+   exact call shape verified against the live artifact — every part of it
+   matters:
    - `file_path=/root/research-watchlist/portal_build/index.html`
    - `root=/root/research-watchlist/portal_build`
+   - `url=https://claude.ai/artifact/BRc8rhxBgBDjtwGpzGS4N1` — the redeploy
+     target; omit only if this is the same session that ran the original
+     slice 2 publish (`file_path=` alone then suffices).
    - `files=` the JSON **map** `publish_files.py` printed — `{"published/path": "published/path", ...}` for every one of the 145 non-`index.html`, non-`smoke/` files (144 in slice 2, +1 for `ask.js`). **The list form `["a.js", ...]` is REJECTED** — the Artifact tool requires the map form.
    - `capabilities: {"sample": {}}` as of slice 3 (was `{}` in slice 2, which
      had no runtime capability wired in — see "Publishing with capabilities"
      above for the empty-object-clears / omit-keeps rule, and the RIS4 plan's
      Phase 4 capability list, `{db, assets, sample, mcp:{...}}`, for what
      later slices will add)
-   - `favicon` — **only on the very first publish** (already set: 🧭). Passing it again on a redeploy is a mistake to avoid, not merely unnecessary.
+   - `favicon` — **never pass it on this redeploy** (already set: 🧭, from
+     the first publish). Passing it again is a mistake to avoid, not merely
+     unnecessary.
    - `label` — free text describing this publish (e.g. `"Task 9 docs + publish helper"`)
-   - Redeploy = the same `file_path` from the session that originally
-     published it, **or** `url=<the artifact URL>` from any other session —
-     never a fresh publish (that creates a second artifact and a new URL).
    - **Every build's `files` map must be sent in full on every redeploy.**
      Files left out of a `files` call are *kept*, not removed — since every
      `data/*` file changes on every build, omitting one means the live
@@ -364,7 +377,9 @@ Run this, on the phone, after publishing with `capabilities: {"sample": {}}`:
   answer streams in as plain text, then renders as markdown once it
   finishes.
 - Tap **Stop** mid-answer → the panel restores to idle (question text kept,
-  Ask button re-enabled, no error message shown).
+  Ask button re-enabled, no error message shown); if any text had streamed
+  in, it stays visible as plain text under a "Stopped — only the part that
+  arrived is shown." marker, not dressed up as finished markdown.
 - Trigger any error condition (rate limit, expired session, or anything
   else `sample()` can reject with) → confirm the panel shows the mapped
   copy for that code, never a blank panel.

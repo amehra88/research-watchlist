@@ -248,7 +248,9 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
 - **Gmail-poller → wrapper auto-trigger** — no automatic handoff from poller to the from-PDF note
   wrapper; remediate via a sweep cron.
 - **RIS4 portal (mobile-web bundle) — slice 2 built 2026-09-16, slice 3 (evidence
-  enrichment + Ask) also built 2026-09-16, neither published yet.** Builder
+  enrichment + Ask) also built 2026-09-16. Slice 2 is published (Claude
+  Artifact `https://claude.ai/artifact/BRc8rhxBgBDjtwGpzGS4N1`, version 3);
+  slice 3 is not yet published.** Builder
   `scripts/portal/` reads the vault read-only and stages a static JSON+HTML bundle in
   `portal_build/`, published by hand as the **Research Desk** Claude Artifact (iPhone-first,
   `fetch()`-only, no server — see `docs/portal/README.md`'s "as of `built_at`" model). Two

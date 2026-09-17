@@ -7,3 +7,4 @@
 {"id": "status:NOEV:no_evidence_assumption:confirmed:2026-01-05", "ticker": "NOEV", "ts": "2026-01-05T09:00:20+00:00"}
 {"id": "note:ONLYNOTE:20260110-file.md", "ticker": "ONLYNOTE", "ts": "2026-01-10T09:00:00+00:00"}
 {"id": "status:QUOTELESS:quoteless_assumption:confirmed:2026-01-05", "ticker": "QUOTELESS", "ts": "2026-01-05T09:00:25+00:00"}
+{"id": "status:WINDOWCAP:window_cap_assumption:confirmed:2026-01-05", "ticker": "WINDOWCAP", "ts": "2026-01-05T09:00:30+00:00"}

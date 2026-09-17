@@ -689,7 +689,7 @@
         (it.ticker ? '<a class="chip" href="' + esc(href(['ticker', String(it.ticker), 'thesis'])) + '">' +
           esc(it.ticker) + '</a>' : '') +
         move +
-        (n3 ? '<span class="pill pill-bad">' + esc(n3 + ' at strength 3') + '</span>' : '') + '</p>' +
+        (n3 ? '<span class="pill pill-bad">' + esc(n3 + ' at strength 3 \u00b7 all time') + '</span>' : '') + '</p>' +
         '<p>' + esc(it.statement || it.assumption_id || 'Untitled assumption') + '</p>' +
         '<p class="empty mono">' + esc(it.assumption_id || '') + '</p>' +
         evidenceFold(it.evidence, false) +
@@ -1505,7 +1505,14 @@
     safeURL: safeURL, extLink: extLink, isRead: isRead,
     itemsSummary: itemsSummary,
     STATE: STATE, views: views, tickerTabs: tickerTabs, morePages: morePages,
-    controls: controls, actions: actions
+    controls: controls, actions: actions,
+    /* Re-runs the router against the CURRENT hash. ask.js's only consumer: a
+     * deep link or reload on #/more/ask can land before use("sample") resolves
+     * and morePages.ask exists, so the router's own "no such screen" state
+     * gets painted and then never revisited (no hashchange fires for it). Once
+     * the capability resolves and registers the route, calling this repaints
+     * the same hash through the now-complete `views`/`morePages` tables. */
+    rerender: render
   };
 
   function boot() {

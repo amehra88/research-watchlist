@@ -226,6 +226,7 @@
     truncated: false,
     trimmed: false,
     interrupted: false, /* the answer below stops where the failure did     */
+    stopped: false,   /* interrupted BY THE VIEWER's own Stop, not a failure */
     tools: []         /* names of the tools that ran, in order              */
   };
 
@@ -237,6 +238,7 @@
     ask.truncated = false;
     ask.trimmed = false;
     ask.interrupted = false;
+    ask.stopped = false;
     ask.tools = [];
   }
 
@@ -342,7 +344,10 @@
      * plain-text shape it streamed in, under a marker, rather than being dressed
      * up as completed markdown with a heading structure it never reached. */
     if (ask.interrupted) {
-      return '<p class="askmark">Interrupted — only the part that arrived is shown.</p>' +
+      var mark = ask.stopped
+        ? 'Stopped — only the part that arrived is shown.'
+        : 'Interrupted — only the part that arrived is shown.';
+      return '<p class="askmark">' + esc(mark) + '</p>' +
         '<pre class="stream">' + esc(ask.answer) + '</pre>';
     }
     return ask.done ? md(ask.answer) : '<pre class="stream">' + esc(ask.answer) + '</pre>';
@@ -833,9 +838,13 @@
   function onError(e) {
     var code = (e && e.code) ? String(e.code) : 'upstream_error';
     if (code === 'cancelled') {
-      /* the viewer did this: restore the idle UI, keep whatever streamed */
+      /* the viewer did this: restore the idle UI, keep whatever streamed, and
+       * (if anything streamed) mark it a Stopped partial -- plain text under
+       * the marker, never dressed up as finished markdown. */
       if (e && typeof e.text === 'string') ask.answer = e.text;
       ask.error = '';
+      ask.interrupted = !!ask.answer;
+      ask.stopped = true;
       settle();
       return;
     }
@@ -941,6 +950,16 @@
     ask.q = '';
     ask.title = scope === 'note' ? 'Ask about this note'
       : (scope === 'ticker' ? 'Ask about ' + String(argv || '') : 'Ask the desk');
+    /* Desk mode's search_vault tool needs the 2.9 MB search.json index; kick
+     * that fetch off now, on the tap that opens the panel, so it is warm
+     * before the first paid tool round instead of adding its latency to it.
+     * No `sample` call here -- just the plain JSON fetch -- and a failure is
+     * swallowed: the tool round's own `searchEnsure()` call will retry the
+     * load when the question is actually asked. */
+    if (scope === 'desk' && typeof R.searchEnsure === 'function') {
+      try { R.searchEnsure().catch(function () { /* retried by the tool round */ }); }
+      catch (e) { /* retried by the tool round */ }
+    }
     renderPanel();
   }
 
@@ -979,6 +998,17 @@
   };
 
   /* --------------------------------------------------------- #/more/ask --- */
+
+  /* Mirrors app.js's own parseHash() closely enough to answer one question:
+   * is the CURRENT location hash "#/more/ask" (with or without a leading
+   * slash, and tolerant of an encoded/segmented form)? Used only to decide
+   * whether a just-registered route needs an immediate re-render. */
+  function isAskHash() {
+    var raw = String(window.location.hash || '').replace(/^#/, '');
+    if (raw.charAt(0) === '/') raw = raw.slice(1);
+    var parts = raw.split('/').filter(function (s) { return s !== ''; });
+    return parts[0] === 'more' && parts[1] === 'ask';
+  }
 
   function viewAsk() {
     if (!SAMPLE || HIDDEN) {
@@ -1033,6 +1063,13 @@
         morePages.ask = viewAsk;
         /* the first screen is already painted by now: mount into it directly */
         mountAll();
+        /* A deep link or reload landing on #/more/ask before this resolves gets
+         * painted by the router's "no such screen" state (morePages.ask did not
+         * exist yet), and nothing re-visits that hash on its own -- no
+         * hashchange fires for a URL that never changed. Now that the route is
+         * registered, re-run the router against the same hash so it repaints
+         * as the real Ask screen instead of staying wrong forever. */
+        if (isAskHash() && typeof R.rerender === 'function') R.rerender();
       });
     }).catch(function () { /* absence is the design: no Ask, no error */ });
   }

@@ -28,12 +28,20 @@ import reports as rp  # noqa: E402
 
 FIXTURES = Path(__file__).parent / "fixtures" / "reports"
 ETF_FIXTURES = Path(__file__).parent / "fixtures" / "etf_trades"
+# Same fixture watchlist STAGE_PATHS uses (see its own comment below). Defined
+# here, ahead of BASE_PATHS/DEGRADE_PATHS, so every Paths override in this
+# file passes an explicit `watchlist=` -- Paths.__post_init__ defaults an
+# unset one to the LIVE `config/watchlist.yaml`, and no test here should be
+# able to reach that.
+STAGE_FIXTURES = Path(__file__).parent / "fixtures" / "stage"
+FIXTURE_WATCHLIST = STAGE_FIXTURES / "watchlist.yaml"
 
 BASE_PATHS = rp.Paths(
     is_reports=FIXTURES / "is",
     podcasts_reports=FIXTURES / "podcasts",
     logs=FIXTURES / "logs",
     notes=FIXTURES / "notes",
+    watchlist=FIXTURE_WATCHLIST,
     thesis_state=FIXTURES / "thesis_state",
     topics_state=FIXTURES / "topics_ok",
     transcripts_state=FIXTURES / "transcripts_ok",
@@ -51,6 +59,7 @@ DEGRADE_PATHS = rp.Paths(
     is_reports=FIXTURES / "is",
     podcasts_reports=FIXTURES / "podcasts", logs=FIXTURES / "logs",
     notes=FIXTURES / "notes",
+    watchlist=FIXTURE_WATCHLIST,
     thesis_state=FIXTURES / "thesis_state",
     topics_state=FIXTURES / "topics_degrade",
     transcripts_state=FIXTURES / "does_not_exist",
@@ -273,6 +282,23 @@ def test_thesis_alert_card_falls_back_to_why_when_quote_is_empty():
     assert "This is the why text used when the quote field is empty" in text, text
 
 
+def test_thesis_alert_card_evidence_is_windowed_before_capped():
+    # WINDOWCAP/window_cap_assumption carries three challenge/strength-3 rows
+    # dated 2025-11-01..03 (all well outside the 7-day window around the
+    # 2026-01-05 card day) plus one weaker confirm/strength-1 row dated
+    # 2026-01-04 (inside the window). evidence.top()'s cap is 3: capping
+    # BEFORE filtering to the window fills all three slots with the old
+    # strong rows and drops the only in-window row entirely. Filtering to the
+    # window FIRST, then capping, is the only order that can ever show it.
+    cards = rp.day_cards(DAY1, BASE_PATHS)
+    ta = next(c for c in cards if c["kind"] == "thesis_alerts")
+    item = next(i for i in ta["items"] if i["ticker"] == "WINDOWCAP")
+    assert [e["date"] for e in item["evidence"]] == ["2026-01-04"], item["evidence"]
+    assert item["evidence"][0]["quote"] == "Recent weak confirming detail", item["evidence"]
+    text = next(t for t in ta["text"].split("\n\n") if t.startswith("WINDOWCAP"))
+    assert "Recent weak confirming detail" in text, text
+
+
 def test_thesis_alert_card_without_evidence_still_renders():
     cards = rp.day_cards(DAY1, BASE_PATHS)
     ta = next(c for c in cards if c["kind"] == "thesis_alerts")
@@ -293,7 +319,8 @@ def test_thesis_alerts_absent_on_a_day_with_no_rows():
 def test_thesis_alerts_absent_when_ledger_file_missing():
     p = rp.Paths(
         is_reports=FIXTURES / "is", podcasts_reports=FIXTURES / "podcasts",
-        logs=FIXTURES / "logs", notes=FIXTURES / "notes", thesis_state=FIXTURES / "does_not_exist",
+        logs=FIXTURES / "logs", notes=FIXTURES / "notes", watchlist=FIXTURE_WATCHLIST,
+        thesis_state=FIXTURES / "does_not_exist",
         topics_state=FIXTURES / "topics_ok", transcripts_state=FIXTURES / "transcripts_ok",
         evidence_state=FIXTURES / "does_not_exist", streams=BASE_PATHS.streams,
     )
@@ -396,10 +423,10 @@ def test_stage_alerts_absent_on_a_day_with_no_rows():
 # and the FTHM stage3 row (exercises exchange too); notes/themes/ has a matching note
 # so theme_link resolves to a real path.
 DAY_STAGE = "2026-01-10"
-STAGE_FIXTURES = Path(__file__).parent / "fixtures" / "stage"
+# STAGE_FIXTURES/FIXTURE_WATCHLIST are defined once, near BASE_PATHS above.
 STAGE_PATHS = rp.Paths(
     is_reports=FIXTURES / "is", podcasts_reports=FIXTURES / "podcasts", logs=FIXTURES / "logs",
-    notes=STAGE_FIXTURES / "notes", watchlist=STAGE_FIXTURES / "watchlist.yaml",
+    notes=STAGE_FIXTURES / "notes", watchlist=FIXTURE_WATCHLIST,
     thesis_state=FIXTURES / "does_not_exist",
     topics_state=STAGE_FIXTURES, transcripts_state=STAGE_FIXTURES,
     evidence_state=FIXTURES / "does_not_exist", streams=BASE_PATHS.streams,
