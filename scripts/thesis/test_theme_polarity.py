@@ -62,6 +62,49 @@ def test_load_fails_loud_on_bad_value():
             assert "a_slug" in str(e)
 
 
+def test_competition_slugs_real_file_all_polarity_zero():
+    # RIS5 A4 fix 0: competition_slugs is a separate, additive list -- every entry stays
+    # polarity 0 in the main mapping (rule 2: a competition theme firing is two-sided).
+    comp = TP.competition_slugs(REAL_POLARITY, REAL_WATCHLIST)
+    pol = TP.load(REAL_POLARITY, REAL_WATCHLIST)
+    assert comp and comp <= set(pol)                       # every entry is a real watchlist slug
+    assert all(pol[s] == 0 for s in comp)
+    assert "hbm_competitive_landscape" in comp and "platform_take_rate" in comp
+    assert TP.COMPETITION_KEY not in pol   # the reserved key itself never leaks into load()'s returned mapping
+
+
+def test_competition_slugs_fails_loud_on_non_watchlist_entry():
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        wl = _write(tmp, "watchlist.yaml", "themes:\n  demand:\n    - a_slug\n")
+        pol = _write(tmp, "polarity.yaml", "a_slug: 0\ncompetition_slugs:\n  - a_slug\n  - not_a_real_slug\n")
+        try:
+            TP.competition_slugs(pol, wl)
+            raise AssertionError("expected ValueError for a non-watchlist competition_slugs entry")
+        except ValueError as e:
+            assert "not_a_real_slug" in str(e)
+
+
+def test_competition_slugs_fails_loud_on_non_list_value():
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        wl = _write(tmp, "watchlist.yaml", "themes:\n  demand:\n    - a_slug\n")
+        pol = _write(tmp, "polarity.yaml", "a_slug: 0\ncompetition_slugs: a_slug\n")
+        try:
+            TP.competition_slugs(pol, wl)
+            raise AssertionError("expected ValueError for a non-list competition_slugs value")
+        except ValueError as e:
+            assert "list" in str(e)
+
+
+def test_competition_slugs_empty_when_key_absent():
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        wl = _write(tmp, "watchlist.yaml", "themes:\n  demand:\n    - a_slug\n")
+        pol = _write(tmp, "polarity.yaml", "a_slug: 0\n")   # no competition_slugs key at all
+        assert TP.competition_slugs(pol, wl) == set()
+
+
 def test_extra_slug_in_polarity_file_is_tolerated_but_not_returned():
     with tempfile.TemporaryDirectory() as td:
         tmp = Path(td)
@@ -77,5 +120,9 @@ if __name__ == "__main__":
     test_bullish_themes_nonempty_and_disjoint_from_bearish()
     test_load_fails_loud_on_missing_slug()
     test_load_fails_loud_on_bad_value()
+    test_competition_slugs_real_file_all_polarity_zero()
+    test_competition_slugs_fails_loud_on_non_watchlist_entry()
+    test_competition_slugs_fails_loud_on_non_list_value()
+    test_competition_slugs_empty_when_key_absent()
     test_extra_slug_in_polarity_file_is_tolerated_but_not_returned()
     print("OK test_theme_polarity")

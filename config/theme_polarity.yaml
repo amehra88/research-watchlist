@@ -27,11 +27,17 @@
 #      here.
 #   5. default -> 0.
 #
-# Consumer: scripts/thesis/insider_pull.py routes a `challenge` insider cluster
-# to a ticker's assumptions whose `themes` include a polarity == -1 slug (in
-# addition to its existing potential_investor_interest routing) -- see
-# scripts/thesis/theme_polarity.py:bearish_themes(). Loaded via theme_polarity.py,
-# which fails loud if a watchlist slug is missing here.
+# Consumer: scripts/thesis/insider_pull.py routes a `challenge` insider cluster to a
+# ticker's assumptions that (a) derive from the competitive_advantage scoring key, or
+# (b) carry a theme in the `competition_slugs:` list below, or (c) carry a theme whose
+# polarity == -1 above -- in addition to its existing potential_investor_interest
+# routing (RIS5 A4 fix 0: (a)/(b) added on top of the original (c)-only cut, per the
+# RIS5 plan's requirement that insider clusters must reach competitive-advantage
+# assumptions specifically, not just polarity -1 ones). See
+# scripts/thesis/theme_polarity.py: bearish_themes() for (c), competition_slugs() for
+# (b). Loaded via theme_polarity.py, which fails loud if a watchlist slug is missing
+# from the polarity mapping above, or if a competition_slugs entry below isn't a real
+# watchlist theme.
 #
 # Editing: manual, via Claude Code on droplet, same convention as watchlist.yaml.
 
@@ -127,3 +133,28 @@ ai_regulation: 0
 antitrust_action: 0
 china_us_tensions: 0
 fed_policy_tech: 0
+
+# ---------------------------------------------------------------------------
+# competition_slugs (RIS5 A4 fix 0) -- every watchlist theme with competition/
+# competitive/market-share semantics, listed explicitly rather than pattern-matched
+# at runtime. These all stay polarity 0 above (rule 2: a competition theme firing is
+# two-sided, it doesn't confirm or challenge on its own) -- this list is a SEPARATE,
+# additive routing signal insider_pull.py uses only for the challenge direction: an
+# insider-selling cluster on a name whose thesis includes a live competition theme is
+# evidence worth attaching to that competitive-advantage assumption, regardless of
+# which way the theme itself points. theme_polarity.py validates every entry here is
+# a real config/watchlist.yaml theme slug.
+# ---------------------------------------------------------------------------
+competition_slugs:
+  - autonomous_vehicle_competition
+  - chip_design_competition
+  - cybersecurity_competitive_landscape
+  - frontier_model_competition
+  - handset_competition
+  - hbm_competitive_landscape
+  - humanoid_robotics_competition
+  - laser_architecture_competition
+  - networking_competitive_landscape
+  - observability_competitive_landscape
+  - platform_take_rate       # market-share/take-rate semantics, not literally "competition" in the name
+  - silicon_architecture_competition

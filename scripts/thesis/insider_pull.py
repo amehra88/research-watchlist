@@ -130,26 +130,37 @@ def clusters(rows: list[dict]) -> dict[str, dict]:
             for t, c in sorted(acc.items())}
 
 
-def investor_assumptions(fm: dict, direction: str | None = None, bearish: set[str] | None = None) -> list[str]:
+def investor_assumptions(fm: dict, direction: str | None = None, bearish: set[str] | None = None,
+                          competition: set[str] | None = None) -> list[str]:
     """Assumption ids an insider cluster's evidence row attaches to.
 
     Always: assumptions derived from potential_investor_interest (or with 'investor' in
-    the id). When direction == 'challenge' (RIS5 A4 bear-side path), ALSO: assumptions
-    tagged with a bearish (polarity -1, e.g. margin-compression) theme -- a cluster of
-    insiders selling is evidence against a competitive-advantage/margin thesis too, not
-    only against investor-interest. `bearish` lets callers/tests pass an explicit set;
-    the default loads config/theme_polarity.yaml (see thesis.theme_polarity.bearish_themes)."""
+    the id). When direction == 'challenge' (RIS5 A4 bear-side path), ALSO: any non-retired
+    assumption that (a) derives from the competitive_advantage scoring key (the same
+    substring-match convention as potential_investor_interest above, on the derived_from
+    shape actually seen in notes/*/_thesis.md, e.g. "competitive_advantage.overall: 4 —
+    '...'"), OR (b) carries a theme in the explicit competition_slugs list (RIS5 A4 fix 0
+    -- the RIS5 plan requires insider clusters to reach competitive-advantage assumptions
+    specifically, which polarity -1 alone under-covers: competition themes stay polarity 0
+    since a competition theme firing is two-sided), OR (c) carries a bearish (polarity -1,
+    e.g. margin-compression) theme. `bearish`/`competition` let callers/tests pass explicit
+    sets; the defaults load config/theme_polarity.yaml (see thesis.theme_polarity)."""
     out = [a["id"] for a in fm.get("assumptions") or [] if a.get("status") != "retired"
            and ("potential_investor_interest" in str(a.get("derived_from", "")) or "investor" in a["id"])]
     if direction == "challenge":
         if bearish is None:
             from thesis.theme_polarity import bearish_themes
             bearish = bearish_themes()
+        if competition is None:
+            from thesis.theme_polarity import competition_slugs
+            competition = competition_slugs()
         seen = set(out)
         for a in fm.get("assumptions") or []:
             if a.get("status") == "retired" or a["id"] in seen:
                 continue
-            if set(a.get("themes") or []) & bearish:
+            themes = set(a.get("themes") or [])
+            if ("competitive_advantage" in str(a.get("derived_from", ""))
+                    or themes & competition or themes & bearish):
                 out.append(a["id"]); seen.add(a["id"])
     return out
 
