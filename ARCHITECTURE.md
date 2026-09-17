@@ -247,15 +247,19 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
   FactSet fundamentals into synthesis (currently stubbed; see §5).
 - **Gmail-poller → wrapper auto-trigger** — no automatic handoff from poller to the from-PDF note
   wrapper; remediate via a sweep cron.
-- **RIS4 portal (mobile-web bundle) — slice 2 built 2026-09-16, not yet live.** Builder
+- **RIS4 portal (mobile-web bundle) — slice 2 built 2026-09-16, slice 3 (evidence
+  enrichment + Ask) also built 2026-09-16. Slice 2 is published (Claude
+  Artifact `https://claude.ai/artifact/BRc8rhxBgBDjtwGpzGS4N1`, version 3);
+  slice 3 is not yet published.** Builder
   `scripts/portal/` reads the vault read-only and stages a static JSON+HTML bundle in
   `portal_build/`, published by hand as the **Research Desk** Claude Artifact (iPhone-first,
   `fetch()`-only, no server — see `docs/portal/README.md`'s "as of `built_at`" model). Two
   build-cron lines are staged (not yet installed) in `docs/portal/cron.txt`; the full
   build/publish runbook (incl. the `--check` sha256 verification step and the
   `identity.py --merge-names --write` one-time name backfill) lives in `docs/portal/README.md`.
-  Read-only, no live MCP calls yet (Insiders is a build-time snapshot); slice 3+ adds Ask,
-  live panels, and an input channel — see that README's "Slice roadmap".
+  Read-only, no live MCP calls yet (Insiders is a build-time snapshot); the next publish must
+  pass `capabilities: {"sample": {}}` to turn slice 3's Ask on — see that README's "Publishing
+  with capabilities" and "Slice roadmap".
 - **Sub-document retrieval (chunking) — the answer to the old "vector store at ~200 docs"
   question, now being built.** `docs/chunking-strategy.md` is the design (decisions locked in §9
   there). Status: chunker + file-backed Store A pipeline is **code-complete (step 4)**; ranking +
@@ -269,6 +273,18 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
 
 ## 9. Recent milestones (most recent first)
 
+- **2026-09-16** — **RIS4 portal slice 3 built** (evidence enrichment + Ask):
+  `scripts/portal/evidence.py` (new) indexes `state/thesis/evidence_log.jsonl` by
+  (ticker, assumption_id) and attaches `thesis.evidence` to every ticker bundle; the
+  same module resolves stage-alert enrichment (cited analyst exchange, breadth trend,
+  tier-1/2 names on a theme) from `state/topics/` + `state/transcripts/exchanges.jsonl`.
+  `reports.py`'s `thesis_alerts`/`stage_alerts` cards gain a structured `items` array
+  (falls back to the old plain-text `text` when absent/empty). `scripts/portal/app/ask.js`
+  (new) adds Ask Claude — note/ticker/desk-mode Q&A against the published bundle via the
+  artifact `sample` capability, desk mode using three page tools (`search_vault`,
+  `get_note`, `ticker_brief`) over three-to-five paid rounds. Not yet published: the next
+  publish must pass `capabilities: {"sample": {}}` (see `docs/portal/README.md`'s
+  "Publishing with capabilities").
 - **2026-09-16** — **RIS4 portal slice 2 built** (`scripts/portal/`): read-only vault → static
   JSON+HTML bundle (`portal_build/`), builder split across `vault.py`/`identity.py`/`reports.py`+
   `etf_trades.py`/`state_bundles.py`+`news_sec.py`+`theme_ideas.py`/`budget.py`+`build_portal.py`

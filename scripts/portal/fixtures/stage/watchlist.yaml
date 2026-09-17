@@ -1,0 +1,21 @@
+# Trimmed fixture of config/watchlist.yaml for evidence.py's stage-alert-enrichment
+# tests (test_evidence.py / test_reports.py) -- shapes only, not real tickers.
+# FTHM/OTHR are both paired with fixture_theme_enriched in fixtures/stage/diffusion.json;
+# ZZZZ is the noise ticker from fixtures/stage/exchanges.jsonl and is NOT paired with
+# that theme, so it must never show up in tier_names_on_theme's output even though it
+# is a valid tier_3 universe member.
+
+tier_1_bctk:
+  - ticker: FTHM
+    themes: [fixture_theme_enriched]
+    added_date: 2026-01-01
+
+tier_2_active_candidates:
+  - ticker: OTHR
+    themes: [fixture_theme_enriched]
+    added_date: 2026-01-01
+
+tier_3_watchlist:
+  - ticker: ZZZZ
+    themes: []
+    added_date: 2026-01-01

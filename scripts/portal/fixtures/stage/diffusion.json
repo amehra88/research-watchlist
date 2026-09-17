@@ -1,0 +1,12 @@
+{
+ "current_quarter": "CY2026-Q1",
+ "metrics": [
+  {"theme": "fixture_theme_enriched", "cal_quarter": "CY2025-Q4", "n_banks": 1, "n_companies": 2, "n_disclosing": 1},
+  {"theme": "fixture_theme_enriched", "cal_quarter": "CY2026-Q1", "n_banks": 3, "n_companies": 4, "n_disclosing": 2}
+ ],
+ "pairs": [
+  {"theme": "fixture_theme_enriched", "ticker": "FTHM", "stage": 3, "first_question_date": "2026-01-10", "first_evidence_date": null, "first_filing_date": null},
+  {"theme": "fixture_theme_enriched", "ticker": "OTHR", "stage": 2, "first_question_date": "2026-01-05", "first_evidence_date": null, "first_filing_date": null}
+ ],
+ "stage4_denominator": {}
+}

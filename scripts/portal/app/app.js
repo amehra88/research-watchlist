@@ -128,6 +128,98 @@
     return '<span class="pill ' + (STATUS_PILL[s] || 'pill-neutral') + '">' + esc(s) + '</span>';
   }
 
+  /* ---------------------------------------------- evidence + alert items -- */
+
+  /* Scored evidence rows carry one shape everywhere they appear -- under an
+   * assumption on the Thesis tab (thesis.evidence[assumption_id]) and inside a
+   * thesis-alert card item -- so they get one renderer, not three. */
+
+  var DIRECTION_PILL = { confirm: 'pill-ok', challenge: 'pill-bad', neutral: 'pill-neutral' };
+
+  function directionPill(direction) {
+    var d = direction ? String(direction) : 'neutral';
+    return '<span class="pill ' + (DIRECTION_PILL[d] || 'pill-neutral') + '">' + esc(d) + '</span>';
+  }
+
+  /* Strength 0-3 as filled/empty dots. The glyphs are decoration: role="img"
+   * plus the label is what a screen reader announces, so it says "strength 2 of
+   * 3" once instead of reading three circle characters. */
+  function strengthDots(strength) {
+    var n = (typeof strength === 'number' && isFinite(strength)) ? Math.round(strength) : 0;
+    if (n < 0) n = 0;
+    if (n > 3) n = 3;
+    var glyphs = '';
+    for (var i = 0; i < 3; i++) glyphs += (i < n ? '\u25cf' : '\u25cb');
+    return '<span class="dots" role="img" aria-label="' + esc('strength ' + n + ' of 3') + '">' + glyphs + '</span>';
+  }
+
+  /* A vault note id is "<route-id>/<file>.md"; an evidence source_id is that
+   * same path under notes/, sometimes with a "#section" anchor on the end. It
+   * routes in-app only when the first segment is a name THIS manifest carries,
+   * which is what keeps notes/news/..., notes/themes/... and notes/inbox/... out
+   * (none of them is a ticker) without hardcoding a folder list. The ticker
+   * comes from the path, never from the page: cross-ticker evidence on FPS can
+   * cite notes/AAPL/... and must land on AAPL. */
+  function noteRoute(sourceId) {
+    var s = String(sourceId === null || sourceId === undefined ? '' : sourceId).split('#')[0];
+    var m = /^notes\/([^\/]+)\/(.+\.md)$/.exec(s);
+    if (!m || !findTicker(m[1])) return null;
+    return href(['ticker', m[1], 'note', m[1] + '/' + m[2]]);
+  }
+
+  /* The row's title, linked to wherever the row came from: an http(s) `ref`
+   * opens out of the app, a vault note routes inside it, and anything else (a
+   * FactSet transcript id, a pg chunk id) stays inert text -- never a
+   * fabricated link. */
+  function evidenceSourceLink(e) {
+    var label = e.title || e.source_id || e.ref || 'source';
+    var u = safeURL(e.ref);
+    if (u) return extLink(u, label);
+    var route = noteRoute(e.source_id);
+    if (route) return '<a href="' + esc(route) + '">' + esc(label) + '</a>';
+    return esc(label);
+  }
+
+  /* evidence.py cuts why/quote/question/answer at a fixed length and adds no
+   * marker, so a value that comes back AT its cap is a mid-sentence cut and
+   * says so rather than pretending the writer stopped there. These numbers
+   * mirror evidence.py's _WHY_CAP / _QUOTE_CAP / _QUESTION_CAP / _ANSWER_CAP;
+   * if a cap there ever moves, the worst this does is miss an ellipsis -- it
+   * cannot invent one, because a shorter string never reaches the number. */
+  var WHY_CAP = 200, QUOTE_CAP = 300, QA_CAP = 400;
+
+  function capped(text, cap) {
+    var t = String(text === null || text === undefined ? '' : text);
+    return t.length >= cap ? t + '\u2026' : t;
+  }
+
+  function quoteBlock(text, label) {
+    return '<blockquote class="quote">' +
+      (label ? '<span class="qa">' + esc(label) + '</span> ' : '') + esc(text) + '</blockquote>';
+  }
+
+  function evidenceRow(e) {
+    if (!isObj(e)) return '';
+    var out = '<li><p class="row-meta">' + directionPill(e.direction) + strengthDots(e.strength) +
+      '<span class="mono">' + esc(e.date || '\u2014') + '</span>' +
+      '<span class="chip">' + esc(e.source || 'unknown') + '</span>' +
+      (e.cross_ticker ? '<span class="chip">cross-ticker</span>' : '') + '</p>' +
+      '<p class="ev-title">' + evidenceSourceLink(e) + '</p>';
+    if (e.quote) out += quoteBlock(capped(e.quote, QUOTE_CAP));
+    if (e.why) out += '<p class="ev-why muted">' + esc(capped(e.why, WHY_CAP)) + '</p>';
+    return out + '</li>';
+  }
+
+  /* Collapsed by default, and present even at zero: an assumption with no
+   * scored evidence is a fact about the assumption, not an empty container. */
+  function evidenceFold(rows, open) {
+    var list = arr(rows).filter(isObj);
+    return fold('Evidence', list.length,
+      list.length ? '<ul class="evlist">' + list.map(evidenceRow).join('') + '</ul>'
+        : emptyState('No evidence scored yet.'),
+      !!open && list.length > 0);
+  }
+
   function chips(items, hrefFn) {
     var list = arr(items);
     if (!list.length) return '';
@@ -140,6 +232,16 @@
   }
 
   function emptyState(sentence) { return '<p class="empty">' + esc(sentence) + '</p>'; }
+
+  /* An Ask placeholder. ask.js (loaded last) fills these AFTER a paint, and only
+   * once claude.use("sample") has resolved non-null -- so a desk opened outside
+   * a Claude viewer, or by a viewer who cannot sample, renders an empty div and
+   * never a dead button. The div stays empty and CSS hides it (.askslot:empty).
+   * app.js itself knows nothing about the capability; it only marks the spots. */
+  function askSlot(scope, arg) {
+    return '<div class="askslot" data-ask-scope="' + esc(scope) + '"' +
+      (arg === undefined || arg === null ? '' : ' data-ask-arg="' + esc(arg) + '"') + '></div>';
+  }
 
   function section(eyebrow, body) {
     return '<section class="section"><span class="eyebrow">' + esc(eyebrow) + '</span>' + body + '</section>';
@@ -328,15 +430,24 @@
     return out;
   }
 
-  function changedBlock() {
+  /* The thesis-alert count lands here AFTER paint: it needs the report shards,
+   * which the manifest does not summarise. An empty div is the honest resting
+   * state -- a screen that never fetches (first visit) simply leaves it empty.
+   * The nonce makes the id unique to THIS render, so a patch that arrives after
+   * the operator has navigated away finds nothing and does nothing. */
+  function thesisBox(nonce) { return '<div id="tchanged-' + esc(nonce) + '"></div>'; }
+
+  function changedBlock(nonce) {
     var c = changedSince();
     if (c.first) {
       return section('Since last visit',
-        emptyState('First visit on this device \u2014 nothing to compare against yet. The next visit will list notes and theme stages that moved.'));
+        emptyState('First visit on this device \u2014 nothing to compare against yet. The next visit will list notes and theme stages that moved.') +
+        thesisBox(nonce));
     }
     if (!c.notes.length && !c.stages.length) {
       return section('Since last visit',
-        emptyState('No new notes and no theme stage changes since ' + fmtTS(STATE.since.lastVisit) + '.'));
+        emptyState('No new notes and no theme stage changes since ' + fmtTS(STATE.since.lastVisit) + '.') +
+        thesisBox(nonce));
     }
     var body = '';
     if (c.notes.length) {
@@ -358,7 +469,120 @@
           '<span class="row-right">' + esc(s.from) + ' \u2192 ' + esc(s.to) + '</span>', '') + '</li>';
       }).join('') + '</ul>';
     }
-    return section('Since last visit', body);
+    return section('Since last visit', body + thesisBox(nonce));
+  }
+
+  /* Report shards run ~130 KB each, so a long absence is capped: the five most
+   * recent days at or after the last visit, and the sentence under the rows
+   * says how many days were actually counted rather than implying "all". */
+  var SINCE_DAYS = 5;
+  var SINCE_ROWS = 20;
+
+  function reportFiles() {
+    var files = isObj(STATE.manifest && STATE.manifest.files) ? STATE.manifest.files : {};
+    var out = [];
+    Object.keys(files).forEach(function (path) {
+      var m = /^data\/reports\/(\d{4}-\d{2}-\d{2})\.json$/.exec(path);
+      if (m) out.push({ date: m[1], path: path });
+    });
+    out.sort(function (a, b) { return b.date.localeCompare(a.date); });
+    return out;
+  }
+
+  function thesisItemCounts(payloads) {
+    var byTicker = {}, order = [], total = 0;
+    payloads.forEach(function (payload) {
+      arr(payload && payload.cards).forEach(function (c) {
+        if (!c || String(c.kind) !== 'thesis_alerts') return;
+        arr(c.items).forEach(function (it) {
+          if (!isObj(it)) return;
+          total++;
+          var t = it.ticker ? String(it.ticker) : '';
+          if (!Object.prototype.hasOwnProperty.call(byTicker, t)) { byTicker[t] = 0; order.push(t); }
+          byTicker[t]++;
+        });
+      });
+    });
+    order.sort(function (a, b) { return (byTicker[b] - byTicker[a]) || a.localeCompare(b); });
+    return { byTicker: byTicker, order: order, total: total };
+  }
+
+  function fillChangedThesis(nonce) {
+    var id = 'tchanged-' + nonce;
+    var box = document.getElementById(id);
+    var prevVisit = STATE.since && STATE.since.lastVisit;
+    if (!box || !prevVisit) return;
+    var cut = String(prevVisit).slice(0, 10);
+    var avail = reportFiles().filter(function (d) { return d.date >= cut; });
+    var days = avail.slice(0, SINCE_DAYS);
+    if (!days.length) return;
+    /* One failed shard must not lose the others, so each one catches its own. */
+    Promise.all(days.map(function (d) {
+      return loadJSON(d.path).catch(function () { return null; });
+    })).then(function (payloads) {
+      if (document.getElementById(id) !== box) return;   /* the view moved on */
+      var counts = thesisItemCounts(payloads);
+      if (!counts.total) return;
+      var rows = counts.order.slice(0, SINCE_ROWS).map(function (t) {
+        var n = counts.byTicker[t];
+        /* "alerts", not "moves": a score-proposal item carries from/to null and
+         * moved no status at all, so counting them as moves would overstate. */
+        var label = n + ' thesis alert' + (n === 1 ? '' : 's');
+        var top = '<span class="dot-slot"></span><span class="row-key">' + esc(t || '\u2014') + '</span>' +
+          '<span class="row-title">' + esc(label) + '</span>';
+        return '<li>' + (t
+          ? row(href(['ticker', t, 'thesis']), top, '')
+          : '<div class="row"><div class="row-top">' + top + '</div></div>') + '</li>';
+      }).join('');
+      var more = counts.order.length > SINCE_ROWS
+        ? ' ' + (counts.order.length - SINCE_ROWS) + ' more ticker' +
+          (counts.order.length - SINCE_ROWS === 1 ? '' : 's') + ' not listed.'
+        : '';
+      /* SINCE_DAYS caps how many shards are read, so "since <cut>" on its own
+       * would claim a window this roll-up never opened. When the cap bites, the
+       * sentence names the oldest day actually counted; days is newest-first,
+       * so that is its last entry. */
+      var oldest = days[days.length - 1].date;
+      var span = (days.length < avail.length)
+        ? ('the ' + days.length + ' most recent of ' + avail.length + ' report days since ' + cut +
+           ' (' + oldest + ' onward)')
+        : (days.length + ' report day' + (days.length === 1 ? '' : 's') + ' since ' + cut);
+      box.innerHTML = '<h3 class="subhead">Thesis alerts</h3><ul class="rows">' + rows + '</ul>' +
+        '<p class="empty">' + esc(counts.total + ' thesis alert' + (counts.total === 1 ? '' : 's') +
+          ' across ' + span + '.' + more) + '</p>';
+      wrapWide(box);
+    }).catch(function () { /* nothing to show is the resting state */ });
+  }
+
+  /* The alert cards' item counts, patched in after paint. Today's cards all
+   * point at ONE shard -- the same path viewCard reads when a card is opened --
+   * and loadJSON caches the promise, so this is not a second fetch. */
+  function fillCardSummaries(nonce, cards, payload) {
+    var byId = {};
+    arr(payload && payload.cards).forEach(function (c) {
+      if (c && c.id !== undefined && c.id !== null) byId[String(c.id)] = c;
+    });
+    cards.forEach(function (c, i) {
+      var node = document.getElementById('tsum-' + nonce + '-' + i);
+      if (!node) return;                       /* the view moved on */
+      var text = itemsSummary(byId[String(c && c.id)]);
+      if (text) node.textContent = text;       /* textContent: nothing to escape */
+    });
+  }
+
+  function todayAfter(nonce, cards) {
+    return function () {
+      var seen = {};
+      cards.forEach(function (c) {
+        var path = c && c.file;
+        if (!path || Object.prototype.hasOwnProperty.call(seen, path)) return;
+        seen[path] = 1;
+        loadJSON(path).then(function (payload) {
+          fillCardSummaries(nonce, cards, payload);
+        }).catch(function () { /* the rows keep their plain meta */ });
+      });
+      fillChangedThesis(nonce);
+    };
   }
 
   function groupByDate(cards) {
@@ -372,10 +596,13 @@
     return order.map(function (d) { return { date: d, cards: map[d] }; });
   }
 
+  var todayNonce = 0;
+
   function viewToday() {
     var m = STATE.manifest;
     var cards = arr(m.today && m.today.cards);
-    var html = changedBlock();
+    var nonce = ++todayNonce;
+    var html = askSlot('desk') + changedBlock(nonce);
 
     if (!cards.length) {
       html += section('Reports', emptyState('No report cards in this build \u2014 the premarket, postmarket, digest and alert jobs had nothing to publish for today.'));
@@ -387,7 +614,8 @@
           '<ul class="rows">' + g.cards.map(function (c) {
             return '<li>' + row(href(['today', c.id]),
               dot(!isRead('cards', c.id)) + '<span class="row-title">' + esc(c.title || c.id) + '</span>',
-              '<span class="eyebrow">' + esc(c.kind || 'report') + '</span><span class="num">' + esc(kb(c.bytes)) + '</span>') + '</li>';
+              '<span class="eyebrow">' + esc(c.kind || 'report') + '</span><span class="num">' + esc(kb(c.bytes)) + '</span>' +
+              '<span class="row-sum" id="tsum-' + esc(nonce) + '-' + esc(cards.indexOf(c)) + '"></span>') + '</li>';
           }).join('') + '</ul>';
       }).join('');
       html += section(unreadCount ? 'Reports \u2014 ' + unreadCount + ' unread' : 'Reports', body);
@@ -403,7 +631,7 @@
       }).join('') + '</ul>'
       : emptyState('No forward calendar in this build \u2014 the transcript pipeline fetches the event calendar live and never stores it, so there is nothing to publish here yet.'));
 
-    return { title: 'Today', html: html };
+    return { title: 'Today', html: html, after: todayAfter(nonce, cards) };
   }
 
   /* A card id is "<kind>:<YYYY-MM-DD>" in every shard this builder writes, so an
@@ -419,6 +647,166 @@
     var path = 'data/reports/' + day + '.json';
     var files = isObj(STATE.manifest.files) ? STATE.manifest.files : {};
     return Object.prototype.hasOwnProperty.call(files, path) ? path : null;
+  }
+
+  /* ------------------------------------------------------- alert cards -- */
+
+  /* The thesis and stage alert jobs publish a `text` block AND, since slice 3,
+   * structured `items`. The structured render IS the screen; `text` stays in a
+   * fold underneath so nothing the email carried is lost. A card from before
+   * the enrichment -- or a day where the item attach found nothing, which is
+   * `items: []`, not a missing key -- renders exactly as it always did, which
+   * is why the gate below is on length, never on presence. */
+
+  function tickerHref(t) { return href(['ticker', t]); }
+
+  /* from -> to, with either half possibly absent: a score-proposal alert moves
+   * no status at all and gets no pill rather than two "unknown" ones. */
+  function statusMove(from, to) {
+    if (!from && !to) return '';
+    if (from && to) return statusPill(from) + '<span class="muted">\u2192</span>' + statusPill(to);
+    return statusPill(to || from);
+  }
+
+  function noteLinkChips(links) {
+    var list = arr(links);
+    if (!list.length) return '';
+    return '<ul class="chips">' + list.map(function (path) {
+      var label = String(path).replace(/^notes\//, '');
+      var route = noteRoute(path);
+      return '<li>' + (route
+        ? '<a class="chip" href="' + esc(route) + '">' + esc(label) + '</a>'
+        : '<span class="chip">' + esc(label) + '</span>') + '</li>';
+    }).join('') + '</ul>';
+  }
+
+  function thesisItemsHTML(items) {
+    return items.map(function (it) {
+      var move = statusMove(it.from, it.to);
+      var n3 = (typeof it.strength3_challenges === 'number' && it.strength3_challenges > 0)
+        ? it.strength3_challenges : 0;
+      var out = '<article class="panel"><p class="row-meta">' +
+        (it.ticker ? '<a class="chip" href="' + esc(href(['ticker', String(it.ticker), 'thesis'])) + '">' +
+          esc(it.ticker) + '</a>' : '') +
+        move +
+        (n3 ? '<span class="pill pill-bad">' + esc(n3 + ' at strength 3 \u00b7 all time') + '</span>' : '') + '</p>' +
+        '<p>' + esc(it.statement || it.assumption_id || 'Untitled assumption') + '</p>' +
+        '<p class="empty mono">' + esc(it.assumption_id || '') + '</p>' +
+        evidenceFold(it.evidence, false) +
+        noteLinkChips(it.note_links);
+      return out + '</article>';
+    }).join('');
+  }
+
+  var STAGE_KIND_LABEL = { stage2: 'stage 2', stage3: 'stage 3', stage4: 'stage 4', gate: 'breadth gate' };
+
+  /* A gate crossing has no stage number and no ticker at all (it is a fact
+   * about the theme, not about one company), so the badge reads off `kind`
+   * first and only falls back to the number. */
+  function stageBadge(it) {
+    var kind = it.kind ? String(it.kind) : '';
+    var label = STAGE_KIND_LABEL[kind] ||
+      (typeof it.stage === 'number' ? 'stage ' + it.stage : 'stage move');
+    var cls = kind === 'gate' ? 'pill-warn'
+      : (typeof it.stage === 'number' && it.stage >= 4 ? 'pill-ok' : 'pill-accent');
+    return '<span class="pill ' + cls + '">' + esc(label) + '</span>';
+  }
+
+  /* `theme` IS the slug the theme route takes; theme_link is only the fallback
+   * for a card written before the field existed. */
+  function themeSlug(it) {
+    if (it.theme) return String(it.theme);
+    var m = /^notes\/themes\/(.+)\.md$/.exec(String(it.theme_link || ''));
+    return m ? m[1] : '';
+  }
+
+  /* The prose line already ends in "-> notes/themes/<slug>.md", which is the
+   * link this card renders as a chip of its own -- printing the path again is
+   * noise on a phone. */
+  function stageLine(line) {
+    return String(line).replace(/\s*\u2192\s*notes\/themes\/\S+\.md\s*$/, '');
+  }
+
+  function exchangeBlock(ex) {
+    if (!isObj(ex)) return '';
+    var who = [ex.speaker_name, ex.speaker_firm].filter(function (v) { return !!v; }).join(', ');
+    var out = '<p class="row-meta"><span class="mono">' + esc(ex.date || '\u2014') + '</span>' +
+      (ex.event_name ? '<span>' + esc(ex.event_name) + '</span>' : '') +
+      (who ? '<span>' + esc(who) + '</span>' : '') +
+      (safeURL(ex.view_url) ? extLink(ex.view_url, 'source', 'chip') : '') + '</p>';
+    if (ex.question) out += quoteBlock(capped(ex.question, QA_CAP), 'Q');
+    if (ex.answer) out += quoteBlock(capped(ex.answer, QA_CAP), 'A');
+    if (!ex.question && !ex.answer) {
+      out += emptyState('The cited exchange carries no question or answer text.');
+    }
+    return out;
+  }
+
+  /* "CY2026-Q3: 3 banks \u00b7 5 cos \u00b7 12 disclosing (prev CY2026-Q2 2 \u00b7 3)". There is
+   * no prev_n_disclosing in the row, so the parenthetical carries two numbers,
+   * never three, and each number is printed only when it is a number. */
+  function trendLine(tr) {
+    if (!isObj(tr)) return '';
+    var now = [];
+    if (typeof tr.n_banks === 'number') now.push(tr.n_banks + ' banks');
+    if (typeof tr.n_companies === 'number') now.push(tr.n_companies + ' cos');
+    if (typeof tr.n_disclosing === 'number') now.push(tr.n_disclosing + ' disclosing');
+    if (!now.length) return '';
+    var line = (tr.current_quarter ? tr.current_quarter + ': ' : '') + now.join(' \u00b7 ');
+    var prev = [];
+    if (typeof tr.prev_n_banks === 'number') prev.push(tr.prev_n_banks);
+    if (typeof tr.prev_n_companies === 'number') prev.push(tr.prev_n_companies);
+    if (prev.length) {
+      line += ' (prev ' + (tr.prev_quarter ? tr.prev_quarter + ' ' : '') + prev.join(' \u00b7 ') + ')';
+    }
+    return '<p class="trendline">' + esc(line) + '</p>';
+  }
+
+  function stageItemsHTML(items) {
+    return items.map(function (it) {
+      var slug = themeSlug(it);
+      var t1 = arr(it.tier_names && it.tier_names.tier_1);
+      var t2 = arr(it.tier_names && it.tier_names.tier_2);
+      var out = '<article class="panel"><p class="row-meta">' + stageBadge(it) +
+        (slug ? '<a class="chip" href="' + esc(href(['theme', slug])) + '">' + esc(slug) + '</a>' : '') +
+        (it.ticker ? '<a class="chip" href="' + esc(href(['ticker', String(it.ticker)])) + '">' +
+          esc(it.ticker) + '</a>' : '') + '</p>';
+      if (it.line) out += md(stageLine(it.line));
+      out += exchangeBlock(it.exchange) + trendLine(it.trend);
+      if (t1.length || t2.length) {
+        /* Twenty-odd tickers is a wall on a 390px screen, so the names fold. */
+        out += fold('Tier 1 and 2 names on this theme', t1.length + t2.length,
+          (t1.length ? '<p class="eyebrow">Tier 1</p>' + chips(t1, tickerHref) : '') +
+          (t2.length ? '<p class="eyebrow">Tier 2</p>' + chips(t2, tickerHref) : ''), false);
+      }
+      return out + '</article>';
+    }).join('');
+  }
+
+  var CARD_ITEMS = { thesis_alerts: thesisItemsHTML, stage_alerts: stageItemsHTML };
+
+  /* "3 assumptions \u00b7 2 tickers" / "3 events \u00b7 3 themes" -- the one-line summary a
+   * list row shows for an alert card, from the card file (the manifest summary
+   * carries no items). Empty string when the card has none, so a row that
+   * cannot be summarised simply shows nothing. */
+  function itemsSummary(card) {
+    if (!isObj(card)) return '';
+    var items = arr(card.items).filter(isObj);
+    if (!items.length) return '';
+    var stage = String(card.kind || '') === 'stage_alerts';
+    var key = stage ? 'theme' : 'ticker';
+    var seen = {}, distinct = 0;
+    items.forEach(function (it) {
+      var v = it[key];
+      if (v === null || v === undefined || v === '') return;
+      var k = String(v);
+      if (!Object.prototype.hasOwnProperty.call(seen, k)) { seen[k] = 1; distinct++; }
+    });
+    var unit = stage ? 'event' : 'assumption';
+    var groupUnit = stage ? 'theme' : 'ticker';
+    var out = items.length + ' ' + unit + (items.length === 1 ? '' : 's');
+    if (distinct) out += ' \u00b7 ' + distinct + ' ' + groupUnit + (distinct === 1 ? '' : 's');
+    return out;
   }
 
   function viewCard(parts) {
@@ -445,8 +833,13 @@
         '<span class="mono">' + esc(kb(card.bytes)) + '</span></p>';
 
       var secs = arr(card.sections);
+      var items = arr(card.items).filter(isObj);
+      var itemsFn = CARD_ITEMS[String(card.kind || '')];
       var body;
-      if (!card.text && !secs.length) {
+      if (itemsFn && items.length) {
+        body = itemsFn(items) +
+          fold('Full alert text', kb(String(card.text || '').length), stream(card.text || ''), false);
+      } else if (!card.text && !secs.length) {
         body = emptyState('This card is listed in the manifest but carries no text in the report file.');
       } else if (secs.length) {
         /* Sections are extracts of `text`, so the full stream goes in a fold of
@@ -564,7 +957,7 @@
       out += '</p>';
       out += chips(meta.themes, function (slug) { return href(['theme', slug]); });
     }
-    return out;
+    return out + askSlot('ticker', id);
   }
 
   /* The profile note is note-shaped (same id/rel/body keys), so it joins the note
@@ -611,7 +1004,8 @@
       (note.date ? ' \u00b7 <span class="mono">' + esc(note.date) + '</span>' : '') +
       (note.period ? ' \u00b7 <span class="mono">' + esc(note.period) + '</span>' : '') +
       ' \u00b7 <span class="chip">' + esc(note.provenance || 'unknown') + '</span>' +
-      ' \u00b7 <span class="mono">notes/' + esc(note.rel || note.id) + '</span></p>';
+      ' \u00b7 <span class="mono">notes/' + esc(note.rel || note.id) + '</span></p>' +
+      askSlot('note', note.id);
     if (!note.body) {
       var secs = arr(note.sections);
       return head + (secs.length
@@ -664,7 +1058,7 @@
       '<p class="empty">' + esc(win + ' \u00b7 last evidence ' + (p.last_evidence || 'none recorded')) + '</p></div>';
   }
 
-  function assumptionCard(a) {
+  function assumptionCard(a, evidence) {
     if (!isObj(a)) return '';
     var confirmedBy = arr(a.confirmed_by), challengedBy = arr(a.challenged_by);
     var out = '<article class="panel">' +
@@ -673,7 +1067,10 @@
       (a.draft ? '<span class="chip">draft</span>' : '') + '</p>' +
       '<p>' + esc(a.statement || a.id || 'Untitled assumption') + '</p>' +
       '<p class="empty mono">' + esc(a.id || '') + (a.derived_from ? ' \u00b7 ' + esc(a.derived_from) : '') + '</p>' +
-      pressureBars(a.pressure);
+      pressureBars(a.pressure) +
+      /* The scored rows behind the pressure bars: what moved this assumption,
+       * in the order the scorer ranked it. */
+      evidenceFold(evidence, false);
     if (confirmedBy.length) {
       out += fold('Confirmed by', confirmedBy.length, '<ul class="rows">' + confirmedBy.map(function (t) {
         return '<li class="row">' + esc(t) + '</li>';
@@ -727,8 +1124,14 @@
       var summary = Object.keys(counts).sort().map(function (s) {
         return '<span class="pill ' + (STATUS_PILL[s] || 'pill-neutral') + '">' + esc(counts[s] + ' ' + s) + '</span>';
       }).join(' ');
+      /* thesis.evidence is keyed by assumption id and may be missing entirely
+       * (a bundle built before the evidence index) or carry [] for an
+       * assumption nothing has scored yet -- both land on the same fold. */
+      var evidence = isObj(thesis.evidence) ? thesis.evidence : {};
       html += section('Assumptions \u2014 ' + assumptions.length,
-        '<p class="row-meta">' + summary + '</p>' + assumptions.map(assumptionCard).join(''));
+        '<p class="row-meta">' + summary + '</p>' + assumptions.map(function (a) {
+          return assumptionCard(a, a && a.id !== undefined ? evidence[String(a.id)] : null);
+        }).join(''));
     }
 
     if (thesis.body) {
@@ -888,7 +1291,10 @@
         return '<li>' + row(href(['more', it[0]]),
           '<span class="dot-slot"></span><span class="row-title">' + esc(it[1]) + '</span>',
           '<span>' + esc(it[2]) + '</span>') + '</li>';
-      }).join('') + '</ul>'
+      }).join('') +
+        /* The Ask row is not in `items`: it exists only when the capability
+         * resolved, so ask.js renders it into this slot, outside the list. */
+        '</ul>' + askSlot('more')
     };
   }
 
@@ -966,6 +1372,13 @@
 
   var renderToken = 0;
 
+  /* Run after every paint, with (viewElement, routeParts). ask.js is the only
+   * subscriber today: it aborts any in-flight call (a paint IS a navigation or
+   * a re-render, and the contract says stop there) and re-mounts its buttons
+   * into the fresh view's `.askslot` placeholders. A throwing hook is caught
+   * here for the same reason `res.after` is: it must not blank the screen. */
+  var paintHooks = [];
+
   function paint(res, parts) {
     var view = document.getElementById('view');
     document.getElementById('page-title').textContent = (res && res.title) || 'Research Desk';
@@ -983,6 +1396,9 @@
     wrapWide(view);
     if (res && typeof res.after === 'function') {
       try { res.after(view); } catch (e) { /* a broken hook must not blank the screen */ }
+    }
+    for (var h = 0; h < paintHooks.length; h++) {
+      try { paintHooks[h](view, parts || []); } catch (e) { /* same */ }
     }
     window.scrollTo(0, 0);
     try { view.focus({ preventScroll: true }); } catch (e) { /* older WebKit */ }
@@ -1084,10 +1500,19 @@
     esc: esc, arr: arr, isObj: isObj, href: href, kb: kb,
     chips: chips, emptyState: emptyState, section: section, fold: fold, md: md,
     row: row, dot: dot, wrapWide: wrapWide,
-    loadJSON: loadJSON, findTicker: findTicker,
+    loadJSON: loadJSON, findTicker: findTicker, bundlePath: bundlePath,
+    allNotes: allNotes, askSlot: askSlot, paintHooks: paintHooks,
     safeURL: safeURL, extLink: extLink, isRead: isRead,
+    itemsSummary: itemsSummary,
     STATE: STATE, views: views, tickerTabs: tickerTabs, morePages: morePages,
-    controls: controls, actions: actions
+    controls: controls, actions: actions,
+    /* Re-runs the router against the CURRENT hash. ask.js's only consumer: a
+     * deep link or reload on #/more/ask can land before use("sample") resolves
+     * and morePages.ask exists, so the router's own "no such screen" state
+     * gets painted and then never revisited (no hashchange fires for it). Once
+     * the capability resolves and registers the route, calling this repaints
+     * the same hash through the now-complete `views`/`morePages` tables. */
+    rerender: render
   };
 
   function boot() {
