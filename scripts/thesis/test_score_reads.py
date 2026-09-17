@@ -118,6 +118,61 @@ def test_no_recs_note_yields_no_rows():
     assert SR.parse_recs(text) == []
 
 
+# RIS5 A2 fix round 1: section identification by heading TITLE first, numeric position
+# only as a fallback for a BLANK title -- never for a heading with a real, non-matching
+# title. Fixtures below reproduce the real headings (titles verbatim, bodies shortened)
+# of the three non-canonical conference notes the A2 20-note agreement check found:
+# MRVL/20260602-conf-computex-murphy.md, GOOGL/20260422-conf-cloud-next.md, and
+# NVDA/20260601-conf-gtc-taipei.md -- none of which use the canonical
+# AI-positioning/competitive-advantage/investor-interest section titles anywhere, so all
+# three axes must now map to NOTHING (previously score_reads and structure_reads both
+# misread these notes' "## 5."/"## 6."/"## 7." headings by number alone).
+
+def test_noncanonical_mrvl_computex_maps_to_nothing():
+    """Real headings: '## 5. Market reaction', '## 6. Cross-ticker signal extraction
+    (for synthesis cross-reading)', '## 7. Operator-relevant observations' -- none match
+    any axis title pattern, so no section/row for this note at all."""
+    text = (FIX / "noncanonical_mrvl_computex.md").read_text()
+    assert SR._sections(text) == {}
+    assert SR.parse_recs(text) == []
+
+
+def test_noncanonical_googl_cloudnext_maps_to_nothing():
+    """Real headings: '## 5. Quantified guidance and TAM claims', '## 6. Strategic
+    positioning statements', '## 7. Cross-ticker implications' -- none match."""
+    text = (FIX / "noncanonical_googl_cloudnext.md").read_text()
+    assert SR._sections(text) == {}
+    assert SR.parse_recs(text) == []
+
+
+def test_noncanonical_nvda_taipei_maps_to_nothing():
+    """Real headings: '## 5. Operator-relevant observations', '## 6. Sourcing &
+    coverage gaps' -- neither matches; in particular the informal "(anchor 5/5/5)"
+    shorthand inside §5's body must NOT be read as an ai_positioning score just because
+    it sits at position 5 -- the section itself must not exist."""
+    text = (FIX / "noncanonical_nvda_taipei.md").read_text()
+    assert SR._sections(text) == {}
+    assert SR.parse_recs(text) == []
+
+
+def test_title_found_at_nonstandard_heading_number():
+    """Positive case: a 'Competitive advantage signal' heading at position 8 (not 6) is
+    still found and scored correctly -- title identification is number-independent."""
+    text = (FIX / "title_at_nonstandard_number.md").read_text()
+    assert SR.parse_recs(text) == [
+        {"axis": "competitive_advantage.innovation_rate", "verb": "hold", "value": "3"},
+        {"axis": "competitive_advantage.distribution", "verb": "hold", "value": "3"},
+        {"axis": "competitive_advantage.overall", "verb": "hold", "value": "3"},
+    ]
+
+
+def test_blank_title_heading_falls_back_to_numeric_position():
+    """A bare '## 5.' with no title text at all still resolves via the numeric fallback
+    (the ONLY case the fallback applies to)."""
+    text = (FIX / "blank_title_fallback.md").read_text()
+    assert SR.parse_recs(text) == [{"axis": "ai_positioning", "verb": "hold", "value": "4"}]
+
+
 def test_parse_note_id_earnings_and_conf():
     assert SR.parse_note_id("COHR/20260904-2Q27.md") == ("COHR", "2Q27", "2026-09-04")
     assert SR.parse_note_id("COHR/20260904-conf-analyst-day.md") == ("COHR", None, "2026-09-04")
@@ -272,6 +327,11 @@ if __name__ == "__main__":
     test_line_anchored_hedge_in_reasoning_never_wins_over_true_recommendation()
     test_line_anchored_recap_before_true_recommendation_never_wins()
     test_no_recs_note_yields_no_rows()
+    test_noncanonical_mrvl_computex_maps_to_nothing()
+    test_noncanonical_googl_cloudnext_maps_to_nothing()
+    test_noncanonical_nvda_taipei_maps_to_nothing()
+    test_title_found_at_nonstandard_heading_number()
+    test_blank_title_heading_falls_back_to_numeric_position()
     test_parse_note_id_earnings_and_conf(); test_build_rows_shape_and_applied()
     test_append_rows_is_idempotent(); test_iter_note_paths_finds_amat()
     test_rebuild_requires_explicit_out_or_yes()

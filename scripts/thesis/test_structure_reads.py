@@ -497,6 +497,87 @@ def test_main_returns_1_when_a_batch_fails():
     assert rc == 1
 
 
+# ───────────────────────────── recode_notes (RIS5 A2 fix round 1) ─────────────────────────────
+
+def test_recode_notes_deletes_matching_rows_then_recodes_only_those():
+    tmp_notes = Path(tempfile.mkdtemp())
+    tdir = tmp_notes / "ZQTA"
+    tdir.mkdir()
+    note_path = tdir / "20260101-1Q26.md"
+    note_path.write_text(NOTE_A, encoding="utf-8")
+    note_id = "ZQTA/20260101-1Q26.md"
+    out = Path(tempfile.mkdtemp()) / "reads.jsonl"
+
+    stale_rows = [
+        SRD.build_row(note_id, {"axis": "ai_positioning", "score": 1, "direction": "flat",
+                                "magnitude": 0, "reason": "stale", "quote": "stale"}, "ts0"),
+        SRD.build_row("OTHER/20260101-1Q26.md", {"axis": "ai_positioning", "score": 3,
+                                                  "direction": "flat", "magnitude": 0,
+                                                  "reason": "keep", "quote": "keep"}, "ts0"),
+    ]
+    SRD.append_rows(out, stale_rows)
+
+    axes = SRD.axis_texts(NOTE_A)
+    def stub(prompt, timeout=SRD.CLAUDE_TIMEOUT_S):
+        arr = [{"note_id": note_id, "axis": axis, "score": 4, "direction": "flat",
+                "magnitude": 0, "reason": "fresh", "quote": text[:20]}
+               for axis, text in axes.items()]
+        return json.dumps(arr), 0.001
+    orig_run, orig_notes = SRD._run_claude, SRD.NOTES
+    SRD._run_claude = stub
+    SRD.NOTES = tmp_notes
+    try:
+        summary = SRD.recode_notes([note_id], out)
+    finally:
+        SRD._run_claude = orig_run
+        SRD.NOTES = orig_notes
+
+    assert summary["removed"] == 1
+    assert summary["written"] == 5
+    lines = [json.loads(l) for l in out.read_text().splitlines() if l.strip()]
+    assert len(lines) == 6  # 1 kept (OTHER, untouched) + 5 freshly recoded
+    kept = [l for l in lines if l["note_id"] == "OTHER/20260101-1Q26.md"]
+    assert len(kept) == 1 and kept[0]["reason"] == "keep"
+    fresh = [l for l in lines if l["note_id"] == note_id]
+    assert len(fresh) == 5 and all(l["reason"] == "fresh" for l in fresh)
+
+
+def test_recode_notes_when_note_now_maps_to_nothing_removes_without_readding():
+    """The real fix-round-1 scenario: stale rows for a mis-scoped note are deleted, and
+    re-coding produces ZERO new rows (and makes NO claude -p call at all) because the
+    note's real section title doesn't match any axis post-fix."""
+    tmp_notes = Path(tempfile.mkdtemp())
+    tdir = tmp_notes / "ZQTA"
+    tdir.mkdir()
+    note_path = tdir / "20260101-conf-x.md"
+    note_path.write_text("## 5. Market reaction\n\n- stock surge\n", encoding="utf-8")
+    note_id = "ZQTA/20260101-conf-x.md"
+    out = Path(tempfile.mkdtemp()) / "reads.jsonl"
+    stale = [SRD.build_row(note_id, {"axis": "ai_positioning", "score": 5, "direction": "flat",
+                                     "magnitude": 0, "reason": "stale-bad-map",
+                                     "quote": "stock surge"}, "ts0")]
+    SRD.append_rows(out, stale)
+
+    calls = []
+    def stub(prompt, timeout=SRD.CLAUDE_TIMEOUT_S):
+        calls.append(1)
+        return "[]", 0.0
+    orig_run, orig_notes = SRD._run_claude, SRD.NOTES
+    SRD._run_claude = stub
+    SRD.NOTES = tmp_notes
+    try:
+        summary = SRD.recode_notes([note_id], out)
+    finally:
+        SRD._run_claude = orig_run
+        SRD.NOTES = orig_notes
+
+    assert calls == [], "note has zero axes post-fix -> no batch, no claude -p call at all"
+    assert summary["removed"] == 1
+    assert summary["written"] == 0
+    lines = [json.loads(l) for l in out.read_text().splitlines() if l.strip()]
+    assert lines == []
+
+
 # ───────────────────────────── CLI guards (--rebuild) ─────────────────────────────
 
 def test_rebuild_requires_explicit_out_or_yes():
@@ -546,6 +627,8 @@ if __name__ == "__main__":
     test_process_notes_counts_batch_failures_and_omitted_never_reports_false_clean()
     test_call_batch_wrapper_regression_propagates_never_retried()
     test_main_returns_1_when_a_batch_fails()
+    test_recode_notes_deletes_matching_rows_then_recodes_only_those()
+    test_recode_notes_when_note_now_maps_to_nothing_removes_without_readding()
     test_rebuild_requires_explicit_out_or_yes()
     test_rebuild_refuses_ticker_filter()
     print("OK test_structure_reads")

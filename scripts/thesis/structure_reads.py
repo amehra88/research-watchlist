@@ -522,6 +522,38 @@ def process_notes(paths, *, out_path: Path | str | None = None, batch_size: int 
             "drop_reasons": drop_reasons, "batch_failures": batch_failures, "cost": cost_total}
 
 
+def recode_notes(note_ids: list[str], out_path: Path, *, batch_size: int = BATCH_SIZE,
+                 logger=print) -> dict:
+    """Targeted re-code after a section-extraction fix (RIS5 A2 fix round 1), without
+    re-touching the rest of the corpus: delete every existing `out_path` row whose
+    note_id is in `note_ids` (repo-relative, e.g.
+    "MRVL/20260602-conf-computex-murphy.md"), then re-run process_notes on exactly those
+    notes and append whatever it produces (0 rows is a valid, expected outcome -- e.g. a
+    note whose mis-scoped sections no longer exist at all post-fix).
+
+    Returns process_notes()'s summary dict plus `"removed"` (rows deleted in step 1).
+    Raises SessionLimitError/ClaudeWrapperRegression same as process_notes -- the CLI
+    catches those, same as --backfill."""
+    note_id_set = set(note_ids)
+    removed = 0
+    if out_path.exists():
+        kept_lines = []
+        for line in out_path.read_text(encoding="utf-8").splitlines():
+            stripped = line.strip()
+            if not stripped:
+                continue
+            row = json.loads(stripped)
+            if row.get("note_id") in note_id_set:
+                removed += 1
+                continue
+            kept_lines.append(stripped)
+        out_path.write_text("".join(l + "\n" for l in kept_lines), encoding="utf-8")
+    paths = [NOTES / nid for nid in note_ids]
+    summary = process_notes(paths, out_path=out_path, batch_size=batch_size, logger=logger)
+    summary["removed"] = removed
+    return summary
+
+
 # ───────────────────────────── CLI ─────────────────────────────
 
 def main(argv=None) -> int:
@@ -537,6 +569,12 @@ def main(argv=None) -> int:
     ap.add_argument("--since", help="YYYY-MM-DD; only notes dated on/after this (incremental mode)")
     ap.add_argument("--out", default=None, help="output jsonl path (default: state/thesis/reads.jsonl)")
     ap.add_argument("--yes", action="store_true", help="confirm --rebuild against the default canonical --out path")
+    ap.add_argument("--notes", action="append",
+                    help="repeat: recode only this note_id (repo-relative, e.g. "
+                         "TICKER/20260101-1Q26.md). Deletes existing rows for these notes first, then "
+                         "re-codes them -- a targeted re-run after a section-extraction fix, without "
+                         "touching the rest of the corpus. Mutually exclusive with --rebuild/--ticker/"
+                         "--since/--dry-run.")
     a = ap.parse_args(argv)
     if not a.backfill:
         ap.error("only --backfill is supported")
@@ -545,7 +583,25 @@ def main(argv=None) -> int:
             ap.error("--rebuild requires an explicit --out, or --yes to confirm rebuilding the default canonical path")
         if a.ticker:
             ap.error("--rebuild regenerates the whole file; it cannot be combined with --ticker")
+    if a.notes and (a.rebuild or a.ticker or a.since or a.dry_run):
+        ap.error("--notes cannot be combined with --rebuild/--ticker/--since/--dry-run")
     out_path = Path(a.out) if a.out is not None else READS_PATH
+
+    if a.notes:
+        try:
+            summary = recode_notes(a.notes, out_path, logger=print)
+        except (SessionLimitError, claude_p.ClaudeWrapperRegression) as e:
+            print(f"ABORT: {e}")
+            return 1
+        print(f"removed: {summary['removed']}  batches: {summary['batches']}  "
+             f"notes: {summary['notes']}  items: {summary['items']}")
+        print(f"written: {summary['written']}  dupes: {summary['dupes']}  dropped: {summary['dropped']}  "
+             f"omitted: {summary['omitted']}")
+        if summary["drop_reasons"]:
+            print(f"drop reasons: {dict(sorted(summary['drop_reasons'].items()))}")
+        print(f"cost: ${summary['cost']:.4f}")
+        print(f"-> {out_path}")
+        return 1 if summary["batch_failures"] else 0
 
     paths = iter_note_paths(a.ticker)
     if a.since:

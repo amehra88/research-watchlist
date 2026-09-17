@@ -141,18 +141,74 @@ def _match_rec(text: str) -> tuple[str, str] | None:
     return _search(text)
 
 
-# Same "## 5|6|7." section split match_evidence.lift_score_recs has always used.
-_SECTION_RE = re.compile(r"## (5|6|7)\..*?(?=\n## |\Z)", re.S)
 _SUBBLOCK_LABELS = (
     ("Innovation rate", "competitive_advantage.innovation_rate"),
     ("Distribution", "competitive_advantage.distribution"),
     ("Overall", "competitive_advantage.overall"),
 )
 
+# Every "## N. Title" heading in a note, any N (not just 5/6/7) -- title-first
+# identification (RIS5 A2 fix round 1) has to be able to find e.g. "AI positioning
+# signal" wherever it actually sits, not assume it is always at position 5.
+_HEADING_RE = re.compile(r"^## (\d+)\.[ \t]*(.*)$", re.M)
+
+# heading-key -> title regex. Matched against the heading TITLE only (never the section
+# body), case-insensitive. Order doesn't matter across axes (a real note only carries one
+# heading per topic), but within one axis the FIRST matching heading in document order
+# wins (see _sections()).
+_TITLE_PATTERNS = (
+    ("5", re.compile(r"ai.?positioning", re.I)),
+    ("6", re.compile(r"competitive|moat|competition", re.I)),
+    ("7", re.compile(r"investor.?interest", re.I)),
+)
+
+
+def _all_headings(note_text: str) -> list[tuple[str, str, int]]:
+    """[(number, title, start_offset)] for every "## N. Title" heading, in document order."""
+    return [(m.group(1), m.group(2).strip(), m.start()) for m in _HEADING_RE.finditer(note_text)]
+
+
+def _section_text_from(note_text: str, start: int) -> str:
+    """Section text from a heading's start offset up to (not including) the next
+    "\\n## " heading, or end of document -- same boundary the old numeric-only
+    _SECTION_RE used."""
+    m = re.search(r"\n## ", note_text[start:])
+    end = start + m.start() if m else len(note_text)
+    return note_text[start:end]
+
 
 def _sections(note_text: str) -> dict[str, str]:
-    """Split a note body into its ## 5./6./7. sections, keyed by leading digit."""
-    return {m.group(1): m.group(0) for m in _SECTION_RE.finditer(note_text)}
+    """The ai_positioning / competitive-advantage / investor-interest sections, keyed
+    "5"/"6"/"7" (unchanged key shape -- every existing caller, parse_recs and
+    structure_reads.axis_texts, reads sec["5"]/sec["6"]/sec["7"]).
+
+    Sections are identified by HEADING TITLE first (RIS5 A2 fix round 1): a heading
+    matching /ai.?positioning/i, /competitive|moat|competition/i, or
+    /investor.?interest/i is used regardless of its number -- a conference note whose
+    real "## 5." heading is "Market reaction" is no longer misread as the AI-positioning
+    section just because it happens to sit at position 5.
+
+    Numeric position ("## 5."/"## 6."/"## 7.") is used ONLY as a fallback for a heading
+    that carries NO title text at all (a bare "## 5." with nothing after the number) --
+    never for a heading with a real, non-matching title. A heading like "Market reaction"
+    or "Cross-ticker implications" has a real title that matches nothing, so it maps to
+    NOTHING (no row), not to an axis by number.
+    """
+    headings = _all_headings(note_text)
+    out: dict[str, str] = {}
+    for key, pat in _TITLE_PATTERNS:
+        for num, title, start in headings:
+            if pat.search(title):
+                out[key] = _section_text_from(note_text, start)
+                break
+    for key in ("5", "6", "7"):
+        if key in out:
+            continue
+        for num, title, start in headings:
+            if num == key and not title:
+                out[key] = _section_text_from(note_text, start)
+                break
+    return out
 
 
 def parse_recs(note_text: str) -> list[dict]:
