@@ -135,11 +135,12 @@ if _here_str not in sys.path:
     sys.path.insert(0, _here_str)
 import budget                  # noqa: E402
 import etf_trades as etf        # noqa: E402
-import identity                  # noqa: E402
-import reports as rp              # noqa: E402
-import search_index as si          # noqa: E402
-import state_bundles as sb          # noqa: E402
-import vault                         # noqa: E402
+import evidence as ev             # noqa: E402
+import identity                    # noqa: E402
+import reports as rp                # noqa: E402
+import search_index as si            # noqa: E402
+import state_bundles as sb            # noqa: E402
+import vault                           # noqa: E402
 
 
 def log(msg: str) -> None:
@@ -370,12 +371,21 @@ def _stage_tickers_ingest(ctx: sb.Ctx, sb_paths: sb.Paths, shared: dict,
         universe = identity.load_universe(sb_paths.watchlist, sb_paths.notes)
         names = identity.display_names(sb_paths.watchlist, notes_dir=sb_paths.notes)
         known_tickers, known_themes = _known_sets(refs)
+        # loaded once for the whole ticker loop below (2,685 rows as of
+        # 2026-09-16) -- evidence.py's own docstring on why this is cheap
+        # relative to re-reading it per ticker.
+        evidence_index = ev.load_index(ev.Paths(thesis_state=sb_paths.thesis_state))
 
         bundles: dict = {}
         n_tickers = n_pvt = n_skipped = 0
         for e in universe:
             tk = e["ticker"]
             b = vault.ticker_bundle(tk, refs, names, known_tickers, known_themes, meta=e)
+            # BEFORE the file is written below -- see evidence.attach_thesis's
+            # own docstring for why this ordering keeps the manifest's file
+            # hashing (Task 4, state_bundles.manifest(), run at the LAST
+            # stage) intact.
+            ev.attach_thesis(b, evidence_index)
             bundles[tk] = b
             has_notes = bool(b["notes"]) or bool(b["thesis"]["fm_without_body"]) or bool(b["profile"])
             if not has_notes:

@@ -1,0 +1,2 @@
+{"assumption_id": "grp_assumption_a", "from": "open", "to": "challenged", "evidence_ids": ["x"], "ts": "2026-01-05T09:00:05+00:00", "ticker": "GROUPED", "kind": "status"}
+{"assumption_id": "no_evidence_assumption", "from": "open", "to": "confirmed", "evidence_ids": ["y"], "ts": "2026-01-05T09:00:20+00:00", "ticker": "NOEV", "kind": "status"}

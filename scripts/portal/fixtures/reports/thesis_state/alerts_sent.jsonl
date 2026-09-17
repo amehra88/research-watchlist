@@ -1,2 +1,8 @@
 {"id": "status:FIXTURE_TICKER:fake_assumption:confirmed:2026-01-05", "ticker": "FIXTURE_TICKER", "ts": "2026-01-05T14:30:00+00:00"}
 {"id": "status:FIXTURE_TICKER3:fake_assumption3:confirmed:2026-01-04", "ticker": "FIXTURE_TICKER3", "ts": "2026-01-04T14:30:00+00:00"}
+{"id": "chal3:GROUPED:notes/GROUPED/20260104-1Q26.md#4b:grp_assumption_a", "ticker": "GROUPED", "ts": "2026-01-05T09:00:00+00:00"}
+{"id": "status:GROUPED:grp_assumption_a:challenged:2026-01-05", "ticker": "GROUPED", "ts": "2026-01-05T09:00:05+00:00"}
+{"id": "note:GROUPED:20260104-1Q26.md", "ticker": "GROUPED", "ts": "2026-01-05T09:00:10+00:00"}
+{"id": "score:GROUPED:ai_positioning:4", "ticker": "GROUPED", "ts": "2026-01-05T09:00:15+00:00"}
+{"id": "status:NOEV:no_evidence_assumption:confirmed:2026-01-05", "ticker": "NOEV", "ts": "2026-01-05T09:00:20+00:00"}
+{"id": "note:ONLYNOTE:20260110-file.md", "ticker": "ONLYNOTE", "ts": "2026-01-10T09:00:00+00:00"}

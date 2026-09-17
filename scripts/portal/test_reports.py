@@ -32,6 +32,7 @@ BASE_PATHS = rp.Paths(
     is_reports=FIXTURES / "is",
     podcasts_reports=FIXTURES / "podcasts",
     logs=FIXTURES / "logs",
+    notes=FIXTURES / "notes",
     thesis_state=FIXTURES / "thesis_state",
     topics_state=FIXTURES / "topics_ok",
     transcripts_state=FIXTURES / "transcripts_ok",
@@ -48,6 +49,7 @@ BASE_PATHS = rp.Paths(
 DEGRADE_PATHS = rp.Paths(
     is_reports=FIXTURES / "is",
     podcasts_reports=FIXTURES / "podcasts", logs=FIXTURES / "logs",
+    notes=FIXTURES / "notes",
     thesis_state=FIXTURES / "thesis_state",
     topics_state=FIXTURES / "topics_degrade",
     transcripts_state=FIXTURES / "does_not_exist",
@@ -185,14 +187,87 @@ def test_build_reports_writes_a_file_and_returns_summaries():
 
 # ───────────────────────── thesis_alerts: fallback join ─────────────────────────
 
-def test_thesis_alerts_falls_back_to_id_when_not_in_live_alert_events():
+def test_thesis_alerts_falls_back_to_assumption_id_when_not_in_live_alert_events():
     cards = rp.day_cards(DAY1, BASE_PATHS)
     ta = next((c for c in cards if c["kind"] == "thesis_alerts"), None)
     assert ta is not None, cards
     assert "FIXTURE_TICKER" in ta["text"]
-    # This fixture id is invented and can never appear in the live repo's real
-    # alert_events() output, so the join must fall back to the raw id text.
-    assert "status:FIXTURE_TICKER:fake_assumption:confirmed:2026-01-05" in ta["text"]
+    item = next(i for i in ta["items"] if i["ticker"] == "FIXTURE_TICKER")
+    # This fixture id/ticker/assumption is invented and can never appear in the
+    # live repo's real alert_events() output or its notes/ tree, so both the
+    # `from` join and the statement lookup must fall back cleanly: `statement`
+    # falls back to the assumption id itself (no notes/FIXTURE_TICKER/_thesis.md
+    # exists), and `from` stays None (no matching changes.jsonl row).
+    assert item["assumption_id"] == "fake_assumption", item
+    assert item["statement"] == "fake_assumption", item
+    assert item["to"] == "confirmed" and item["from"] is None, item
+    assert item["evidence"] == [] and item["strength3_challenges"] == 0, item
+    assert "fake_assumption" in ta["text"] and "confirmed" in ta["text"]
+
+
+# ───────────────────────── thesis_alerts: items (slice 3 Task 1) ─────────────────────────
+
+def test_thesis_alert_card_groups_rows_into_one_item_with_statement_and_evidence():
+    cards = rp.day_cards(DAY1, BASE_PATHS)
+    ta = next(c for c in cards if c["kind"] == "thesis_alerts")
+    grouped = [i for i in ta["items"]
+               if i["ticker"] == "GROUPED" and i["assumption_id"] == "grp_assumption_a"]
+    assert len(grouped) == 1, grouped
+    item = grouped[0]
+    assert item["assumption_id"] == "grp_assumption_a"
+    # statement comes from the fixture notes/GROUPED/_thesis.md frontmatter,
+    # not a fallback to the raw id.
+    assert item["statement"] == \
+        "GROUPED depends on segment X demand remaining healthy through the year."
+    assert item["from"] == "open" and item["to"] == "challenged", item
+    # evidence_log.jsonl has 2 challenge/strength-3 rows for this assumption
+    # (a 3rd confirm/strength-1 row is >7 days before the 2026-01-05 card date,
+    # and a 4th strength-0 row is dropped by evidence.top()'s own drop rule).
+    assert item["strength3_challenges"] == 2, item
+    assert len(item["evidence"]) == 2, item["evidence"]
+    assert [e["date"] for e in item["evidence"]] == ["2026-01-04", "2026-01-03"], item["evidence"]
+    # both surviving evidence rows share the same notes/ ref -> note_links dedupes to 1.
+    assert item["note_links"] == ["notes/GROUPED/20260104-1Q26.md"], item["note_links"]
+    text = next(t for t in ta["text"].split("\n\n") if t.startswith("GROUPED"))
+    assert "GROUPED — GROUPED depends on segment X" in text, text
+    assert "open→challenged" in text, text
+    assert "(2 evidence)" in text, text
+
+
+def test_thesis_alert_card_drops_note_kind_rows():
+    cards = rp.day_cards(DAY1, BASE_PATHS)
+    ta = next(c for c in cards if c["kind"] == "thesis_alerts")
+    assert not any(i["assumption_id"] == "20260104-1Q26.md" for i in ta["items"])
+    assert "earnings note landed" not in ta["text"]
+    assert "note:GROUPED" not in ta["text"]
+
+
+def test_thesis_alert_card_only_note_rows_returns_none():
+    cards = rp.day_cards("2026-01-10", BASE_PATHS)
+    assert not any(c["kind"] == "thesis_alerts" for c in cards), cards
+
+
+def test_thesis_alert_card_score_row_gets_a_minimal_item():
+    cards = rp.day_cards(DAY1, BASE_PATHS)
+    ta = next(c for c in cards if c["kind"] == "thesis_alerts")
+    score_items = [i for i in ta["items"] if i["assumption_id"] == "ai_positioning"]
+    assert len(score_items) == 1, ta["items"]
+    item = score_items[0]
+    assert item["ticker"] == "GROUPED"
+    assert item["evidence"] == [] and item["note_links"] == [] and item["strength3_challenges"] == 0
+    assert item["from"] is None and item["to"] is None
+
+
+def test_thesis_alert_card_without_evidence_still_renders():
+    cards = rp.day_cards(DAY1, BASE_PATHS)
+    ta = next(c for c in cards if c["kind"] == "thesis_alerts")
+    noev = next(i for i in ta["items"] if i["ticker"] == "NOEV")
+    assert noev["statement"] == "NOEV placeholder assumption with no matched evidence yet."
+    assert noev["evidence"] == [] and noev["strength3_challenges"] == 0
+    assert noev["from"] == "open" and noev["to"] == "confirmed"
+    assert ta["text"], "card text must stay non-empty even with an evidence-free item"
+    text = next(t for t in ta["text"].split("\n\n") if t.startswith("NOEV"))
+    assert "evidence)" not in text, text
 
 
 def test_thesis_alerts_absent_on_a_day_with_no_rows():
@@ -209,6 +284,31 @@ def test_thesis_alerts_absent_when_ledger_file_missing():
     )
     cards = rp.day_cards(DAY1, p)
     assert not any(c["kind"] == "thesis_alerts" for c in cards)
+
+
+def test_build_reports_calls_evidence_load_index_once_for_the_whole_window():
+    # Same reasoning as the alert_events cache just below -- evidence.load_index()
+    # re-reads the whole evidence_log.jsonl, so it must run once per build, not
+    # once per qualifying day (thesis_state/alerts_sent.jsonl qualifies on both
+    # 2026-01-05 and 2026-01-04).
+    import datetime as dt
+    import tempfile
+
+    calls = []
+    orig = rp.evidence.load_index
+
+    def counting(*a, **kw):
+        calls.append(a)
+        return orig(*a, **kw)
+
+    rp.evidence.load_index = counting
+    try:
+        with tempfile.TemporaryDirectory() as td:
+            rp.build_reports(Path(td), 2, BASE_PATHS, today=dt.date(2026, 1, 5))
+    finally:
+        rp.evidence.load_index = orig
+
+    assert len(calls) == 1, calls
 
 
 def test_build_reports_calls_alert_events_once_for_the_whole_window():
