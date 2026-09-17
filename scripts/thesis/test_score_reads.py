@@ -79,6 +79,22 @@ def test_idiom_revise_from_prior_quoted_value_skips_the_earlier_quote():
     assert SR.parse_recs(text) == [{"axis": "ai_positioning", "verb": "revise", "value": "4"}]
 
 
+def test_idiom_hold_prior_recommendation_of_n_and_unicode_minus_normalized():
+    """RIS5 A1 fix round 3: NBIS/20260813-2Q26.md (x2) and HSAI/20260818-2Q26.md phrase a
+    genuine HOLD as "hold [at] the (prior|previous|<N>Q<YY>) (recommendation|score) of N" --
+    too much text between the verb and the value for VERB_RE's connector, and not covered
+    by any fix-round-1 idiom. HSAI's note also uses the Unicode minus (U+2212) for "4−",
+    which must normalize to ASCII "-" like every other value in the corpus."""
+    text = (FIX / "idiom_hold_prior_recommendation.md").read_text()
+    assert SR.parse_recs(text) == [
+        {"axis": "ai_positioning", "verb": "hold", "value": "5"},
+        {"axis": "competitive_advantage.innovation_rate", "verb": "hold", "value": "4+"},
+        {"axis": "competitive_advantage.distribution", "verb": "hold", "value": "3"},
+        {"axis": "competitive_advantage.overall", "verb": "hold", "value": "4-"},
+        {"axis": "potential_investor_interest.score", "verb": "hold", "value": "4-"},   # U+2212 -> ASCII "-"
+    ]
+
+
 def test_line_anchored_hedge_in_reasoning_never_wins_over_true_recommendation():
     """RIS5 A1 fix round 2 regression: notes/CSCO/20260513-2Q26.md's real §5 recommendation
     is "Initialize at "4-"" (populate), but its Reasoning bullet hedges "would revise to
@@ -168,6 +184,49 @@ def test_append_rows_default_mode_unchanged_by_replace_kwarg_existing():
     assert SR.append_rows(tmp, rows) == {"written": 0, "dupes": 5}
 
 
+def test_rebuild_requires_explicit_out_or_yes():
+    try:
+        SR.main(["--backfill", "--rebuild"])
+        assert False, "expected SystemExit (missing --out/--yes guard)"
+    except SystemExit as e:
+        assert e.code == 2
+
+
+def test_rebuild_refuses_ticker_filter():
+    tmp = Path(tempfile.mkdtemp()) / "score_reads.jsonl"
+    try:
+        SR.main(["--backfill", "--rebuild", "--out", str(tmp), "--ticker", "AMAT"])
+        assert False, "expected SystemExit (--rebuild + --ticker guard)"
+    except SystemExit as e:
+        assert e.code == 2
+
+
+def test_rebuild_wipes_stale_rows_and_writes_fresh():
+    """RIS5 A1 fix round 3: --rebuild must not carry forward a row the current parser no
+    longer produces (a stale decoy value sitting in a tracked file)."""
+    fake_notes = Path(tempfile.mkdtemp()) / "notes"
+    (fake_notes / "ZZZZ").mkdir(parents=True)
+    (fake_notes / "ZZZZ" / "20260101-1Q26.md").write_text((FIX / "full_layout.md").read_text())
+    out = Path(tempfile.mkdtemp()) / "score_reads.jsonl"
+    # a stale row that no longer matches anything the current parser would produce
+    stale_id = SR.hashlib.sha1("ZZZZ/does-not-exist.md|ai_positioning".encode()).hexdigest()
+    out.write_text(json.dumps({"id": stale_id, "ticker": "ZZZZ", "quarter": None, "date": "2020-01-01",
+                                "note_id": "ZZZZ/does-not-exist.md", "axis": "ai_positioning", "verb": "drift",
+                                "value": "5", "applied": None, "ts": "2020-01-01T00:00:00+00:00"}) + "\n")
+    orig_notes = SR.NOTES
+    SR.NOTES = fake_notes
+    try:
+        rc = SR.main(["--backfill", "--rebuild", "--out", str(out)])
+        assert rc == 0
+    finally:
+        SR.NOTES = orig_notes
+    rows = [json.loads(l) for l in out.read_text().splitlines() if l.strip()]
+    ids = {r["id"] for r in rows}
+    assert stale_id not in ids                       # the stale row is gone, not carried forward
+    assert len(rows) == 5                             # exactly this run's 5 full_layout.md rows
+    assert {r["note_id"] for r in rows} == {"ZZZZ/20260101-1Q26.md"}
+
+
 def test_iter_note_paths_finds_amat():
     paths = SR.iter_note_paths("AMAT")
     names = {p.name for p in paths}
@@ -209,11 +268,15 @@ if __name__ == "__main__":
     test_idiom_populate_b_proposal_forms_and_reaffirm()
     test_idiom_revise_updown_and_quoted_backticked_values()
     test_idiom_revise_from_prior_quoted_value_skips_the_earlier_quote()
+    test_idiom_hold_prior_recommendation_of_n_and_unicode_minus_normalized()
     test_line_anchored_hedge_in_reasoning_never_wins_over_true_recommendation()
     test_line_anchored_recap_before_true_recommendation_never_wins()
     test_no_recs_note_yields_no_rows()
     test_parse_note_id_earnings_and_conf(); test_build_rows_shape_and_applied()
     test_append_rows_is_idempotent(); test_iter_note_paths_finds_amat()
+    test_rebuild_requires_explicit_out_or_yes()
+    test_rebuild_refuses_ticker_filter()
+    test_rebuild_wipes_stale_rows_and_writes_fresh()
     test_append_rows_replace_mode_updates_changed_and_preserves_ts_on_unchanged()
     test_append_rows_default_mode_unchanged_by_replace_kwarg_existing()
     test_lift_score_recs_unchanged_semantics_no_note_id()

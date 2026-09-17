@@ -42,10 +42,17 @@ NOTE_GLOBS = ("*-[1-4]Q[0-9][0-9].md", "*-conf-*.md")
 # side, and "initial" alone (score word optional) so "propose initial 4" -- with no
 # "score" -- still resolves to the existing PROPOSE verb, not a new idiom.
 _CONNECT = r"[ :]*\**[ ]*(?:an?[ ]+)?\**[ ]*[\"'`]?\**[ ]*"
-_VALUE = r"([1-5][+-]?)"
+# Trailing sign also accepts the Unicode minus (U+2212), which some note prose uses in
+# place of ASCII "-"; _norm_value() below folds it back to ASCII so every stored value
+# uses one consistent character.
+_VALUE = r"([1-5][+\-−]?)"
 _CLOSE = r"[\"'`]?\**"
 _LOOKAHEAD = r"(?![%\d])"
 _DASH = r"(?:[:—–-])?[ ]*"   # colon / em-dash / en-dash / hyphen separator, or none
+
+
+def _norm_value(v: str) -> str:
+    return v.replace("−", "-")
 
 VERB_RE = re.compile(
     r"\b(hold|drift|revise|propose|populate)\b"
@@ -68,6 +75,10 @@ _IDIOMS: list[tuple[str, re.Pattern]] = [
     ("populate", re.compile(r"\bfirst-baseline\b[ ]+proposal\b[ ]*" + _DASH + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
     ("populate", re.compile(r"\binitial\b[ ]+proposal\b[ ]*" + _DASH + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
     ("hold", re.compile(r"\breaffirm\b" + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
+    # "hold [at] the (prior|previous|<N>Q<YY>) (recommendation|score) of N" (RIS5 A1 fix
+    # round 3) -- too much text between "hold" and the value for VERB_RE's connector.
+    ("hold", re.compile(r"\bhold\b(?:[ ]+at)?[ ]+the[ ]+(?:prior|previous|[1-4]Q\d{2})"
+                         r"[ ]+(?:recommendation|score)[ ]+of\b" + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
     # "revise upward/up/down/downward ... to N" -- the target value follows the LAST "to"
     # on the line, so any earlier quoted prior score ("from ... "4-" to "4"") is skipped.
     ("revise", re.compile(r"\brevise\b[ ]+(?:up|upward|down|downward)\b[^\n]{0,300}?\bto\b" + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
@@ -92,10 +103,10 @@ def _recommendation_line(text: str) -> str | None:
 def _search(scope: str) -> tuple[str, str] | None:
     """VERB_RE first, then the idiom list in list order (fix-round-1 behavior)."""
     if m := VERB_RE.search(scope):
-        return m.group(1).lower(), m.group(2)
+        return m.group(1).lower(), _norm_value(m.group(2))
     for verb, pat in _IDIOMS:
         if m := pat.search(scope):
-            return verb, m.group(1)
+            return verb, _norm_value(m.group(1))
     return None
 
 
@@ -105,10 +116,10 @@ def _search_positional(scope: str) -> tuple[str, str] | None:
     single recommendation line, where at most one real verb+value should ever appear."""
     candidates: list[tuple[int, str, str]] = []
     if m := VERB_RE.search(scope):
-        candidates.append((m.start(), m.group(1).lower(), m.group(2)))
+        candidates.append((m.start(), m.group(1).lower(), _norm_value(m.group(2))))
     for verb, pat in _IDIOMS:
         if m := pat.search(scope):
-            candidates.append((m.start(), verb, m.group(1)))
+            candidates.append((m.start(), verb, _norm_value(m.group(1))))
     if not candidates:
         return None
     candidates.sort(key=lambda c: c[0])
@@ -271,14 +282,25 @@ def iter_note_paths(ticker: str | None = None) -> list[Path]:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--backfill", action="store_true", help="walk the vault and append every parsed recommendation")
+    ap.add_argument("--backfill", action="store_true", help="walk the vault and append/replace every parsed recommendation")
+    ap.add_argument("--rebuild", action="store_true",
+                     help="regenerate the output from scratch: truncate, then write every parsed row fresh "
+                          "(rows the current parser no longer produces are dropped, not carried over stale). "
+                          "Requires an explicit --out, or --yes to confirm against the default canonical path. "
+                          "Cannot be combined with --ticker (it would truncate the whole file for a partial run).")
     ap.add_argument("--dry-run", action="store_true", help="parse and print counts only; do not write")
     ap.add_argument("--ticker", help="limit to one ticker's notes/<T>/ directory")
-    ap.add_argument("--out", default=str(SCORE_READS), help="output jsonl path (default: state/thesis/score_reads.jsonl)")
+    ap.add_argument("--out", default=None, help="output jsonl path (default: state/thesis/score_reads.jsonl)")
+    ap.add_argument("--yes", action="store_true", help="confirm --rebuild against the default canonical --out path")
     a = ap.parse_args(argv)
     if not a.backfill:
         ap.error("only --backfill is supported")
-    out_path = Path(a.out)
+    if a.rebuild:
+        if a.out is None and not a.yes:
+            ap.error("--rebuild requires an explicit --out, or --yes to confirm rebuilding the default canonical path")
+        if a.ticker:
+            ap.error("--rebuild regenerates the whole file; it cannot be combined with --ticker")
+    out_path = Path(a.out) if a.out is not None else SCORE_READS
     watchlist = yaml.safe_load((REPO / "config" / "watchlist.yaml").read_text())
     ts = datetime.now(timezone.utc).isoformat()
     verb_counts: Counter = Counter()
@@ -286,6 +308,7 @@ def main(argv=None) -> int:
     per_ticker_rows: Counter = Counter()
     notes_with_recs = total_rows = total_written = total_replaced = total_unchanged = 0
     all_changes: list[dict] = []   # [(note_id, axis, old, new)] for the report
+    rebuild_rows: list[dict] = []  # only accumulated when --rebuild
     applied_cache: dict[str, dict] = {}
     for p in iter_note_paths(a.ticker):
         note_id = p.relative_to(NOTES).as_posix()
@@ -303,9 +326,13 @@ def main(argv=None) -> int:
         for r in rows:
             verb_counts[r["verb"]] += 1
             axis_counts[r["axis"]] += 1
-        if not a.dry_run:
-            # --backfill uses replace mode: an earlier matcher bug can leave a wrong row
-            # under a since-fixed id, and a dupe-skip would keep it wrong forever.
+        if a.dry_run:
+            continue
+        if a.rebuild:
+            rebuild_rows.extend(rows)
+        else:
+            # --backfill (no --rebuild) uses replace mode: an earlier matcher bug can leave
+            # a wrong row under a since-fixed id, and a dupe-skip would keep it wrong forever.
             res = append_rows(out_path, rows, replace=True)
             total_written += res["written"]
             total_replaced += res["replaced"]
@@ -314,6 +341,11 @@ def main(argv=None) -> int:
             for c in res["changes"]:
                 row = by_id[c["id"]]
                 all_changes.append((row["note_id"], row["axis"], c["old"], c["new"]))
+    if a.rebuild and not a.dry_run:
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        with out_path.open("w", encoding="utf-8") as f:
+            for r in rebuild_rows:
+                f.write(json.dumps(r, ensure_ascii=False) + "\n")
     print(f"notes with recommendations: {notes_with_recs}")
     print(f"rows parsed: {total_rows}")
     print("by verb:", dict(sorted(verb_counts.items())))
@@ -322,6 +354,8 @@ def main(argv=None) -> int:
         print(f"{a.ticker}: {per_ticker_rows[a.ticker]} rows")
     if a.dry_run:
         print("(dry run: nothing written)")
+    elif a.rebuild:
+        print(f"rebuilt: {len(rebuild_rows)} rows -> {out_path}")
     else:
         print(f"written: {total_written}, replaced: {total_replaced}, unchanged: {total_unchanged} -> {out_path}")
         for note_id, axis, old, new in all_changes:
