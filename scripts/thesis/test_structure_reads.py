@@ -48,6 +48,29 @@ def test_build_prompt_labels_every_item_with_note_id_and_axis():
     assert "OUTPUT: ONLY a JSON array" in prompt
 
 
+# Pinned sha1(SYSTEM_PROMPT + "\x00" + INSTRUCTIONS) per PROMPT_VERSION. reads.jsonl rows
+# are keyed by sha1(note_id|axis|PROMPT_VERSION) -- NOT by prompt content -- so an edit to
+# either prompt string that doesn't bump PROMPT_VERSION silently collides new-prompt rows
+# under old-prompt ids instead of producing new ones. This test pins the current content's
+# hash and fails the moment SYSTEM_PROMPT or INSTRUCTIONS changes without a version bump.
+_KNOWN_PROMPT_HASHES = {
+    "v1": "2eaa30676c42d7b7c3696c8c9166f2eec9ead305",
+}
+
+
+def test_prompt_version_is_pinned_to_a_content_hash():
+    content = SRD.SYSTEM_PROMPT + "\x00" + SRD.INSTRUCTIONS
+    actual = hashlib.sha1(content.encode()).hexdigest()
+    assert SRD.PROMPT_VERSION in _KNOWN_PROMPT_HASHES, (
+        f"PROMPT_VERSION {SRD.PROMPT_VERSION!r} has no pinned hash in this test -- "
+        f"add one to _KNOWN_PROMPT_HASHES (actual hash: {actual})")
+    assert actual == _KNOWN_PROMPT_HASHES[SRD.PROMPT_VERSION], (
+        f"SYSTEM_PROMPT and/or INSTRUCTIONS changed without bumping PROMPT_VERSION "
+        f"(currently {SRD.PROMPT_VERSION!r}, pinned hash "
+        f"{_KNOWN_PROMPT_HASHES[SRD.PROMPT_VERSION]!r}, actual {actual!r}) -- bump "
+        f"PROMPT_VERSION and update the pinned hash here together")
+
+
 # ───────────────────────────── _coerce_score ─────────────────────────────
 
 def test_coerce_score_null_int_plus_minus_float_and_bad():
@@ -102,21 +125,23 @@ def test_validate_row_unknown_note_id_or_axis_key():
 
 
 def test_validate_row_bad_axis_not_in_score_keys():
+    """Axis validity is checked BEFORE (note_id, axis) membership (review fix): a totally
+    hallucinated axis name is bucketed "bad_axis" regardless of note_id, distinctly from
+    "unknown_key" (a real SCORE_KEYS axis just not part of this batch) -- both buckets are
+    reachable from a real model reply now, not just a hand-built fixture."""
     tbk = _text_by_key()
     obj = {"note_id": "ZQTA/note_a.md", "axis": "not_a_real_axis", "score": 4,
           "direction": "up", "magnitude": 1, "reason": "r", "quote": "Drift"}
     row, reason = SRD._validate_row(obj, tbk)
-    assert row is None and reason == "unknown_key"   # axis not in tbk's keys either -> caught here first
+    assert row is None and reason == "bad_axis"
 
 
-def test_validate_row_bad_axis_branch_when_key_present_but_axis_invalid():
-    """Defense-in-depth: axis_texts() never produces a non-SCORE_KEYS axis, so in normal
-    _call_batch use "unknown_key" always fires first for a hallucinated axis -- but
-    _validate_row's own contract (any axis in tio.SCORE_KEYS) doesn't assume that, so this
-    exercises the bad_axis branch directly against a hand-built text_by_key."""
-    tbk = {("N1", "bogus_axis"): "some text"}
-    obj = {"note_id": "N1", "axis": "bogus_axis", "score": 4, "direction": "up",
-          "magnitude": 1, "reason": "r", "quote": "some"}
+def test_validate_row_bad_axis_wins_over_unknown_key_when_both_apply():
+    """A hallucinated axis on a note_id that also isn't in the batch -- bad_axis fires
+    first (axis validity is the cheaper, more specific check)."""
+    tbk = _text_by_key()
+    obj = {"note_id": "NOPE/x.md", "axis": "not_a_real_axis", "score": 4,
+          "direction": "up", "magnitude": 1, "reason": "r", "quote": "Drift"}
     row, reason = SRD._validate_row(obj, tbk)
     assert row is None and reason == "bad_axis"
 
@@ -338,7 +363,7 @@ def test_call_batch_drops_invalid_row_and_row_with_quote_not_in_text():
     finally:
         SRD._run_claude = orig
     assert len(rows) == 1 and rows[0]["axis"] == "ai_positioning"
-    assert reasons == {"unknown_key": 1, "quote_not_verbatim": 1} and batch_failed is False
+    assert reasons == {"bad_axis": 1, "quote_not_verbatim": 1} and batch_failed is False
 
 
 # ───────────────────────────── process_notes (batching + write) ─────────────────────────────
@@ -495,12 +520,13 @@ if __name__ == "__main__":
     test_axis_texts_full_layout_all_five_axes_in_score_keys_order()
     test_axis_texts_conf_note_missing_section_6_yields_two_axes_only()
     test_build_prompt_labels_every_item_with_note_id_and_axis()
+    test_prompt_version_is_pinned_to_a_content_hash()
     test_coerce_score_null_int_plus_minus_float_and_bad()
     test_validate_row_accepts_a_real_verbatim_quote()
     test_validate_row_accepts_null_score()
     test_validate_row_unknown_note_id_or_axis_key()
     test_validate_row_bad_axis_not_in_score_keys()
-    test_validate_row_bad_axis_branch_when_key_present_but_axis_invalid()
+    test_validate_row_bad_axis_wins_over_unknown_key_when_both_apply()
     test_validate_row_bad_score_out_of_range()
     test_validate_row_bad_direction()
     test_validate_row_bad_magnitude_out_of_range_and_bool_trap()

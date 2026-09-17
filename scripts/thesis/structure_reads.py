@@ -234,11 +234,16 @@ def _validate_row(obj: dict, text_by_key: dict[tuple[str, str], str]) -> tuple[d
         return None, "not_a_dict"
     note_id = str(obj.get("note_id") or "")
     axis = str(obj.get("axis") or "")
+    # Axis validity is checked BEFORE the (note_id, axis) membership test (reordered in
+    # review): a totally hallucinated axis name is "bad_axis" regardless of note_id, while
+    # a real SCORE_KEYS axis that just wasn't part of THIS batch (wrong note_id, or an
+    # axis the note doesn't carry) is "unknown_key" -- this ordering makes both buckets
+    # reachable from a real model reply, not just a hand-built test fixture.
+    if axis not in tio.SCORE_KEYS:
+        return None, "bad_axis"
     key = (note_id, axis)
     if key not in text_by_key:
         return None, "unknown_key"
-    if axis not in tio.SCORE_KEYS:
-        return None, "bad_axis"
     score, score_ok = _coerce_score(obj.get("score"))
     if not score_ok:
         return None, "bad_score"
