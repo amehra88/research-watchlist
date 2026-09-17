@@ -193,12 +193,12 @@ a:hover { text-decoration: underline; }
 
 /* --------------------------------------------------------------- tabbar --- */
 .tabbar {
-  position: fixed;
-  left: 0; right: 0; bottom: 0;
-  z-index: 30;
+  /* Operator choice 2026-09-17: navigation at the TOP, inside the sticky header,
+     so the tabs and the page title stick together under the status bar. */
+  position: static;
   background: var(--panel);
   border-top: 1px solid var(--line);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  border-bottom: 1px solid var(--line);
 }
 
 .tabbar-in {
@@ -208,27 +208,27 @@ a:hover { text-decoration: underline; }
 
 .tab {
   flex: 1 1 0;
-  min-height: 48px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 2px;
+  padding: 4px 2px;
   font-size: var(--fs-sm);
   color: var(--muted);
-  border-top: 2px solid transparent;
+  border-bottom: 2px solid transparent;
   text-decoration: none;
 }
 .tab:hover { text-decoration: none; }
 .tab[aria-current="page"] {
   color: var(--accent);
-  border-top-color: var(--accent);
+  border-bottom-color: var(--accent);
   font-weight: 600;
 }
 
 /* ----------------------------------------------------------------- view --- */
 .view {
   padding-inline: var(--gutter);
-  padding-block: 14px calc(72px + env(safe-area-inset-bottom, 0px));
+  padding-block: 14px calc(28px + env(safe-area-inset-bottom, 0px));
   max-width: 760px;
   margin-inline: auto;
   outline: none;
