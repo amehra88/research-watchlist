@@ -49,14 +49,24 @@ went from 0 to N%" is exactly what a share mover should show).
     from portal import theme_share
     theme_share.theme_share(out_path=Path("state/topics/theme_share.json"))
 
-    python3 scripts/portal/theme_share.py --out state/topics/theme_share.json
+    python3 scripts/portal/theme_share.py                      # writes state/topics/theme_share.json (default)
+    python3 scripts/portal/theme_share.py --out /path/to/out.json   # override
 
 Every zero-arg-default path reads live data (state/topics/topic_map.jsonl under
 REPO). The `topic_map_path` override lets tests run only against
 scripts/portal/fixtures/theme_share/. Read-only except for the optional
 `out_path` write (a literal output file path, matching score_reads.py's own
 `--out` convention -- not a directory root like etf_trades.py's `out_dir`),
-only when `out_path` is given.
+which defaults to state/topics/theme_share.json (RIS5 A4 fix round 2) and is
+only skipped when a caller passes `out_path=None` explicitly (the CLI itself
+always writes, since `--out` always has a value, default or overridden).
+
+Scheduling note (RIS5 A4 fix round 2): the Saturday topics chain runs this
+CLI, with no --out override, right after topic_map.jsonl is rebuilt -- A6
+wires the actual cron entry; this module makes no cron/schedule changes
+itself. scripts/portal/build_portal.py's own "theme_share" stage is a
+READ-ONLY consumer of whatever this CLI last wrote (see that stage's
+docstring) -- it never invokes this module's `theme_share()` function.
 """
 from __future__ import annotations
 
@@ -72,6 +82,7 @@ if _here_parent not in sys.path:
 from portal import REPO  # noqa: E402
 
 DEFAULT_TOPIC_MAP = REPO / "state" / "topics" / "topic_map.jsonl"
+DEFAULT_OUT = REPO / "state" / "topics" / "theme_share.json"
 
 
 def log(msg: str) -> None:
@@ -158,7 +169,9 @@ def main(argv=None) -> int:
     import argparse
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--topic-map", default=str(DEFAULT_TOPIC_MAP), help="path to topic_map.jsonl")
-    ap.add_argument("--out", required=True, help="output json path (e.g. state/topics/theme_share.json)")
+    ap.add_argument("--out", default=str(DEFAULT_OUT),
+                    help=f"output json path (default: {DEFAULT_OUT}, RIS5 A4 fix round 2 -- "
+                         "the topics-chain cron runs with no --out at all)")
     a = ap.parse_args(argv)
     result = theme_share(Path(a.topic_map), Path(a.out))
     n_pairs = sum(len(qs) for qs in result.values())

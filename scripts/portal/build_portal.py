@@ -34,11 +34,17 @@ Concretely:
                                       manifest() reuses them instead of
                                       re-running build_reports(days=1)).
   2. etf_trades.etf_trades()      -> data/etf_trades.json
-  3. theme_share.theme_share()    -> refreshes state/topics/theme_share.json
-                                      (RIS5 A4 fix round 1; see the EXCEPTION
-                                      note near the bottom of this docstring)
-                                      and bundles the same result into
-                                      data/theme_share.json.
+  3. theme_share bundle copy      -> READ-ONLY (RIS5 A4 fix round 2): copies
+                                      state/topics/theme_share.json, already
+                                      produced elsewhere (the Saturday topics
+                                      chain runs scripts/portal/theme_share.py's
+                                      own CLI after topic_map -- see that
+                                      module's docstring), into
+                                      data/theme_share.json verbatim. A clean
+                                      no-op (one log line, no file written, no
+                                      failure) when the state file doesn't
+                                      exist yet. This module never generates
+                                      that file itself.
   4. (this module) per-ticker /   -> data/tickers/<T>.json, data/pvt/<slug>.json,
      pvt / ingest bundles            data/ingest/<bucket>.json -- no existing
                                       module writes these (see module
@@ -112,15 +118,11 @@ data from REPO (see scripts/portal/__init__.py) -- this module adds no new
 REPO-reading logic beyond what's documented above, and its own writes are
 strictly confined to `<out_dir>/.tmp-<pid>` (published atomically into
 `out_dir`) and a `tempfile.mkdtemp()` scratch dir for --dry-run (deleted
-before this module returns). Never notes/, config/, or state/ --
-
-EXCEPTION (RIS5 A4 fix round 1, explicit reviewer instruction): the
-"theme_share" stage (`_stage_theme_share`) ALSO refreshes the canonical
-state/topics/theme_share.json as a live REPO side effect, by calling
-scripts/portal/theme_share.py's own `theme_share(out_path=...)` -- the one
-deliberate departure from the "never state/" claim above. This keeps the
-canonical file and the bundled data/theme_share.json copy from drifting
-apart on a live build; every other stage's invariant is unchanged.
+before this module returns). Never notes/, config/, or state/ -- the
+"theme_share" stage (`_stage_theme_share`, RIS5 A4) is READ-ONLY like every
+other stage here: it copies an already-produced state/topics/theme_share.json
+into the bundle, it never generates or writes that file itself (see that
+stage's own docstring, and scripts/portal/theme_share.py's, for who does).
 """
 from __future__ import annotations
 
@@ -158,7 +160,6 @@ import identity                    # noqa: E402
 import reports as rp                # noqa: E402
 import search_index as si            # noqa: E402
 import state_bundles as sb            # noqa: E402
-import theme_share as ts               # noqa: E402
 import vault                           # noqa: E402
 
 
@@ -385,21 +386,29 @@ def _stage_etf_trades(ctx: sb.Ctx, today: date) -> Callable[[Path], dict]:
 
 
 def _stage_theme_share() -> Callable[[Path], dict]:
-    """RIS5 A4 fix round 1: theme_share.theme_share() computed fresh against the live
-    state/topics/topic_map.jsonl, which ALSO refreshes the canonical
-    state/topics/theme_share.json (explicit reviewer instruction -- the one deliberate
-    departure from this module's own "never notes/, config/, or state/" invariant; see the
-    module docstring's EXCEPTION note). The same result is additionally written into
-    tmp_dir/data/theme_share.json so the bundle carries it -- "data/" is already an
-    OWNED_PATHS prefix and state_bundles.manifest()'s `files` hashing is a generic
-    Path(out_dir).rglob("*") over whatever's on disk, so no OWNED_PATHS or manifest.py
-    change was needed for this to be picked up. Takes no ctx: nothing about theme_share's
-    output varies per-build (no news_days/reports_days-style knob applies to it).
+    """RIS5 A4 fix round 2: READ-ONLY, like every other stage in this module. Copies
+    state/topics/theme_share.json -- produced elsewhere, by scripts/portal/theme_share.py's
+    own CLI as part of the Saturday topics chain (see that module's docstring) -- verbatim
+    into tmp_dir/data/theme_share.json. Never calls theme_share.theme_share() itself, never
+    writes into state/: fix round 1 had this stage regenerate the state file live, which
+    broke this module's "never notes/, config/, or state/" invariant and made --dry-run not
+    fully dry; this stage no longer imports the theme_share module at all.
+
+    Missing state/topics/theme_share.json (the topics chain hasn't produced it yet, e.g. on
+    a fresh checkout before A6's cron has run) is a clean no-op: one log line, no file
+    written under tmp_dir, no failure -- exactly like _copy_app()'s own missing-app_src
+    no-op. Takes no ctx: nothing about this copy varies per-build.
     """
     def fn(tmp_dir: Path) -> dict:
-        result = ts.theme_share(out_path=REPO / "state" / "topics" / "theme_share.json")
-        _write_json(tmp_dir / "data" / "theme_share.json", result)
-        return {"themes": len(result), "cells": sum(len(v) for v in result.values())}
+        src = REPO / "state" / "topics" / "theme_share.json"
+        if not src.is_file():
+            log(f"theme_share: {src} not found (topics chain hasn't produced it yet) -- "
+                f"skipping, no data/theme_share.json this build")
+            return {"copied": False}
+        dst = tmp_dir / "data" / "theme_share.json"
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        dst.write_bytes(src.read_bytes())
+        return {"copied": True, "bytes": src.stat().st_size}
     return fn
 
 
