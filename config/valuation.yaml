@@ -188,12 +188,17 @@ supported_growth:
   downside_multiplier: 0.85
 
 # ---------------------------------------------------------------------------
-# long_duration (amendment v1.2, L3). Both thresholds are interpretive calls
-# (brief gives the 0.75 terminal-share number and the "fewer than 3 forward
-# years" wording verbatim; min_forward_years: 3 is that wording made literal).
+# long_duration (amendment v1.2, L3; recalibrated RIS5 A5 fix round 2).
+# terminal_share_threshold was 0.75 in fix round 1 -- at a 10% discount rate a
+# 30% grower legitimately carries ~80% of EV past year 5, so 0.75 flagged
+# ordinary high-growth names as "long duration", not just genuinely
+# long-duration ones (pre-revenue/pre-profit or pipeline-stage stories).
+# Recalibrated to 0.90 (coordinator ruling). min_forward_years is now checked
+# against the SELECTED lens's own denominator (EPS/EBITDA/FCF/sales), not
+# always sales -- see forward_years_available_for_lens().
 # ---------------------------------------------------------------------------
 long_duration:
-  terminal_share_threshold: 0.75
+  terminal_share_threshold: 0.90
   min_forward_years: 3
 
 # ---------------------------------------------------------------------------

@@ -941,23 +941,39 @@ def _quality_fail_reason(state_dir: Path, as_of: str, ticker: str, field: str) -
     return None
 
 
+_VALUATION_EXTREME_VETO_FLAGS = ("margin_default", "no_net_debt")
+
+
 def is_valuation_extreme(gap_range: list | None, lens_history_z: float | None,
-                         flags: list[str], cfg: dict) -> bool:
-    """RIS5 A5 fix round 1, F1: the gap branch must hold across the WHOLE sensitivity
-    band -- fires only when `min(gap_range) > 8` AND the card carries neither
-    `margin_default` nor `no_net_debt` (both mean the reverse-DCF ran on a
-    sector-default assumption, not real fundamentals -- not sound grounds to call a
+                         flags: list[str], cfg: dict) -> tuple[bool, str | None]:
+    """RIS5 A5 fix round 1, F1 (fix round 2, item 2 adds the reason): the gap branch must
+    hold across the WHOLE sensitivity band -- fires only when `min(gap_range) > 8` AND the
+    card carries neither `margin_default` nor `no_net_debt` (both mean the reverse-DCF ran
+    on a sector-default assumption, not real fundamentals -- not sound grounds to call a
     valuation extreme). The z-branch is UNCHANGED (a null z never fires) except that
     `peg_history_z` generalizes to `lens_history_z` -- the SELECTED ladder rung's
     own-history z (amendment v1.2 replaced the fixed PEG assumption with a printed
-    selection; see build_ladder()/select_primary_lens())."""
+    selection; see build_ladder()/select_primary_lens()).
+
+    -> (extreme, reason). `reason` is `None` except when the gap branch WOULD have fired
+    on `min(gap_range)` alone but one of the veto flags blocked it AND the z-branch also
+    didn't independently make the card extreme -- i.e. exactly the case where "not
+    extreme" would otherwise be read as "verified not extreme" when it actually means
+    "unverifiable with the fundamentals on hand". Then `reason = "vetoed: <flag[, flag]>"`
+    naming every veto flag present. If the z-branch DOES independently fire, the card is
+    genuinely extreme and no veto framing is needed (reason stays None)."""
     thresh = cfg.get("valuation_extreme") or {}
     gap_thresh = thresh.get("gap_pp_threshold", 8)
     z_thresh = thresh.get("peg_history_z_threshold", 2)
-    gap_fires = bool(gap_range and gap_range[0] is not None and gap_range[0] > gap_thresh
-                     and "margin_default" not in flags and "no_net_debt" not in flags)
+    veto_flags = [f for f in _VALUATION_EXTREME_VETO_FLAGS if f in flags]
+    gap_would_fire = bool(gap_range and gap_range[0] is not None and gap_range[0] > gap_thresh)
+    gap_fires = gap_would_fire and not veto_flags
     z_fires = lens_history_z is not None and lens_history_z > z_thresh
-    return bool(gap_fires or z_fires)
+    extreme = bool(gap_fires or z_fires)
+    reason = None
+    if gap_would_fire and veto_flags and not z_fires:
+        reason = "vetoed: " + ", ".join(veto_flags)
+    return extreme, reason
 
 
 # ---------------------------------------------------------------------------
@@ -1089,9 +1105,38 @@ def build_ladder(entry: dict, ev: float | None, ticker: str, ticker_themes_all: 
 # Amendment v1.2 — horizon + long_duration (L2/L3)
 # ---------------------------------------------------------------------------
 def forward_years_available(entry: dict) -> int:
-    """Count of FY1/FY2/FY3 sales consensus present (quality-ok, survived into the
-    snapshot's `tickers` entry) -- L3's "fewer than 3 forward years of consensus"."""
+    """Count of FY1/FY2/FY3 SALES consensus present (quality-ok, survived into the
+    snapshot's `tickers` entry) -- used for the general `horizon` display (L2), NOT for
+    the long_duration gate as of fix round 2 (see forward_years_available_for_lens())."""
     return sum(1 for n in (1, 2, 3) if entry.get(f"fy{n}_sales") is not None)
+
+
+_LENS_DENOMINATOR_METRIC = {"peg": "eps", "ev_ebitda_to_growth": "ebitda",
+                            "ev_fcf_to_growth": "fcf", "ev_sales_to_growth": "sales"}
+
+
+def forward_years_available_for_lens(entry: dict, primary_lens: str | None) -> int:
+    """RIS5 A5 fix round 2, item 1: L3's "fewer than 3 forward years of consensus" is
+    read against the SELECTED lens's own denominator (EPS for peg, EBITDA/FCF for those
+    rungs, sales for ev_sales_to_growth) -- not always sales, which could show 3 years of
+    SALES coverage while the actual multiple in use (say PEG) only has 1-2 years of EPS.
+    `primary_lens is None` (no valid lens at all) falls back to the sales count -- the
+    least surprising default, matching the pre-fix-round-2 behaviour for that edge case."""
+    metric = _LENS_DENOMINATOR_METRIC.get(primary_lens)
+    if metric is None:
+        return forward_years_available(entry)
+    return sum(1 for n in (1, 2, 3) if entry.get(f"fy{n}_{metric}") is not None)
+
+
+def duration_note(terminal_share: float | None, years: int = 5) -> str | None:
+    """RIS5 A5 fix round 2, item 1: a plain-English readout of `terminal_share_of_ev`
+    shown on EVERY card (not just long_duration ones) so a reader sees how much of the
+    valuation rests past the explicit window without needing the long_duration mark to
+    notice. None only when terminal_share itself couldn't be computed (a Layer-1 guard
+    failed)."""
+    if terminal_share is None:
+        return None
+    return f"{round(terminal_share * 100)}% of EV rests beyond year {years}"
 
 
 def horizon_info(entry: dict) -> dict:
@@ -1113,20 +1158,24 @@ def horizon_info(entry: dict) -> dict:
            "fy4_count": fy4_count, "fy5_count": fy5_count, "extended": bool(extended)}
 
 
-def determine_long_duration(terminal_share: float | None, forward_years: int,
+def determine_long_duration(terminal_share: float | None, lens_forward_years: int,
                             primary_lens: str | None, cfg: dict) -> tuple[bool, list[str]]:
-    """L3: long_duration when terminal_share_of_ev > threshold (default 0.75), OR fewer
-    than `min_forward_years` (default 3) forward years of consensus, OR the primary lens
-    is the last-resort EV/Sales-to-growth rung. Any one reason is sufficient; all firing
-    reasons are listed (not just the first)."""
+    """L3 (RIS5 A5 fix round 2, item 1 -- recalibrated): long_duration when
+    terminal_share_of_ev > threshold (default 0.90, was 0.75 -- at a 10% discount rate a
+    30% grower legitimately carries ~80% of EV past year 5, so 0.75 was flagging ordinary
+    growth names, not just genuinely long-duration ones), OR fewer than
+    `min_forward_years` (default 3) forward years of consensus FOR THE SELECTED LENS'S
+    OWN DENOMINATOR (`lens_forward_years`, see forward_years_available_for_lens() -- not
+    always sales), OR the primary lens is the last-resort EV/Sales-to-growth rung. Any one
+    reason is sufficient; all firing reasons are listed (not just the first)."""
     ld_cfg = cfg.get("long_duration") or {}
-    thresh = ld_cfg.get("terminal_share_threshold", 0.75)
+    thresh = ld_cfg.get("terminal_share_threshold", 0.90)
     min_years = ld_cfg.get("min_forward_years", 3)
     reasons = []
     if terminal_share is not None and terminal_share > thresh:
         reasons.append("terminal_share_of_ev>threshold")
-    if forward_years < min_years:
-        reasons.append("forward_years<min")
+    if lens_forward_years < min_years:
+        reasons.append("lens_forward_years<min")
     if primary_lens == "ev_sales_to_growth":
         reasons.append("primary_lens_last_resort")
     return bool(reasons), reasons
@@ -1317,11 +1366,13 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
     breadth_eps_13w = revision_breadth(ticker, entry, history_cache, as_of, 13, key="fy1_eps")
     flags.append("breadth_semantics_unverified")
 
-    valuation_extreme = is_valuation_extreme(gap["gap_range"], lens_history_z, flags, cfg)
+    valuation_extreme, valuation_extreme_reason = is_valuation_extreme(gap["gap_range"], lens_history_z, flags, cfg)
 
     horizon = horizon_info(entry)
     terminal_share = l1["terminal_share_of_ev"]
-    is_ld, ld_reasons = determine_long_duration(terminal_share, horizon["years_available"], primary, cfg)
+    lens_forward_years = forward_years_available_for_lens(entry, primary)
+    horizon["lens_forward_years"] = lens_forward_years
+    is_ld, ld_reasons = determine_long_duration(terminal_share, lens_forward_years, primary, cfg)
 
     l1_card = {k: v for k, v in l1.items() if k != "pv_residual_check"}   # C7: dropped from the card
 
@@ -1342,6 +1393,7 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
         "flags": all_flags,
         "provenance": provenance,
         "horizon": horizon,
+        "duration_note": duration_note(terminal_share, years),
         "inputs": {
             "price": entry["price"], "mcap": entry["mcap"], "net_debt": net_debt, "ev": ev,
             "fy1_sales": entry["fy1_sales"], "fy2_sales": entry.get("fy2_sales"), "fy3_sales": entry.get("fy3_sales"),
@@ -1366,14 +1418,18 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
             },
         },
         "valuation_extreme": valuation_extreme,
+        "valuation_extreme_reason": valuation_extreme_reason,
     }
 
     if is_ld:
-        # L3: "show only what is priced" -- layer1_priced/lenses/inputs/provenance/horizon
-        # stay; supported/gap/valuation_extreme/priced_in null with reason "long_duration".
+        # L3: "show only what is priced" -- layer1_priced/lenses/inputs/provenance/horizon/
+        # duration_note stay; supported/gap/valuation_extreme/priced_in null with reason
+        # "long_duration" (valuation_extreme_reason nulled alongside valuation_extreme --
+        # a card that isn't scored for extremity has no veto reason to report either).
         card["layer2_supported"] = None
         card["gap"] = None
         card["valuation_extreme"] = None
+        card["valuation_extreme_reason"] = None
         card["priced_in"] = None
 
     return card

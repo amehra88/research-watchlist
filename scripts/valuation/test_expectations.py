@@ -57,7 +57,7 @@ DEFAULT_CFG = {
     "peer": {"min_shared_themes": 2, "min_peers_for_z": 3},
     "history": {"min_days_for_z": 60},
     "valuation_extreme": {"gap_pp_threshold": 8, "peg_history_z_threshold": 2},
-    "long_duration": {"terminal_share_threshold": 0.75, "min_forward_years": 3},
+    "long_duration": {"terminal_share_threshold": 0.90, "min_forward_years": 3},
 }
 
 
@@ -597,31 +597,53 @@ def test_theme_peers_min_shared_themes():
 
 
 def test_valuation_extreme_thresholds():
-    """RIS5 A5 fix round 1, F1: new signature is (gap_range, lens_history_z, flags, cfg);
-    the gap branch needs min(gap_range) > 8 AND no margin_default/no_net_debt flag."""
+    """RIS5 A5 fix round 1, F1: signature is (gap_range, lens_history_z, flags, cfg) ->
+    (extreme, reason); the gap branch needs min(gap_range) > 8 AND no margin_default/
+    no_net_debt flag."""
     check("min(gap_range) just above 8pp, no vetoing flags -> extreme",
-         E.is_valuation_extreme([8.01, 20.0], None, [], DEFAULT_CFG) is True)
+         E.is_valuation_extreme([8.01, 20.0], None, [], DEFAULT_CFG) == (True, None))
     check("min(gap_range) exactly 8pp -> NOT extreme (strict >)",
-         E.is_valuation_extreme([8.0, 20.0], None, [], DEFAULT_CFG) is False)
-    check("lens_history_z just above 2 -> extreme", E.is_valuation_extreme(None, 2.01, [], DEFAULT_CFG) is True)
+         E.is_valuation_extreme([8.0, 20.0], None, [], DEFAULT_CFG) == (False, None))
+    check("lens_history_z just above 2 -> extreme",
+         E.is_valuation_extreme(None, 2.01, [], DEFAULT_CFG) == (True, None))
     check("lens_history_z exactly 2 -> NOT extreme (strict >)",
-         E.is_valuation_extreme(None, 2.0, [], DEFAULT_CFG) is False)
-    check("neither extreme -> False", E.is_valuation_extreme([3.0, 5.0], 0.5, [], DEFAULT_CFG) is False)
-    check("both None -> False", E.is_valuation_extreme(None, None, [], DEFAULT_CFG) is False)
+         E.is_valuation_extreme(None, 2.0, [], DEFAULT_CFG) == (False, None))
+    check("neither extreme -> False, no reason", E.is_valuation_extreme([3.0, 5.0], 0.5, [], DEFAULT_CFG) == (False, None))
+    check("both None -> False, no reason", E.is_valuation_extreme(None, None, [], DEFAULT_CFG) == (False, None))
 
 
 def test_valuation_extreme_gap_branch_vetoed_by_margin_default_or_no_net_debt():
     """F1's binding ruling: even a huge min(gap_range) must NOT fire the gap branch when
     the card carries margin_default or no_net_debt (the reverse-DCF ran on a
-    sector-default assumption, not real fundamentals)."""
-    check("margin_default vetoes the gap branch",
-         E.is_valuation_extreme([50.0, 80.0], None, ["margin_default"], DEFAULT_CFG) is False)
-    check("no_net_debt vetoes the gap branch",
-         E.is_valuation_extreme([50.0, 80.0], None, ["no_net_debt"], DEFAULT_CFG) is False)
-    check("neither flag present -> gap branch fires",
-         E.is_valuation_extreme([50.0, 80.0], None, [], DEFAULT_CFG) is True)
-    check("z-branch still fires independently even with the veto flags present",
-         E.is_valuation_extreme([50.0, 80.0], 3.0, ["margin_default", "no_net_debt"], DEFAULT_CFG) is True)
+    sector-default assumption, not real fundamentals). Fix round 2, item 2: when the
+    veto is what blocked the flag, a reason string is returned so "not extreme" can be
+    told apart from "unverifiable"."""
+    extreme, reason = E.is_valuation_extreme([50.0, 80.0], None, ["margin_default"], DEFAULT_CFG)
+    check("margin_default vetoes the gap branch", extreme is False, extreme)
+    check("reason names the vetoing flag", reason == "vetoed: margin_default", reason)
+
+    extreme2, reason2 = E.is_valuation_extreme([50.0, 80.0], None, ["no_net_debt"], DEFAULT_CFG)
+    check("no_net_debt vetoes the gap branch", extreme2 is False, extreme2)
+    check("reason names the vetoing flag", reason2 == "vetoed: no_net_debt", reason2)
+
+    extreme3, reason3 = E.is_valuation_extreme([50.0, 80.0], None, ["margin_default", "no_net_debt"], DEFAULT_CFG)
+    check("both veto flags named in order", reason3 == "vetoed: margin_default, no_net_debt", reason3)
+
+    extreme4, reason4 = E.is_valuation_extreme([50.0, 80.0], None, [], DEFAULT_CFG)
+    check("neither flag present -> gap branch fires, no reason needed", extreme4 is True and reason4 is None,
+         (extreme4, reason4))
+
+    extreme5, reason5 = E.is_valuation_extreme([50.0, 80.0], 3.0, ["margin_default", "no_net_debt"], DEFAULT_CFG)
+    check("z-branch still fires independently even with the veto flags present -- genuinely "
+         "extreme, no veto framing needed", extreme5 is True and reason5 is None, (extreme5, reason5))
+
+
+def test_valuation_extreme_no_reason_when_gap_would_not_have_fired_anyway():
+    """The veto reason is ONLY set when the veto is what actually blocked the flag -- a
+    small gap_range with veto flags present should not manufacture a spurious reason."""
+    extreme, reason = E.is_valuation_extreme([2.0, 5.0], None, ["margin_default"], DEFAULT_CFG)
+    check("not extreme, no reason (gap wouldn't have fired regardless of the veto)",
+         extreme is False and reason is None, (extreme, reason))
 
 
 # ─────────────────── history cache (fix round 0, item 3) ────────────────────
@@ -764,15 +786,48 @@ def test_horizon_info_never_extends_without_count_ge_3():
 
 
 def test_determine_long_duration_each_trigger_independently():
-    check("terminal_share > threshold", E.determine_long_duration(0.80, 3, "peg", DEFAULT_CFG) ==
+    """Fix round 2: threshold recalibrated to 0.90 (was 0.75); the forward-years check is
+    now `lens_forward_years` (the SELECTED lens's own denominator, e.g. EPS years for
+    peg), reason string renamed `lens_forward_years<min`."""
+    check("terminal_share > threshold (0.90)", E.determine_long_duration(0.95, 3, "peg", DEFAULT_CFG) ==
          (True, ["terminal_share_of_ev>threshold"]))
-    check("forward_years < min", E.determine_long_duration(0.5, 2, "peg", DEFAULT_CFG) ==
-         (True, ["forward_years<min"]))
+    check("terminal_share of 0.80 no longer trips it (recalibration)",
+         E.determine_long_duration(0.80, 3, "peg", DEFAULT_CFG) == (False, []))
+    check("lens_forward_years < min", E.determine_long_duration(0.5, 2, "peg", DEFAULT_CFG) ==
+         (True, ["lens_forward_years<min"]))
     check("primary lens is last resort", E.determine_long_duration(0.5, 3, "ev_sales_to_growth", DEFAULT_CFG) ==
          (True, ["primary_lens_last_resort"]))
     check("none fire -> not long_duration", E.determine_long_duration(0.5, 3, "peg", DEFAULT_CFG) == (False, []))
-    is_ld, reasons = E.determine_long_duration(0.9, 2, "ev_sales_to_growth", DEFAULT_CFG)
+    is_ld, reasons = E.determine_long_duration(0.95, 2, "ev_sales_to_growth", DEFAULT_CFG)
     check("all three fire together, all reasons listed", is_ld is True and len(reasons) == 3, reasons)
+
+
+def test_forward_years_available_for_lens_uses_selected_lens_denominator():
+    """Fix round 2, item 1: the long_duration gate reads forward years off the SELECTED
+    lens's own denominator, not always sales -- 3 years of sales but only 1 year of EPS
+    (for a peg-primary card) must read as 1, not 3."""
+    entry = {"fy1_sales": 100.0, "fy2_sales": 110.0, "fy3_sales": 121.0,
+            "fy1_eps": 2.0, "fy2_eps": None, "fy3_eps": None,
+            "fy1_ebitda": 10.0, "fy2_ebitda": 11.0, "fy3_ebitda": 12.0}
+    check("peg primary -> reads EPS years (1), not sales years (3)",
+         E.forward_years_available_for_lens(entry, "peg") == 1,
+         E.forward_years_available_for_lens(entry, "peg"))
+    check("ev_ebitda_to_growth primary -> reads EBITDA years (3)",
+         E.forward_years_available_for_lens(entry, "ev_ebitda_to_growth") == 3,
+         E.forward_years_available_for_lens(entry, "ev_ebitda_to_growth"))
+    check("ev_sales_to_growth primary -> reads sales years (3)",
+         E.forward_years_available_for_lens(entry, "ev_sales_to_growth") == 3,
+         E.forward_years_available_for_lens(entry, "ev_sales_to_growth"))
+    check("no valid lens (None) -> falls back to sales years",
+         E.forward_years_available_for_lens(entry, None) == 3,
+         E.forward_years_available_for_lens(entry, None))
+
+
+def test_duration_note_formats_percent_and_year():
+    check("formats percent and year", E.duration_note(0.82, 5) == "82% of EV rests beyond year 5",
+         E.duration_note(0.82, 5))
+    check("rounds to nearest percent", E.duration_note(0.8249, 5) == "82% of EV rests beyond year 5")
+    check("None terminal_share -> None note", E.duration_note(None) is None)
 
 
 # ─────────────────────────── F7: priced-in component ─────────────────────────
@@ -859,10 +914,11 @@ def test_build_card_missing_fy2_or_fy3_sales_is_long_duration_not_skipped():
         check("NOT skipped", card["skipped"] is False, card)
         check("flagged missing_fy3_sales", any(f.startswith("missing_fy3_sales") for f in card["flags"]), card["flags"])
         check("long_duration True (only 2 forward years)", card["long_duration"] is True, card)
-        check("reason includes forward_years<min", "forward_years<min" in card["long_duration_reasons"], card)
-        check("supported/gap/valuation_extreme/priced_in all null",
-             card["layer2_supported"] is None and card["gap"] is None
-             and card["valuation_extreme"] is None and card["priced_in"] is None, card)
+        check("reason includes lens_forward_years<min",
+             "lens_forward_years<min" in card["long_duration_reasons"], card)
+        check("supported/gap/valuation_extreme/valuation_extreme_reason/priced_in all null",
+             card["layer2_supported"] is None and card["gap"] is None and card["valuation_extreme"] is None
+             and card["valuation_extreme_reason"] is None and card["priced_in"] is None, card)
         check("layer1_priced/lenses/inputs still shown (only priced fields)",
              card["layer1_priced"] is not None and card["lenses"] is not None, card)
 
@@ -897,12 +953,12 @@ def test_build_card_margin_path_nonpositive_skips_no_partial_card():
 
 
 def test_build_card_full_card_no_net_debt_no_fundamentals_flags():
-    # mcap chosen so terminal_share_of_ev < 0.75 under the flat default margin path --
-    # a rich EV/Sales multiple against a flat margin path structurally puts most value
-    # in the terminal value (see the dedicated long_duration tests below), so this
-    # "ordinary card" test needs a modest multiple to stay OUT of long_duration.
+    # mcap chosen so terminal_share_of_ev stays well under 0.90 under the flat default
+    # margin path (see the dedicated long_duration tests below for the mechanism); fy2_eps
+    # included so the primary lens (peg) clears the lens_forward_years>=3 gate too --
+    # this is meant to be an ORDINARY card, not a long_duration one.
     entry = {"price": 100.0, "mcap": 2500.0, "fy1_sales": 1000.0, "fy2_sales": 1200.0,
-            "fy3_sales": 1440.0, "fy1_eps": 4.0, "fy3_eps": 6.0,
+            "fy3_sales": 1440.0, "fy1_eps": 4.0, "fy2_eps": 5.0, "fy3_eps": 6.0,
             "up": {"fy1_sales": 3, "fy1_eps": 2}, "down": {"fy1_sales": 1, "fy1_eps": 0}}
     with tempfile.TemporaryDirectory() as td:
         card = E.build_card("XYZ", entry, DEFAULT_CFG, state_dir=Path(td), as_of="2026-09-17",
@@ -918,6 +974,9 @@ def test_build_card_full_card_no_net_debt_no_fundamentals_flags():
     check("NOT long_duration", card["long_duration"] is False, card)
     check("gap present", "gap_pp" in card["gap"])
     check("gap_range present (F1)", "gap_range" in card["gap"], card["gap"])
+    check("valuation_extreme_reason key present (fix round 2, item 2)",
+         "valuation_extreme_reason" in card, card)
+    check("duration_note present (fix round 2, item 1)", card["duration_note"] is not None, card)
     check("lenses ev_sales_fy1 computed", card["lenses"]["ev_sales_fy1"] == 2.5, card["lenses"])
     check("revision breadth is now split by fy1_sales/fy1_eps (C4)",
          set(card["lenses"]["revision_breadth"]) == {"fy1_sales", "fy1_eps"}, card["lenses"]["revision_breadth"])
@@ -998,26 +1057,49 @@ def test_build_card_ebitda_selected_when_eps_negative_and_ebitda_growing():
 
 
 def test_build_card_long_duration_huge_terminal_share_tsla_like():
-    """L3: a TSLA-like fixture -- flat, low-margin-now-vs-mature-terminal-margin path
-    over a 5-year explicit window structurally puts most of the value in the terminal
-    value. Verified via the actual mechanism (terminal_share_of_ev), not hardcoded."""
+    """L3 (fix round 2, recalibrated to 0.90): a TSLA-like fixture needs a genuinely
+    extreme multiple to trip 0.90 -- a flat margin path structurally caps terminal_share
+    well below 0.90 for any realistic multiple (verified: even a 300-400x EV/sales,
+    ~150-200% implied growth barely clears it), which is the whole point of the
+    recalibration (ordinary high-growth names should NOT trip this any more). Verified
+    via the actual mechanism (terminal_share_of_ev), not hardcoded."""
     cfg = json.loads(json.dumps(DEFAULT_CFG))
     cfg["fcf_margin_now_by_family"]["default"] = 0.35
     cfg["terminal_margin_by_family"]["default"] = 0.35   # flat path (like the real config's defaults)
-    entry = {"price": 300.0, "mcap": 900000.0, "fy1_sales": 100000.0, "fy2_sales": 130000.0,
-            "fy3_sales": 175000.0, "fy1_eps": 3.0, "fy3_eps": 5.5}
+    # fy2_eps included so the ONLY trigger firing is terminal_share_of_ev (not also
+    # lens_forward_years<min) -- isolates the mechanism this test is about.
+    entry = {"price": 300.0, "mcap": 200_000_000.0, "fy1_sales": 100000.0, "fy2_sales": 130000.0,
+            "fy3_sales": 175000.0, "fy1_eps": 3.0, "fy2_eps": 4.2, "fy3_eps": 5.5}
     with tempfile.TemporaryDirectory() as td:
         card = E.build_card("TSLA_LIKE", entry, cfg, state_dir=Path(td), as_of="2026-09-17",
                             stages={"pairs": {}, "gated": []}, ticker_themes_all={"TSLA_LIKE": []},
                             downside_theme_slugs=set())
-    check("terminal_share_of_ev > 0.75 (the mechanical trigger)",
-         card["layer1_priced"]["terminal_share_of_ev"] > 0.75, card["layer1_priced"]["terminal_share_of_ev"])
+    check("long_duration reason is ONLY terminal_share (isolated mechanism)",
+         card["long_duration_reasons"] == ["terminal_share_of_ev>threshold"], card["long_duration_reasons"])
+    check("terminal_share_of_ev > 0.90 (the mechanical trigger, recalibrated)",
+         card["layer1_priced"]["terminal_share_of_ev"] > 0.90, card["layer1_priced"]["terminal_share_of_ev"])
     check("card is long_duration", card["long_duration"] is True, card)
     check("reason includes terminal_share_of_ev>threshold",
          "terminal_share_of_ev>threshold" in card["long_duration_reasons"], card)
-    check("supported/gap/valuation_extreme/priced_in nulled", card["layer2_supported"] is None
-         and card["gap"] is None and card["valuation_extreme"] is None and card["priced_in"] is None, card)
+    check("supported/gap/valuation_extreme/valuation_extreme_reason/priced_in nulled",
+         card["layer2_supported"] is None and card["gap"] is None and card["valuation_extreme"] is None
+         and card["valuation_extreme_reason"] is None and card["priced_in"] is None, card)
     check("layer1_priced (what is priced) still shown", card["layer1_priced"]["implied_growth_5y"] is not None, card)
+    check("duration_note present and plain-English", card["duration_note"] is not None
+         and "% of EV rests beyond year" in card["duration_note"], card["duration_note"])
+
+
+def test_duration_note_shown_even_when_not_long_duration():
+    """Fix round 2, item 1: duration_note is printed on EVERY card, not just
+    long_duration ones, so a reader sees the terminal-value share without the mark."""
+    entry = {"price": 100.0, "mcap": 2500.0, "fy1_sales": 1000.0, "fy2_sales": 1200.0,
+            "fy3_sales": 1440.0, "fy1_eps": 4.0, "fy2_eps": 5.0, "fy3_eps": 6.0}
+    with tempfile.TemporaryDirectory() as td:
+        card = E.build_card("XYZ", entry, DEFAULT_CFG, state_dir=Path(td), as_of="2026-09-17",
+                            stages={"pairs": {}, "gated": []}, ticker_themes_all={"XYZ": []},
+                            downside_theme_slugs=set())
+    check("not long_duration", card["long_duration"] is False, card)
+    check("duration_note still present", card["duration_note"] is not None, card)
 
 
 def test_build_card_long_duration_two_forward_years_spcx_like():
@@ -1031,7 +1113,8 @@ def test_build_card_long_duration_two_forward_years_spcx_like():
     check("NOT skipped (fy1_sales present)", card["skipped"] is False, card)
     check("only 2 forward years available", card["horizon"]["years_available"] == 2, card["horizon"])
     check("card is long_duration", card["long_duration"] is True, card)
-    check("reason includes forward_years<min", "forward_years<min" in card["long_duration_reasons"], card)
+    check("reason includes lens_forward_years<min",
+         "lens_forward_years<min" in card["long_duration_reasons"], card)
     check("layer1_priced still shown (implied growth is computable off fy1_sales alone)",
          card["layer1_priced"]["implied_growth_5y"] is not None, card)
 
