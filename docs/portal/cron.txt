@@ -8,9 +8,14 @@
 20 19 * * 1-5 cd /root/research-watchlist && /root/bin/alert_on_failure.sh portal_build python3 scripts/portal/build_portal.py >> logs/portal_build.log 2>&1
 
 # RIS5 A3: daily FactSet valuation snapshot (prices/market_value/consensus SALES+EPS).
-# 05:45 ET weekdays, before the day's market-data-dependent jobs; writes
+# 04:45 ET weekdays (fix round 1, coordinator review — NOT 05:45): `crontab -l` shows
+# etf_flows_fetch runs 05:30 ET weekdays with ~15 claude -p calls of its own, and
+# run_daily.sh's own comment records that two claude -p-heavy jobs sharing one rolling 5h
+# window exhausted the subscription on 2026-08-13 (the news digest shipped 40/256
+# stories). Nothing else is scheduled 04:30-05:30 ET (checked the full crontab). This
+# job's own 10 calls (see task-3-report.md) run well clear before 05:30 at 04:45. Writes
 # state/valuation/{prices,consensus}_<date>.jsonl (gitignored) + latest.json (tracked).
-45 5 * * 1-5 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh valuation_snapshot python3 scripts/valuation/snapshot.py >> logs/valuation_snapshot.log 2>&1
+45 4 * * 1-5 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh valuation_snapshot python3 scripts/valuation/snapshot.py >> logs/valuation_snapshot.log 2>&1
 
 # RIS5 A3: weekly FactSet Fundamentals (net debt/cash, gross/operating/FCF margin).
 # Sunday, after the Store B weekly refresh (08:00) so both FactSet-heavy jobs never

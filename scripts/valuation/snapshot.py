@@ -47,11 +47,18 @@ Row schemas (module constants — see PRICE_FIELDS/CONSENSUS_FIELDS):
                  count, up, down, quality}
 
 `latest.json` (tracked; the dated raw files are gitignored) is built ONLY from
-quality=="ok" rows: `{as_of, universe_size, skipped: [{id, reason}], tickers: {T: {...}}}`.
-Per ticker: price, mcap, fy{1,2,3}_sales, fy{1,2,3}_eps (consensus MEAN), plus nested
-`counts`/`up`/`down` dicts keyed by the same "fy1_sales"/"fy2_eps"/... labels — the brief's
-flat `counts, up, down` keys are read as per-(metric,period) breakdowns (a single scalar
-would not say which of the 6 periods it described); flagged as an interpretive call.
+quality=="ok" rows: `{as_of, universe_size, skipped: [{id, reason}], summary: {priced,
+consensus_only}, tickers: {T: {...}}}`. Per ticker: price, mcap, fy{1,2,3}_sales,
+fy{1,2,3}_eps (consensus MEAN), plus nested `counts`/`up`/`down` dicts keyed by the same
+"fy1_sales"/"fy2_eps"/... labels — the brief's flat `counts, up, down` keys are read as
+per-(metric,period) breakdowns (a single scalar would not say which of the 6 periods it
+described); flagged as an interpretive call. **A ticker can appear with `price: None,
+mcap: None`** — a consensus row surviving quality alone (count>=1) is enough to seat a
+ticker in `tickers` even when its price/market_value batch failed or that id had no
+covered price quote; `build_latest` never requires BOTH legs to be `"ok"` (fix round 1,
+coordinator review — this is deliberate, not an oversight: A5 owns null-checking these
+before doing math on them). `summary.priced` counts tickers with a real price;
+`summary.consensus_only` counts tickers seated only via a consensus row.
 
 CLI:
     python3 scripts/valuation/snapshot.py --dry-run                 # fake runner, no claude -p
@@ -62,6 +69,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 import tempfile
 from datetime import date
@@ -87,6 +95,7 @@ import ingest_metrics                                        # noqa: E402  -- wo
 import claude_p                                              # noqa: E402
 from portal import identity as pid                            # noqa: E402
 from etfflows.factset_flows import _tool_result_blocks, resolve_payload, rows_of  # noqa: E402
+from newsdigest.classify_llm import _detect_session_limit, SessionLimitError  # noqa: E402
 
 from valuation import (                                       # noqa: E402
     MODEL, PRICE_BATCH, MARKET_VALUE_BATCH, CONSENSUS_BATCH,
@@ -227,13 +236,51 @@ def _consensus_prompt(fids: list[str], metric: str) -> str:
     )
 
 
+def _run_mcp_checked(prompt: str, tool: str, model, cwd, timeout: int) -> str:
+    """Same transport as claude_p.run_mcp, plus a subscription-429 precheck claude_p.run_mcp
+    itself doesn't have (fix round 1, coordinator review). claude_p.run() takes a
+    `precheck=` callback specifically so a 429 (which can arrive with rc!=0 AND with the
+    session-limit text on stdout, not stderr -- see claude_p.py's own module docstring:
+    "Auth/usage errors land on STDOUT") is checked BEFORE the returncode; claude_p.run_mcp()
+    has no such hook, so without this wrapper a 429 here would surface as an indistinct
+    RuntimeError from run_mcp's own rc!=0 branch (which only captures truncated STDERR --
+    the actual session-limit text would never even be seen) and get silently caught into
+    the ordinary per-batch (rows, error) tuple downstream, logged-and-continued like any
+    other transport hiccup, and burn the rest of a drained quota on doomed retries across
+    the remaining batches. Duplicates claude_p.run_mcp's body deliberately (repo convention:
+    copy small transport helpers rather than grow a cross-module dependency, e.g.
+    factset_flows._claude_env) rather than changing the shared claude_p.py."""
+    cmd = claude_p.build_cmd(prompt, mcp_tool=tool, system_prompt=claude_p.MCP_SYSTEM_PROMPT,
+                             model=model)
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout,
+                            cwd=cwd, env=claude_p.claude_env())
+    hint = _detect_session_limit(result.stdout)
+    if hint is not None:
+        raise SessionLimitError(hint)
+    if result.returncode != 0:
+        raise RuntimeError(f"claude -p rc={result.returncode} "
+                           f"stderr={(result.stderr or '').strip()[:200]!r}")
+    stdout = result.stdout or ""
+    if not claude_p.tool_was_called(stdout, tool):
+        raise ToolUnavailableError(
+            f"no {tool.rsplit('__', 1)[-1]} tool_use in transcript — the tool was never "
+            f"called: {stdout.strip()[-200:]}")
+    return stdout
+
+
 def _run_and_parse(prompt: str, tool: str, expected_args: dict, repo_root, timeout: int) -> tuple[list[dict], str | None]:
     """-> (rows, error). error is None on success; a drift/unusable-payload/transport error
-    is reported and rows is []. Never raises for a single call -- the caller decides whether
-    a failed batch aborts the run or is recorded and skipped."""
+    is reported and rows is []. Never raises for a single call EXCEPT SessionLimitError
+    (fix round 1, coordinator review): a subscription 429 is non-retryable and
+    non-splittable (see newsdigest/classify_llm.py's own SessionLimitError docstring for
+    the 2026-07-20 storming incident that established this), so it propagates uncaught
+    here and the caller (fetch_prices/fetch_market_value/fetch_consensus, then main())
+    aborts the whole run rather than logging-and-continuing like an ordinary transport
+    error."""
     try:
-        stdout = claude_p.run_mcp(prompt, mcp_tool=tool, model=MODEL, cwd=str(repo_root),
-                                  timeout=timeout)
+        stdout = _run_mcp_checked(prompt, tool, MODEL, str(repo_root), timeout)
+    except SessionLimitError:
+        raise
     except (ToolUnavailableError, RuntimeError) as e:
         return [], f"transport: {type(e).__name__}: {str(e)[:160]}"
 
@@ -462,7 +509,10 @@ def build_latest(price_rows: list[dict], consensus_rows: list[dict],
         entry["counts"][key] = r["count"]
         entry["up"][key] = r["up"]
         entry["down"][key] = r["down"]
+    priced = sum(1 for t in tickers.values() if t["price"] is not None)
+    consensus_only = len(tickers) - priced
     return {"as_of": as_of, "universe_size": universe_size, "skipped": skipped,
+           "summary": {"priced": priced, "consensus_only": consensus_only},
            "tickers": tickers}
 
 
@@ -543,18 +593,28 @@ def main(argv=None) -> int:
         mv_runner = make_market_value_runner()
         consensus_runner = make_consensus_runner()
 
-    price_by_tk, price_errs = fetch_prices(pairs, as_of, prices_runner)
-    mcap_by_tk, mv_errs = fetch_market_value(pairs, mv_runner)
-    ticker_to_fid = {tk: fid for tk, fid in pairs}
-    fid_to_ticker = {fid: tk for tk, fid in pairs}
-    price_rows = build_price_rows(price_by_tk, mcap_by_tk, fid_to_ticker, ticker_to_fid, as_of)
+    # A subscription 429 is non-retryable/non-splittable (fix round 1, coordinator review):
+    # abort the WHOLE remaining run at the first one and exit non-zero, rather than the
+    # ordinary per-batch log-and-continue precedent -- and never write latest.json/the
+    # dated raw files from a run that didn't finish (a partial-looking-complete file is
+    # worse than no file).
+    try:
+        price_by_tk, price_errs = fetch_prices(pairs, as_of, prices_runner)
+        mcap_by_tk, mv_errs = fetch_market_value(pairs, mv_runner)
+        ticker_to_fid = {tk: fid for tk, fid in pairs}
+        fid_to_ticker = {fid: tk for tk, fid in pairs}
+        price_rows = build_price_rows(price_by_tk, mcap_by_tk, fid_to_ticker, ticker_to_fid, as_of)
 
-    consensus_rows: list[dict] = []
-    consensus_errs: list[dict] = []
-    for metric in CONSENSUS_METRICS:
-        rows, errs = fetch_consensus(pairs, metric, consensus_runner)
-        consensus_rows.extend(rows)
-        consensus_errs.extend(errs)
+        consensus_rows: list[dict] = []
+        consensus_errs: list[dict] = []
+        for metric in CONSENSUS_METRICS:
+            rows, errs = fetch_consensus(pairs, metric, consensus_runner)
+            consensus_rows.extend(rows)
+            consensus_errs.extend(errs)
+    except SessionLimitError as e:
+        print(f"ABORTED (session limit 429): {e} -- remaining batches skipped, "
+             f"nothing written to state/valuation/", file=sys.stderr)
+        return 1
 
     ok_prices = sum(1 for r in price_rows if r["quality"] == "ok")
     fail_prices = len(price_rows) - ok_prices
@@ -568,7 +628,8 @@ def main(argv=None) -> int:
 
     latest = build_latest(price_rows, consensus_rows, len(pairs) + len(skipped), skipped, as_of)
     write_json(latest, state_dir / "latest.json")
-    print(f"latest.json: {len(latest['tickers'])} tickers")
+    print(f"latest.json: {len(latest['tickers'])} tickers "
+         f"(priced={latest['summary']['priced']}, consensus_only={latest['summary']['consensus_only']})")
     return 0
 
 

@@ -51,6 +51,7 @@ ARCHIVE_DIR = REPO / "state" / "etf_trades"
 
 # "config" per the amendment -- a module constant, mirroring insider_pull.py's own
 # MIN_INSIDERS convention (that module's docstring/tests use the identical pattern).
+# ACCEPTED as-is by coordinator review (fix round 1) -- no change needed here.
 MIN_PEER_ETFS = 3
 
 TRIM_ACTIONS = {"trimmed", "exit"}     # etf_trades._ACTION_LABEL values
@@ -66,32 +67,65 @@ def load_archive(d: str, archive_dir: Path = ARCHIVE_DIR) -> dict:
     return json.loads(p.read_text(encoding="utf-8"))
 
 
+def _cluster_start(rows: list[dict], min_peer_etfs: int) -> str | None:
+    """The earliest date, walking the ticker's trim rows in chronological order, at which
+    the CUMULATIVE distinct-trimmer count first reaches min_peer_etfs -- the cluster's own
+    identity, independent of which day the archive happens to be read on. None if the rows
+    never cross the bar (caller only calls this once they already know they do)."""
+    trims = sorted((r for r in rows if r.get("action") in TRIM_ACTIONS),
+                   key=lambda r: r.get("date") or "")
+    seen: set[str] = set()
+    for r in trims:
+        seen.add(r["etf"])
+        if len(seen) >= min_peer_etfs:
+            return r["date"]
+    return None
+
+
 def peer_trim_clusters(by_ticker: dict[str, list[dict]],
                        min_peer_etfs: int = MIN_PEER_ETFS) -> dict[str, dict]:
-    """{ticker: {trimmers: [etf,...] sorted, n: int}} for tickers with >= min_peer_etfs
-    DISTINCT ETFs trimming/exiting and ZERO ETFs adding/opening new, over the archive's
-    own window. `n` is len(trimmers) -- a set, so a repeat-trimming ETF counts once."""
+    """{ticker: {trimmers: [etf,...] sorted, n: int, cluster_start: date}} for tickers with
+    >= min_peer_etfs DISTINCT ETFs trimming/exiting and ZERO ETFs adding/opening new, over
+    the archive's own window. `n` is len(trimmers) -- a set, so a repeat-trimming ETF
+    counts once. `cluster_start` (fix round 1, coordinator review) is the date the
+    min_peer_etfs-th DISTINCT trimmer first appeared -- the cluster's stable identity, used
+    downstream as the evidence row's dedup key instead of the run's own as_of date. A 4th+
+    trimmer joining later does NOT move cluster_start (see
+    test_cluster_start_unaffected_by_a_4th_trimmer_joining_later): the cluster's identity
+    is when it first qualified, not its current size."""
     out: dict[str, dict] = {}
     for tk, rows in (by_ticker or {}).items():
         trimmers = {r["etf"] for r in rows if r.get("action") in TRIM_ACTIONS}
         adders = {r["etf"] for r in rows if r.get("action") in ADD_ACTIONS}
         if len(trimmers) >= min_peer_etfs and not adders:
-            out[tk] = {"trimmers": sorted(trimmers), "n": len(trimmers)}
+            out[tk] = {"trimmers": sorted(trimmers), "n": len(trimmers),
+                      "cluster_start": _cluster_start(rows, min_peer_etfs)}
     return out
 
 
 def evidence_rows(clusters: dict[str, dict], theses: dict[str, dict], as_of: str,
                   covered_days: int) -> list[dict]:
+    """`source_id` is keyed on the CLUSTER's own start date (`cluster_start`), not `as_of`
+    (fix round 1, coordinator review) -- a daily cron over a 14-day trailing window would
+    otherwise re-key the same persisting cluster on every run's own as_of date and
+    re-attach it daily, inflating pressure.challenge without any new information. Keying on
+    cluster_start makes thesis.match_evidence's existing ticker|source_id|assumption_id
+    dedup treat day 2..14 of the SAME cluster as a no-op, while a cluster that later lapses
+    and re-forms (its old trims aged out of the window, a wholly new set crosses the bar)
+    naturally gets a new, later cluster_start and is correctly treated as a new episode.
+    `date` (the evidence row's own observed-on date) stays `as_of` -- only the dedup key
+    changed, not when the evidence is recorded as having been seen."""
     rows = []
     for t, c in sorted(clusters.items()):
         fm = theses.get(t)
         if not fm:
             continue
+        start = c["cluster_start"]
         why = (f"{c['n']} peer ETFs ({', '.join(c['trimmers'])}) trimmed/exited {t} with "
-              f"0 adds, over the {covered_days} archived report day(s) through {as_of}")
+              f"0 adds, since {start} (through {as_of}, {covered_days} archived report day(s))")
         for aid in investor_assumptions(fm, direction="challenge"):
             rows.append({
-                "source": "peer_etf", "source_id": f"peer_etf:{t}:{as_of}",
+                "source": "peer_etf", "source_id": f"peer_etf:{t}:{start}",
                 "ref": "portal.etf_trades (ws ETF-holdings-change report)",
                 "date": as_of, "title": "peer ETF trim cluster", "assumption_id": aid,
                 "direction": "challenge", "strength": 1, "why": why, "quote": "",

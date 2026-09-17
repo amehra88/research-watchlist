@@ -205,6 +205,100 @@ def test_fetch_consensus_extends_across_metrics():
     check("no errors", errs == [])
 
 
+# ─────────────────────── session-limit abort (fix round 1, item 3) ─────────────────────
+
+class _FakeCompleted:
+    def __init__(self, returncode, stdout, stderr=""):
+        self.returncode = returncode
+        self.stdout = stdout
+        self.stderr = stderr
+
+
+def test_run_mcp_checked_raises_session_limit_before_returncode_check():
+    """A 429 on stdout must raise SessionLimitError even though rc!=0 -- precheck-first,
+    mirroring claude_p.run's own documented ordering (a 429 can arrive as rc!=0 with the
+    session-limit text on stdout, and that must not fall through to a generic RuntimeError
+    the per-batch log-and-continue path would swallow)."""
+    fake_stdout = json.dumps({"is_error": True, "result": "session limit reached, resets in 3h",
+                              "api_error_status": 429})
+    orig_run = subprocess.run
+    subprocess.run = lambda *a, **k: _FakeCompleted(1, fake_stdout, "")
+    try:
+        raised = None
+        try:
+            S._run_mcp_checked("prompt", "sometool", None, ".", 30)
+        except S.SessionLimitError as e:
+            raised = e
+        check("SessionLimitError raised despite rc=1", raised is not None)
+    finally:
+        subprocess.run = orig_run
+
+
+def test_run_and_parse_lets_session_limit_propagate_not_caught_into_tuple():
+    """Every other transport exception is caught into (rows, error); SessionLimitError
+    must NOT be -- it has to propagate so the caller aborts instead of logging-and-
+    continuing (coordinator fix round 1, item 3)."""
+    orig = S._run_mcp_checked
+    S._run_mcp_checked = lambda *a, **k: (_ for _ in ()).throw(S.SessionLimitError("resets in 1h"))
+    try:
+        raised = None
+        try:
+            S._run_and_parse("p", "tool", {}, ".", 30)
+        except S.SessionLimitError as e:
+            raised = e
+        check("SessionLimitError propagates out of _run_and_parse (not swallowed)",
+             raised is not None)
+    finally:
+        S._run_mcp_checked = orig
+
+
+def test_fetch_prices_propagates_session_limit_instead_of_logging_and_continuing():
+    pairs = [(f"T{i}", f"T{i}-US") for i in range(3)]
+
+    def runner(fids, on_date):
+        raise S.SessionLimitError("resets in 2h")
+
+    raised = None
+    try:
+        S.fetch_prices(pairs, "2026-09-17", runner)
+    except S.SessionLimitError as e:
+        raised = e
+    check("fetch_prices lets SessionLimitError propagate (aborts, doesn't catch it)",
+         raised is not None)
+
+
+def test_main_aborts_on_session_limit_returns_1_and_writes_nothing(tmp_override=None):
+    with tempfile.TemporaryDirectory() as tdname:
+        td = _fixture_repo(Path(tdname))
+        state_dir = Path(tdname) / "state" / "valuation"
+        orig_repo = ingest_metrics.REPO
+        ingest_metrics.REPO = td
+        orig_pid_repo = S.pid.REPO
+        S.pid.REPO = td
+        orig_checked = S._run_mcp_checked
+        S._run_mcp_checked = lambda *a, **k: (_ for _ in ()).throw(S.SessionLimitError("resets in 4h"))
+        try:
+            rc = S.main(["--state-dir", str(state_dir), "--date", "2026-09-17"])
+            check("main() returns 1 (non-zero) on a session limit", rc == 1, rc)
+            check("latest.json NOT written on abort", not (state_dir / "latest.json").exists())
+        finally:
+            ingest_metrics.REPO = orig_repo
+            S.pid.REPO = orig_pid_repo
+            S._run_mcp_checked = orig_checked
+
+
+def test_other_transport_errors_still_log_and_continue_not_abort():
+    """Non-session-limit transport failures keep the existing per-batch precedent: one bad
+    chunk is reported and the rest of the run proceeds (unchanged by this fix)."""
+    pairs = [(f"T{i}", f"T{i}-US") for i in range(2)]
+
+    def runner(fids, on_date):
+        return [], "transport: RuntimeError: boom"
+
+    out, errs = S.fetch_prices(pairs, "2026-09-17", runner)
+    check("ordinary transport error is reported, not raised", len(errs) == 1, errs)
+
+
 # ─────────────────────────── latest.json shape ─────────────────────────────
 
 def test_build_latest_shape_and_skips_failed_quality():
@@ -238,6 +332,9 @@ def test_build_latest_shape_and_skips_failed_quality():
     check("fy2_eps mean", foo["fy2_eps"] == 5.0, foo)
     check("counts nested per period", foo["counts"]["fy1_sales"] == 10 and foo["counts"]["fy2_eps"] == 8, foo)
     check("up/down nested per period", foo["up"]["fy1_sales"] == 3 and foo["down"]["fy2_eps"] == 0, foo)
+    check("summary.priced == 1 (only FOO)", latest["summary"]["priced"] == 1, latest["summary"])
+    check("summary.consensus_only == 0 (BAD excluded entirely)",
+         latest["summary"]["consensus_only"] == 0, latest["summary"])
 
 
 def test_build_latest_bad_ticker_consensus_alone_not_included():
@@ -251,6 +348,8 @@ def test_build_latest_bad_ticker_consensus_alone_not_included():
     latest = S.build_latest([], consensus_rows, universe_size=1, skipped=[], as_of="2026-09-17")
     check("ticker surfaces from consensus alone", "ONLYCONS" in latest["tickers"], latest)
     check("price is None when no ok price row", latest["tickers"]["ONLYCONS"]["price"] is None)
+    check("summary.consensus_only == 1", latest["summary"]["consensus_only"] == 1, latest["summary"])
+    check("summary.priced == 0", latest["summary"]["priced"] == 0, latest["summary"])
 
 
 # ─────────────────────────── idempotent write ───────────────────────────────
@@ -320,6 +419,11 @@ if __name__ == "__main__":
     test_normalize_consensus_rows_null_mean_preserved()
     test_fetch_prices_batches_and_reports_errors()
     test_fetch_consensus_extends_across_metrics()
+    test_run_mcp_checked_raises_session_limit_before_returncode_check()
+    test_run_and_parse_lets_session_limit_propagate_not_caught_into_tuple()
+    test_fetch_prices_propagates_session_limit_instead_of_logging_and_continuing()
+    test_main_aborts_on_session_limit_returns_1_and_writes_nothing()
+    test_other_transport_errors_still_log_and_continue_not_abort()
     test_build_latest_shape_and_skips_failed_quality()
     test_build_latest_bad_ticker_consensus_alone_not_included()
     test_write_jsonl_idempotent_overwrite()
