@@ -1,18 +1,22 @@
 # Theme polarity for the bear-side ideas engine (RIS5 Part A, Task 4).
 #
 # Every slug in config/watchlist.yaml's `themes:` block gets exactly one value here:
-#   +1  the theme's label itself encodes a clearly positive/growth direction (only
-#       assigned within the demand/supply families, per the decision rule below)
+#   +1  the theme's label itself encodes a clearly positive/growth direction (assigned
+#       within the demand/supply families per rule 3 below, OR the single margins_pricing
+#       exception in rule 1 -- pricing_power_in_shortage, corrected in fix round 1)
 #    0  directionless / two-sided / a plain topic label (the default)
 #   -1  the theme's label itself encodes a bearish/challenge dynamic against a
 #       competitive-advantage or margin thesis (only assignable within the
 #       margins_pricing family, per the decision rule below)
 #
 # This is a closed decision procedure, not a per-slug editorial judgment call:
-#   1. margins_pricing family (5 slugs): each gets 0 or -1, individually decided
-#      and commented below. -1 is reserved for this family; a "-1 for a supply
-#      or strategic slug" is never assigned here even where a name (e.g.
-#      china_export_controls) reads intuitively bearish.
+#   1. margins_pricing family (5 slugs): each gets 0 or -1, individually decided and
+#      commented below, EXCEPT pricing_power_in_shortage: fix round 1 (RIS5 A4) corrected
+#      it to +1 on its own documented provenance (config/watchlist.yaml lines 100-102) --
+#      the family's {0,-1} scope was the original (wrong) call for that one slug specifically,
+#      not a hole in the rule for the other four. -1 itself is still reserved for this
+#      family; a "-1 for a supply or strategic slug" is never assigned here even where a
+#      name (e.g. china_export_controls) reads intuitively bearish.
 #   2. competition slugs (any slug with "competition"/"competitive" in its name,
 #      wherever it lives) -> 0. A competition theme firing says nothing by
 #      itself about which side of the competition it favors.
@@ -85,20 +89,27 @@ solar_supply_chain: 0
 space_supply_chain: 0
 thermal_management_cooling: 0
 advanced_packaging_substrate_supply: 0
-capacity_supply_tightness: 0                # tightness can mean pricing power (bullish, suppliers) or a growth bottleneck (bearish, buyers) -- two-sided, like pricing_power_in_shortage
+capacity_supply_tightness: 0                # tightness can mean pricing power (bullish, suppliers) or a growth bottleneck (bearish, buyers) -- two-sided, unlike pricing_power_in_shortage (which has an explicit, documented bullish-only provenance -- see that entry)
 co_packaged_optics_ramp: 1                  # "ramp" -- explicit positive-adoption framing
 laser_architecture_competition: 0           # competition slug -> 0 (rule 2)
 long_term_supply_agreements: 1              # LTAs replacing spot = de-risked, stabilizing demand visibility (per watchlist.yaml's own 2026-09-10 comment) -- clearly positive
 optical_speed_transition_1_6t: 0            # a mix-shift transition, no inherent direction
 
 # ---------------------------------------------------------------------------
-# margins_pricing (5) -- rule 1: each individually decided between 0 and -1
+# margins_pricing (5) -- rule 1 (as originally scoped): each individually decided
+# between 0 and -1, EXCEPT pricing_power_in_shortage, which fix round 1 (RIS5 A4)
+# corrected to +1 -- see that entry's own comment for why the family scope doesn't
+# hold for it.
 # ---------------------------------------------------------------------------
 ai_inference_margin_compression: -1   # explicit margin compression -- a direct challenge signal to a margin/competitive-advantage thesis
 capex_vs_opex_shift: 0                # a structural spend-mix shift; which side it favors depends on which company/segment the theme fires against -- not a reliable challenge signal at the theme level
 networking_margin_trajectory: 0       # "trajectory" carries no inherent direction in its own label, and unlike the other margin slugs here it has no watchlist.yaml provenance tying it specifically to erosion -- kept neutral rather than inventing one
 software_seat_pricing_pressure: -1    # explicit pricing pressure -- a direct challenge signal to a pricing-power/competitive-advantage thesis
-pricing_power_in_shortage: 0          # per its own watchlist.yaml definition (2026-09-10 comment) this is actually a bullish value-capture theme for suppliers in a shortage -- the opposite of a challenge dynamic -- but this family is scoped to {0,-1}, so 0 rather than forcing a bearish read onto a bullish theme
+pricing_power_in_shortage: 1          # RIS5 A4 fix round 1 correction (was 0): config/watchlist.yaml lines 100-102 ("added 2026-09-10 from
+                                       # the topic_map review (MARGINS): value capture / price increases while demand outruns supply (ASML,
+                                       # AMAT, CIEN, COHR)") document this as a BULLISH value-capture theme per its own provenance, not a
+                                       # bearish/challenge one -- despite living in the margins_pricing family, it doesn't belong in the {0,-1}
+                                       # scope the rest of that family is held to; +1 is the correct read, not a forced-neutral compromise
 
 # ---------------------------------------------------------------------------
 # strategic (21) -- rule 4: topic labels, always 0 (even datacenter_buildout_pacing:

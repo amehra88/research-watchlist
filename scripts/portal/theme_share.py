@@ -22,17 +22,29 @@ itself reports. A theme's `_themes()` helper is duplicated from diffusion.py rat
 than imported, on purpose: importing diffusion.py drags in its adjacency/lifecycle
 module-load side effects for a two-line helper.
 
-Output: {theme: {quarter: {ticker: {"share": float, "delta": float | null}}}}.
-`share` = ticker's row count for (theme, quarter) / all rows' count for (theme,
-quarter). `delta` = this quarter's share minus the immediately PRIOR quarter's share
-for that ticker+theme -- "prior" meaning the previous entry in the GLOBAL sorted list
-of calendar quarters present anywhere in topic_map.jsonl (not a per-theme list: a
+Output: {theme: {quarter: {"n": int, "tickers": {ticker: {"share": float,
+"delta": float | null, "rows": int}}}}}. `n` (fix round 1) = total rows for the
+theme in that quarter -- the denominator every ticker's `share` in that cell was
+computed against, so a consumer can discount a thin cell (e.g. n=1) instead of
+trusting a 100% share that rests on a single row. `rows` (fix round 1) = that
+ticker's own row count for the cell (the numerator). `share` = rows / n. `delta` =
+this quarter's share minus the immediately PRIOR quarter's share for that
+ticker+theme -- "prior" meaning the previous entry in the GLOBAL sorted list of
+calendar quarters present anywhere in topic_map.jsonl (not a per-theme list: a
 theme that skips a quarter would otherwise get its delta measured against a
 two-quarters-back baseline while its neighbours use a one-quarter baseline, making
-deltas incomparable across themes). `delta` is null only when the quarter is the
-first quarter in that global list (no prior quarter exists at all); a ticker that
-had zero rows for a theme in an existing prior quarter gets a real numeric delta
-against a 0.0 prior share, not null.
+deltas incomparable across themes).
+
+`delta` is null in exactly two cases (fix round 1 clarifies the second): (1) the
+quarter is the first quarter in the global list (no prior quarter exists at all),
+or (2) the theme has ZERO rows anywhere in the prior quarter (the theme itself was
+absent that quarter, so there is no real baseline share to diff against -- treating
+that as a 0.0 baseline would silently manufacture a "share went from 0% to 100%"
+mover out of a theme that simply hadn't started being discussed yet). `delta` stays
+a real 0-based numeric value only when the theme DID have rows in the prior quarter
+but this particular ticker had none of them (the theme existed, the ticker was
+just absent from it -- a genuine "this ticker's share of an existing conversation
+went from 0 to N%" is exactly what a share mover should show).
 
     from portal import theme_share
     theme_share.theme_share(out_path=Path("state/topics/theme_share.json"))
@@ -89,7 +101,8 @@ def _read_rows(path: Path) -> list[dict]:
 
 
 def compute_theme_share(rows: list[dict]) -> dict:
-    """{theme: {quarter: {ticker: {"share": float, "delta": float | None}}}} -- see module docstring."""
+    """{theme: {quarter: {"n": int, "tickers": {ticker: {"share", "delta", "rows"}}}}} -- see
+    module docstring for the exact null-vs-zero delta rule."""
     # counts[theme][quarter][ticker] = row count (one per row per theme it carries)
     counts: dict[str, dict[str, Counter]] = defaultdict(lambda: defaultdict(Counter))
     all_quarters: set[str] = set()
@@ -111,17 +124,20 @@ def compute_theme_share(rows: list[dict]) -> dict:
             total = sum(tickers.values())
             prior_q = prior_of.get(cq)
             prior_tickers = by_q.get(prior_q) if prior_q is not None else None
+            # fix round 1: prior_total == 0 means the theme itself had no rows at all in the
+            # prior quarter (theme absent) -- delta is null in that case, not a 0-baseline
+            # numeric value (see the module docstring's null-vs-zero rule).
             prior_total = sum(prior_tickers.values()) if prior_tickers else 0
-            entries = {}
+            ticker_entries = {}
             for ticker, n in sorted(tickers.items()):
                 share = n / total if total else 0.0
-                if prior_q is None:
+                if prior_q is None or prior_total == 0:
                     delta = None
                 else:
-                    prior_share = (prior_tickers.get(ticker, 0) / prior_total) if prior_total else 0.0
+                    prior_share = prior_tickers.get(ticker, 0) / prior_total
                     delta = round(share - prior_share, 6)
-                entries[ticker] = {"share": round(share, 6), "delta": delta}
-            out[theme][cq] = entries
+                ticker_entries[ticker] = {"share": round(share, 6), "delta": delta, "rows": n}
+            out[theme][cq] = {"n": total, "tickers": ticker_entries}
     return out
 
 

@@ -38,6 +38,17 @@ def test_bullish_themes_nonempty_and_disjoint_from_bearish():
     assert bullish and not (bullish & bearish)
 
 
+def test_pricing_power_in_shortage_is_plus_one():
+    # RIS5 A4 fix round 1: watchlist.yaml lines 100-102 document this as a bullish
+    # value-capture theme (suppliers raising prices while demand outruns supply) per its
+    # own 2026-09-10 provenance comment -- despite living in the margins_pricing family, it
+    # is NOT a challenge/bearish signal, so it's +1, not 0 or -1.
+    pol = TP.load(REAL_POLARITY, REAL_WATCHLIST)
+    assert pol["pricing_power_in_shortage"] == 1
+    assert "pricing_power_in_shortage" in TP.bullish_themes(REAL_POLARITY, REAL_WATCHLIST)
+    assert "pricing_power_in_shortage" not in TP.bearish_themes(REAL_POLARITY, REAL_WATCHLIST)
+
+
 def test_load_fails_loud_on_missing_slug():
     with tempfile.TemporaryDirectory() as td:
         tmp = Path(td)
@@ -118,6 +129,7 @@ if __name__ == "__main__":
     test_load_real_files_every_watchlist_slug_covered()
     test_bearish_themes_is_exactly_the_minus_one_set()
     test_bullish_themes_nonempty_and_disjoint_from_bearish()
+    test_pricing_power_in_shortage_is_plus_one()
     test_load_fails_loud_on_missing_slug()
     test_load_fails_loud_on_bad_value()
     test_competition_slugs_real_file_all_polarity_zero()

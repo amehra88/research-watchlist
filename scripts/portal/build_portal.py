@@ -22,34 +22,41 @@ Two halves, deliberately kept separate (see the brief's "Code Organization"):
     exercised by the real, live `python3 build_portal.py --out ...` run (see
     the Task 6 report for that build's output) -- not by the unit tests.
 
-Orchestration order (brief, verbatim): reports -> etf_trades -> tickers/pvt/
-ingest bundles -> search index -> state_bundles.build_state() (which writes
-data/manifest.json LAST, after hashing every file already on disk under
-out_dir -- see state_bundles.manifest()'s own docstring). Concretely:
+Orchestration order (brief, verbatim, plus the RIS5 A4 fix-round-1 theme_share
+addition inserted as its own stage): reports -> etf_trades -> theme_share ->
+tickers/pvt/ingest bundles -> search index -> state_bundles.build_state()
+(which writes data/manifest.json LAST, after hashing every file already on
+disk under out_dir -- see state_bundles.manifest()'s own docstring).
+Concretely:
 
   1. reports.build_reports()      -> data/reports/<date>.json + summaries
                                       (cached onto ctx.report_summaries so
                                       manifest() reuses them instead of
                                       re-running build_reports(days=1)).
   2. etf_trades.etf_trades()      -> data/etf_trades.json
-  3. (this module) per-ticker /   -> data/tickers/<T>.json, data/pvt/<slug>.json,
+  3. theme_share.theme_share()    -> refreshes state/topics/theme_share.json
+                                      (RIS5 A4 fix round 1; see the EXCEPTION
+                                      note near the bottom of this docstring)
+                                      and bundles the same result into
+                                      data/theme_share.json.
+  4. (this module) per-ticker /   -> data/tickers/<T>.json, data/pvt/<slug>.json,
      pvt / ingest bundles            data/ingest/<bucket>.json -- no existing
                                       module writes these (see module
                                       docstring below for who's who); refs +
                                       the ingest dict built here are cached
-                                      and handed to stage 4 so it isn't
+                                      and handed to stage 5 so it isn't
                                       recomputed.
-  4. search_index.build_units()   -> data/search.json (reuses this build's
-     + write_index()                 refs/ingest from stage 3; builds its
+  5. search_index.build_units()   -> data/search.json (reuses this build's
+     + write_index()                 refs/ingest from stage 4; builds its
                                       OWN news_sec.news_bundle() -- see the
                                       "double work" note below).
-  5. (optional) copy app/         -> index.html/styles.css/app.js/vendor/ --
+  6. (optional) copy app/         -> index.html/styles.css/app.js/vendor/ --
                                       skipped whenever scripts/portal/app/
                                       doesn't exist OR --no-app is passed.
-                                      Runs BEFORE stage 6's build_state() so
+                                      Runs BEFORE stage 7's build_state() so
                                       the app files are already on disk when
                                       manifest.json hashes the tree.
-  6. state_bundles.build_state()  -> themes/ideas/scores/market/news shards+
+  7. state_bundles.build_state()  -> themes/ideas/scores/market/news shards+
                                       index/sec_30d/manifest.json (LAST).
 
 INTENDED, not a bug: --no-app composes with stale-file removal exactly like
@@ -66,7 +73,7 @@ Who writes data/tickers/<T>.json / data/pvt/<slug>.json / data/ingest/
 dict via `ticker_bundle()`/`ingest_bundles()` in memory) nor state_bundles.py
 (Task 4, whose `build_state()` never calls either function) writes them --
 search_index.py (Task 5) only ever *references* those paths as the `f` field
-of a search doc record, it never writes the files themselves. So stage 3
+of a search doc record, it never writes the files themselves. So stage 4
 above is this module's own addition, exactly as the Task 6 brief directs:
 one file per universe ticker that has notes/thesis/profile (tickers with
 none of the three are skipped entirely, per the brief -- "tickers without
@@ -78,31 +85,42 @@ ingest_bundles() buckets verbatim under data/ingest/.
 DOUBLE WORK (flagged per the brief's "note any double work" instruction,
 not fixed here -- state_bundles.build_state() is Task 4's module and out of
 this task's scope to change):
-  - vault.discover() runs twice: once in stage 3 (whose `refs` stage 4
+  - vault.discover() runs twice: once in stage 4 (whose `refs` stage 5
     reuses) and again inside state_bundles.build_state()'s own
     _load_context() call, which does not accept a pre-built refs/bundles
     list from ctx even though Ctx *has* ticker_bundles/universe/refs fields
     for exactly this purpose -- build_state() unconditionally overwrites
     them (see its own docstring: "Builds ticker_bundles + refs ONCE ... and
     shares them" -- true *within* build_state(), not across this module's
-    own separate stage 3 pass). vault.discover() measured ~8.5s live per
+    own separate stage 4 pass). vault.discover() measured ~8.5s live per
     state_bundles.py's own docstring, so this is the single largest
     avoidable cost in the whole build if a future task wires ctx-reuse into
     build_state() itself.
   - news_sec.news_bundle() runs twice for the same reason: once inside
-    search_index.build_units() (stage 4, which has no pre-built `news` to
+    search_index.build_units() (stage 5, which has no pre-built `news` to
     reuse yet -- build_state() hasn't run) and again inside build_state()
-    itself (stage 5, which writes data/news/*.json). The brief's mandated
-    order (search index BEFORE build_state, so search.json is hashed into
-    the manifest) makes this unavoidable without changing build_state()'s
-    own internals, which is out of scope here.
+    itself (stage 7 -- this note pre-dates the RIS5 A4 fix-round-1
+    theme_share insertion and originally, incorrectly, said "stage 5";
+    corrected here to the actual build_state() position -- which writes
+    data/news/*.json). The brief's mandated order (search index BEFORE
+    build_state, so search.json is hashed into the manifest) makes this
+    unavoidable without changing build_state()'s own internals, which is
+    out of scope here.
 
 Every zero-arg-default path in the five builder modules already reads live
 data from REPO (see scripts/portal/__init__.py) -- this module adds no new
 REPO-reading logic beyond what's documented above, and its own writes are
 strictly confined to `<out_dir>/.tmp-<pid>` (published atomically into
 `out_dir`) and a `tempfile.mkdtemp()` scratch dir for --dry-run (deleted
-before this module returns). Never notes/, config/, or state/.
+before this module returns). Never notes/, config/, or state/ --
+
+EXCEPTION (RIS5 A4 fix round 1, explicit reviewer instruction): the
+"theme_share" stage (`_stage_theme_share`) ALSO refreshes the canonical
+state/topics/theme_share.json as a live REPO side effect, by calling
+scripts/portal/theme_share.py's own `theme_share(out_path=...)` -- the one
+deliberate departure from the "never state/" claim above. This keeps the
+canonical file and the bundled data/theme_share.json copy from drifting
+apart on a live build; every other stage's invariant is unchanged.
 """
 from __future__ import annotations
 
@@ -140,6 +158,7 @@ import identity                    # noqa: E402
 import reports as rp                # noqa: E402
 import search_index as si            # noqa: E402
 import state_bundles as sb            # noqa: E402
+import theme_share as ts               # noqa: E402
 import vault                           # noqa: E402
 
 
@@ -365,6 +384,25 @@ def _stage_etf_trades(ctx: sb.Ctx, today: date) -> Callable[[Path], dict]:
     return fn
 
 
+def _stage_theme_share() -> Callable[[Path], dict]:
+    """RIS5 A4 fix round 1: theme_share.theme_share() computed fresh against the live
+    state/topics/topic_map.jsonl, which ALSO refreshes the canonical
+    state/topics/theme_share.json (explicit reviewer instruction -- the one deliberate
+    departure from this module's own "never notes/, config/, or state/" invariant; see the
+    module docstring's EXCEPTION note). The same result is additionally written into
+    tmp_dir/data/theme_share.json so the bundle carries it -- "data/" is already an
+    OWNED_PATHS prefix and state_bundles.manifest()'s `files` hashing is a generic
+    Path(out_dir).rglob("*") over whatever's on disk, so no OWNED_PATHS or manifest.py
+    change was needed for this to be picked up. Takes no ctx: nothing about theme_share's
+    output varies per-build (no news_days/reports_days-style knob applies to it).
+    """
+    def fn(tmp_dir: Path) -> dict:
+        result = ts.theme_share(out_path=REPO / "state" / "topics" / "theme_share.json")
+        _write_json(tmp_dir / "data" / "theme_share.json", result)
+        return {"themes": len(result), "cells": sum(len(v) for v in result.values())}
+    return fn
+
+
 def _stage_tickers_ingest(ctx: sb.Ctx, sb_paths: sb.Paths, shared: dict,
                            today: date) -> Callable[[Path], dict]:
     def fn(tmp_dir: Path) -> dict:
@@ -404,7 +442,7 @@ def _stage_tickers_ingest(ctx: sb.Ctx, sb_paths: sb.Paths, shared: dict,
         for bucket, payload in ingest.items():
             _write_json(tmp_dir / "data" / "ingest" / f"{bucket}.json", payload)
 
-        # cached for stage 4 (search index) to reuse without re-discovering/re-building
+        # cached for stage 5 (search index) to reuse without re-discovering/re-building
         shared["refs"], shared["ingest"] = refs, ingest
         ctx.refs, ctx.universe, ctx.ticker_bundles = refs, universe, bundles
 
@@ -478,6 +516,7 @@ def _default_stages(args: argparse.Namespace) -> list[tuple[str, Callable[[Path]
     stages = [
         ("reports", _stage_reports(ctx, today)),
         ("etf_trades", _stage_etf_trades(ctx, today)),
+        ("theme_share", _stage_theme_share()),
         ("tickers_and_ingest", _stage_tickers_ingest(ctx, sb_paths, shared, today)),
         ("search_index", _stage_search_index(ctx, sb_paths, shared, today)),
     ]

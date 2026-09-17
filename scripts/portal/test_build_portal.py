@@ -536,6 +536,17 @@ def test_default_stages_omits_the_app_stage_with_no_app():
     assert names[-1] == "state", names
 
 
+def test_default_stages_include_theme_share_before_state():
+    # RIS5 A4 fix round 1: theme_share is wired in as its own stage, same
+    # (name, fn(tmp_dir) -> stats) closure-factory pattern as every other
+    # production stage, and must land before "state" so build_state()'s
+    # manifest.json hashing (which runs last, over whatever is already on
+    # disk) picks up data/theme_share.json. _default_stages() does no I/O.
+    names = [n for n, _ in bp._default_stages(bp._parse_args([]))]
+    assert "theme_share" in names, names
+    assert names.index("theme_share") < names.index("state"), names
+
+
 def test_parse_args_rejects_a_non_json_format():
     buf = io.StringIO()
     try:
