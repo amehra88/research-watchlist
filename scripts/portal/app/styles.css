@@ -742,3 +742,58 @@ table.data tr.hot td { background: var(--warn-bg); }
 /* A search hit that opens where it is. */
 .inline-doc:empty { display: none; }
 .inline-doc { margin-top: 8px; }
+
+/* ------------------------------------------------- evidence + alerts (s3) -- */
+/* Scored evidence rows, cited Q/A and breadth trends. Everything here is
+ * tokens only, so it inverts with the rest of the desk. */
+
+/* Filled/empty strength dots. The glyphs carry no meaning on their own -- the
+ * span is role="img" with a label -- so this is pure typography. */
+.dots {
+  flex: none;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 1px;
+  color: var(--accent);
+}
+
+.evlist { list-style: none; margin: 8px 0 0; padding: 0; }
+.evlist > li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.evlist > li:last-child { border-bottom: 0; padding-bottom: 0; }
+.evlist > li > .row-meta:first-child { margin-top: 0; }
+
+.ev-title { margin: 4px 0 0; font-size: var(--fs-sm); line-height: 1.4; }
+.ev-why { margin: 4px 0 0; font-size: var(--fs-sm); line-height: 1.45; }
+
+/* A quote OUTSIDE .prose: an evidence quote, or a cited question/answer. The
+ * browser default here is an indent with no rule, which reads as body text. */
+blockquote.quote {
+  margin: 8px 0 0;
+  padding: 2px 0 2px 12px;
+  border-left: 2px solid var(--line);
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+blockquote.quote .qa {
+  font-family: var(--mono);
+  font-weight: 650;
+  color: var(--accent);
+}
+
+.trendline {
+  margin: 10px 0 0;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+
+/* The item count a list row shows for an alert card; empty until the card file
+ * has loaded, and it must not reserve space while it is. */
+.row-sum:empty { display: none; }
+.row-sum { color: var(--muted); }

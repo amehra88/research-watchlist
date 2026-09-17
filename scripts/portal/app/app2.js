@@ -28,6 +28,7 @@
   var md = R.md, row = R.row, dot = R.dot, wrapWide = R.wrapWide;
   var loadJSON = R.loadJSON, findTicker = R.findTicker;
   var safeURL = R.safeURL, extLink = R.extLink, isRead = R.isRead;
+  var itemsSummary = R.itemsSummary;
   var STATE = R.STATE;
   var views = R.views, tickerTabs = R.tickerTabs, morePages = R.morePages;
   var controls = R.controls, actions = R.actions;
@@ -1025,10 +1026,14 @@
       return {
         title: hit.date,
         html: '<ul class="rows">' + cards.map(function (c) {
+          /* This screen has already read the day's shard, so an alert card's
+           * item count is free here -- Today pays a fetch for the same line. */
+          var summary = itemsSummary ? itemsSummary(c) : '';
           return '<li>' + row(href(['today', c.id]),
             dot(!isRead('cards', c.id)) + '<span class="row-title">' + esc(c.title || c.id) + '</span>',
             '<span class="eyebrow">' + esc(c.kind || 'report') + '</span>' +
-            '<span class="num">' + esc(kb(num(c.bytes))) + '</span>') + '</li>';
+            '<span class="num">' + esc(kb(num(c.bytes))) + '</span>' +
+            (summary ? '<span class="row-sum">' + esc(summary) + '</span>' : '')) + '</li>';
         }).join('') + '</ul>'
       };
     }).catch(function () {
