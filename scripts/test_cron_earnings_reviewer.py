@@ -139,6 +139,36 @@ def test_ticker_flag_bypasses_calendar_and_filters_watchlist():
     print("  ✓ --ticker skips the calendar, uppercases, and drops non-watchlist names")
 
 
+def test_structure_new_note_noop_without_path():
+    """No path= in the marker (a test stub, or the artifact-inspection fallback without
+    one) -- must be a silent no-op, never touching thesis.structure_reads."""
+    cer.structure_new_note("STATUS: new-note-written ticker=AAPL")   # no path= -> no-op
+    cer.structure_new_note("STATUS: no-new-transcript ticker=AAPL")  # wrong marker -> no-op
+    print("  ✓ structure_new_note no-ops when the marker carries no path=")
+
+
+def test_structure_new_note_invokes_process_notes_and_never_raises():
+    """RIS5 A2 hook wiring: a 'new-note-written ... path=...' marker calls
+    thesis.structure_reads.process_notes([REPO_ROOT/path]) exactly once. A raised
+    exception (simulating a claude -p 429) must be caught and logged, never propagated --
+    the reviewer loop must never block on this."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from thesis import structure_reads
+    calls = []
+    orig = structure_reads.process_notes
+    structure_reads.process_notes = lambda paths, **kw: (calls.append(paths) or {"written": 1, "dupes": 0, "dropped": 0})
+    try:
+        cer.structure_new_note("STATUS: new-note-written ticker=AAPL period=1Q26 iacc=1 path=notes/AAPL/20260101-1Q26.md")
+        assert len(calls) == 1
+        assert calls[0] == [cer.REPO_ROOT / "notes/AAPL/20260101-1Q26.md"]
+
+        structure_reads.process_notes = lambda paths, **kw: (_ for _ in ()).throw(RuntimeError("boom"))
+        cer.structure_new_note("STATUS: new-note-written ticker=MSFT period=1Q26 iacc=1 path=notes/MSFT/x.md")  # must not raise
+    finally:
+        structure_reads.process_notes = orig
+    print("  ✓ structure_new_note invokes process_notes once and swallows its exceptions")
+
+
 def test_session_limit_stops_the_batch():
     calls = []
     def fake(t, started):
@@ -169,6 +199,8 @@ if __name__ == "__main__":
         test_non_us_symbols_do_not_abort_the_run()
         test_array_inside_prose_still_parses()
         test_ticker_flag_bypasses_calendar_and_filters_watchlist()
+        test_structure_new_note_noop_without_path()
+        test_structure_new_note_invokes_process_notes_and_never_raises()
         test_session_limit_stops_the_batch()
     finally:
         cer.run_claude = orig

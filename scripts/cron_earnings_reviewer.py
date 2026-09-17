@@ -302,6 +302,30 @@ def is_session_limit(marker: str) -> bool:
     that keeps dispatching after one of these burns 15 minutes per remaining name for nothing."""
     return marker.startswith("STATUS: error") and bool(SESSION_LIMIT_RE.search(marker))
 
+_NOTE_PATH_RE = re.compile(r"path=(\S+)")
+
+
+def structure_new_note(marker: str) -> None:
+    """RIS5 A2 hook: after a note is written, code its §5/§6/§7 reads into
+    state/thesis/reads.jsonl (structure_reads.process_notes). Best-effort and MUST NEVER
+    block or fail the reviewer run -- every exception (including a claude -p 429) is
+    caught and logged here, never raised. No-op if the marker isn't 'new-note-written' or
+    carries no path= (e.g. a test stub, or the artifact-inspection fallback without one)."""
+    if not marker.startswith("STATUS: new-note-written"):
+        return
+    m = _NOTE_PATH_RE.search(marker)
+    if not m:
+        return
+    note_path = m.group(1)
+    try:
+        sys.path.insert(0, str(REPO_ROOT / "scripts"))
+        from thesis import structure_reads
+        summary = structure_reads.process_notes([REPO_ROOT / note_path])
+        log_write(f"  STRUCTURE_READS_OK {note_path} written={summary.get('written')} "
+                  f"dupes={summary.get('dupes')} dropped={summary.get('dropped')}")
+    except Exception as e:  # noqa: BLE001 — fail-loud in the log, never block the reviewer
+        log_write(f"  STRUCTURE_READS_FAILED {note_path} err={type(e).__name__}: {e}")
+
 
 # === Main ===
 
@@ -352,6 +376,7 @@ def main(argv=None) -> int:
         log_write(f"  --- {ticker} ---")
         marker = run_earnings_reviewer(ticker, run_started_at)
         log_write(f"  {marker}")
+        structure_new_note(marker)
         if marker.startswith("STATUS: error"):
             error_count += 1
             if is_session_limit(marker):
