@@ -258,6 +258,20 @@ def test_thesis_alert_card_score_row_gets_a_minimal_item():
     assert item["from"] is None and item["to"] is None
 
 
+def test_thesis_alert_card_falls_back_to_why_when_quote_is_empty():
+    # earnings_break/earnings_confirm rows carry an empty quote in production
+    # (see the live FPS/AAPL rows found during the Task 1 live rebuild) --
+    # rendering `: ""` reads as broken enrichment, so the text must fall back
+    # to the always-populated `why` field instead of a dangling empty string.
+    cards = rp.day_cards(DAY1, BASE_PATHS)
+    ta = next(c for c in cards if c["kind"] == "thesis_alerts")
+    item = next(i for i in ta["items"] if i["ticker"] == "QUOTELESS")
+    assert item["evidence"][0]["quote"] == ""
+    text = next(t for t in ta["text"].split("\n\n") if t.startswith("QUOTELESS"))
+    assert '""' not in text, text
+    assert "This is the why text used when the quote field is empty" in text, text
+
+
 def test_thesis_alert_card_without_evidence_still_renders():
     cards = rp.day_cards(DAY1, BASE_PATHS)
     ta = next(c for c in cards if c["kind"] == "thesis_alerts")

@@ -6,3 +6,4 @@
 {"id": "score:GROUPED:ai_positioning:4", "ticker": "GROUPED", "ts": "2026-01-05T09:00:15+00:00"}
 {"id": "status:NOEV:no_evidence_assumption:confirmed:2026-01-05", "ticker": "NOEV", "ts": "2026-01-05T09:00:20+00:00"}
 {"id": "note:ONLYNOTE:20260110-file.md", "ticker": "ONLYNOTE", "ts": "2026-01-10T09:00:00+00:00"}
+{"id": "status:QUOTELESS:quoteless_assumption:confirmed:2026-01-05", "ticker": "QUOTELESS", "ts": "2026-01-05T09:00:25+00:00"}

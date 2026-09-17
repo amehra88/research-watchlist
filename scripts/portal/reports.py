@@ -374,7 +374,13 @@ def _render_thesis_item_text(item: dict) -> str:
     if item["evidence"]:
         e0 = item["evidence"][0]
         text += f" ({len(item['evidence'])} evidence)"
-        text += f" · {e0.get('date')} {e0.get('source')}: \"{(e0.get('quote') or '')[:160]}\""
+        # earnings_break/earnings_confirm rows carry an empty quote (the
+        # transcript exchange isn't quoted verbatim in evidence_log.jsonl) --
+        # fall back to `why` (always populated) rather than render a dangling
+        # `: ""`, which reads as broken enrichment, not "no evidence".
+        snippet = e0.get("quote") or e0.get("why") or ""
+        if snippet:
+            text += f" · {e0.get('date')} {e0.get('source')}: \"{snippet[:160]}\""
     return text
 
 
