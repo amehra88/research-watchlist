@@ -38,8 +38,13 @@ live run of this module every card falls back to the sector-family defaults (fla
 "no_net_debt" / "margin_default") — not a bug, the documented v1 state.
 
 CLI:
-    python3 scripts/valuation/expectations.py --dry-run                 # fixture-only smoke
-    python3 scripts/valuation/expectations.py --state-dir /tmp/snap ... # explicit fixture run
+    python3 scripts/valuation/expectations.py --state-dir /tmp/snap ... # explicit fixture/live run
+
+Fix round 1 (RIS5 A5, this revision) rewrites Layer 2 (a fade, not a flat multiplier),
+fixes valuation_extreme/priced-in to hold across the sensitivity band, moves PEG to
+EPS-based growth, adds a forward growth-adjusted multiple LADDER (amendment v1.2) with a
+`long_duration` gate, and adds provenance to every card. See task-5-report.md's "Fix
+round 1" section for the full formula writeup and the binding-ruling-by-ruling mapping.
 """
 from __future__ import annotations
 
@@ -53,10 +58,21 @@ from pathlib import Path
 
 import yaml
 
-REPO = Path("/root/research-watchlist")   # canonical vault root -- READ-ONLY config/notes/state
-                                          # paths only. NEVER used to resolve sibling imports
-                                          # below (see snapshot.py's own "REPO trap" docstring):
-                                          # this worktree's copies must win until merge.
+REPO = Path(__file__).resolve().parents[2]   # RIS5 A5 fix round 1, C2: derive from __file__
+                                             # (parents[2]: scripts/valuation/expectations.py ->
+                                             # scripts/valuation -> scripts -> repo root) so the
+                                             # documented cron/CLI invocation reproduces the same
+                                             # cards from WHICHEVER checkout this file lives in --
+                                             # the previous hardcoded "/root/research-watchlist"
+                                             # always pointed at the main checkout even when this
+                                             # module was imported from a worktree, silently
+                                             # reading the wrong config/notes/state. Explicit CLI
+                                             # flags (--state-dir/--config/--watchlist/etc) still
+                                             # override every default below. READ-ONLY
+                                             # config/notes/state paths only -- NEVER used to
+                                             # resolve sibling imports (see snapshot.py's own "REPO
+                                             # trap" docstring): imports below resolve via
+                                             # __file__/_SCRIPTS_DIR instead, unaffected by this.
 _SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_SCRIPTS_DIR))
 sys.path.insert(0, str(_SCRIPTS_DIR / "chunking"))
@@ -167,18 +183,25 @@ def theme_peers(ticker: str, ticker_themes: dict[str, list[str]], min_shared: in
 # real file's shape disagrees with the brief's own description (bare int per
 # pair, not a dict of fields), so both shapes are tolerated here, one place.
 # ---------------------------------------------------------------------------
+_UNOBSERVED_MARKER_KEYS = ("gated", "stage4_not_assertable", "unheard")
+
+
 def read_stage(stages: dict, theme: str, ticker: str) -> int | None:
     """Ordinal stage (1-4) for (theme, ticker), or None if UNOBSERVED (never 0/1).
 
-    `gated` entries may be theme-level (bare theme name, e.g. "agentic_commerce" --
-    gates every ticker under that theme) or pair-level ("theme|TICKER" -- gates just
-    that pair); both forms are checked. `pairs` values are tolerated as a bare int
+    RIS5 A5 fix round 1, C6: THREE marker lists gate a pair to unobserved --
+    `gated`, `stage4_not_assertable`, and `unheard` (amendment v1.1 #1's own list of
+    what a consumer must honour) -- not just `gated` alone. Each may carry theme-level
+    entries (bare theme name, e.g. "agentic_commerce" -- gates every ticker under that
+    theme) or pair-level entries ("theme|TICKER" -- gates just that pair); both forms
+    are checked against all three lists. `pairs` values are tolerated as a bare int
     (the live 2026-09-16 shape) or a dict carrying a `stage` key (the brief's
     documented shape) -- a one-line adaptation if PR #6 changes this again.
     """
-    gated = set(stages.get("gated") or [])
-    if theme in gated or f"{theme}|{ticker}" in gated:
-        return None
+    for key in _UNOBSERVED_MARKER_KEYS:
+        markers = set(stages.get(key) or [])
+        if theme in markers or f"{theme}|{ticker}" in markers:
+            return None
     v = (stages.get("pairs") or {}).get(f"{theme}|{ticker}")
     if v is None:
         return None
@@ -220,6 +243,30 @@ def read_credibility(ticker: str, metric: str = "SALES", store=None) -> tuple[di
     return cred, [], source
 
 
+def build_credibility_cache(tickers: list[str], store=None) -> dict[str, tuple]:
+    """{ticker: (cred, flags, source)} -- ONE store read per ticker, reused for both the
+    per-ticker credibility_term() AND the cross-sectional median (F6: "same store
+    read")."""
+    return {tk: read_credibility(tk, store=store) for tk in tickers}
+
+
+def _avg_rate_from_cred(cred: dict | None) -> float | None:
+    if not cred:
+        return None
+    vals = [r for r in (cred.get("consensus_beat_rate"), cred.get("guide_hit_rate")) if r is not None]
+    return statistics.mean(vals) if vals else None
+
+
+def credibility_cross_median(cache: dict[str, tuple]) -> float | None:
+    """F6: the cross-sectional median of the universe's avg_rate at run time, from the
+    SAME store read as credibility_term() (via `cache` = build_credibility_cache()).
+    None if the cross-section is unavailable (no ticker in the universe has usable
+    credibility data this run)."""
+    rates = [r for r in (_avg_rate_from_cred(cred) for cred, _flags, _source in cache.values())
+            if r is not None]
+    return statistics.median(rates) if rates else None
+
+
 # ---------------------------------------------------------------------------
 # Reads-trend reader (state/thesis/reads.jsonl)
 # ---------------------------------------------------------------------------
@@ -232,6 +279,12 @@ def _read_signed(row: dict) -> float:
     return sign * (mag / 2.0)   # magnitude 0-2 -> normalized to [-1, 1] combined with sign
 
 
+def reads_latest_date(ticker: str, reads_rows: list[dict]) -> str | None:
+    """C5 provenance: the most recent dated read (any axis) for `ticker`, or None."""
+    dates = [r["date"] for r in reads_rows if r.get("ticker") == ticker and r.get("date")]
+    return max(dates) if dates else None
+
+
 def reads_term(ticker: str, reads_rows: list[dict], cfg: dict) -> tuple[float, list[str], dict]:
     """Amendment-measured 2026-09-17: only 8/178 tickers clear >=3 dated reads on any
     SINGLE axis, but they clear it on every one of the 5 structured-read axes (same
@@ -239,7 +292,7 @@ def reads_term(ticker: str, reads_rows: list[dict], cfg: dict) -> tuple[float, l
     the `reads_min_dated` gate; omit axes that don't. Zero qualifying axes -> term 0.0,
     flagged "insufficient history: reads trend" (never silently 0 without saying so)."""
     min_dated = (cfg.get("supported_growth") or {}).get("reads_min_dated", 3)
-    bound = ((cfg.get("supported_growth") or {}).get("durability") or {}).get("reads_term_bound", 0.10)
+    bound = ((cfg.get("supported_growth") or {}).get("durability") or {}).get("reads_term_bound", 1.0 / 6)
 
     by_axis: dict[str, list[dict]] = {}
     for r in reads_rows:
@@ -288,7 +341,7 @@ def stage_rank_term(ticker: str, stages: dict, cfg: dict) -> tuple[float, list[s
     anywhere in `stages.json` -- not when its watchlist tags happen not to overlap.
     """
     durability = (cfg.get("supported_growth") or {}).get("durability") or {}
-    bound = durability.get("stage_term_bound", 0.15)
+    bound = durability.get("stage_term_bound", 1.0 / 6)
     per_level = durability.get("stage_term_per_level", 0.05)
 
     pairs = stages.get("pairs") or {}
@@ -321,31 +374,46 @@ def stage_rank_term(ticker: str, stages: dict, cfg: dict) -> tuple[float, list[s
         per_theme_deltas[theme] = delta
 
     if not deltas:
-        return 0.0, ["no_stage_data"], {"themes_used": []}
+        return 0.0, ["no_stage_data"], {"themes_used": [], "peer_basis": "evidence_pairs"}
 
     combined_delta = statistics.median(deltas)
     term = _clip(combined_delta * per_level, -bound, bound)
     return term, [], {"themes_used": themes_used, "combined_stage_rank_delta": combined_delta,
-                      "per_theme_deltas": per_theme_deltas}
+                      "per_theme_deltas": per_theme_deltas, "peer_basis": "evidence_pairs"}
 
 
-def credibility_term(ticker: str, cfg: dict, store=None) -> tuple[float, list[str], dict]:
+def _cred_date_range_max(cred: dict) -> str | None:
+    dr = cred.get("date_range")
+    return max(dr) if isinstance(dr, list) and dr else None
+
+
+def credibility_term(ticker: str, cfg: dict, store=None, cross_median: float | None = None,
+                     cred_entry: tuple | None = None) -> tuple[float, list[str], dict]:
+    """RIS5 A5 fix round 1, F6: centred on `cross_median` (the cross-sectional median of
+    the universe's avg_rate at run time -- see credibility_cross_median()), not a fixed
+    0.5. `cross_median is None` means the cross-section was unavailable (no ticker in the
+    universe had usable credibility data) -- term is neutral (0.0) with flag
+    `credibility_uncentred`, distinct from `no_credibility` (this ticker itself has no
+    data). `cred_entry` (from build_credibility_cache()) lets the caller reuse the SAME
+    store read used to compute `cross_median`, rather than a second read per ticker."""
     durability = (cfg.get("supported_growth") or {}).get("durability") or {}
-    bound = durability.get("credibility_term_bound", 0.10)
-    cred, flags, source = read_credibility(ticker, store=store)
+    bound = durability.get("credibility_term_bound", 1.0 / 6)
+    cred, flags, source = cred_entry if cred_entry is not None else read_credibility(ticker, store=store)
     if not cred:
-        return 0.0, flags, {"source": source}
-    rates = [r for r in (cred.get("consensus_beat_rate"), cred.get("guide_hit_rate")) if r is not None]
-    if not rates:
-        return 0.0, ["no_credibility"], {"source": source}
-    avg_rate = statistics.mean(rates)
-    term = _clip((avg_rate - 0.5) * 0.20, -bound, bound)
-    return term, [], {"avg_rate": avg_rate, "n_rates": len(rates), "source": source}
-
-
-def durability_multiplier(stage_t: float, cred_t: float, reads_t: float, cfg: dict) -> float:
-    lo, hi = ((cfg.get("supported_growth") or {}).get("durability") or {}).get("multiplier_bounds", [0.5, 1.5])
-    return _clip(1.0 + stage_t + cred_t + reads_t, lo, hi)
+        return 0.0, flags, {"source": source, "credibility_as_of": None}
+    avg_rate = _avg_rate_from_cred(cred)
+    as_of_val = _cred_date_range_max(cred)
+    if avg_rate is None:
+        return 0.0, ["no_credibility"], {"source": source, "credibility_as_of": as_of_val}
+    if cross_median is None:
+        return 0.0, ["credibility_uncentred"], {"avg_rate": avg_rate, "n_rates": 2 if cred.get("guide_hit_rate")
+                                                is not None and cred.get("consensus_beat_rate") is not None else 1,
+                                                "source": source, "credibility_as_of": as_of_val}
+    n_rates = sum(1 for r in (cred.get("consensus_beat_rate"), cred.get("guide_hit_rate")) if r is not None)
+    scale = bound / 0.5   # avg_rate in [0,1] -> max deviation from median is 0.5 -> hits `bound` at the extreme
+    term = _clip((avg_rate - cross_median) * scale, -bound, bound)
+    return term, [], {"avg_rate": avg_rate, "n_rates": n_rates, "source": source,
+                      "cross_median": cross_median, "credibility_as_of": as_of_val}
 
 
 # ---------------------------------------------------------------------------
@@ -364,6 +432,19 @@ def load_thesis_fm(ticker: str, notes_dir: Path = NOTES_DIR) -> dict | None:
     return yaml.safe_load(m.group(1)) or {}
 
 
+def load_downside_theme_slugs(polarity_path: Path, watchlist_path: Path) -> tuple[set[str], bool]:
+    """-> (slugs, polarity_unavailable). RIS5 A5 fix round 1, C1: a missing/unreadable
+    config/theme_polarity.yaml must NEVER silently look like "no assumption challenged"
+    -- callers check `polarity_unavailable` and null out challenged_assumption_ids/
+    downside/gap_downside rather than treating an empty slug set as a real answer."""
+    try:
+        slugs = (theme_polarity.competition_slugs(polarity_path, watchlist_path) |
+                theme_polarity.bearish_themes(polarity_path, watchlist_path))
+        return slugs, False
+    except (FileNotFoundError, ValueError, OSError):
+        return set(), True
+
+
 def challenged_downside_assumptions(thesis_fm: dict | None, downside_theme_slugs: set[str]) -> list[str]:
     """Assumption ids with status=='challenged' whose `themes` intersect
     competition_slugs() union bearish_themes() (brief: "any assumption with a
@@ -380,53 +461,99 @@ def challenged_downside_assumptions(thesis_fm: dict | None, downside_theme_slugs
 
 
 # ---------------------------------------------------------------------------
-# Layer 2 — supported_growth
+# Layer 2 — supported_growth (RIS5 A5 fix round 1, F3: a fade, not a flat
+# multiplier)
 # ---------------------------------------------------------------------------
-def near_term_cagr(fy1_sales, fy3_sales) -> float | None:
-    if not fy1_sales or not fy3_sales or fy1_sales <= 0 or fy3_sales <= 0:
+def two_yr_cagr(v1: float | None, v3: float | None) -> float | None:
+    """2-year CAGR from a FY1->FY3 pair (or any two values 2 periods apart) -- the
+    generic form `near_term_cagr` and the amendment-v1.2 ladder rungs (EPS/EBITDA/FCF
+    CAGR) all share."""
+    if not v1 or not v3 or v1 <= 0 or v3 <= 0:
         return None
-    return (fy3_sales / fy1_sales) ** (1.0 / 2.0) - 1.0
+    return (v3 / v1) ** (1.0 / 2.0) - 1.0
+
+
+def near_term_cagr(fy1_sales, fy3_sales) -> float | None:
+    return two_yr_cagr(fy1_sales, fy3_sales)
+
+
+def fade_growth_path(cagr: float, terminal_growth: float, durability_score: float) -> dict:
+    """F3's binding formula: years 1-3 at `cagr` (the consensus FY1->FY3 CAGR), years 4-5
+    at `g_fade = tg + (cagr - tg) * persistence`, `persistence = clip(0.5 + durability_score,
+    0, 1)`. At durability_score == 0 (neutral evidence), persistence == 0.5 and the path
+    fades HALFWAY to terminal growth by year 4-5 -- the "centres on a fade" default.
+    Positive evidence (durability_score > 0) moves persistence toward 1 (g_fade -> cagr,
+    i.e. the near-term rate persists); negative evidence moves it toward 0 (g_fade -> tg,
+    full fade). `base` is the single 5-year CAGR that compounds to the same terminal value
+    as the two-stage path: (1+cagr)^3 * (1+g_fade)^2 = (1+base)^5."""
+    persistence = _clip(0.5 + durability_score, 0.0, 1.0)
+    g_fade = terminal_growth + (cagr - terminal_growth) * persistence
+    factor = (1.0 + cagr) ** 3 * (1.0 + g_fade) ** 2
+    base = factor ** (1.0 / 5.0) - 1.0
+    return {"g_fade": g_fade, "persistence": persistence, "base": base}
 
 
 def supported_growth(ticker: str, entry: dict, cfg: dict, *, stages: dict,
                      ticker_themes_all: dict[str, list[str]], reads_rows: list[dict],
                      thesis_fm: dict | None, downside_theme_slugs: set[str],
-                     credibility_store=None) -> dict:
-    """base = near_term_cagr * durability_multiplier (bounded); downside = base minus
-    the configured haircut when >=1 qualifying assumption is challenged.
+                     polarity_unavailable: bool = False, terminal_growth: float = 0.03,
+                     credibility_store=None, credibility_cross_median: float | None = None,
+                     credibility_entry: tuple | None = None) -> dict:
+    """F3's fade path (see fade_growth_path()) extended by a durability_score built from
+    3 independently-clipped terms (stage rank, credibility, reads trend; each +/- 1/6
+    max, so durability_score in [-0.5, +0.5]). F5: downside = base * downside_multiplier
+    (relative, default 0.85) applied once when >=1 qualifying assumption is `challenged`.
+    C1: `polarity_unavailable` (config/theme_polarity.yaml missing/unreadable) nulls
+    challenged_assumption_ids AND downside -- never silently reads as "no assumption
+    challenged".
 
     `ticker_themes_all` is no longer read for the stage term (fix round 0, item 1 --
     stage_rank_term() derives the ticker's themes from stages.json's own evidence pairs,
     not watchlist.yaml's static tags); the parameter is kept for API stability (peer
-    lenses / theme_peers() elsewhere still use it) and because a future durability term
-    may want the static tags too."""
+    lenses / theme_peers() elsewhere still use it)."""
     flags: list[str] = []
 
     cagr = near_term_cagr(entry.get("fy1_sales"), entry.get("fy3_sales"))
     if cagr is None:
+        base_flags = ["missing fy1/fy3 sales for CAGR"]
+        if polarity_unavailable:
+            base_flags.append("polarity_unavailable")
         return {"base": None, "downside": None, "near_term_cagr": None,
-                "durability_multiplier": None, "drivers": {}, "challenged_assumption_ids": [],
-                "flags": ["missing fy1/fy3 sales for CAGR"]}
+                "g_fade": None, "persistence": None, "durability_score": None,
+                "drivers": {}, "challenged_assumption_ids": None if polarity_unavailable else [],
+                "flags": base_flags}
 
     st_term, st_flags, st_detail = stage_rank_term(ticker, stages, cfg)
-    cr_term, cr_flags, cr_detail = credibility_term(ticker, cfg, store=credibility_store)
+    cr_term, cr_flags, cr_detail = credibility_term(ticker, cfg, store=credibility_store,
+                                                    cross_median=credibility_cross_median,
+                                                    cred_entry=credibility_entry)
     rd_term, rd_flags, rd_detail = reads_term(ticker, reads_rows, cfg)
     flags.extend(st_flags); flags.extend(cr_flags); flags.extend(rd_flags)
 
-    mult = durability_multiplier(st_term, cr_term, rd_term, cfg)
+    ds_lo, ds_hi = ((cfg.get("supported_growth") or {}).get("durability") or {}).get(
+        "durability_score_bounds", [-0.5, 0.5])
+    durability_score = _clip(st_term + cr_term + rd_term, ds_lo, ds_hi)
+
+    fade = fade_growth_path(cagr, terminal_growth, durability_score)
     lo, hi = (cfg.get("supported_growth") or {}).get("base_bounds", [-0.5, 2.0])
-    base_raw = cagr * mult
-    base = _clip(base_raw, lo, hi)
-    if base != base_raw:
+    base = _clip(fade["base"], lo, hi)
+    if base != fade["base"]:
         flags.append("supported_growth_clipped")
 
-    haircut = (cfg.get("supported_growth") or {}).get("downside_haircut_pp", 5.0) / 100.0
-    challenged_ids = challenged_downside_assumptions(thesis_fm, downside_theme_slugs)
-    downside = _clip(base - haircut, lo, hi) if challenged_ids else base
+    downside_mult = (cfg.get("supported_growth") or {}).get("downside_multiplier", 0.85)
+    if polarity_unavailable:
+        challenged_ids = None
+        downside = None
+        flags.append("polarity_unavailable")
+    else:
+        challenged_ids = challenged_downside_assumptions(thesis_fm, downside_theme_slugs)
+        downside_raw = base * downside_mult if challenged_ids else base
+        downside = _clip(downside_raw, lo, hi)
 
     return {
         "base": base, "downside": downside, "near_term_cagr": cagr,
-        "durability_multiplier": mult,
+        "g_fade": fade["g_fade"], "persistence": fade["persistence"],
+        "durability_score": durability_score,
         "drivers": {
             "stage_rank": {"term": st_term, **st_detail},
             "credibility": {"term": cr_term, **cr_detail},
@@ -466,7 +593,12 @@ def solve_implied_growth(ev: float, fy0_sales: float, fcf_margin_now: float, ter
     margin path, invalid Gordon denominator, or fy0_sales<=0); otherwise bisected to
     `tol_relative` on |PV(g)-EV|/EV, clipped to [g_lo, g_hi] with a flag if EV falls
     outside the bracket PV(g_lo)..PV(g_hi) (PV is monotonically increasing in g only
-    while every margin_t > 0 and discount_rate > terminal_growth)."""
+    while every margin_t > 0 and discount_rate > terminal_growth).
+
+    NOTE: `margin_path_nonpositive` is also checked directly in build_card() BEFORE this
+    is even called, per C6 -- a nonpositive margin path SKIPS the whole ticker (no
+    partial card), rather than building a card with growth=None. This function's own
+    guard stays as defence-in-depth for direct callers (tests, sensitivity re-solves)."""
     if fy0_sales is None or fy0_sales <= 0:
         return {"growth": None, "pv_at_growth": None, "flags": ["fy0_sales<=0"]}
     if discount_rate - terminal_growth <= 0:
@@ -503,6 +635,26 @@ def solve_implied_growth(ev: float, fy0_sales: float, fcf_margin_now: float, ter
     return {"growth": mid, "pv_at_growth": pv_mid, "flags": flags}
 
 
+def terminal_share_of_ev(g: float | None, fy0_sales: float, fcf_margin_now: float, terminal_margin: float,
+                         discount_rate: float, terminal_growth: float, years: int,
+                         ev: float | None) -> float | None:
+    """L2 (amendment v1.2): PV of the terminal value / EV, at the solved (or
+    bracket-clipped) growth `g`. None if `g` is None (a guard already failed) or `ev` is
+    falsy/None. Convention (F4): the terminal value is computed off the SAME margin path
+    used by the explicit 5-year PV stream (years 1..5 all discounted -- there is no
+    separate "year 0" FCF; fy0_sales is the anchor consensus FY1 sales estimate that
+    year-1 growth is applied to, per the module's fy0_sales interpretive call)."""
+    if g is None or not ev:
+        return None
+    margins = _margin_path(fcf_margin_now, terminal_margin, years)
+    if any(m <= 0 for m in margins) or discount_rate - terminal_growth <= 0:
+        return None
+    fcf_years = fy0_sales * (1.0 + g) ** years * margins[-1]
+    tv = fcf_years * (1.0 + terminal_growth) / (discount_rate - terminal_growth)
+    tv_pv = tv / (1.0 + discount_rate) ** years
+    return tv_pv / ev
+
+
 def implied_growth(ev: float, fy0_sales: float, fcf_margin_now: float, terminal_margin: float,
                    discount_rate: float = 0.10, terminal_growth: float = 0.03, years: int = 5,
                    cfg: dict | None = None) -> dict:
@@ -533,10 +685,16 @@ def implied_growth(ev: float, fy0_sales: float, fcf_margin_now: float, terminal_
         "tm_plus": _g(terminal_margin=terminal_margin + tm_delta),
         "tm_minus": _g(terminal_margin=terminal_margin - tm_delta),
     }
+    tshare = terminal_share_of_ev(core["growth"], fy0_sales, fcf_margin_now, terminal_margin,
+                                  discount_rate, terminal_growth, years, ev)
     return {
         "implied_growth_5y": core["growth"],
         "implied_terminal_margin": terminal_margin,   # echoed input, not solved (2 unknowns, 1 equation)
-        "pv_at_growth": core["pv_at_growth"],
+        "pv_residual_check": core["pv_at_growth"],    # RIS5 A5 fix round 1, C7: renamed from
+                                                       # pv_at_growth (a solve-quality residual
+                                                       # check, not a valuation OUTPUT) -- build_card()
+                                                       # drops it before it reaches a written card.
+        "terminal_share_of_ev": tshare,               # amendment v1.2, L2: PV(terminal value) / EV
         "flags": core["flags"],
         "sensitivity": sensitivity,
     }
@@ -551,6 +709,22 @@ def compute_gap(implied_growth_5y, supported_base, supported_downside) -> dict:
     gap_downside_pp = None if implied_growth_5y is None or supported_downside is None else \
         round((implied_growth_5y - supported_downside) * 100, 4)
     return {"gap_pp": gap_pp, "gap_downside_pp": gap_downside_pp}
+
+
+def compute_gap_ranges(sensitivity: dict, supported_base, supported_downside) -> tuple[list | None, list | None]:
+    """RIS5 A5 fix round 1, F1: `gap_range`/`gap_downside_range` = [min, max] of the gap
+    computed from EACH of the four sensitivity re-solves (dr_plus/dr_minus/tm_plus/
+    tm_minus) against supported.base/downside -- NOT including the point-estimate
+    implied_growth_5y itself (the brief's exact wording: "the four re-solves"). None
+    values among the four re-solves (a guard tripped for that variant) are excluded, not
+    treated as 0. None entirely if supported_base/downside itself is None, or if every
+    re-solve failed."""
+    def _range(supported):
+        if supported is None:
+            return None
+        vals = [(g - supported) * 100 for g in sensitivity.values() if g is not None]
+        return [round(min(vals), 4), round(max(vals), 4)] if vals else None
+    return _range(supported_base), _range(supported_downside)
 
 
 # ---------------------------------------------------------------------------
@@ -587,18 +761,29 @@ def zscore_history(current_value: float | None, series_values: list[float], min_
     return {"z": (current_value - mean) / stdev, "n_days": n_days, "flags": []}
 
 
+_MAD_CONSISTENCY = 1.4826   # scales MAD to be a consistent estimator of stdev under normality
+
+
 def peer_lens(value: float | None, peer_values: list[float], min_peers_for_z: int) -> dict:
+    """RIS5 A5 fix round 1, C7: named `peer_score` (not `peer_z`) and built from a
+    median/MAD spread, not mean/stdev -- robust to the single outlier peer that a
+    3-6-name theme-peer group is prone to (one wildly mispriced peer would otherwise blow
+    up the whole group's stdev). `peer_score` is still interpretable like a z-score
+    (MAD is scaled by the normal-consistency constant 1.4826) but is not literally one,
+    hence the rename."""
     peer_values = [v for v in peer_values if v is not None]
     if not peer_values:
-        return {"peer_median": None, "peer_z": None, "n_peers": 0, "flags": ["no_peers"]}
+        return {"peer_median": None, "peer_score": None, "n_peers": 0, "flags": ["no_peers"]}
     median = statistics.median(peer_values)
     if len(peer_values) < min_peers_for_z or value is None:
-        return {"peer_median": median, "peer_z": None, "n_peers": len(peer_values),
-                "flags": ["insufficient peers for z"]}
-    stdev = statistics.pstdev(peer_values)
-    if stdev == 0:
-        return {"peer_median": median, "peer_z": None, "n_peers": len(peer_values), "flags": ["zero_variance"]}
-    return {"peer_median": median, "peer_z": (value - median) / stdev, "n_peers": len(peer_values), "flags": []}
+        return {"peer_median": median, "peer_score": None, "n_peers": len(peer_values),
+                "flags": ["insufficient peers for score"]}
+    mad = statistics.median([abs(v - median) for v in peer_values])
+    if mad == 0:
+        return {"peer_median": median, "peer_score": None, "n_peers": len(peer_values), "flags": ["zero_variance"]}
+    scaled_mad = mad * _MAD_CONSISTENCY
+    return {"peer_median": median, "peer_score": (value - median) / scaled_mad,
+           "n_peers": len(peer_values), "flags": []}
 
 
 # ---------------------------------------------------------------------------
@@ -668,11 +853,20 @@ def revision_breadth(ticker: str, entry_now: dict, history_cache: dict[str, dict
     """(up_now - down_now) - (up_then - down_then) for the nearest cached date within
     `tolerance_days` of `weeks` weeks before `as_of`. "n/a" until that much history has
     accrued (brief's own sanctioned degrade). Reads `history_cache` (see
-    load_history_cache()) instead of re-scanning state_dir itself (fix round 0, item 3)."""
+    load_history_cache()) instead of re-scanning state_dir itself (fix round 0, item 3).
+
+    RIS5 A5 fix round 1, C4: the raw `up_now`/`down_now`/`up_then`/`down_then` counts are
+    ALWAYS returned alongside `delta` (None where not yet knowable) -- the delta alone
+    hides whether a swing came from more upgrades or fewer downgrades, which matters for
+    reading the number. The card also carries a standing `breadth_semantics_unverified`
+    flag (see build_card()): whether FactSet's `up`/`down` are CUMULATIVE (since the
+    estimate's inception) or TRAILING (since the last snapshot) is not yet confirmed
+    against two real production snapshots (TODO)."""
     up_now = (entry_now.get("up") or {}).get(key)
     down_now = (entry_now.get("down") or {}).get(key)
     if up_now is None or down_now is None:
-        return {"delta": None, "note": "n/a"}
+        return {"delta": None, "note": "n/a", "up_now": up_now, "down_now": down_now,
+               "up_then": None, "down_then": None}
     target = date.fromisoformat(as_of) - __import__("datetime").timedelta(days=weeks * 7)
     best_d, best_gap = None, None
     for d in history_cache:
@@ -684,15 +878,19 @@ def revision_breadth(ticker: str, entry_now: dict, history_cache: dict[str, dict
         if gap <= tolerance_days and (best_gap is None or gap < best_gap):
             best_d, best_gap = d, gap
     if best_d is None:
-        return {"delta": None, "note": "n/a"}
+        return {"delta": None, "note": "n/a", "up_now": up_now, "down_now": down_now,
+               "up_then": None, "down_then": None}
     then_entry = history_cache[best_d].get(ticker)
     if not then_entry:
-        return {"delta": None, "note": "n/a"}
+        return {"delta": None, "note": "n/a", "up_now": up_now, "down_now": down_now,
+               "up_then": None, "down_then": None}
     up_then = (then_entry.get("up") or {}).get(key)
     down_then = (then_entry.get("down") or {}).get(key)
     if up_then is None or down_then is None:
-        return {"delta": None, "note": "n/a"}
-    return {"delta": (up_now - down_now) - (up_then - down_then), "note": None, "compared_to": best_d}
+        return {"delta": None, "note": "n/a", "up_now": up_now, "down_now": down_now,
+               "up_then": None, "down_then": None}
+    return {"delta": (up_now - down_now) - (up_then - down_then), "note": None, "compared_to": best_d,
+           "up_now": up_now, "down_now": down_now, "up_then": up_then, "down_then": down_then}
 
 
 # ---------------------------------------------------------------------------
@@ -743,41 +941,286 @@ def _quality_fail_reason(state_dir: Path, as_of: str, ticker: str, field: str) -
     return None
 
 
-def is_valuation_extreme(gap_pp: float | None, peg_history_z: float | None, cfg: dict) -> bool:
-    """Brief's exact thresholds, verbatim: gap > +8pp OR PEG-vs-history z > +2."""
+def is_valuation_extreme(gap_range: list | None, lens_history_z: float | None,
+                         flags: list[str], cfg: dict) -> bool:
+    """RIS5 A5 fix round 1, F1: the gap branch must hold across the WHOLE sensitivity
+    band -- fires only when `min(gap_range) > 8` AND the card carries neither
+    `margin_default` nor `no_net_debt` (both mean the reverse-DCF ran on a
+    sector-default assumption, not real fundamentals -- not sound grounds to call a
+    valuation extreme). The z-branch is UNCHANGED (a null z never fires) except that
+    `peg_history_z` generalizes to `lens_history_z` -- the SELECTED ladder rung's
+    own-history z (amendment v1.2 replaced the fixed PEG assumption with a printed
+    selection; see build_ladder()/select_primary_lens())."""
     thresh = cfg.get("valuation_extreme") or {}
     gap_thresh = thresh.get("gap_pp_threshold", 8)
-    peg_z_thresh = thresh.get("peg_history_z_threshold", 2)
-    return bool((gap_pp is not None and gap_pp > gap_thresh) or
-               (peg_history_z is not None and peg_history_z > peg_z_thresh))
+    z_thresh = thresh.get("peg_history_z_threshold", 2)
+    gap_fires = bool(gap_range and gap_range[0] is not None and gap_range[0] > gap_thresh
+                     and "margin_default" not in flags and "no_net_debt" not in flags)
+    z_fires = lens_history_z is not None and lens_history_z > z_thresh
+    return bool(gap_fires or z_fires)
+
+
+# ---------------------------------------------------------------------------
+# Amendment v1.2 — forward growth-adjusted multiple ladder (L1/L4)
+# ---------------------------------------------------------------------------
+RUNG_NAMES = ("peg", "ev_ebitda_to_growth", "ev_fcf_to_growth", "ev_sales_to_growth")
+
+
+def ev_multiple_fwd(ev: float | None, v1: float | None, v2: float | None = None) -> float | None:
+    """EV / mean(available of v1, v2) -- v1/v2 <= 0 excluded (a negative denominator
+    multiple is not meaningful here). L1(b) explicitly averages FY1+FY2 EBITDA
+    ("forward EV/EBITDA (FY1, FY2)"); L1(c)'s EV/FCF passes v2=None (FY1 only, same
+    convention as pe_fy1)."""
+    if ev is None:
+        return None
+    vals = [v for v in (v1, v2) if v is not None and v > 0]
+    if not vals:
+        return None
+    return ev / statistics.mean(vals)
+
+
+def _rung_raw_cagr(name: str, entry: dict, ev: float | None) -> tuple[float | None, float | None]:
+    """(raw_multiple, cagr) for ladder rung `name`, from ANY entry dict (current-ticker
+    or a historical/peer entry) + that entry's own EV -- the single function every rung,
+    every history point, and every peer point goes through (one code path, per the
+    coordinator review: "a parameterized rung loop, not four hand-written lenses")."""
+    if name == "peg":
+        raw, _ = pe_fy1(entry.get("price"), entry.get("fy1_eps"))
+        cagr = two_yr_cagr(entry.get("fy1_eps"), entry.get("fy3_eps"))
+    elif name == "ev_ebitda_to_growth":
+        raw = ev_multiple_fwd(ev, entry.get("fy1_ebitda"), entry.get("fy2_ebitda"))
+        cagr = two_yr_cagr(entry.get("fy1_ebitda"), entry.get("fy3_ebitda"))
+    elif name == "ev_fcf_to_growth":
+        raw = ev_multiple_fwd(ev, entry.get("fy1_fcf"))
+        cagr = two_yr_cagr(entry.get("fy1_fcf"), entry.get("fy3_fcf"))
+    elif name == "ev_sales_to_growth":
+        raw = ev_sales_fy1(ev, entry.get("fy1_sales"))
+        cagr = near_term_cagr(entry.get("fy1_sales"), entry.get("fy3_sales"))
+    else:
+        raise ValueError(f"unknown rung {name!r}")
+    return raw, cagr
+
+
+def _rung_adjusted(raw: float | None, cagr: float | None) -> float | None:
+    """multiple / (CAGR * 100); None if the raw multiple is unavailable OR growth <= 0
+    (F2/L1: "a rung with growth <= 0 is null with reason")."""
+    if raw is None or cagr is None or cagr <= 0:
+        return None
+    return raw / (cagr * 100)
+
+
+def _entry_ev(entry: dict, net_debt: float | None) -> float | None:
+    if entry.get("mcap") is None:
+        return None
+    return entry["mcap"] + net_debt if net_debt is not None else entry["mcap"]
+
+
+def select_primary_lens(entry: dict) -> str | None:
+    """L1's literal waterfall, in priority order: (a) PEG when FY1 EPS > 0 and its own
+    EPS-CAGR growth > 0; (b) EV/EBITDA-to-growth ONLY when EPS <= 0 (not merely when
+    PEG's growth check failed) and EBITDA > 0 and growing; (c) EV/FCF-to-growth when
+    FCF > 0 and growing (no EPS-sign gate); (d) EV/Sales-to-growth, last resort. Each
+    rung's raw/adjusted values are computed independently in build_ladder() regardless
+    of which one is primary -- e.g. EV/FCF-to-growth is still shown "next to PEG for
+    cash-rich names" even when PEG is primary. None if no rung is eligible at all."""
+    fy1_eps = entry.get("fy1_eps")
+    eps_positive = fy1_eps is not None and fy1_eps > 0
+    eps_cagr = two_yr_cagr(entry.get("fy1_eps"), entry.get("fy3_eps"))
+    if eps_positive and eps_cagr is not None and eps_cagr > 0:
+        return "peg"
+    fy1_ebitda = entry.get("fy1_ebitda")
+    ebitda_cagr = two_yr_cagr(entry.get("fy1_ebitda"), entry.get("fy3_ebitda"))
+    if (not eps_positive) and fy1_ebitda is not None and fy1_ebitda > 0 \
+            and ebitda_cagr is not None and ebitda_cagr > 0:
+        return "ev_ebitda_to_growth"
+    fy1_fcf = entry.get("fy1_fcf")
+    fcf_cagr = two_yr_cagr(entry.get("fy1_fcf"), entry.get("fy3_fcf"))
+    if fy1_fcf is not None and fy1_fcf > 0 and fcf_cagr is not None and fcf_cagr > 0:
+        return "ev_fcf_to_growth"
+    sales_cagr = near_term_cagr(entry.get("fy1_sales"), entry.get("fy3_sales"))
+    if sales_cagr is not None and sales_cagr > 0:
+        return "ev_sales_to_growth"
+    return None
+
+
+def build_ladder(entry: dict, ev: float | None, ticker: str, ticker_themes_all: dict[str, list[str]],
+                 all_entries: dict, fundamentals: dict, history_cache: dict, peers: list[str],
+                 min_days: int, min_peers_for_z: int) -> dict:
+    """{rung_name: {raw_multiple, cagr, adjusted, history: {z,...}, peers: {peer_score,...},
+    flags}} for every rung in RUNG_NAMES. L4: own-history (>=60-day gate, same as PEG
+    always had) and theme-peer (median/MAD peer_score) comparisons apply identically to
+    every rung -- EV/EBITDA and EV/FCF get exactly the same treatment PEG always did."""
+    ladder: dict[str, dict] = {}
+    for name in RUNG_NAMES:
+        raw, cagr = _rung_raw_cagr(name, entry, ev)
+        adjusted = _rung_adjusted(raw, cagr)
+        flags: list[str] = []
+        if raw is None:
+            flags.append(f"{name}_unavailable")
+        elif adjusted is None:
+            flags.append("growth<=0 or missing")
+
+        def _hist_fn(e, _name=name):
+            e_net_debt = fundamentals.get(ticker, {}).get("net_debt")
+            e_ev = _entry_ev(e, e_net_debt)
+            r, c = _rung_raw_cagr(_name, e, e_ev)
+            return _rung_adjusted(r, c)
+
+        hist = zscore_history(adjusted, history_series(ticker, history_cache, _hist_fn), min_days)
+
+        peer_vals = []
+        for p in peers:
+            pe_entry = all_entries.get(p)
+            if pe_entry is None:
+                continue
+            p_net_debt = fundamentals.get(p, {}).get("net_debt")
+            p_ev = _entry_ev(pe_entry, p_net_debt)
+            r, c = _rung_raw_cagr(name, pe_entry, p_ev)
+            peer_vals.append(_rung_adjusted(r, c))
+        peer = peer_lens(adjusted, peer_vals, min_peers_for_z)
+        peer["peer_basis"] = "watchlist_themes"
+
+        ladder[name] = {"raw_multiple": raw, "cagr": cagr, "adjusted": adjusted,
+                        "history": hist, "peers": peer, "flags": flags}
+    return ladder
+
+
+# ---------------------------------------------------------------------------
+# Amendment v1.2 — horizon + long_duration (L2/L3)
+# ---------------------------------------------------------------------------
+def forward_years_available(entry: dict) -> int:
+    """Count of FY1/FY2/FY3 sales consensus present (quality-ok, survived into the
+    snapshot's `tickers` entry) -- L3's "fewer than 3 forward years of consensus"."""
+    return sum(1 for n in (1, 2, 3) if entry.get(f"fy{n}_sales") is not None)
+
+
+def horizon_info(entry: dict) -> dict:
+    """L2: FY1-FY3 is the working horizon; FY4/FY5 extend it ONLY when present with
+    count >= 3, never beyond year 5. NOTE (coordinator review): scripts/valuation/
+    snapshot.py's RELATIVE_FISCAL_END is 3 and CONSENSUS_METRICS has no FY4/5 pull today,
+    so `entry` never actually carries fy4_*/fy5_* fields in production yet -- this reads
+    them defensively (so the branch activates the moment A3 extends the horizon) but is
+    otherwise INERT; see the A5 report's Fix round 1 section."""
+    years_available = forward_years_available(entry)
+    counts = entry.get("counts") or {}
+    fy4_count, fy5_count = counts.get("fy4_sales"), counts.get("fy5_sales")
+    extended: list[int] = []
+    if entry.get("fy4_sales") is not None and (fy4_count or 0) >= 3:
+        extended.append(4)
+        if entry.get("fy5_sales") is not None and (fy5_count or 0) >= 3:
+            extended.append(5)
+    return {"years_used": [1, 2, 3] + extended, "years_available": years_available,
+           "fy4_count": fy4_count, "fy5_count": fy5_count, "extended": bool(extended)}
+
+
+def determine_long_duration(terminal_share: float | None, forward_years: int,
+                            primary_lens: str | None, cfg: dict) -> tuple[bool, list[str]]:
+    """L3: long_duration when terminal_share_of_ev > threshold (default 0.75), OR fewer
+    than `min_forward_years` (default 3) forward years of consensus, OR the primary lens
+    is the last-resort EV/Sales-to-growth rung. Any one reason is sufficient; all firing
+    reasons are listed (not just the first)."""
+    ld_cfg = cfg.get("long_duration") or {}
+    thresh = ld_cfg.get("terminal_share_threshold", 0.75)
+    min_years = ld_cfg.get("min_forward_years", 3)
+    reasons = []
+    if terminal_share is not None and terminal_share > thresh:
+        reasons.append("terminal_share_of_ev>threshold")
+    if forward_years < min_years:
+        reasons.append("forward_years<min")
+    if primary_lens == "ev_sales_to_growth":
+        reasons.append("primary_lens_last_resort")
+    return bool(reasons), reasons
+
+
+# ---------------------------------------------------------------------------
+# F7 — priced-in component
+# ---------------------------------------------------------------------------
+def load_gap_history(state_dir: Path, exclude_date: str | None = None) -> dict[str, dict[str, float]]:
+    """{date: {ticker: gap_pp}} from every expectations_<date>.jsonl under state_dir
+    except `exclude_date` (today) -- the own-history side of F7's gap_z. A card whose
+    gap was null that day (long_duration, skip, guard failure) simply has no entry for
+    that date, same convention as the price/consensus history cache."""
+    state_dir = Path(state_dir)
+    out: dict[str, dict[str, float]] = {}
+    for p in state_dir.glob("expectations_*.jsonl"):
+        d = p.stem.split("expectations_", 1)[1]
+        if d == exclude_date:
+            continue
+        entry: dict[str, float] = {}
+        for r in _read_jsonl(p):
+            gp = ((r.get("gap") or {}).get("gap_pp"))
+            tk = r.get("ticker")
+            if gp is not None and tk:
+                entry[tk] = gp
+        if entry:
+            out[d] = entry
+    return out
+
+
+def compute_gap_z(ticker: str, gap_pp: float | None, gap_today: dict[str, float],
+                  gap_history: dict[str, dict[str, float]], min_days: int) -> tuple[float | None, str, int]:
+    """-> (gap_z, basis, n). F7: default is a CROSS-SECTIONAL z against every card's
+    gap_pp on the date (including the ticker itself -- the standard cross-sectional-z
+    reading of "z ... vs the cross-section of all cards"); switches to an OWN-HISTORY z
+    once >= min_days daily gap_pp points have accrued for this ticker specifically."""
+    own_series = [tickers[ticker] for tickers in gap_history.values() if ticker in tickers]
+    if gap_pp is not None and len(own_series) >= min_days:
+        r = zscore_history(gap_pp, own_series, min_days)
+        return r["z"], "own_history", r["n_days"]
+    all_today = [v for v in gap_today.values() if v is not None]
+    n = len(all_today)
+    if gap_pp is None or n < 2:
+        return None, "cross_section", n
+    mean = statistics.mean(all_today)
+    stdev = statistics.pstdev(all_today)
+    if stdev == 0:
+        return None, "cross_section", n
+    return (gap_pp - mean) / stdev, "cross_section", n
+
+
+def combine_priced_in(gap_z: float | None, lens_history_z: float | None,
+                      lens_peer_score: float | None) -> tuple[float | None, list[str]]:
+    """F7: priced_in_valuation = clip(mean of available {gap_z, lens_history_z,
+    lens_peer_score}, -3, 3), plus the list of which were available. (Generalized from
+    the brief's literal `peg_history_z`/`peg_peer_z` -- amendment v1.2's ladder replaced
+    the fixed PEG assumption with a printed selection; see is_valuation_extreme()'s own
+    docstring for the same substitution.)"""
+    named = {"gap_z": gap_z, "lens_history_z": lens_history_z, "lens_peer_score": lens_peer_score}
+    available = [k for k in ("gap_z", "lens_history_z", "lens_peer_score") if named[k] is not None]
+    if not available:
+        return None, []
+    return _clip(statistics.mean(named[k] for k in available), -3.0, 3.0), available
 
 
 # ---------------------------------------------------------------------------
 # Card builder
 # ---------------------------------------------------------------------------
-_REQUIRED_SALES = ("fy1_sales", "fy2_sales", "fy3_sales")
-
-
 def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, as_of: str,
                stages: dict, ticker_themes_all: dict[str, list[str]], downside_theme_slugs: set[str],
-               reads_rows: list[dict], notes_dir: Path = NOTES_DIR, credibility_store=None,
+               polarity_unavailable: bool = False, reads_rows: list[dict] | None = None,
+               notes_dir: Path = NOTES_DIR, credibility_store=None,
+               credibility_cross_median: float | None = None, credibility_cache: dict | None = None,
                fundamentals: dict | None = None, all_entries: dict | None = None,
                history_cache: dict[str, dict[str, dict]] | None = None) -> dict:
     """One ticker's full card, or {"ticker", "skipped": True, "reason": ...}.
 
     `history_cache` (see load_history_cache()) is built ONCE by build_expectations() and
     shared across every ticker; defaults to {} (no history) for direct callers/tests that
-    don't need it."""
+    don't need it. `priced_in` is NOT set here -- it needs every card's gap_pp first, so
+    build_expectations() attaches it in a second pass (see attach_priced_in())."""
+    reads_rows = reads_rows or []
     history_cache = history_cache if history_cache is not None else {}
     if entry is None:
         return {"ticker": ticker, "skipped": True, "reason": "not in snapshot"}
     if entry.get("price") is None or entry.get("mcap") is None:
         return {"ticker": ticker, "skipped": True, "reason": "no price/mcap"}
-    for field in _REQUIRED_SALES:
-        if entry.get(field) is None:
-            reason = _quality_fail_reason(state_dir, as_of, ticker, field)
-            return {"ticker": ticker, "skipped": True,
-                    "reason": f"quality fail: {reason}" if reason else f"missing {field}"}
+    if entry.get("fy1_sales") is None:
+        # RIS5 A5 fix round 1, L3: ONLY fy1_sales is mandatory now (it anchors Layer 1 and
+        # the ev_sales_to_growth rung) -- fy2/fy3 missing no longer skips the ticker, it
+        # becomes a long_duration card instead (see below).
+        reason = _quality_fail_reason(state_dir, as_of, ticker, "fy1_sales")
+        return {"ticker": ticker, "skipped": True,
+                "reason": f"quality fail: {reason}" if reason else "missing fy1_sales"}
 
     themes = ticker_themes_all.get(ticker) or []
     fam = sector_family(themes, cfg)
@@ -787,7 +1230,15 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
     fnd = fundamentals.get(ticker, {})
     flags: list[str] = []
 
-    net_debt = fnd.get("net_debt")
+    for field in ("fy2_sales", "fy3_sales"):
+        if entry.get(field) is None:
+            reason = _quality_fail_reason(state_dir, as_of, ticker, field)
+            flags.append(f"missing_{field}:{reason}" if reason else f"missing_{field}")
+
+    net_debt = fnd.get("net_debt")   # RIS5 A5 fix round 1, F4: may be NEGATIVE (net cash
+                                     # reduces EV) -- `ev = mcap + net_debt` already handles
+                                     # that by plain addition; `no_net_debt` fires only when
+                                     # fundamentals carry no net_debt row at all, never on sign.
     ev = entry["mcap"] + net_debt if net_debt is not None else entry["mcap"]
     if net_debt is None:
         flags.append("no_net_debt")
@@ -796,98 +1247,165 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
     if "fcf_margin" not in fnd:
         flags.append("margin_default")
     terminal_margin = term_default   # overrides already folded into margin_defaults()
+    years = cfg.get("years", 5)
+    discount_rate = cfg.get("discount_rate", 0.10)
+    terminal_growth = cfg.get("terminal_growth", 0.03)
+
+    # C3: a nonpositive margin path makes the whole reverse-DCF meaningless (PV is not
+    # even monotonic in g) -- SKIP the ticker entirely rather than build a partial card.
+    if any(m <= 0 for m in _margin_path(fcf_margin_now, terminal_margin, years)):
+        return {"ticker": ticker, "skipped": True, "reason": "margin_path_nonpositive"}
 
     l1 = implied_growth(ev, entry["fy1_sales"], fcf_margin_now, terminal_margin,
-                        discount_rate=cfg.get("discount_rate", 0.10),
-                        terminal_growth=cfg.get("terminal_growth", 0.03),
-                        years=cfg.get("years", 5), cfg=cfg)
+                        discount_rate=discount_rate, terminal_growth=terminal_growth,
+                        years=years, cfg=cfg)
 
     thesis_fm = load_thesis_fm(ticker, notes_dir)
+    cred_entry = (credibility_cache or {}).get(ticker)
     l2 = supported_growth(ticker, entry, cfg, stages=stages, ticker_themes_all=ticker_themes_all,
                           reads_rows=reads_rows, thesis_fm=thesis_fm,
-                          downside_theme_slugs=downside_theme_slugs, credibility_store=credibility_store)
+                          downside_theme_slugs=downside_theme_slugs,
+                          polarity_unavailable=polarity_unavailable, terminal_growth=terminal_growth,
+                          credibility_store=credibility_store, credibility_cross_median=credibility_cross_median,
+                          credibility_entry=cred_entry)
 
-    gap = compute_gap(l1["implied_growth_5y"], l2["base"], l2["downside"])
+    gap_pp_downside = compute_gap(l1["implied_growth_5y"], l2["base"], l2["downside"])
+    gap_range, gap_downside_range = compute_gap_ranges(l1["sensitivity"], l2["base"], l2["downside"])
+    gap = {**gap_pp_downside, "gap_range": gap_range, "gap_downside_range": gap_downside_range}
 
     ev_sales = ev_sales_fy1(ev, entry["fy1_sales"])
     pe, pe_flags = pe_fy1(entry["price"], entry.get("fy1_eps"))
-    growth_pct = l2["near_term_cagr"] * 100 if l2["near_term_cagr"] is not None else None
-    peg, peg_flags = peg_like(pe, growth_pct)
 
     min_days = (cfg.get("history") or {}).get("min_days_for_z", 60)
     ev_sales_hist = zscore_history(
         ev_sales, history_series(ticker, history_cache, lambda e: ev_sales_fy1(
-            (e["mcap"] + net_debt) if (e.get("mcap") is not None and net_debt is not None) else e.get("mcap"),
-            e.get("fy1_sales"))), min_days)
+            _entry_ev(e, net_debt), e.get("fy1_sales"))), min_days)
     pe_hist = zscore_history(
         pe, history_series(ticker, history_cache, lambda e: pe_fy1(e.get("price"), e.get("fy1_eps"))[0]),
         min_days)
 
-    def _peg_lens(e):
-        pe_e, _ = pe_fy1(e.get("price"), e.get("fy1_eps"))
-        cagr_e = near_term_cagr(e.get("fy1_sales"), e.get("fy3_sales"))
-        gp_e = cagr_e * 100 if cagr_e is not None else None
-        peg_e, _ = peg_like(pe_e, gp_e)
-        return peg_e
-
-    peg_hist = zscore_history(peg, history_series(ticker, history_cache, _peg_lens), min_days)
-
     peers = theme_peers(ticker, ticker_themes_all, (cfg.get("peer") or {}).get("min_shared_themes", 2))
     min_peers_for_z = (cfg.get("peer") or {}).get("min_peers_for_z", 3)
     all_entries = all_entries or {}
-    peer_ev_sales_vals, peer_peg_vals = [], []
+    peer_ev_sales_vals = []
     for p in peers:
         pe_entry = all_entries.get(p)
         if pe_entry is None:
             continue
-        p_net_debt = fundamentals.get(p, {}).get("net_debt")
-        p_ev = pe_entry["mcap"] + p_net_debt if p_net_debt is not None and pe_entry.get("mcap") is not None \
-            else pe_entry.get("mcap")
+        p_ev = _entry_ev(pe_entry, fundamentals.get(p, {}).get("net_debt"))
         peer_ev_sales_vals.append(ev_sales_fy1(p_ev, pe_entry.get("fy1_sales")))
-        p_pe, _ = pe_fy1(pe_entry.get("price"), pe_entry.get("fy1_eps"))
-        p_cagr = near_term_cagr(pe_entry.get("fy1_sales"), pe_entry.get("fy3_sales"))
-        p_gp = p_cagr * 100 if p_cagr is not None else None
-        p_peg, _ = peg_like(p_pe, p_gp)
-        peer_peg_vals.append(p_peg)
-
     ev_sales_peers = peer_lens(ev_sales, peer_ev_sales_vals, min_peers_for_z)
-    peg_peers = peer_lens(peg, peer_peg_vals, min_peers_for_z)
+    ev_sales_peers["peer_basis"] = "watchlist_themes"
 
-    breadth_4w = revision_breadth(ticker, entry, history_cache, as_of, 4)
-    breadth_13w = revision_breadth(ticker, entry, history_cache, as_of, 13)
+    ladder = build_ladder(entry, ev, ticker, ticker_themes_all, all_entries, fundamentals,
+                          history_cache, peers, min_days, min_peers_for_z)
+    primary = select_primary_lens(entry)
+    ebitda_present = any(entry.get(f"fy{n}_ebitda") is not None for n in (1, 2, 3))
+    fcf_present = any(entry.get(f"fy{n}_fcf") is not None for n in (1, 2, 3))
+    if not ebitda_present and not fcf_present:
+        flags.append("ebitda_fcf_unavailable")
+    if primary == "ev_sales_to_growth":
+        flags.append("no_profit_lens")
+    elif primary is None:
+        flags.append("no_valid_lens")
+    lens_history_z = ladder[primary]["history"]["z"] if primary else None
+    lens_peer_score = ladder[primary]["peers"]["peer_score"] if primary else None
 
-    valuation_extreme = is_valuation_extreme(gap["gap_pp"], peg_hist["z"], cfg)
+    breadth_sales_4w = revision_breadth(ticker, entry, history_cache, as_of, 4, key="fy1_sales")
+    breadth_sales_13w = revision_breadth(ticker, entry, history_cache, as_of, 13, key="fy1_sales")
+    breadth_eps_4w = revision_breadth(ticker, entry, history_cache, as_of, 4, key="fy1_eps")
+    breadth_eps_13w = revision_breadth(ticker, entry, history_cache, as_of, 13, key="fy1_eps")
+    flags.append("breadth_semantics_unverified")
 
-    all_flags = sorted(set(flags + l1["flags"] + l2["flags"] + pe_flags + peg_flags))
+    valuation_extreme = is_valuation_extreme(gap["gap_range"], lens_history_z, flags, cfg)
 
-    return {
+    horizon = horizon_info(entry)
+    terminal_share = l1["terminal_share_of_ev"]
+    is_ld, ld_reasons = determine_long_duration(terminal_share, horizon["years_available"], primary, cfg)
+
+    l1_card = {k: v for k, v in l1.items() if k != "pv_residual_check"}   # C7: dropped from the card
+
+    provenance = {
+        "snapshot_as_of": as_of,
+        "stages_as_of": stages.get("as_of"),
+        "reads_latest_date": reads_latest_date(ticker, reads_rows),
+        "credibility_as_of": l2["drivers"].get("credibility", {}).get("credibility_as_of"),
+    }
+
+    all_flags = sorted(set(flags + l1["flags"] + l2["flags"] + pe_flags))
+
+    card = {
         "ticker": ticker, "skipped": False, "as_of": as_of, "sector_family": fam,
         "credibility_source": l2["drivers"].get("credibility", {}).get("source", "none"),
+        "primary_lens": primary,
+        "long_duration": is_ld, "long_duration_reasons": ld_reasons,
         "flags": all_flags,
+        "provenance": provenance,
+        "horizon": horizon,
         "inputs": {
             "price": entry["price"], "mcap": entry["mcap"], "net_debt": net_debt, "ev": ev,
-            "fy1_sales": entry["fy1_sales"], "fy2_sales": entry["fy2_sales"], "fy3_sales": entry["fy3_sales"],
-            "fy1_eps": entry.get("fy1_eps"),
+            "fy1_sales": entry["fy1_sales"], "fy2_sales": entry.get("fy2_sales"), "fy3_sales": entry.get("fy3_sales"),
+            "fy1_eps": entry.get("fy1_eps"), "fy2_eps": entry.get("fy2_eps"), "fy3_eps": entry.get("fy3_eps"),
+            "fy1_ebitda": entry.get("fy1_ebitda"), "fy2_ebitda": entry.get("fy2_ebitda"),
+            "fy3_ebitda": entry.get("fy3_ebitda"),
+            "fy1_fcf": entry.get("fy1_fcf"), "fy2_fcf": entry.get("fy2_fcf"), "fy3_fcf": entry.get("fy3_fcf"),
             "fcf_margin_now": fcf_margin_now, "terminal_margin": terminal_margin,
-            "discount_rate": cfg.get("discount_rate", 0.10), "terminal_growth": cfg.get("terminal_growth", 0.03),
-            "years": cfg.get("years", 5),
+            "discount_rate": discount_rate, "terminal_growth": terminal_growth, "years": years,
         },
-        "layer1_priced": l1,
+        "layer1_priced": l1_card,
         "layer2_supported": l2,
         "gap": gap,
         "lenses": {
-            "ev_sales_fy1": ev_sales, "pe_fy1": pe, "peg": peg,
-            "ev_sales_vs_history": ev_sales_hist, "pe_vs_history": pe_hist, "peg_vs_history": peg_hist,
-            "ev_sales_vs_peers": ev_sales_peers, "peg_vs_peers": peg_peers, "n_theme_peers": len(peers),
-            "revision_breadth": {"4w": breadth_4w, "13w": breadth_13w},
+            "ev_sales_fy1": ev_sales, "pe_fy1": pe,
+            "ev_sales_vs_history": ev_sales_hist, "pe_vs_history": pe_hist,
+            "ev_sales_vs_peers": ev_sales_peers, "n_theme_peers": len(peers),
+            "ladder": {"primary": primary, **ladder},
+            "revision_breadth": {
+                "fy1_sales": {"4w": breadth_sales_4w, "13w": breadth_sales_13w},
+                "fy1_eps": {"4w": breadth_eps_4w, "13w": breadth_eps_13w},
+            },
         },
         "valuation_extreme": valuation_extreme,
     }
+
+    if is_ld:
+        # L3: "show only what is priced" -- layer1_priced/lenses/inputs/provenance/horizon
+        # stay; supported/gap/valuation_extreme/priced_in null with reason "long_duration".
+        card["layer2_supported"] = None
+        card["gap"] = None
+        card["valuation_extreme"] = None
+        card["priced_in"] = None
+
+    return card
 
 
 # ---------------------------------------------------------------------------
 # Orchestration
 # ---------------------------------------------------------------------------
+def attach_priced_in(cards: dict[str, dict], state_dir: Path, as_of: str, min_days: int) -> None:
+    """F7, second pass: needs every card's gap_pp before it can compute ANY card's gap_z
+    (cross-sectional), so this runs after build_card() has produced every card in the
+    run. long_duration cards are excluded from the gap cross-section pool (their gap is
+    null) and get priced_in: null (already set in build_card(), reaffirmed here)."""
+    eligible_gaps = {tk: c["gap"]["gap_pp"] for tk, c in cards.items()
+                     if not c.get("long_duration") and c.get("gap") and c["gap"]["gap_pp"] is not None}
+    gap_history = load_gap_history(state_dir, exclude_date=as_of)
+    for tk, c in cards.items():
+        if c.get("long_duration"):
+            c["priced_in"] = None
+            continue
+        gap_pp = (c.get("gap") or {}).get("gap_pp")
+        gap_z, basis, n = compute_gap_z(tk, gap_pp, eligible_gaps, gap_history, min_days)
+        primary = c.get("primary_lens")
+        ladder = c["lenses"]["ladder"]
+        lens_history_z = ladder[primary]["history"]["z"] if primary else None
+        lens_peer_score = ladder[primary]["peers"]["peer_score"] if primary else None
+        piv, available = combine_priced_in(gap_z, lens_history_z, lens_peer_score)
+        c["priced_in"] = {"gap_z": gap_z, "gap_z_basis": basis, "gap_z_n": n,
+                          "lens_history_z": lens_history_z, "lens_peer_score": lens_peer_score,
+                          "primary_lens": primary, "priced_in_valuation": piv, "available": available}
+
+
 def build_expectations(snapshot: dict, cfg: dict, *, state_dir: Path, as_of: str,
                        watchlist_path: Path = None, notes_dir: Path = NOTES_DIR,
                        reads_path: Path = READS_PATH, polarity_path: Path = POLARITY_PATH,
@@ -902,32 +1420,38 @@ def build_expectations(snapshot: dict, cfg: dict, *, state_dir: Path, as_of: str
         stages = json.loads(stages_path.read_text(encoding="utf-8"))
     reads_rows = _read_jsonl(Path(reads_path)) if Path(reads_path).exists() else []
 
-    try:
-        downside_theme_slugs = theme_polarity.competition_slugs(polarity_path, watchlist_path or theme_polarity.WATCHLIST_PATH) | \
-            theme_polarity.bearish_themes(polarity_path, watchlist_path or theme_polarity.WATCHLIST_PATH)
-    except (FileNotFoundError, ValueError):
-        downside_theme_slugs = set()
+    watchlist_path = watchlist_path or WATCHLIST_PATH
+    downside_theme_slugs, polarity_unavailable = load_downside_theme_slugs(polarity_path, watchlist_path)
 
     fundamentals = fundamentals if fundamentals is not None else load_fundamentals(state_dir, as_of)
     # Built ONCE and shared across every ticker/lens this run (fix round 0, item 3) --
     # see load_history_cache()'s own docstring for why this used to be the dominant cost.
     history_cache = load_history_cache(state_dir, exclude_date=as_of)
 
+    universe = sorted(set(tickers_snapshot) | set(ticker_themes_all))
+    non_pvt_universe = [tk for tk in universe if not tk.endswith(".pvt")]
+    # F6: ONE store read per ticker (build_credibility_cache), reused for BOTH the
+    # cross-sectional median AND every ticker's own credibility_term() call below.
+    credibility_cache = build_credibility_cache(non_pvt_universe, store=credibility_store)
+    cred_cross_median = credibility_cross_median(credibility_cache)
+
     cards: dict[str, dict] = {}
     skipped: list[dict] = []
-    universe = sorted(set(tickers_snapshot) | set(ticker_themes_all))
-    for tk in universe:
-        if tk.endswith(".pvt"):
-            continue
+    for tk in non_pvt_universe:
         entry = tickers_snapshot.get(tk)
         card = build_card(tk, entry, cfg, state_dir=state_dir, as_of=as_of, stages=stages,
                           ticker_themes_all=ticker_themes_all, downside_theme_slugs=downside_theme_slugs,
-                          reads_rows=reads_rows, notes_dir=notes_dir, credibility_store=credibility_store,
-                          fundamentals=fundamentals, all_entries=tickers_snapshot, history_cache=history_cache)
+                          polarity_unavailable=polarity_unavailable, reads_rows=reads_rows, notes_dir=notes_dir,
+                          credibility_store=credibility_store, credibility_cross_median=cred_cross_median,
+                          credibility_cache=credibility_cache, fundamentals=fundamentals,
+                          all_entries=tickers_snapshot, history_cache=history_cache)
         if card.get("skipped"):
             skipped.append({"ticker": tk, "reason": card["reason"]})
         else:
             cards[tk] = card
+
+    min_days = (cfg.get("history") or {}).get("min_days_for_z", 60)
+    attach_priced_in(cards, state_dir, as_of, min_days)
 
     return {"as_of": as_of, "universe_size": len(universe), "cards": cards, "skipped": skipped}
 

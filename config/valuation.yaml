@@ -149,28 +149,28 @@ sector_keywords:
     - laser_architecture_competition
 
 # ---------------------------------------------------------------------------
-# Layer 2 — supported_growth (brief: base = CAGR of consensus FY1->FY3 sales
-# extended to 5y by a durability multiplier from (a) theme-lifecycle stage
-# rank vs peer-median, (b) credibility, (c) last-2-quarter reads trend).
+# Layer 2 — supported_growth (RIS5 A5 fix round 1, F3: a FADE, not a flat
+# multiplier on the near-term CAGR). Years 1-3 run at the consensus FY1->FY3
+# CAGR; years 4-5 fade toward terminal_growth by `persistence` (see F3's
+# formula in expectations.py's supported_growth() docstring and the A5
+# report's "Fix round 1" section). durability_score replaces the old
+# durability_multiplier concept entirely.
 # ---------------------------------------------------------------------------
 supported_growth:
-  # near_term_cagr = (fy3_sales/fy1_sales)^(1/2) - 1 (2-year CAGR over the
-  # FY1->FY3 consensus window), then base = near_term_cagr * durability_multiplier.
   durability:
-    # Each of the 3 terms is independently clipped, then summed onto 1.0 and
-    # the whole multiplier is clipped again. All bounds are interpretive calls
-    # (not brief-specified) -- kept deliberately small (a name in the best-vs-
-    # worst quartile of stage/credibility/reads moves growth by single-digit
-    # percent, not doubles it) since this is a plausibility multiplier on a
-    # sell-side number, not an independent growth estimate.
-    stage_term_bound: 0.15         # max +/- from stage-rank-vs-peer-median
-    stage_term_per_level: 0.05     # pp of multiplier per stage-rank-level of lead/lag
-    credibility_term_bound: 0.10   # max +/- from consensus_beat_rate/guide_hit_rate
-    reads_term_bound: 0.10         # max +/- from the reads-trend average
-    multiplier_bounds: [0.5, 1.5]
-  # Absolute sanity bounds on supported_growth.base itself, after the
-  # multiplier is applied (never let a durability swing produce an
-  # unsupportable base rate).
+    # F3 binding ruling: durability_score = sum of 3 independently-clipped
+    # terms, each bounded at +/- 1/6 so the sum cannot exceed +/- 0.5 (the
+    # brief's own durability_score bound). 1/6 stored at float precision
+    # (0.16666666666666666) so config and code bounds are EXACTLY equal, per
+    # F3 ("config/valuation.yaml bounds must equal the real ones").
+    stage_term_bound: 0.16666666666666666          # = 1/6
+    stage_term_per_level: 0.05                      # pp of term per stage-rank-level of lead/lag (unchanged scale, only the bound moved)
+    credibility_term_bound: 0.16666666666666666     # = 1/6
+    reads_term_bound: 0.16666666666666666           # = 1/6
+    durability_score_bounds: [-0.5, 0.5]            # F3: durability_score in [-0.5, +0.5]
+  # Absolute sanity bounds on supported_growth.base (the 5-year CAGR of the
+  # fade path) -- never let a durability swing + fade produce an
+  # unsupportable base rate.
   base_bounds: [-0.50, 2.00]
   # Reads-trend axis selection (amendment measured 2026-09-17): only 8/178
   # tickers clear >=3 dated reads on ai_positioning ALONE (the same 8 clear it
@@ -180,13 +180,21 @@ supported_growth:
   # ticker, and omit the axis entirely if it doesn't clear. A ticker with zero
   # qualifying axes gets the whole reads_term omitted ("insufficient history").
   reads_min_dated: 3
+  # F5: downside is now RELATIVE (base * downside_multiplier), applied once
+  # when >=1 qualifying assumption is challenged -- replaces the old flat
+  # downside_haircut_pp (an absolute pp subtraction, which could push a small
+  # base negative disproportionately; a relative haircut scales with base).
+  # No brief-specified number -- interpretive call, operator-adjustable.
+  downside_multiplier: 0.85
 
-# downside haircut (brief: "downside = base minus a haircut when any
-# assumption with a competition/margin theme is challenged"; no numeric value
-# given -- interpretive call, operator-adjustable). Applied once per card
-# (not once per challenged assumption) when >=1 qualifying assumption exists;
-# every qualifying assumption's id is still listed on the card.
-downside_haircut_pp: 5.0
+# ---------------------------------------------------------------------------
+# long_duration (amendment v1.2, L3). Both thresholds are interpretive calls
+# (brief gives the 0.75 terminal-share number and the "fewer than 3 forward
+# years" wording verbatim; min_forward_years: 3 is that wording made literal).
+# ---------------------------------------------------------------------------
+long_duration:
+  terminal_share_threshold: 0.75
+  min_forward_years: 3
 
 # ---------------------------------------------------------------------------
 # Lenses
