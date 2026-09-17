@@ -233,6 +233,16 @@
 
   function emptyState(sentence) { return '<p class="empty">' + esc(sentence) + '</p>'; }
 
+  /* An Ask placeholder. ask.js (loaded last) fills these AFTER a paint, and only
+   * once claude.use("sample") has resolved non-null -- so a desk opened outside
+   * a Claude viewer, or by a viewer who cannot sample, renders an empty div and
+   * never a dead button. The div stays empty and CSS hides it (.askslot:empty).
+   * app.js itself knows nothing about the capability; it only marks the spots. */
+  function askSlot(scope, arg) {
+    return '<div class="askslot" data-ask-scope="' + esc(scope) + '"' +
+      (arg === undefined || arg === null ? '' : ' data-ask-arg="' + esc(arg) + '"') + '></div>';
+  }
+
   function section(eyebrow, body) {
     return '<section class="section"><span class="eyebrow">' + esc(eyebrow) + '</span>' + body + '</section>';
   }
@@ -503,7 +513,8 @@
     var prevVisit = STATE.since && STATE.since.lastVisit;
     if (!box || !prevVisit) return;
     var cut = String(prevVisit).slice(0, 10);
-    var days = reportFiles().filter(function (d) { return d.date >= cut; }).slice(0, SINCE_DAYS);
+    var avail = reportFiles().filter(function (d) { return d.date >= cut; });
+    var days = avail.slice(0, SINCE_DAYS);
     if (!days.length) return;
     /* One failed shard must not lose the others, so each one catches its own. */
     Promise.all(days.map(function (d) {
@@ -527,9 +538,18 @@
         ? ' ' + (counts.order.length - SINCE_ROWS) + ' more ticker' +
           (counts.order.length - SINCE_ROWS === 1 ? '' : 's') + ' not listed.'
         : '';
+      /* SINCE_DAYS caps how many shards are read, so "since <cut>" on its own
+       * would claim a window this roll-up never opened. When the cap bites, the
+       * sentence names the oldest day actually counted; days is newest-first,
+       * so that is its last entry. */
+      var oldest = days[days.length - 1].date;
+      var span = (days.length < avail.length)
+        ? ('the ' + days.length + ' most recent of ' + avail.length + ' report days since ' + cut +
+           ' (' + oldest + ' onward)')
+        : (days.length + ' report day' + (days.length === 1 ? '' : 's') + ' since ' + cut);
       box.innerHTML = '<h3 class="subhead">Thesis alerts</h3><ul class="rows">' + rows + '</ul>' +
         '<p class="empty">' + esc(counts.total + ' thesis alert' + (counts.total === 1 ? '' : 's') +
-          ' across ' + days.length + ' report day' + (days.length === 1 ? '' : 's') + ' since ' + cut + '.' + more) + '</p>';
+          ' across ' + span + '.' + more) + '</p>';
       wrapWide(box);
     }).catch(function () { /* nothing to show is the resting state */ });
   }
@@ -582,7 +602,7 @@
     var m = STATE.manifest;
     var cards = arr(m.today && m.today.cards);
     var nonce = ++todayNonce;
-    var html = changedBlock(nonce);
+    var html = askSlot('desk') + changedBlock(nonce);
 
     if (!cards.length) {
       html += section('Reports', emptyState('No report cards in this build \u2014 the premarket, postmarket, digest and alert jobs had nothing to publish for today.'));
@@ -937,7 +957,7 @@
       out += '</p>';
       out += chips(meta.themes, function (slug) { return href(['theme', slug]); });
     }
-    return out;
+    return out + askSlot('ticker', id);
   }
 
   /* The profile note is note-shaped (same id/rel/body keys), so it joins the note
@@ -984,7 +1004,8 @@
       (note.date ? ' \u00b7 <span class="mono">' + esc(note.date) + '</span>' : '') +
       (note.period ? ' \u00b7 <span class="mono">' + esc(note.period) + '</span>' : '') +
       ' \u00b7 <span class="chip">' + esc(note.provenance || 'unknown') + '</span>' +
-      ' \u00b7 <span class="mono">notes/' + esc(note.rel || note.id) + '</span></p>';
+      ' \u00b7 <span class="mono">notes/' + esc(note.rel || note.id) + '</span></p>' +
+      askSlot('note', note.id);
     if (!note.body) {
       var secs = arr(note.sections);
       return head + (secs.length
@@ -1270,7 +1291,10 @@
         return '<li>' + row(href(['more', it[0]]),
           '<span class="dot-slot"></span><span class="row-title">' + esc(it[1]) + '</span>',
           '<span>' + esc(it[2]) + '</span>') + '</li>';
-      }).join('') + '</ul>'
+      }).join('') +
+        /* The Ask row is not in `items`: it exists only when the capability
+         * resolved, so ask.js renders it into this slot, outside the list. */
+        '</ul>' + askSlot('more')
     };
   }
 
@@ -1348,6 +1372,13 @@
 
   var renderToken = 0;
 
+  /* Run after every paint, with (viewElement, routeParts). ask.js is the only
+   * subscriber today: it aborts any in-flight call (a paint IS a navigation or
+   * a re-render, and the contract says stop there) and re-mounts its buttons
+   * into the fresh view's `.askslot` placeholders. A throwing hook is caught
+   * here for the same reason `res.after` is: it must not blank the screen. */
+  var paintHooks = [];
+
   function paint(res, parts) {
     var view = document.getElementById('view');
     document.getElementById('page-title').textContent = (res && res.title) || 'Research Desk';
@@ -1365,6 +1396,9 @@
     wrapWide(view);
     if (res && typeof res.after === 'function') {
       try { res.after(view); } catch (e) { /* a broken hook must not blank the screen */ }
+    }
+    for (var h = 0; h < paintHooks.length; h++) {
+      try { paintHooks[h](view, parts || []); } catch (e) { /* same */ }
     }
     window.scrollTo(0, 0);
     try { view.focus({ preventScroll: true }); } catch (e) { /* older WebKit */ }
@@ -1466,7 +1500,8 @@
     esc: esc, arr: arr, isObj: isObj, href: href, kb: kb,
     chips: chips, emptyState: emptyState, section: section, fold: fold, md: md,
     row: row, dot: dot, wrapWide: wrapWide,
-    loadJSON: loadJSON, findTicker: findTicker,
+    loadJSON: loadJSON, findTicker: findTicker, bundlePath: bundlePath,
+    allNotes: allNotes, askSlot: askSlot, paintHooks: paintHooks,
     safeURL: safeURL, extLink: extLink, isRead: isRead,
     itemsSummary: itemsSummary,
     STATE: STATE, views: views, tickerTabs: tickerTabs, morePages: morePages,

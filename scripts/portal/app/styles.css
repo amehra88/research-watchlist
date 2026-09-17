@@ -797,3 +797,108 @@ blockquote.quote .qa {
  * has loaded, and it must not reserve space while it is. */
 .row-sum:empty { display: none; }
 .row-sum { color: var(--muted); }
+
+/* ------------------------------------------------------------------ ask --- */
+/* Ask Claude (ask.js, slice 3 Task 4). app.js renders an EMPTY .askslot at
+ * every entry point and ask.js fills it only once claude.use("sample") has
+ * resolved non-null -- so the resting state of this whole block is invisible,
+ * exactly like .row-sum before its patch lands. */
+.askslot:empty { display: none; }
+.askslot { margin: 10px 0 0; }
+
+/* The one entry button. A .btn with room around it, so it never crowds the
+ * chips above it on a ticker header. */
+.btn-ask { margin-top: 2px; }
+
+/* The panel: one bottom sheet, INSIDE #view, so a route change destroys it
+ * with the rest of the screen. It sits above the tab bar (z-index 30) while it
+ * is open; Close gives the tabs back. */
+.asksheet {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 40;
+  max-height: 78vh;
+  overflow-y: auto;
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.14);
+  -webkit-overflow-scrolling: touch;
+}
+.asksheet-in {
+  max-width: 760px;
+  margin-inline: auto;
+  padding: 10px var(--gutter) calc(14px + env(safe-area-inset-bottom, 0px));
+}
+
+.askhead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 8px;
+}
+.askhead .eyebrow { flex: 1 1 auto; min-width: 0; }
+
+.asksheet textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--fs-base);
+  line-height: 1.45;
+  resize: vertical;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.asksheet textarea::placeholder { color: var(--muted); }
+
+.askbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 0;
+}
+
+.askstatus {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: var(--fs-xs);
+}
+
+.askerr {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-radius: 4px;
+  background: var(--bad-bg);
+  color: var(--bad);
+  font-size: var(--fs-sm);
+  max-width: 62ch;
+}
+
+/* The answer: plain text while it streams (a <pre> that wraps), markdown once
+ * the call resolves. Empty until the first onText, so it reserves no space. */
+.askout:empty { display: none; }
+.askout {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line-soft);
+}
+.askout pre.stream {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: var(--sans);
+  font-size: var(--fs-base);
+  line-height: 1.55;
+  color: var(--ink);
+}
+/* While the answer streams it is assigned as PLAIN TEXT (textContent), so its
+ * newlines need preserving; the settled render is markdown and must not. */
+.askout.streaming { white-space: pre-wrap; overflow-wrap: anywhere; }
+/* The More list's Ask row lives in its own <ul> (it exists only when the
+   capability does), so the rule between it and the row above it belongs here. */
+.askrows .row { border-top: 1px solid var(--line-soft); }

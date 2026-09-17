@@ -1321,4 +1321,13 @@
   morePages.etf = viewEtfArchive;
   morePages.reports = viewReports;
   morePages.search = viewSearch;
+
+  /* ask.js (loaded after this file) searches the vault for Claude through the
+   * SAME loaded index and the SAME scorer this screen uses -- exported here
+   * rather than re-implemented there, so the mirrored-tokenizer spec above has
+   * exactly one copy. `searchEnsure()` resolves the index (loading it once);
+   * `searchRun(q)` then tokenizes with that index's stoplist and returns
+   * {tokens, hits, mode} exactly as the Search screen sees it. */
+  R.searchEnsure = ensureIndex;
+  R.searchRun = searchRun;
 })();

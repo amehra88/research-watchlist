@@ -22,7 +22,8 @@ EXCEPT
                                           never touches it either)
   - a dotfile (any path component starting with ".")
   - anything NOT matching build_portal.OWNED_PATHS (today: app.js, app2.js,
-    styles.css, vendor/**, data/** -- see that module for the authoritative list)
+    ask.js, styles.css, vendor/**, data/** -- see that module for the
+    authoritative list)
 
 Exit codes (main()):
   0 - map printed to stdout (and, with --check, every published file's sha256
