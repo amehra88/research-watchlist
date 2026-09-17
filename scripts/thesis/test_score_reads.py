@@ -41,6 +41,44 @@ def test_bold_colon_article_tolerance():
     ]
 
 
+def test_idiom_populate_a_initialize_initiate_establish_initial_score_of():
+    text = (FIX / "idiom_populate_a.md").read_text()
+    assert SR.parse_recs(text) == [
+        {"axis": "ai_positioning", "verb": "populate", "value": "4"},
+        {"axis": "competitive_advantage.innovation_rate", "verb": "populate", "value": "3+"},
+        {"axis": "competitive_advantage.distribution", "verb": "populate", "value": "4"},
+        {"axis": "competitive_advantage.overall", "verb": "populate", "value": "4-"},
+        {"axis": "potential_investor_interest.score", "verb": "populate", "value": "4+"},
+    ]
+
+
+def test_idiom_populate_b_proposal_forms_and_reaffirm():
+    text = (FIX / "idiom_populate_b.md").read_text()
+    assert SR.parse_recs(text) == [
+        {"axis": "ai_positioning", "verb": "populate", "value": "4"},
+        {"axis": "competitive_advantage.innovation_rate", "verb": "populate", "value": "3"},
+        {"axis": "competitive_advantage.distribution", "verb": "populate", "value": "5"},
+        {"axis": "competitive_advantage.overall", "verb": "propose", "value": "4"},   # "propose initial" (no "score") -> existing PROPOSE verb
+        {"axis": "potential_investor_interest.score", "verb": "hold", "value": "4"},  # "reaffirm" -> HOLD
+    ]
+
+
+def test_idiom_revise_updown_and_quoted_backticked_values():
+    text = (FIX / "idiom_revise_and_quotes.md").read_text()
+    assert SR.parse_recs(text) == [
+        {"axis": "ai_positioning", "verb": "revise", "value": "4"},
+        {"axis": "competitive_advantage.innovation_rate", "verb": "revise", "value": "4+"},
+        {"axis": "competitive_advantage.distribution", "verb": "revise", "value": "3+"},
+        {"axis": "competitive_advantage.overall", "verb": "revise", "value": "3"},
+        {"axis": "potential_investor_interest.score", "verb": "drift", "value": "4+"},
+    ]
+
+
+def test_idiom_revise_from_prior_quoted_value_skips_the_earlier_quote():
+    text = (FIX / "idiom_revise_from_prior.md").read_text()
+    assert SR.parse_recs(text) == [{"axis": "ai_positioning", "verb": "revise", "value": "4"}]
+
+
 def test_no_recs_note_yields_no_rows():
     text = (FIX / "no_recs.md").read_text()
     assert SR.parse_recs(text) == []
@@ -112,7 +150,12 @@ def test_lift_score_recs_records_every_verb_when_note_id_given():
 
 if __name__ == "__main__":
     test_full_layout_every_axis_and_verb(); test_propose_initial_score_verb_form()
-    test_bold_colon_article_tolerance(); test_no_recs_note_yields_no_rows()
+    test_bold_colon_article_tolerance()
+    test_idiom_populate_a_initialize_initiate_establish_initial_score_of()
+    test_idiom_populate_b_proposal_forms_and_reaffirm()
+    test_idiom_revise_updown_and_quoted_backticked_values()
+    test_idiom_revise_from_prior_quoted_value_skips_the_earlier_quote()
+    test_no_recs_note_yields_no_rows()
     test_parse_note_id_earnings_and_conf(); test_build_rows_shape_and_applied()
     test_append_rows_is_idempotent(); test_iter_note_paths_finds_amat()
     test_lift_score_recs_unchanged_semantics_no_note_id()

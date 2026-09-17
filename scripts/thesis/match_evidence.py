@@ -104,6 +104,24 @@ def lift_score_recs(note_text: str, note_id: str | None = None, applied: dict | 
     return out
 
 
+def score_rec_text(e: Evidence) -> str | None:
+    """Full note text to hand to lift_score_recs, or None if `e` carries no §5/§6/§7.
+
+    earnings_note Evidence.text already keeps §5/6/7 (collectors.earnings_notes_since's
+    section allowlist includes them) -- use it as-is, no extra disk read. conference
+    Evidence.text is stripped to §2-4 (the evidence-matching prompt only needs the
+    Q&A/guidance sections), so §5/6/7 is never in it; for a file-backed conference note
+    (source_id is a real notes/<T>/...-conf-*.md path, not a pg-derived "exch:..." id)
+    read the file fresh to recover them. The evidence-matching text (e.text) itself is
+    untouched either way.
+    """
+    if e.source == "earnings_note":
+        return e.text
+    if e.source == "conference" and e.source_id.startswith("notes/") and e.source_id.endswith(".md"):
+        return (REPO / e.source_id).read_text(encoding="utf-8", errors="replace")
+    return None
+
+
 def rows_from_4b(note_text: str, e: Evidence, valid_ids: set[str]) -> list[dict]:
     """§4b 'Assumption read' lines become strength-3 rows with source earnings_break/earnings_confirm."""
     sec = re.search(r"## 4b\..*?(?=\n## |\Z)", note_text, re.S)
@@ -175,15 +193,18 @@ def run_ticker(ticker: str, since: date, today: date, dry_run: bool = False, wat
     valid = {a["id"] for a in fm["assumptions"] if a.get("status") != "retired"}
     ts = datetime.now(timezone.utc).isoformat()
     rows, change_rows = [], []
-    # earnings notes: §4b verdicts + explicit score recommendations are lifted without an LLM call
+    # earnings notes: §4b verdicts are lifted without an LLM call; earnings + conference
+    # notes both get their explicit score recommendations (§5/§6/§7) lifted the same way
     for e in evidence:
-        if e.source != "earnings_note":
+        if e.source == "earnings_note":
+            rows += rows_from_4b(e.text, e, valid)
+        rec_text = score_rec_text(e)
+        if rec_text is None:
             continue
-        rows += rows_from_4b(e.text, e, valid)
         # score_reads.jsonl is a real filesystem write: skip it on --dry-run like every other side effect below
         note_id = e.source_id[len("notes/"):] if e.source_id.startswith("notes/") else e.source_id
         rec_kwargs = {} if dry_run else {"note_id": note_id, "applied": fm.get("scores", {})}
-        for k, v in lift_score_recs(e.text, **rec_kwargs).items():
+        for k, v in lift_score_recs(rec_text, **rec_kwargs).items():
             cur = (fm.setdefault("proposed_scores", {}) or {}).get(k) or {}
             if fm.get("scores", {}).get(k) != v and cur.get("value") != v:
                 fm["proposed_scores"][k] = {"value": v, "since": e.date, "source": e.source_id}

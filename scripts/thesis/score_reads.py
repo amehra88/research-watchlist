@@ -38,13 +38,52 @@ NOTE_GLOBS = ("*-[1-4]Q[0-9][0-9].md", "*-conf-*.md")
 # Six verb forms, case-insensitive, tolerant of "**", ":" and "a"/"an" between the verb
 # and the value. Whitespace between tokens is restricted to literal spaces (not \s) so a
 # match can never stretch across a newline into an unrelated number further down the block.
+# The connector also tolerates a quoted ("N") or backtick-quoted (`N`) value on either
+# side, and "initial" alone (score word optional) so "propose initial 4" -- with no
+# "score" -- still resolves to the existing PROPOSE verb, not a new idiom.
+_CONNECT = r"[ :]*\**[ ]*(?:an?[ ]+)?\**[ ]*[\"'`]?\**[ ]*"
+_VALUE = r"([1-5][+-]?)"
+_CLOSE = r"[\"'`]?\**"
+_LOOKAHEAD = r"(?![%\d])"
+_DASH = r"(?:[:—–-])?[ ]*"   # colon / em-dash / en-dash / hyphen separator, or none
+
 VERB_RE = re.compile(
     r"\b(hold|drift|revise|propose|populate)\b"
-    r"(?:[ ]+(?:at|to|as|initial[ ]+score))?"
-    r"[ :]*\**[ ]*(?:an?[ ]+)?\**[ ]*"
-    r"([1-5][+-]?)(?![%\d])",
+    r"(?:[ ]+(?:at|to|as|initial(?:[ ]+score)?))?"
+    + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD,
     re.I,
 )
+
+# Idiom -> verb map for phrasing the six canonical forms don't cover (RIS5 A1 fix round 1).
+# Reviewer-sourced corpus idioms, all first-baseline ("populate": reaffirm, no proposal)
+# unless noted. Order doesn't matter for correctness -- every phrase's next literal token
+# after "initial" differs (score/proposed/proposal/at), so there's no cross-matching risk.
+_IDIOMS: list[tuple[str, re.Pattern]] = [
+    ("populate", re.compile(r"\binitiali[sz]e\b[ ]+(?:at|to)\b" + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
+    ("populate", re.compile(r"\binitiate\b[ ]+at\b" + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
+    ("populate", re.compile(r"\bestablish\b(?:[ ]+initial)?[ ]+at\b" + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
+    ("populate", re.compile(r"\bproposed\b[ ]+initial[ ]+score\b" + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
+    ("populate", re.compile(r"\binitial\b[ ]+proposed[ ]+score\b(?:[ ]+of)?" + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
+    ("populate", re.compile(r"\binitial\b[ ]+score\b(?:[ ]+of)?" + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
+    ("populate", re.compile(r"\bfirst-baseline\b[ ]+proposal\b[ ]*" + _DASH + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
+    ("populate", re.compile(r"\binitial\b[ ]+proposal\b[ ]*" + _DASH + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
+    ("hold", re.compile(r"\breaffirm\b" + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
+    # "revise upward/up/down/downward ... to N" -- the target value follows the LAST "to"
+    # on the line, so any earlier quoted prior score ("from ... "4-" to "4"") is skipped.
+    ("revise", re.compile(r"\brevise\b[ ]+(?:up|upward|down|downward)\b[^\n]{0,300}?\bto\b" + _CONNECT + _VALUE + _CLOSE + _LOOKAHEAD, re.I)),
+]
+
+
+def _match_rec(text: str) -> tuple[str, str] | None:
+    """(verb, value) for the first recommendation line in `text`: the canonical six-verb
+    regex first, then the wider idiom map. Returns None if neither matches."""
+    if m := VERB_RE.search(text):
+        return m.group(1).lower(), m.group(2)
+    for verb, pat in _IDIOMS:
+        if m := pat.search(text):
+            return verb, m.group(1)
+    return None
+
 
 # Same "## 5|6|7." section split match_evidence.lift_score_recs has always used.
 _SECTION_RE = re.compile(r"## (5|6|7)\..*?(?=\n## |\Z)", re.S)
@@ -68,15 +107,15 @@ def parse_recs(note_text: str) -> list[dict]:
     """
     sec = _sections(note_text)
     out: list[dict] = []
-    if "5" in sec and (m := VERB_RE.search(sec["5"])):
-        out.append({"axis": "ai_positioning", "verb": m.group(1).lower(), "value": m.group(2)})
+    if "5" in sec and (r := _match_rec(sec["5"])):
+        out.append({"axis": "ai_positioning", "verb": r[0], "value": r[1]})
     if "6" in sec:
         for label, key in _SUBBLOCK_LABELS:
             blk = re.search(rf"\*\*{label}\*\*.*?(?=\n- \*\*|\Z)", sec["6"], re.S)
-            if blk and (m := VERB_RE.search(blk.group(0))):
-                out.append({"axis": key, "verb": m.group(1).lower(), "value": m.group(2)})
-    if "7" in sec and (m := VERB_RE.search(sec["7"])):
-        out.append({"axis": "potential_investor_interest.score", "verb": m.group(1).lower(), "value": m.group(2)})
+            if blk and (r := _match_rec(blk.group(0))):
+                out.append({"axis": key, "verb": r[0], "value": r[1]})
+    if "7" in sec and (r := _match_rec(sec["7"])):
+        out.append({"axis": "potential_investor_interest.score", "verb": r[0], "value": r[1]})
     return out
 
 

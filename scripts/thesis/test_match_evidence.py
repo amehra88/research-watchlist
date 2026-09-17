@@ -1,5 +1,5 @@
 """Run directly: python3 scripts/thesis/test_match_evidence.py"""
-import json, sys
+import json, sys, tempfile
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from thesis import match_evidence as M  # noqa: E402
@@ -50,8 +50,42 @@ def test_batches_respect_cap_and_keep_order():
     bs = M.batches(big, char_cap=12_000)
     assert [len(b) for b in bs] == [2, 2, 1] and bs[0][0].source_id == "n0"
 
+def test_score_rec_text_earnings_note_uses_evidence_text_unchanged():
+    e = Evidence("earnings_note", "notes/COHR/20260904-2Q27.md", "COHR", "2026-09-04", "x", "## 5. stub", "r")
+    assert M.score_rec_text(e) == "## 5. stub"
+
+def test_score_rec_text_conference_reads_full_file_not_stripped_evidence_text():
+    """conference Evidence.text is stripped to §2-4 (no §5/6/7); score_rec_text must re-read
+    the full note from disk so §5/6/7 recommendations are still lifted on live ingest."""
+    full_text = (Path(__file__).resolve().parent / "fixtures" / "score_reads" / "full_layout.md").read_text()
+    tmp_repo = Path(tempfile.mkdtemp())
+    (tmp_repo / "notes" / "COHR").mkdir(parents=True)
+    conf_path = tmp_repo / "notes" / "COHR" / "20260904-conf-analyst-day.md"
+    conf_path.write_text(full_text)
+    orig_repo = M.REPO
+    M.REPO = tmp_repo
+    try:
+        e = Evidence("conference", "notes/COHR/20260904-conf-analyst-day.md", "COHR", "2026-09-04",
+                     "analyst-day", "## 2. stub (§2-4 only, no §5/6/7)", "notes/COHR/20260904-conf-analyst-day.md")
+        text = M.score_rec_text(e)
+        assert text == full_text and "## 5." in text
+        # and it actually feeds lift_score_recs correctly, same as an earnings note would
+        out = M.lift_score_recs(text)
+        assert out == {"competitive_advantage.innovation_rate": "4+", "competitive_advantage.distribution": "3",
+                        "competitive_advantage.overall": "4"}
+    finally:
+        M.REPO = orig_repo
+
+def test_score_rec_text_none_for_non_file_backed_or_other_sources():
+    assert M.score_rec_text(Evidence("news", "notes/news/a.md", "COHR", "2026-09-02", "t", "x", "u")) is None
+    # pg-derived conference exchange excerpt: no on-disk note to re-read
+    assert M.score_rec_text(Evidence("conference", "exch:abc123", "COHR", "2026-09-02", "t", "x", "r")) is None
+
 if __name__ == "__main__":
     test_parse_verdicts_maps_by_index_and_validates(); test_lift_score_recs()
     test_earnings_break_becomes_strength3_row(); test_prompt_lists_every_assumption_and_item()
     test_batches_respect_cap_and_keep_order()
+    test_score_rec_text_earnings_note_uses_evidence_text_unchanged()
+    test_score_rec_text_conference_reads_full_file_not_stripped_evidence_text()
+    test_score_rec_text_none_for_non_file_backed_or_other_sources()
     print("OK test_match_evidence")
