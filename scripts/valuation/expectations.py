@@ -191,20 +191,33 @@ def read_stage(stages: dict, theme: str, ticker: str) -> int | None:
 # Credibility reader (Store B) -- wrapped so "no credibility" degrades to a
 # neutral term + flag, never requires a live DB.
 # ---------------------------------------------------------------------------
-def read_credibility(ticker: str, metric: str = "SALES", store=None) -> tuple[dict | None, list[str]]:
-    """`store` is duck-typed (`.credibility(ticker, metric) -> dict|None`) so tests
-    inject a fixture without a live DB. When `store` is None, lazily resolves
-    `store_b.get_metrics_store()` (whatever CHUNK_STORE_BACKEND is already set to --
-    this module never sets that env var itself); any resolve/connect/read failure
-    degrades to (None, ["no_credibility"]) rather than raising."""
+def read_credibility(ticker: str, metric: str = "SALES", store=None) -> tuple[dict | None, list[str], str]:
+    """-> (cred, flags, credibility_source). `credibility_source` is "pg" | "file" | "none"
+    (RIS5 A5 fix round 0, item 2): honours `CHUNK_STORE_BACKEND` exactly the way
+    `store_b.get_metrics_store()` itself does (this module never sets that env var --
+    the production Sunday Store B cron sources /root/podcasts/.env, which pins
+    CHUNK_STORE_BACKEND=pg; a live run of this module must be invoked the same way, see
+    the CLI section / A5 report for the exact command). "none" means the lookup itself
+    failed (store resolution/connection raised), not merely that no row was found for
+    this ticker -- an empty-but-successful lookup still reports the real backend name
+    and is separately flagged "no_credibility".
+
+    `store` is duck-typed (`.credibility(ticker, metric) -> dict|None`) so tests inject a
+    fixture without ever calling get_metrics_store() -- no live DB is opened in tests
+    regardless of what CHUNK_STORE_BACKEND happens to be set to in the environment,
+    because `store_b.get_metrics_store()` is only reached when `store is None`.
+    """
+    import os
+    backend = os.environ.get("CHUNK_STORE_BACKEND", "file").lower()
+    source = backend if backend in ("pg", "file") else "file"
     try:
         st = store if store is not None else store_b.get_metrics_store()
         cred = st.credibility(ticker, metric)
     except Exception:                                                    # noqa: BLE001
-        return None, ["no_credibility"]
+        return None, ["no_credibility"], "none"
     if not cred:
-        return None, ["no_credibility"]
-    return cred, []
+        return None, ["no_credibility"], source
+    return cred, [], source
 
 
 # ---------------------------------------------------------------------------
@@ -253,27 +266,48 @@ def reads_term(ticker: str, reads_rows: list[dict], cfg: dict) -> tuple[float, l
 # ---------------------------------------------------------------------------
 # Stage-rank durability term
 # ---------------------------------------------------------------------------
-def stage_rank_term(ticker: str, themes: list[str], stages: dict,
-                    ticker_themes_all: dict[str, list[str]], cfg: dict) -> tuple[float, list[str], dict]:
-    """Ordinal stage rank vs. the ticker's peer-median stage, per theme (amendment
-    v1.1 #6: NEVER a linear stage number). For each of the ticker's themes with an
-    observed stage, peers = every other ticker tagged with that theme with an observed
-    stage; delta = peer_median - ticker_stage (positive = ticker is EARLIER stage than
-    peers = longer runway = more durable). Averaged across themes, scaled by
-    `stage_term_per_level`, clipped to `stage_term_bound`."""
+def stage_rank_term(ticker: str, stages: dict, cfg: dict) -> tuple[float, list[str], dict]:
+    """Ordinal stage rank vs. the ticker's peer-median stage (amendment v1.1 #6: NEVER a
+    linear stage number) -- RIS5 A5 fix round 0, item 1: the ticker's themes come from
+    its OWN EVIDENCE-DERIVED pairs in `stages.json` (every `pairs` key ending in
+    "|TICKER"), not `config/watchlist.yaml`'s static theme tags. The two are different
+    association spaces (topic_map's detected exchange associations vs. an operator-set
+    tag list) and the static tags rarely intersect stages.json's real coverage, which
+    was starving this term to `no_stage_data` for almost every ticker.
+
+    For each theme where the ticker has an observed (non-gated) stage: peers = every
+    OTHER ticker with an observed, non-gated pair for that same theme (found by scanning
+    `pairs` keys with the "theme|" prefix -- unobserved/gated tickers are excluded from
+    both the ticker's own numerator and the peer set, via `read_stage()`'s own gating);
+    delta = peer_median_stage - ticker_stage (positive = ticker is EARLIER stage than
+    its peers = longer runway = more durable). Combined across the ticker's qualifying
+    themes via the MEDIAN delta (not the mean -- one outlier theme should not swing the
+    whole term), scaled by `stage_term_per_level`, clipped to `stage_term_bound`.
+
+    `no_stage_data` fires only when the ticker has ZERO observed pairs of its own
+    anywhere in `stages.json` -- not when its watchlist tags happen not to overlap.
+    """
     durability = (cfg.get("supported_growth") or {}).get("durability") or {}
     bound = durability.get("stage_term_bound", 0.15)
     per_level = durability.get("stage_term_per_level", 0.05)
 
+    pairs = stages.get("pairs") or {}
+    my_themes = sorted({k.split("|", 1)[0] for k in pairs if k.endswith(f"|{ticker}")})
+
     deltas = []
     themes_used = []
-    for theme in themes or []:
+    per_theme_deltas: dict[str, float] = {}
+    for theme in my_themes:
         my_stage = read_stage(stages, theme, ticker)
-        if my_stage is None:
+        if my_stage is None:            # gated pair-level or theme-level -> unobserved
             continue
+        prefix = f"{theme}|"
         peer_stages = []
-        for other, other_themes in ticker_themes_all.items():
-            if other == ticker or theme not in (other_themes or []):
+        for key in pairs:
+            if not key.startswith(prefix):
+                continue
+            other = key.split("|", 1)[1]
+            if other == ticker:
                 continue
             s = read_stage(stages, theme, other)
             if s is not None:
@@ -281,29 +315,32 @@ def stage_rank_term(ticker: str, themes: list[str], stages: dict,
         if not peer_stages:
             continue
         peer_median = statistics.median(peer_stages)
-        deltas.append(peer_median - my_stage)
+        delta = peer_median - my_stage
+        deltas.append(delta)
         themes_used.append(theme)
+        per_theme_deltas[theme] = delta
 
     if not deltas:
         return 0.0, ["no_stage_data"], {"themes_used": []}
 
-    avg_delta = statistics.mean(deltas)
-    term = _clip(avg_delta * per_level, -bound, bound)
-    return term, [], {"themes_used": themes_used, "avg_stage_rank_delta": avg_delta}
+    combined_delta = statistics.median(deltas)
+    term = _clip(combined_delta * per_level, -bound, bound)
+    return term, [], {"themes_used": themes_used, "combined_stage_rank_delta": combined_delta,
+                      "per_theme_deltas": per_theme_deltas}
 
 
 def credibility_term(ticker: str, cfg: dict, store=None) -> tuple[float, list[str], dict]:
     durability = (cfg.get("supported_growth") or {}).get("durability") or {}
     bound = durability.get("credibility_term_bound", 0.10)
-    cred, flags = read_credibility(ticker, store=store)
+    cred, flags, source = read_credibility(ticker, store=store)
     if not cred:
-        return 0.0, flags, {}
+        return 0.0, flags, {"source": source}
     rates = [r for r in (cred.get("consensus_beat_rate"), cred.get("guide_hit_rate")) if r is not None]
     if not rates:
-        return 0.0, ["no_credibility"], {}
+        return 0.0, ["no_credibility"], {"source": source}
     avg_rate = statistics.mean(rates)
     term = _clip((avg_rate - 0.5) * 0.20, -bound, bound)
-    return term, [], {"avg_rate": avg_rate, "n_rates": len(rates)}
+    return term, [], {"avg_rate": avg_rate, "n_rates": len(rates), "source": source}
 
 
 def durability_multiplier(stage_t: float, cred_t: float, reads_t: float, cfg: dict) -> float:
@@ -356,8 +393,13 @@ def supported_growth(ticker: str, entry: dict, cfg: dict, *, stages: dict,
                      thesis_fm: dict | None, downside_theme_slugs: set[str],
                      credibility_store=None) -> dict:
     """base = near_term_cagr * durability_multiplier (bounded); downside = base minus
-    the configured haircut when >=1 qualifying assumption is challenged."""
-    themes = ticker_themes_all.get(ticker) or []
+    the configured haircut when >=1 qualifying assumption is challenged.
+
+    `ticker_themes_all` is no longer read for the stage term (fix round 0, item 1 --
+    stage_rank_term() derives the ticker's themes from stages.json's own evidence pairs,
+    not watchlist.yaml's static tags); the parameter is kept for API stability (peer
+    lenses / theme_peers() elsewhere still use it) and because a future durability term
+    may want the static tags too."""
     flags: list[str] = []
 
     cagr = near_term_cagr(entry.get("fy1_sales"), entry.get("fy3_sales"))
@@ -366,7 +408,7 @@ def supported_growth(ticker: str, entry: dict, cfg: dict, *, stages: dict,
                 "durability_multiplier": None, "drivers": {}, "challenged_assumption_ids": [],
                 "flags": ["missing fy1/fy3 sales for CAGR"]}
 
-    st_term, st_flags, st_detail = stage_rank_term(ticker, themes, stages, ticker_themes_all, cfg)
+    st_term, st_flags, st_detail = stage_rank_term(ticker, stages, cfg)
     cr_term, cr_flags, cr_detail = credibility_term(ticker, cfg, store=credibility_store)
     rd_term, rd_flags, rd_detail = reads_term(ticker, reads_rows, cfg)
     flags.extend(st_flags); flags.extend(cr_flags); flags.extend(rd_flags)
@@ -587,16 +629,32 @@ def load_dated_tickers(state_dir: Path, dated: str) -> dict[str, dict]:
     return latest["tickers"]
 
 
-def history_series(ticker: str, state_dir: Path, lens_fn, exclude_date: str | None = None) -> list[float]:
-    """lens_fn(entry) -> float|None, applied to every dated snapshot's ticker entry.
-    Dates where the ticker is absent, or lens_fn returns None, are skipped (not
-    counted toward n_days). `exclude_date` skips the current as_of day itself so
-    "own history" doesn't include the point being scored."""
-    out = []
+def load_history_cache(state_dir: Path, exclude_date: str | None = None) -> dict[str, dict[str, dict]]:
+    """{date: {ticker: entry}} for every accrued dated snapshot under state_dir except
+    `exclude_date` (the current as_of day, so "own history" never includes the point
+    being scored). RIS5 A5 fix round 0, item 3: built ONCE per build_expectations() run
+    and shared across every ticker and every lens (own-history z x3 + revision breadth
+    x2 per ticker) -- before this, history_series()/revision_breadth() each re-scanned
+    and re-parsed the SAME dated prices_*.jsonl/consensus_*.jsonl files independently,
+    once per (ticker, lens): O(5 x N_tickers x N_days) full-universe build_latest()
+    passes over what is really N_days of work. At the real ~178-ticker universe accruing
+    daily for months this was the dominant cost; the cache makes it O(N_days)."""
+    cache: dict[str, dict[str, dict]] = {}
     for d in dated_snapshot_dates(state_dir):
         if d == exclude_date:
             continue
-        entry = load_dated_tickers(state_dir, d).get(ticker)
+        cache[d] = load_dated_tickers(state_dir, d)
+    return cache
+
+
+def history_series(ticker: str, history_cache: dict[str, dict[str, dict]], lens_fn) -> list[float]:
+    """lens_fn(entry) -> float|None, applied to `ticker`'s entry on every cached date.
+    Dates where the ticker is absent, or lens_fn returns None, are skipped (not counted
+    toward n_days). `history_cache` comes from load_history_cache() -- already excludes
+    the as_of day and is shared across every ticker/lens in one build_expectations() run."""
+    out = []
+    for tickers in history_cache.values():
+        entry = tickers.get(ticker)
         if entry is None:
             continue
         v = lens_fn(entry)
@@ -605,18 +663,19 @@ def history_series(ticker: str, state_dir: Path, lens_fn, exclude_date: str | No
     return out
 
 
-def revision_breadth(ticker: str, entry_now: dict, state_dir: Path, as_of: str,
+def revision_breadth(ticker: str, entry_now: dict, history_cache: dict[str, dict[str, dict]], as_of: str,
                      weeks: int, key: str = "fy1_sales", tolerance_days: int = 5) -> dict:
-    """(up_now - down_now) - (up_then - down_then) for the nearest dated snapshot
-    within `tolerance_days` of `weeks` weeks before `as_of`. "n/a" until that much
-    history has accrued (brief's own sanctioned degrade)."""
+    """(up_now - down_now) - (up_then - down_then) for the nearest cached date within
+    `tolerance_days` of `weeks` weeks before `as_of`. "n/a" until that much history has
+    accrued (brief's own sanctioned degrade). Reads `history_cache` (see
+    load_history_cache()) instead of re-scanning state_dir itself (fix round 0, item 3)."""
     up_now = (entry_now.get("up") or {}).get(key)
     down_now = (entry_now.get("down") or {}).get(key)
     if up_now is None or down_now is None:
         return {"delta": None, "note": "n/a"}
     target = date.fromisoformat(as_of) - __import__("datetime").timedelta(days=weeks * 7)
     best_d, best_gap = None, None
-    for d in dated_snapshot_dates(state_dir):
+    for d in history_cache:
         try:
             dd = date.fromisoformat(d)
         except ValueError:
@@ -626,7 +685,7 @@ def revision_breadth(ticker: str, entry_now: dict, state_dir: Path, as_of: str,
             best_d, best_gap = d, gap
     if best_d is None:
         return {"delta": None, "note": "n/a"}
-    then_entry = load_dated_tickers(state_dir, best_d).get(ticker)
+    then_entry = history_cache[best_d].get(ticker)
     if not then_entry:
         return {"delta": None, "note": "n/a"}
     up_then = (then_entry.get("up") or {}).get(key)
@@ -702,8 +761,14 @@ _REQUIRED_SALES = ("fy1_sales", "fy2_sales", "fy3_sales")
 def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, as_of: str,
                stages: dict, ticker_themes_all: dict[str, list[str]], downside_theme_slugs: set[str],
                reads_rows: list[dict], notes_dir: Path = NOTES_DIR, credibility_store=None,
-               fundamentals: dict | None = None, all_entries: dict | None = None) -> dict:
-    """One ticker's full card, or {"ticker", "skipped": True, "reason": ...}."""
+               fundamentals: dict | None = None, all_entries: dict | None = None,
+               history_cache: dict[str, dict[str, dict]] | None = None) -> dict:
+    """One ticker's full card, or {"ticker", "skipped": True, "reason": ...}.
+
+    `history_cache` (see load_history_cache()) is built ONCE by build_expectations() and
+    shared across every ticker; defaults to {} (no history) for direct callers/tests that
+    don't need it."""
+    history_cache = history_cache if history_cache is not None else {}
     if entry is None:
         return {"ticker": ticker, "skipped": True, "reason": "not in snapshot"}
     if entry.get("price") is None or entry.get("mcap") is None:
@@ -751,12 +816,12 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
 
     min_days = (cfg.get("history") or {}).get("min_days_for_z", 60)
     ev_sales_hist = zscore_history(
-        ev_sales, history_series(ticker, state_dir, lambda e: ev_sales_fy1(
+        ev_sales, history_series(ticker, history_cache, lambda e: ev_sales_fy1(
             (e["mcap"] + net_debt) if (e.get("mcap") is not None and net_debt is not None) else e.get("mcap"),
-            e.get("fy1_sales")), exclude_date=as_of), min_days)
+            e.get("fy1_sales"))), min_days)
     pe_hist = zscore_history(
-        pe, history_series(ticker, state_dir, lambda e: pe_fy1(e.get("price"), e.get("fy1_eps"))[0],
-                           exclude_date=as_of), min_days)
+        pe, history_series(ticker, history_cache, lambda e: pe_fy1(e.get("price"), e.get("fy1_eps"))[0]),
+        min_days)
 
     def _peg_lens(e):
         pe_e, _ = pe_fy1(e.get("price"), e.get("fy1_eps"))
@@ -765,7 +830,7 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
         peg_e, _ = peg_like(pe_e, gp_e)
         return peg_e
 
-    peg_hist = zscore_history(peg, history_series(ticker, state_dir, _peg_lens, exclude_date=as_of), min_days)
+    peg_hist = zscore_history(peg, history_series(ticker, history_cache, _peg_lens), min_days)
 
     peers = theme_peers(ticker, ticker_themes_all, (cfg.get("peer") or {}).get("min_shared_themes", 2))
     min_peers_for_z = (cfg.get("peer") or {}).get("min_peers_for_z", 3)
@@ -788,8 +853,8 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
     ev_sales_peers = peer_lens(ev_sales, peer_ev_sales_vals, min_peers_for_z)
     peg_peers = peer_lens(peg, peer_peg_vals, min_peers_for_z)
 
-    breadth_4w = revision_breadth(ticker, entry, state_dir, as_of, 4)
-    breadth_13w = revision_breadth(ticker, entry, state_dir, as_of, 13)
+    breadth_4w = revision_breadth(ticker, entry, history_cache, as_of, 4)
+    breadth_13w = revision_breadth(ticker, entry, history_cache, as_of, 13)
 
     valuation_extreme = is_valuation_extreme(gap["gap_pp"], peg_hist["z"], cfg)
 
@@ -797,6 +862,7 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
 
     return {
         "ticker": ticker, "skipped": False, "as_of": as_of, "sector_family": fam,
+        "credibility_source": l2["drivers"].get("credibility", {}).get("source", "none"),
         "flags": all_flags,
         "inputs": {
             "price": entry["price"], "mcap": entry["mcap"], "net_debt": net_debt, "ev": ev,
@@ -843,6 +909,9 @@ def build_expectations(snapshot: dict, cfg: dict, *, state_dir: Path, as_of: str
         downside_theme_slugs = set()
 
     fundamentals = fundamentals if fundamentals is not None else load_fundamentals(state_dir, as_of)
+    # Built ONCE and shared across every ticker/lens this run (fix round 0, item 3) --
+    # see load_history_cache()'s own docstring for why this used to be the dominant cost.
+    history_cache = load_history_cache(state_dir, exclude_date=as_of)
 
     cards: dict[str, dict] = {}
     skipped: list[dict] = []
@@ -854,7 +923,7 @@ def build_expectations(snapshot: dict, cfg: dict, *, state_dir: Path, as_of: str
         card = build_card(tk, entry, cfg, state_dir=state_dir, as_of=as_of, stages=stages,
                           ticker_themes_all=ticker_themes_all, downside_theme_slugs=downside_theme_slugs,
                           reads_rows=reads_rows, notes_dir=notes_dir, credibility_store=credibility_store,
-                          fundamentals=fundamentals, all_entries=tickers_snapshot)
+                          fundamentals=fundamentals, all_entries=tickers_snapshot, history_cache=history_cache)
         if card.get("skipped"):
             skipped.append({"ticker": tk, "reason": card["reason"]})
         else:

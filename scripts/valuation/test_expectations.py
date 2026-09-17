@@ -159,6 +159,9 @@ def test_unobserved_stage_is_null_never_zero_or_one():
 
 
 # ─────────────────────────── stage-rank durability (ordinal, not linear) ─────
+# fix round 0, item 1: stage_rank_term() now derives the ticker's themes from its OWN
+# evidence pairs in stages.json (keys ending "|TICKER"), not watchlist.yaml's static
+# tags -- signature dropped `themes`/`ticker_themes_all`.
 
 def test_stage_rank_is_ordinal_not_linear():
     """Shifting every stage in the pool up by 1 (ticker AND peers) must leave the
@@ -167,20 +170,58 @@ def test_stage_rank_is_ordinal_not_linear():
     shift."""
     stages_a = {"pairs": {"t1|AAA": 2, "t1|BBB": 3, "t1|CCC": 4}, "gated": []}
     stages_b = {"pairs": {"t1|AAA": 3, "t1|BBB": 4, "t1|CCC": 5}, "gated": []}  # +1 shift
-    ticker_themes = {"AAA": ["t1"], "BBB": ["t1"], "CCC": ["t1"]}
     cfg = DEFAULT_CFG
-    term_a, flags_a, detail_a = E.stage_rank_term("AAA", ["t1"], stages_a, ticker_themes, cfg)
-    term_b, flags_b, detail_b = E.stage_rank_term("AAA", ["t1"], stages_b, ticker_themes, cfg)
+    term_a, flags_a, detail_a = E.stage_rank_term("AAA", stages_a, cfg)
+    term_b, flags_b, detail_b = E.stage_rank_term("AAA", stages_b, cfg)
     check("stage-rank term is shift-invariant (ordinal, not linear)",
          abs(term_a - term_b) < 1e-9, (term_a, term_b))
     check("earlier-stage ticker (2, peer median 3.5) gets a POSITIVE term (longer runway)",
          term_a > 0, term_a)
+    check("theme discovered from AAA's own evidence pair (t1|AAA), not a passed-in list",
+         detail_a["themes_used"] == ["t1"], detail_a)
 
 
 def test_stage_rank_no_data_flags_and_omits():
-    term, flags, detail = E.stage_rank_term("ZZZ", ["nowhere"], {"pairs": {}, "gated": []}, {}, DEFAULT_CFG)
+    term, flags, detail = E.stage_rank_term("ZZZ", {"pairs": {}, "gated": []}, DEFAULT_CFG)
     check("no stage data -> term 0.0", term == 0.0, term)
     check("flagged no_stage_data", "no_stage_data" in flags, flags)
+
+
+def test_stage_rank_uses_evidence_pairs_not_watchlist_tags():
+    """The exact fix-round-0 scenario: a ticker's watchlist.yaml themes have NO pairs at
+    all in stages.json, but the ticker DOES have pairs on a totally different theme
+    (evidence-derived, not in its static tag list). The term must still compute from
+    that evidence theme -- this is precisely what was producing no_stage_data everywhere
+    before the fix."""
+    stages = {"pairs": {"evidence_theme|AAA": 1, "evidence_theme|BBB": 3, "evidence_theme|CCC": 3},
+             "gated": []}
+    term, flags, detail = E.stage_rank_term("AAA", stages, DEFAULT_CFG)
+    check("term computed from AAA's evidence pair even though it's not a watchlist tag",
+         term != 0.0 and flags == [], (term, flags))
+    check("themes_used shows the evidence theme", detail["themes_used"] == ["evidence_theme"], detail)
+
+
+def test_stage_rank_combines_multiple_themes_by_median_not_mean():
+    """Combine-across-themes uses the MEDIAN delta, not the mean: an outlier theme must
+    not swing the whole term the way a mean would."""
+    stages = {"pairs": {
+        "t1|AAA": 2, "t1|BBB": 3,            # delta = 3 - 2 = 1
+        "t2|AAA": 2, "t2|BBB": 3,            # delta = 1
+        "t3|AAA": 1, "t3|BBB": 9,            # delta = 8 -- an outlier
+    }, "gated": []}
+    term, flags, detail = E.stage_rank_term("AAA", stages, DEFAULT_CFG)
+    check("3 themes used", sorted(detail["themes_used"]) == ["t1", "t2", "t3"], detail)
+    check("combined delta is the MEDIAN (1.0), not the mean (~3.33)",
+         abs(detail["combined_stage_rank_delta"] - 1.0) < 1e-9, detail)
+
+
+def test_stage_rank_gated_pair_and_theme_excluded_from_peer_set_too():
+    """A gated peer must not count toward the peer median (amendment v1.1: unobserved
+    excluded from BOTH the numerator and the peer set)."""
+    stages = {"pairs": {"t1|AAA": 2, "t1|BBB": 3, "t1|CCC": 10}, "gated": ["t1|CCC"]}
+    term, flags, detail = E.stage_rank_term("AAA", stages, DEFAULT_CFG)
+    # peer set should be just {BBB: 3} (CCC's 10 excluded) -> delta = 3 - 2 = 1
+    check("gated peer excluded from the peer median", detail["combined_stage_rank_delta"] == 1.0, detail)
 
 
 # ─────────────────────────── credibility term ────────────────────────────────
@@ -197,6 +238,7 @@ def test_credibility_term_neutral_flag_when_absent():
     term, flags, detail = E.credibility_term("NOPE", DEFAULT_CFG, store=_FakeStore({}))
     check("no credibility -> term 0.0 (neutral)", term == 0.0, term)
     check("flagged no_credibility", "no_credibility" in flags, flags)
+    check("source recorded even when empty", detail.get("source") in ("pg", "file"), detail)
 
 
 def test_credibility_term_positive_for_strong_track_record():
@@ -204,6 +246,46 @@ def test_credibility_term_positive_for_strong_track_record():
     term, flags, detail = E.credibility_term("GOOD", DEFAULT_CFG, store=store)
     check("strong track record -> positive term", term > 0, term)
     check("no flags on a clean read", flags == [], flags)
+    check("source recorded", detail.get("source") in ("pg", "file"), detail)
+
+
+# ─────────────────── read_credibility: env-honouring backend (fix round 0, item 2) ───
+
+def test_read_credibility_honours_env_backend_no_live_db_in_tests():
+    """No live DB is ever opened here: `store` is always injected, so
+    store_b.get_metrics_store() is never reached regardless of CHUNK_STORE_BACKEND."""
+    import os
+    orig = os.environ.get("CHUNK_STORE_BACKEND")
+    try:
+        os.environ["CHUNK_STORE_BACKEND"] = "pg"
+        cred, flags, source = E.read_credibility("GOOD", store=_FakeStore(
+            {"GOOD": {"consensus_beat_rate": 0.9, "guide_hit_rate": 0.8}}))
+        check("source reflects CHUNK_STORE_BACKEND=pg", source == "pg", source)
+        check("cred returned", cred is not None)
+
+        os.environ["CHUNK_STORE_BACKEND"] = "file"
+        cred2, flags2, source2 = E.read_credibility("GOOD", store=_FakeStore({}))
+        check("source reflects CHUNK_STORE_BACKEND=file", source2 == "file", source2)
+        check("empty lookup still reports the real backend, not none",
+             cred2 is None and source2 == "file", (cred2, source2))
+
+        os.environ["CHUNK_STORE_BACKEND"] = "pg"
+        check("unset default is 'file'",
+             E.read_credibility("X", store=_FakeStore({}))[2] in ("pg",), "sanity")
+    finally:
+        if orig is None:
+            os.environ.pop("CHUNK_STORE_BACKEND", None)
+        else:
+            os.environ["CHUNK_STORE_BACKEND"] = orig
+
+
+def test_read_credibility_source_is_none_only_on_lookup_failure():
+    class _BrokenStore:
+        def credibility(self, ticker, metric="SALES"):
+            raise RuntimeError("connection refused")
+    cred, flags, source = E.read_credibility("X", store=_BrokenStore())
+    check("lookup failure -> source 'none'", source == "none", source)
+    check("flagged no_credibility", "no_credibility" in flags, flags)
 
 
 # ─────────────────────────── reads-trend min-history gate ───────────────────
@@ -330,6 +412,50 @@ def test_valuation_extreme_thresholds():
     check("both None -> False", E.is_valuation_extreme(None, None, DEFAULT_CFG) is False)
 
 
+# ─────────────────── history cache (fix round 0, item 3) ────────────────────
+
+def _write_dated(state_dir, d, rows_price, rows_cons):
+    (state_dir / f"prices_{d}.jsonl").write_text("\n".join(json.dumps(r) for r in rows_price) + "\n")
+    (state_dir / f"consensus_{d}.jsonl").write_text("\n".join(json.dumps(r) for r in rows_cons) + "\n")
+
+
+def test_load_history_cache_excludes_as_of_and_is_shared_across_tickers():
+    with tempfile.TemporaryDirectory() as td:
+        state_dir = Path(td)
+        for d, price in (("2026-09-15", 10.0), ("2026-09-16", 11.0), ("2026-09-17", 12.0)):
+            _write_dated(state_dir, d,
+                        [{"ticker": "AAA", "date": d, "price": price, "mcap": price * 100, "quality": "ok"}],
+                        [{"ticker": "AAA", "date": d, "metric": "SALES", "rel_period": 1,
+                          "mean": 500.0, "count": 5, "up": 2, "down": 1, "quality": "ok"}])
+        cache = E.load_history_cache(state_dir, exclude_date="2026-09-17")
+        check("as_of excluded from the cache", "2026-09-17" not in cache, cache.keys())
+        check("2 historical dates cached", sorted(cache.keys()) == ["2026-09-15", "2026-09-16"], cache.keys())
+        # history_series() reads the SAME cache object for two different lenses/tickers --
+        # no re-parsing, just dict lookups.
+        prices = E.history_series("AAA", cache, lambda e: e.get("price"))
+        check("history_series reads from the pre-built cache", sorted(prices) == [10.0, 11.0], prices)
+
+
+def test_revision_breadth_uses_cache_not_filesystem():
+    with tempfile.TemporaryDirectory() as td:
+        state_dir = Path(td)
+        _write_dated(state_dir, "2026-08-20",
+                    [{"ticker": "AAA", "date": "2026-08-20", "price": 10.0, "mcap": 1000.0, "quality": "ok"}],
+                    [{"ticker": "AAA", "date": "2026-08-20", "metric": "SALES", "rel_period": 1,
+                      "mean": 500.0, "count": 5, "up": 1, "down": 4, "quality": "ok"}])
+        cache = E.load_history_cache(state_dir, exclude_date="2026-09-17")
+        entry_now = {"up": {"fy1_sales": 5}, "down": {"fy1_sales": 1}}
+        r = E.revision_breadth("AAA", entry_now, cache, "2026-09-17", 4)
+        check("delta computed from the cache (no filesystem re-scan)",
+             r["delta"] == (5 - 1) - (1 - 4), r)
+        check("compared_to the cached date", r["compared_to"] == "2026-08-20", r)
+
+
+def test_revision_breadth_na_when_cache_has_no_nearby_date():
+    r = E.revision_breadth("AAA", {"up": {"fy1_sales": 5}, "down": {"fy1_sales": 1}}, {}, "2026-09-17", 4)
+    check("empty cache -> n/a", r == {"delta": None, "note": "n/a"}, r)
+
+
 # ─────────────────────────── build_card: skip reasons ───────────────────────
 
 def test_build_card_not_in_snapshot():
@@ -389,6 +515,8 @@ def test_build_card_full_card_no_net_debt_no_fundamentals_flags():
     check("gap present", "gap_pp" in card["gap"])
     check("lenses ev_sales_fy1 computed", card["lenses"]["ev_sales_fy1"] == 50.0, card["lenses"])
     check("revision breadth n/a with no history", card["lenses"]["revision_breadth"]["4w"]["note"] == "n/a")
+    check("credibility_source recorded on the card (top level)",
+         card["credibility_source"] in ("pg", "file", "none"), card["credibility_source"])
 
 
 def test_build_card_net_debt_from_fundamentals_changes_ev():
@@ -460,40 +588,13 @@ def test_module_is_importable_as_a_script():
 
 
 if __name__ == "__main__":
-    test_bisection_reproduces_synthetic_ev_within_0_1_pct()
-    test_bisection_out_of_bracket_flags_and_clips()
-    test_margin_path_nonpositive_guard()
-    test_invalid_gordon_denominator_guard()
-    test_sensitivity_monotonic()
-    test_sector_family_nvda_avgo_cohr()
-    test_sector_family_no_themes_is_default()
-    test_read_stage_tolerates_int_and_dict_and_theme_and_pair_gating()
-    test_unobserved_stage_is_null_never_zero_or_one()
-    test_stage_rank_is_ordinal_not_linear()
-    test_stage_rank_no_data_flags_and_omits()
-    test_credibility_term_neutral_flag_when_absent()
-    test_credibility_term_positive_for_strong_track_record()
-    test_reads_term_min_history_gate()
-    test_reads_term_averages_across_qualifying_axes_only()
-    test_supported_growth_base_and_downside_bounds()
-    test_supported_growth_downside_haircut_when_challenged()
-    test_supported_growth_missing_sales_returns_none_base()
-    test_gap_sign()
-    test_pe_and_peg_guards()
-    test_zscore_history_insufficient_below_60_days_n_days_always_shown()
-    test_peer_lens_median_and_min_peers_for_z()
-    test_theme_peers_min_shared_themes()
-    test_valuation_extreme_thresholds()
-    test_build_card_not_in_snapshot()
-    test_build_card_no_price_mcap_skip_reason()
-    test_build_card_missing_sales_generic_reason_when_no_raw_file()
-    test_build_card_quality_fail_rows_excluded_with_specific_reason()
-    test_build_card_full_card_no_net_debt_no_fundamentals_flags()
-    test_build_card_net_debt_from_fundamentals_changes_ev()
-    test_build_expectations_shape_and_universe_size()
-    test_write_and_reread_roundtrip()
-    test_module_is_importable_as_a_script()
+    # Auto-discover every test_* function, alphabetically (fix round 0: manually listing
+    # every name here was already drifting from the actual test set before this round
+    # added 9 more; same auto-discovery convention as test_state_bundles.py).
+    _fns = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
+    for _fn in _fns:
+        _fn()
     if FAILURES:
         print(f"\n{len(FAILURES)} FAILURES: {FAILURES}")
         sys.exit(1)
-    print("OK test_expectations")
+    print(f"OK test_expectations ({len(_fns)} test functions)")
