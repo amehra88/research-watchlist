@@ -136,3 +136,17 @@ state/evidence/
 # from a session; committing it would push ~20MB every 15 min via auto_sync (see the
 # etf_flows.jsonl note above for the same trap). Only scripts/portal/ is tracked.
 portal_build/
+
+# RIS5 A3 valuation snapshots (2026-09-17): dated raw pulls are regenerable by re-running
+# scripts/valuation/snapshot.py/fundamentals.py against FactSet — the daily/weekly rollup
+# that matters for the ideas engine is state/valuation/latest.json, which STAYS TRACKED
+# (no rule below matches it).
+state/valuation/prices_*.jsonl
+state/valuation/consensus_*.jsonl
+state/valuation/fundamentals_*.jsonl
+
+# RIS5 A3 peer-ETF trade archive: one JSON snapshot per day, regenerable by re-running
+# scripts/portal/etf_trades_archive.py against /root/ws's report history (as long as it's
+# retained there) — same "don't push a growing daily blob via auto_sync" reasoning as
+# state/etf_flows.jsonl above.
+state/etf_trades/

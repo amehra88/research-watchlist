@@ -6,3 +6,27 @@
 
 20 7 * * * cd /root/research-watchlist && /root/bin/alert_on_failure.sh portal_build python3 scripts/portal/build_portal.py >> logs/portal_build.log 2>&1
 20 19 * * 1-5 cd /root/research-watchlist && /root/bin/alert_on_failure.sh portal_build python3 scripts/portal/build_portal.py >> logs/portal_build.log 2>&1
+
+# RIS5 A3: daily FactSet valuation snapshot (prices/market_value/consensus SALES+EPS).
+# 05:45 ET weekdays, before the day's market-data-dependent jobs; writes
+# state/valuation/{prices,consensus}_<date>.jsonl (gitignored) + latest.json (tracked).
+45 5 * * 1-5 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh valuation_snapshot python3 scripts/valuation/snapshot.py >> logs/valuation_snapshot.log 2>&1
+
+# RIS5 A3: weekly FactSet Fundamentals (net debt/cash, gross/operating/FCF margin).
+# Sunday, after the Store B weekly refresh (08:00) so both FactSet-heavy jobs never
+# overlap. NOT ready to enable yet: scripts/valuation/fundamentals.py's
+# FUNDAMENTALS_METRICS dict is populated only after the FactSet_Metrics discovery probe
+# confirms real FF_ codes (see docs/portal/mcp_schemas.md) — main() refuses to run with
+# it empty, so this line is a documented placeholder, not a live schedule.
+30 8 * * 0 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh valuation_fundamentals python3 scripts/valuation/fundamentals.py >> logs/valuation_fundamentals.log 2>&1
+
+# RIS5 A3: daily archive of the ws ETF-holdings-change report (peer-ETF trim/exit
+# history) — state/etf_trades/<date>.json (gitignored). Independent of build_portal
+# (see etf_trades_archive.py's module docstring for why); run any time after ws's own
+# daily 07:30 scrape has produced today's report.
+0 8 * * * cd /root/research-watchlist && /root/bin/alert_on_failure.sh etf_trades_archive python3 scripts/portal/etf_trades_archive.py >> logs/etf_trades_archive.log 2>&1
+
+# RIS5 A3: peer-ETF trim clusters -> challenge evidence on competitive-advantage
+# assumptions (reads the archive above; writes state/thesis/evidence_log.jsonl +
+# _thesis.md pressure, same pipeline as insider_pull.py). After the archive above.
+15 8 * * * cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh etf_evidence python3 scripts/thesis/etf_evidence.py >> logs/etf_evidence.log 2>&1
