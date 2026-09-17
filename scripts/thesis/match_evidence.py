@@ -118,7 +118,11 @@ def score_rec_text(e: Evidence) -> str | None:
     if e.source == "earnings_note":
         return e.text
     if e.source == "conference" and e.source_id.startswith("notes/") and e.source_id.endswith(".md"):
-        return (REPO / e.source_id).read_text(encoding="utf-8", errors="replace")
+        try:
+            return (REPO / e.source_id).read_text(encoding="utf-8", errors="replace")
+        except (OSError, UnicodeDecodeError) as exc:
+            print(f"WARN score_rec_text: could not read {e.source_id}: {exc}", file=sys.stderr)
+            return None
     return None
 
 

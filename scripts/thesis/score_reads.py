@@ -74,15 +74,60 @@ _IDIOMS: list[tuple[str, re.Pattern]] = [
 ]
 
 
-def _match_rec(text: str) -> tuple[str, str] | None:
-    """(verb, value) for the first recommendation line in `text`: the canonical six-verb
-    regex first, then the wider idiom map. Returns None if neither matches."""
-    if m := VERB_RE.search(text):
+# A line -- after stripping a leading "-" bullet and any "**" bold -- that starts with the
+# word "Recommendation" (any bold/colon variant). Anchors matching to that single line so
+# an unrelated quoted mention elsewhere in the block/section (a "Current score" recap, a
+# hedge in "Reasoning:") can never win (RIS5 A1 fix round 2).
+_REC_LINE_RE = re.compile(r"^[ \t]*-?[ \t]*\**[ \t]*Recommendation\b", re.I)
+
+
+def _recommendation_line(text: str) -> str | None:
+    """The first line in `text` that starts with "Recommendation", or None if there isn't one."""
+    for line in text.splitlines():
+        if _REC_LINE_RE.match(line):
+            return line
+    return None
+
+
+def _search(scope: str) -> tuple[str, str] | None:
+    """VERB_RE first, then the idiom list in list order (fix-round-1 behavior)."""
+    if m := VERB_RE.search(scope):
         return m.group(1).lower(), m.group(2)
     for verb, pat in _IDIOMS:
-        if m := pat.search(text):
+        if m := pat.search(scope):
             return verb, m.group(1)
     return None
+
+
+def _search_positional(scope: str) -> tuple[str, str] | None:
+    """Every pattern (VERB_RE + every idiom) searched independently within `scope`; the
+    leftmost-starting match wins, regardless of which pattern found it -- used only on a
+    single recommendation line, where at most one real verb+value should ever appear."""
+    candidates: list[tuple[int, str, str]] = []
+    if m := VERB_RE.search(scope):
+        candidates.append((m.start(), m.group(1).lower(), m.group(2)))
+    for verb, pat in _IDIOMS:
+        if m := pat.search(scope):
+            candidates.append((m.start(), verb, m.group(1)))
+    if not candidates:
+        return None
+    candidates.sort(key=lambda c: c[0])
+    return candidates[0][1], candidates[0][2]
+
+
+def _match_rec(text: str) -> tuple[str, str] | None:
+    """(verb, value) for a section/sub-block.
+
+    Anchors to the line that starts with "Recommendation" when one exists, matching only
+    within that line (positionally, across VERB_RE + every idiom) -- this is what keeps an
+    unrelated quoted mention elsewhere in the block/section from winning. Falls back to the
+    fix-round-1 whole-block search (VERB_RE first, then the idiom list in order) only when
+    no such line exists at all.
+    """
+    line = _recommendation_line(text)
+    if line is not None:
+        return _search_positional(line)
+    return _search(text)
 
 
 # Same "## 5|6|7." section split match_evidence.lift_score_recs has always used.
@@ -149,29 +194,69 @@ def build_rows(note_id: str, note_text: str, applied: dict[str, str] | None, ts:
     return rows
 
 
-def append_rows(path: Path, rows: list[dict]) -> dict:
-    """Idempotent append: rows whose id is already in the file are skipped. Returns {written, dupes}."""
-    existing: set[str] = set()
+def append_rows(path: Path, rows: list[dict], replace: bool = False) -> dict:
+    """Write `rows` into `path`, keyed by id.
+
+    Default (replace=False -- the live-ingest path, match_evidence.lift_score_recs): a row
+    whose id is already on disk is skipped. Returns {written, dupes}.
+
+    replace=True (the --backfill CLI, RIS5 A1 fix round 2): a row whose id is already on
+    disk is REPLACED when its (verb, value, applied) differ from what's stored -- an
+    earlier matcher bug can leave a wrong row under a since-fixed id, and a dupe-skip would
+    keep it wrong forever. The stored row's `ts` is kept unchanged unless the row is
+    actually replaced, in which case the new `ts` (from the caller's build_rows call) wins.
+    The whole file is rewritten, in its original id order (new ids appended). Returns
+    {written, replaced, unchanged, changes}, where `changes` is
+    [{"id", "old": {verb,value,applied}, "new": {verb,value,applied}}] for every replaced row.
+    """
+    existing: dict[str, dict] = {}
+    order: list[str] = []
     if path.exists():
         for line in path.read_text(encoding="utf-8").splitlines():
             line = line.strip()
             if not line:
                 continue
             try:
-                existing.add(json.loads(line)["id"])
+                row = json.loads(line)
+                existing[row["id"]] = row
+                order.append(row["id"])
             except (json.JSONDecodeError, KeyError):
                 continue
-    written = dupes = 0
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as f:
-        for r in rows:
-            if r["id"] in existing:
-                dupes += 1
-                continue
-            f.write(json.dumps(r, ensure_ascii=False) + "\n")
-            existing.add(r["id"])
+
+    if not replace:
+        written = dupes = 0
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as f:
+            for r in rows:
+                if r["id"] in existing:
+                    dupes += 1
+                    continue
+                f.write(json.dumps(r, ensure_ascii=False) + "\n")
+                existing[r["id"]] = r
+                written += 1
+        return {"written": written, "dupes": dupes}
+
+    _CMP_KEYS = ("verb", "value", "applied")
+    written = replaced = unchanged = 0
+    changes: list[dict] = []
+    for r in rows:
+        old = existing.get(r["id"])
+        if old is None:
+            existing[r["id"]] = r
+            order.append(r["id"])
             written += 1
-    return {"written": written, "dupes": dupes}
+        elif tuple(old.get(k) for k in _CMP_KEYS) != tuple(r.get(k) for k in _CMP_KEYS):
+            changes.append({"id": r["id"], "old": {k: old.get(k) for k in _CMP_KEYS},
+                             "new": {k: r.get(k) for k in _CMP_KEYS}})
+            existing[r["id"]] = r
+            replaced += 1
+        else:
+            unchanged += 1   # keep the stored row -- including its original ts -- untouched
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as f:
+        for rid in order:
+            f.write(json.dumps(existing[rid], ensure_ascii=False) + "\n")
+    return {"written": written, "replaced": replaced, "unchanged": unchanged, "changes": changes}
 
 
 def iter_note_paths(ticker: str | None = None) -> list[Path]:
@@ -199,7 +284,8 @@ def main(argv=None) -> int:
     verb_counts: Counter = Counter()
     axis_counts: Counter = Counter()
     per_ticker_rows: Counter = Counter()
-    notes_with_recs = total_rows = total_written = total_dupes = 0
+    notes_with_recs = total_rows = total_written = total_replaced = total_unchanged = 0
+    all_changes: list[dict] = []   # [(note_id, axis, old, new)] for the report
     applied_cache: dict[str, dict] = {}
     for p in iter_note_paths(a.ticker):
         note_id = p.relative_to(NOTES).as_posix()
@@ -218,9 +304,16 @@ def main(argv=None) -> int:
             verb_counts[r["verb"]] += 1
             axis_counts[r["axis"]] += 1
         if not a.dry_run:
-            res = append_rows(out_path, rows)
+            # --backfill uses replace mode: an earlier matcher bug can leave a wrong row
+            # under a since-fixed id, and a dupe-skip would keep it wrong forever.
+            res = append_rows(out_path, rows, replace=True)
             total_written += res["written"]
-            total_dupes += res["dupes"]
+            total_replaced += res["replaced"]
+            total_unchanged += res["unchanged"]
+            by_id = {r["id"]: r for r in rows}
+            for c in res["changes"]:
+                row = by_id[c["id"]]
+                all_changes.append((row["note_id"], row["axis"], c["old"], c["new"]))
     print(f"notes with recommendations: {notes_with_recs}")
     print(f"rows parsed: {total_rows}")
     print("by verb:", dict(sorted(verb_counts.items())))
@@ -230,7 +323,9 @@ def main(argv=None) -> int:
     if a.dry_run:
         print("(dry run: nothing written)")
     else:
-        print(f"written: {total_written}, dupes: {total_dupes} -> {out_path}")
+        print(f"written: {total_written}, replaced: {total_replaced}, unchanged: {total_unchanged} -> {out_path}")
+        for note_id, axis, old, new in all_changes:
+            print(f"  REPLACED {note_id} {axis}: {old['verb']}/{old['value']} -> {new['verb']}/{new['value']}")
     return 0
 
 

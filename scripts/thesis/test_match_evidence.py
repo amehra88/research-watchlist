@@ -81,6 +81,13 @@ def test_score_rec_text_none_for_non_file_backed_or_other_sources():
     # pg-derived conference exchange excerpt: no on-disk note to re-read
     assert M.score_rec_text(Evidence("conference", "exch:abc123", "COHR", "2026-09-02", "t", "x", "r")) is None
 
+def test_score_rec_text_missing_conf_file_returns_none_not_raise():
+    """RIS5 A1 fix round 2: a missing/unreadable conference note must never abort the
+    15:00 production run -- OSError/UnicodeDecodeError are caught and logged, not raised."""
+    e = Evidence("conference", "notes/ZZZZ/20260101-conf-does-not-exist.md", "ZZZZ", "2026-01-01",
+                 "x", "stub", "notes/ZZZZ/20260101-conf-does-not-exist.md")
+    assert M.score_rec_text(e) is None
+
 if __name__ == "__main__":
     test_parse_verdicts_maps_by_index_and_validates(); test_lift_score_recs()
     test_earnings_break_becomes_strength3_row(); test_prompt_lists_every_assumption_and_item()
@@ -88,4 +95,5 @@ if __name__ == "__main__":
     test_score_rec_text_earnings_note_uses_evidence_text_unchanged()
     test_score_rec_text_conference_reads_full_file_not_stripped_evidence_text()
     test_score_rec_text_none_for_non_file_backed_or_other_sources()
+    test_score_rec_text_missing_conf_file_returns_none_not_raise()
     print("OK test_match_evidence")
