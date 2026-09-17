@@ -199,8 +199,8 @@ private_drivers:
   - name: Databricks
     pvt_id: databricks.pvt
     aliases: ["Databricks", "Databricks Inc."]
-    affects: [SNOW, PLTR]
-    notes: "Data platform competitive dynamics. Direct SNOW competitor on lakehouse positioning; PLTR Foundry overlap on enterprise data workflows."
+    affects: [SNOW, PLTR, MDB]
+    notes: "Data platform competitive dynamics. Direct SNOW competitor on lakehouse positioning; PLTR Foundry overlap on enterprise data workflows. Since the Neon acquisition (2025) Databricks also sells serverless Postgres (Lakebase), extending from analytics into the operational database — which puts it against MDB (T1 as of 2026-09-17) and supabase.pvt as well as SNOW."
     added_date: 2026-05-10
   - name: Moonshot AI
     pvt_id: moonshot.pvt
@@ -257,6 +257,12 @@ private_drivers:
     bctk_holding: true
     notes: "Fabless edge-AI silicon: MLSoC (machine-learning system-on-chip) for embedded and physical-AI inference at the edge rather than datacenter training. FIRST .pvt id that is a BCTK HOLDING rather than only a thesis driver, so it is registered here (the .pvt authority) AND listed in tier_1_bctk — see the tier_1 entry and the .pvt guards added to sec_filings.py / cron_earnings_reviewer.py on 2026-08-19. Read-through: edge/embedded inference is the segment NVDA serves with Jetson and where ARM, QCOM and AMD compete, so SiMa is a datapoint on where inference workloads land. Position and company details are OPERATOR-ASSERTED (2026-08-19); no public filings exist, so nothing here is verifiable against a primary document."
     added_date: 2026-08-19
+  - name: Supabase
+    pvt_id: supabase.pvt
+    aliases: ["Supabase", "Supabase Inc.", "Supabase, Inc."]
+    affects: [MDB, SNOW, GOOG]
+    notes: "Open-source Postgres backend-as-a-service (database + auth + storage + edge functions + pgvector); positioned as the Firebase alternative and the default backend wired into AI app-builders / vibe-coding tools (Lovable, Bolt, etc.), so its growth is a read on where NEW AI-era application databases land. Added at operator request 2026-09-17 alongside databricks.pvt as the private side of the database competitive set for MDB (promoted to T1 the same day). Read-through: MDB (share of new-app operational workloads: Postgres vs document model), SNOW and databricks.pvt (both bought into Postgres — Crunchy Data and Neon respectively), GOOG (Firebase/Firestore is the product Supabase was built to displace). Last funding known to this registry: Series E, Oct 2025, ~$5B valuation — from model knowledge, NOT re-verified on 2026-09-17; no public filings exist."
+    added_date: 2026-09-17
 
 # ---------------------------------------------------------------------------
 # External web sources to track over time. Includes company technical blogs,
@@ -1003,6 +1009,11 @@ tier_1_bctk:
       notes: "AI/HBM capex beneficiary with strong buybacks, but WFE cyclicality and China-revenue/export drag temper it. Factors: hot sector adjacency, buybacks, earnings revisions; cyclicality/China cap."
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02. Sources: public data, OPERATOR-PRIVATE SIGNAL: best management in semicap based on multi-cycle execution quality (competitive_advantage 5/5/5 reflects this; public-data analyst view alone might score 4/4/4). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
+  - ticker: MDB
+    themes: [enterprise_ai_adoption, ai_infrastructure_software, ai_re_architected_incumbent, inference_compute_economics]
+    added_date: 2026-05-09
+    notes: "MongoDB — document database / Atlas DBaaS. Operational (OLTP) data layer for AI applications; Atlas Vector Search + Voyage AI embeddings are the AI-workload attach. Competitive set: the Postgres wave — supabase.pvt (developer/AI-app-builder default backend), databricks.pvt (Lakebase, via Neon) and SNOW (Snowflake Postgres, via Crunchy Data) are both extending from analytics into the operational database MDB sells; plus hyperscaler-native stores (AMZN DynamoDB/DocumentDB, GOOG Firestore, MSFT Cosmos DB)."
+    tier_change_note: "Promoted T3/T2→T1 2026-09-17 at operator instruction: BCTK initiating a position today (operator-asserted; not yet in the scraped holdings file as of the 2026-09-17 snapshot — expect the scraper to confirm on the next daily file). Themes/added_date carried from the T3 entry; the empty-themes T2 stub (added 2026-06-24, Store B metrics-coverage expansion) and the T3 duplicate were removed so MDB resolves to a single tier."
   - ticker: META
     themes: [hyperscaler_capex_buildout, ad_market_strength, silicon_architecture_competition, ai_agent_monetization, search_disruption, vertical_ai_applications, model_efficiency_evolution]
     added_date: 2026-05-09
@@ -1324,6 +1335,7 @@ tier_2_active_candidates:
   - ticker: SNOW
     themes: [enterprise_ai_adoption, ai_infrastructure_software, observability_competitive_landscape, ai_agent_monetization, ai_re_architected_incumbent]
     added_date: 2026-05-09
+    notes: "Snowflake — cloud data platform. Tier confirmed T2 by operator 2026-09-17 (already here since 2026-05-09). Primary competitor is databricks.pvt (lakehouse vs warehouse, AI/ML workloads, open table formats); both have moved into operational Postgres (Snowflake via Crunchy Data, Databricks via Neon/Lakebase), which makes SNOW a comp for MDB (T1) and supabase.pvt too."
   - ticker: TXN
     themes: [automotive_semiconductor_demand, semiconductor_cycle, data_center_deployment_constraints, ai_infrastructure_capex, china_us_tensions]
     added_date: 2026-05-09
@@ -1364,10 +1376,6 @@ tier_2_active_candidates:
     added_date: 2026-06-24
     scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
   - ticker: HTFL
-    themes: []
-    added_date: 2026-06-24
-    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
-  - ticker: MDB
     themes: []
     added_date: 2026-06-24
     scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
@@ -1589,9 +1597,6 @@ tier_3_watchlist:
   - ticker: MCHP
     themes: [automotive_semiconductor_demand, semiconductor_cycle, china_us_tensions]
     added_date: 2026-05-11
-  - ticker: MDB
-    themes: [enterprise_ai_adoption, ai_infrastructure_software, ai_re_architected_incumbent, inference_compute_economics]
-    added_date: 2026-05-09
   - ticker: MELI
     themes: [agentic_commerce, ad_market_strength, local_commerce_delivery, ai_re_architected_incumbent, platform_take_rate]
     added_date: 2026-05-09
