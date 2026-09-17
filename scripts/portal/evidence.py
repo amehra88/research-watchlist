@@ -32,11 +32,27 @@ Two other public functions build on the index:
     silently dropped, so the frontend can render "no evidence yet" instead of
     treating a missing key as "not fetched".
 
-Slice 3 Task 2 adds stage-alert enrichment (three pure functions, no file I/O
-of their own -- reports.py's `_stage_alert_card` loads state/topics/diffusion.json,
-state/topics/topic_map.jsonl and state/transcripts/exchanges.jsonl exactly the way
-it already did via `theme_notes.load_sources()`/`stage_alert.render()`, and hands
-the loaded structures in here):
+Slice 3 Task 2 adds stage-alert enrichment. `reports.py`'s `_stage_alert_render_
+inputs` loads state/topics/diffusion.json and state/topics/topic_map.jsonl
+(`load_topic_map_rows` -- ~6 MB, ~18.7K rows, not scoped), then resolves the day's
+cited tickers (via `_cite_target`, the SAME per-kind logic `stage_alert.render()`
+itself uses -- see reports.py) and loads state/transcripts/exchanges.jsonl scoped
+to JUST those tickers (`load_exchanges_by_ticker` -- see fix round 1 below), and
+hands both loaded structures to `stage_alert.render()` AND to this module's own
+functions:
+  - `load_topic_map_rows(path)` / `load_exchanges_by_ticker(tickers, path)` --
+    fix round 1 (reviewer-required): exchanges.jsonl (30 MB / ~16.4K rows in
+    production) was previously loaded WHOLE via `theme_notes.load_sources()`
+    regardless of which tickers the day's events could possibly cite.
+    `load_exchanges_by_ticker` streams the file exactly once, line-at-a-time
+    (never holding the whole 30 MB as one string), keeping only rows whose
+    `ticker` is in the caller-supplied set -- typically 1-3 tickers on a live
+    day, so the retained `ex` dict is a small fraction of the file (every row
+    for one document shares that document's ticker, so this can never split a
+    document's own question/answer rows across the keep/drop line). The SAME
+    filtered `ex` is passed to `stage_alert.render()` too -- render() only ever
+    cites the one ticker `_cite_target` already resolved for that event, so a
+    ticker-scoped `ex` is sufficient for both callers, not just this module's.
   - `exchange_for(event, tm_rows, ex)` -- the analyst exchange stage_alert.render()
     itself would cite for `event = {theme, ticker, date}`, enriched with the
     management answer that immediately follows it in the same document. Deviates
@@ -46,16 +62,13 @@ the loaded structures in here):
     score (see `stage_alert._score`), and that score lives only in topic_map
     rows, never in a raw exchange row. `ex` doubles as both the vector_id lookup
     first_question_cite() itself uses AND the source for the sibling-row scan
-    (grouped once via `index_exchanges_by_document`), so exchanges.jsonl (30 MB
-    in production) is read exactly once per build -- the same read
-    `_stage_alert_render_inputs` already pays for the plain citation text,
-    never a second scoped pass.
+    (grouped once via `index_exchanges_by_document`).
   - `index_exchanges_by_document(ex)` -- {document_id: [row, ...]} from `ex`'s
     values, each document's rows ordered by transcript turn (see `_doc_num_key`
     -- `doc_num` values repeat across a split turn, e.g. two rows both
     "qna_19"; the trailing `_N` on `vector_id` breaks that tie). Built once per
     card and passed into `exchange_for` so a multi-event day doesn't re-group
-    ~16K rows per event.
+    the (now ticker-scoped, much smaller) `ex` per event.
   - `breadth_trend(theme, diffusion)` -- the two most recent `cal_quarter` cells
     for `theme` in `diffusion["metrics"]` (string sort works: "CY2026-Q1" <
     "CY2026-Q2"). None when the theme has no metrics cells at all; a
@@ -259,8 +272,8 @@ def _doc_num_key(row: dict) -> tuple:
 
 
 def index_exchanges_by_document(ex: dict) -> dict:
-    """{document_id: [row, ...]} from `ex`'s values (the vector_id -> raw-row map
-    theme_notes.load_sources() already produces), each document's rows ordered by
+    """{document_id: [row, ...]} from `ex`'s values (a vector_id -> raw-row map, e.g.
+    `load_exchanges_by_ticker()`'s own return value), each document's rows ordered by
     `_doc_num_key`. Built once per card/build, not once per event -- see this
     module's docstring."""
     by_doc: dict = {}
@@ -271,26 +284,104 @@ def index_exchanges_by_document(ex: dict) -> dict:
     return by_doc
 
 
-def _management_answer(cited: dict, doc_rows: list) -> str | None:
-    """Joins the consecutive corprep ("management-side") rows immediately after
-    `cited` within `doc_rows` (already sorted by `_doc_num_key`). Rows with no
-    recorded speaker_type are skipped WITHOUT stopping the scan -- a known gap in a
-    handful of ingested transcripts where genuine management answers carry no
-    speaker_type at all (verified live: e.g. document 3449181-t) -- but the scan
-    stops the instant it hits an unambiguous turn change (`analyst` or `operator`).
-    None when the cited row isn't found in `doc_rows`, or nothing corprep follows it
-    before that turn change."""
+def load_topic_map_rows(path: Path) -> list:
+    """topic_map.jsonl's rows as a plain list -- no ticker filtering (it's ~6 MB in
+    production, a fifth the size of exchanges.jsonl, and `_cited_question_row`'s own
+    candidate filter already narrows by ticker/date/theme-score internally). Missing
+    file -> [] + one log line, never an error; malformed lines are skipped."""
+    path = Path(path)
+    if not path.exists():
+        log(f"load_topic_map_rows: {path} missing -- returning []")
+        return []
+    rows = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rows.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue
+    return rows
+
+
+def load_exchanges_by_ticker(tickers: set, path: Path) -> dict:
+    """{vector_id: row} from `path` (state/transcripts/exchanges.jsonl, ~30 MB / 16K
+    rows in production), streamed ONCE and keeping only rows whose `ticker` is in
+    `tickers` -- every row for a given document shares that document's ticker, so
+    this never splits a document's own question/answer rows across the keep/drop
+    line. `tickers` should be built from the day's fresh stage-alert events BEFORE
+    calling this (see reports.py's `_stage_alert_render_inputs`), so the read only
+    pays for what today's events could possibly cite -- not the whole universe.
+    Missing file -> {} + one log line, never an error; malformed lines are skipped."""
+    path = Path(path)
+    if not path.exists():
+        log(f"load_exchanges_by_ticker: {path} missing -- returning {{}}")
+        return {}
+    ex: dict = {}
+    # Real line-at-a-time iteration (not read_text().splitlines()) -- the point of
+    # streaming a 30 MB file is to never hold the whole thing as one string in
+    # memory at once, only the filtered rows that survive.
+    with path.open("r", encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if r.get("ticker") in tickers and r.get("vector_id"):
+                ex[r["vector_id"]] = r
+    return ex
+
+
+_ANSWER_ROW_CAP = 3
+
+
+def _management_answer(cited: dict, doc_rows: list, row_cap: int = _ANSWER_ROW_CAP) -> str | None:
+    """Joins up to `row_cap` consecutive corprep ("management-side") rows immediately
+    after `cited` within `doc_rows` (already sorted by `_doc_num_key`).
+
+    A `speaker_type: None` row is ambiguous -- verified live, most are a genuine
+    management-answer continuation with no recorded speaker_type at all (e.g.
+    document 3449181-t), but the reviewer also reproduced a real transcript shape
+    where a None-typed row is actually a SECOND analyst turn sitting between two
+    unrelated answers (`[q1, ans1, None-typed follow-up, ans2, operator]`), and
+    joining straight through it would splice ans2 onto q1's answer. Controller
+    ruling: the join STOPS at the first `speaker_type: None` row UNLESS the row
+    immediately after it is corprep AND has the SAME `speaker_name` as the last
+    corprep row already joined (a real continuation never changes speaker) -- in
+    that case the None row itself is skipped (never added to the answer) and the
+    scan continues past it. The scan otherwise stops the instant it hits an
+    unambiguous turn change (`analyst` or `operator`). None when the cited row
+    isn't found in `doc_rows`, or nothing corprep follows it before a stop."""
     try:
         i = next(idx for idx, r in enumerate(doc_rows) if r.get("vector_id") == cited.get("vector_id"))
     except StopIteration:
         return None
-    parts = []
-    for r in doc_rows[i + 1:]:
+    parts: list[str] = []
+    last_speaker = None
+    j, n = i + 1, len(doc_rows)
+    while j < n and len(parts) < row_cap:
+        r = doc_rows[j]
         st = r.get("speaker_type")
+        if st == "corprep":
+            if r.get("text"):
+                parts.append(r["text"])
+            last_speaker = r.get("speaker_name")
+            j += 1
+            continue
         if st in ("analyst", "operator"):
             break
-        if st == "corprep" and r.get("text"):
-            parts.append(r["text"])
+        # st is None (or some other unrecorded value): ambiguous -- only a
+        # continuation (see docstring) lets the scan pass through it.
+        nxt = doc_rows[j + 1] if j + 1 < n else None
+        if (last_speaker is not None and nxt is not None
+                and nxt.get("speaker_type") == "corprep" and nxt.get("speaker_name") == last_speaker):
+            j += 1  # skip the ambiguous row itself; its text is never joined
+            continue
+        break
     return " ".join(parts) if parts else None
 
 

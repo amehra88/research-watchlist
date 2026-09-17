@@ -18,6 +18,7 @@ No pytest in this env — run directly:
 """
 import contextlib
 import io
+import json
 import os
 import sys
 from pathlib import Path
@@ -473,6 +474,31 @@ def test_stage_alerts_degrade_still_nulls_exchange_trend_and_empties_tier_names(
     item = sa["items"][0]
     assert item["exchange"] is None and item["trend"] is None and item["tier_names"] == {}, item
     assert item["line"] == "stage3 · fixture_theme_missing · ZZZ" == sa["text"][2:], item
+
+
+def test_stage_alerts_needed_tickers_is_scoped_not_the_whole_universe():
+    # fix round 1 (reviewer-required): the ticker set built BEFORE loading
+    # exchanges.jsonl must be exactly the tickers today's events could cite --
+    # FTHM (the stage3 row's own ticker) and nothing else (no OTHR/ZZZZ, even
+    # though both appear in diffusion.json's pairs / watchlist.yaml's universe).
+    rows = [r for r in rp._read_jsonl(STAGE_FIXTURES / "alerts_sent.jsonl") if r["as_of"] == DAY_STAGE]
+    snap = json.loads((STAGE_FIXTURES / "diffusion.json").read_text())
+    assert rp._needed_tickers(rows, snap) == {"FTHM"}
+
+
+def test_stage_alerts_render_inputs_ex_excludes_the_noise_ticker():
+    rows = [r for r in rp._read_jsonl(STAGE_FIXTURES / "alerts_sent.jsonl") if r["as_of"] == DAY_STAGE]
+    _, _, ex = rp._stage_alert_render_inputs(STAGE_PATHS, rows)
+    assert ex is not None
+    assert all(r["ticker"] == "FTHM" for r in ex.values()), ex
+    assert not any(r["ticker"] == "ZZZZ" for r in ex.values()), "noise ticker must not be retained"
+
+
+def test_stage_alerts_text_omits_dash_a_segment_when_no_answer():
+    text = rp._render_stage_item_text(
+        "the line", {"question": "a question with no answer", "answer": None}, None, None)
+    assert text == 'the line Q: "a question with no answer"', text
+    assert "— A:" not in text, text
 
 
 # ───────────────────────── upcoming ─────────────────────────

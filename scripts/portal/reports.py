@@ -104,7 +104,6 @@ sys.path.insert(0, str(REPO / "scripts"))
 from thesis import thesis_report  # noqa: E402
 
 sys.path.insert(0, str(REPO / "scripts" / "topics"))
-import theme_notes  # noqa: E402
 import stage_alert  # noqa: E402
 
 
@@ -487,18 +486,43 @@ def _thesis_alert_card(day: str, paths: Paths, events_cache: dict = None,
 # ---------------------------------------------------------------------------
 # stage_alerts card
 # ---------------------------------------------------------------------------
-def _stage_alert_render_inputs(paths: Paths):
+def _needed_tickers(rows: list, snap: dict) -> set:
+    """Every ticker today's stage-alert `rows` could possibly cite -- the row's own
+    `ticker` (stage3) plus, for stage2 (whose ledger row carries no ticker at all),
+    the SAME theme-wide "first asked" ticker `_cite_target` resolves (identical call,
+    so the tickers this loads for are always exactly the tickers render()/
+    exchange_for() will actually look up -- never a mismatch, never a silent miss).
+    gate/stage4 contribute nothing (`_cite_target` returns None for them, matching
+    render() itself never citing them)."""
+    needed = set()
+    for r in rows:
+        ticker = r.get("ticker")
+        if ticker:
+            needed.add(ticker)
+        target = _cite_target(r.get("kind", "?"), r.get("theme", "?"), ticker, snap)
+        if target:
+            needed.add(target[1])
+    return needed
+
+
+def _stage_alert_render_inputs(paths: Paths, rows: list):
     """(snap, topic_map_rows, exchanges) or (None, None, None) on any load failure —
     mirrors stage_alert.py's own main(), read-only (never calls run()/save_state(),
-    which write state/topics/stages.json)."""
+    which write state/topics/stages.json).
+
+    Fix round 1 (reviewer-required): `exchanges` is no longer the WHOLE file loaded
+    via `theme_notes.load_sources()` -- it is streamed once via
+    `evidence.load_exchanges_by_ticker()`, scoped to `_needed_tickers(rows, snap)`
+    (computed from TODAY's `rows`, before the exchanges.jsonl read happens at all).
+    This same filtered `ex` is handed to BOTH `stage_alert.render()` (in
+    `_stage_alert_card`, below) and `evidence.exchange_for()` -- render() only ever
+    cites the one ticker `_cite_target` already resolved for an event, so scoping to
+    that same set can never drop a citation render() itself would have made."""
     try:
         snap = json.loads((paths.topics_state / "diffusion.json").read_text(encoding="utf-8"))
-        claims_path = paths.evidence_state / "claims.jsonl"
-        tm_rows, ex, _ = theme_notes.load_sources(
-            topic_map=paths.topics_state / "topic_map.jsonl",
-            exchanges=paths.transcripts_state / "exchanges.jsonl",
-            claims=claims_path,
-        )
+        tm_rows = evidence.load_topic_map_rows(paths.topics_state / "topic_map.jsonl")
+        needed = _needed_tickers(rows, snap)
+        ex = evidence.load_exchanges_by_ticker(needed, paths.transcripts_state / "exchanges.jsonl")
         return snap, tm_rows, ex
     except Exception as exc:  # noqa: BLE001
         log(f"stage_alerts: render inputs unavailable ({exc}); "
@@ -544,8 +568,10 @@ def _render_stage_item_text(line: str, exch: dict | None, trend: dict | None,
     parts = [line]
     if exch and (exch.get("question") or exch.get("answer")):
         q = (exch.get("question") or "")[:200]
-        a = (exch.get("answer") or "")[:200]
-        parts.append(f'Q: "{q}" — A: "{a}"')
+        qa = f'Q: "{q}"'
+        if exch.get("answer"):
+            qa += f' — A: "{exch["answer"][:200]}"'
+        parts.append(qa)
     if trend:
         prev_b = trend.get("prev_n_banks")
         prev_c = trend.get("prev_n_companies")
@@ -566,7 +592,7 @@ def _stage_alert_card(day: str, paths: Paths) -> dict | None:
     if not rows:
         return None
 
-    snap, tm_rows, ex = _stage_alert_render_inputs(paths)
+    snap, tm_rows, ex = _stage_alert_render_inputs(paths, rows)
     ex_by_doc = evidence.index_exchanges_by_document(ex) if ex is not None else None
     universe = None
     if snap is not None:
@@ -574,6 +600,11 @@ def _stage_alert_card(day: str, paths: Paths) -> dict | None:
             universe = identity.load_universe(paths.watchlist, paths.notes)
         except Exception as exc:  # noqa: BLE001
             log(f"stage_alerts {day}: load_universe() unavailable ({exc}); tier_names will be {{}}")
+    else:
+        # one line for the whole card, not once per row -- every row degrades the
+        # same way when there is no snapshot at all.
+        log(f"stage_alerts {day}: no diffusion snapshot for any of today's "
+            f"{len(rows)} row(s); exchange/trend null, tier_names {{}} for all")
 
     items, lines = [], []
     for r in rows:
@@ -609,9 +640,6 @@ def _stage_alert_card(day: str, paths: Paths) -> dict | None:
                 except Exception as exc:  # noqa: BLE001
                     log(f"stage_alerts {day}: tier_names_on_theme() failed for {theme} "
                         f"({exc}); tier_names={{}}")
-        else:
-            log(f"stage_alerts {day}: no diffusion snapshot for {kind}/{theme}/{ticker}; "
-                f"exchange/trend null, tier_names {{}}")
 
         theme_link = f"notes/themes/{theme}.md" if (paths.notes / "themes" / f"{theme}.md").exists() else None
         item = {"id": r.get("id"), "kind": kind, "theme": theme, "ticker": ticker,

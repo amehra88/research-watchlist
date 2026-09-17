@@ -210,6 +210,35 @@ def test_fixture_thesis_assumption_ids_all_have_evidence_rows():
         assert ("AAA", aid) in idx, (aid, set(idx))
 
 
+# ───────────────────────── load_topic_map_rows / load_exchanges_by_ticker ─────────────────────────
+# Fix round 1 (reviewer-required): exchanges.jsonl must be streamed once and scoped
+# to only the tickers a build actually needs, not loaded whole and indexed unfiltered.
+
+def test_load_exchanges_by_ticker_keeps_only_the_given_tickers():
+    ex = ev.load_exchanges_by_ticker({"FTHM"}, STAGE_FIXTURES / "exchanges.jsonl")
+    assert set(ex) == {"docA-t_qna_5_0", "docA-t_qna_6_0", "docA-t_qna_7_0"}, set(ex)
+    assert all(r["ticker"] == "FTHM" for r in ex.values())
+    assert "docB-t_qna_1_0" not in ex, "unrelated ticker (ZZZZ) row must not be retained"
+
+
+def test_load_exchanges_by_ticker_empty_set_keeps_nothing():
+    assert ev.load_exchanges_by_ticker(set(), STAGE_FIXTURES / "exchanges.jsonl") == {}
+
+
+def test_load_exchanges_by_ticker_missing_file_returns_empty_dict():
+    assert ev.load_exchanges_by_ticker({"FTHM"}, STAGE_FIXTURES / "does_not_exist.jsonl") == {}
+
+
+def test_load_topic_map_rows_reads_all_rows_unfiltered():
+    rows = ev.load_topic_map_rows(STAGE_FIXTURES / "topic_map.jsonl")
+    assert len(rows) == 2, rows
+    assert {r["ticker"] for r in rows} == {"FTHM", "ZZZZ"}
+
+
+def test_load_topic_map_rows_missing_file_returns_empty_list():
+    assert ev.load_topic_map_rows(STAGE_FIXTURES / "does_not_exist.jsonl") == []
+
+
 # ───────────────────────── index_exchanges_by_document ─────────────────────────
 
 def test_index_exchanges_by_document_groups_and_orders_by_turn():
@@ -230,6 +259,66 @@ def test_doc_num_key_breaks_ties_on_the_vector_id_split_index():
     ]
     ordered = sorted(rows, key=ev._doc_num_key)
     assert [r["vector_id"] for r in ordered] == ["d_qna_19_0", "d_qna_19_1"]
+
+
+# ───────────────────────── _management_answer: None-speaker-type handling (fix round 1) ─────────────────────────
+# Reviewer-reproduced bug: a speaker_type: None row can be a SECOND analyst turn, not a
+# continuation of the answer -- joining straight through it splices an unrelated answer
+# onto the cited question. Controller ruling: stop at the first None row UNLESS the row
+# immediately after it is corprep with the SAME speaker_name as the last corprep row
+# already joined (a genuine continuation never changes speaker); cap the join at 3 rows.
+
+def _row(vector_id, document_id, doc_num, speaker_type, speaker_name=None, text="x"):
+    return {"vector_id": vector_id, "document_id": document_id, "doc_num": doc_num,
+            "speaker_type": speaker_type, "speaker_name": speaker_name, "text": text}
+
+
+def test_management_answer_stops_at_none_typed_row_that_is_really_a_second_question():
+    # [q1, ans1, None-typed follow-up (a second analyst turn), ans2, operator]
+    doc_rows = [
+        _row("d_qna_1_0", "d", "qna_1", "analyst", "Analyst A", "q1"),
+        _row("d_qna_2_0", "d", "qna_2", "corprep", "CFO Sam", "ans1"),
+        _row("d_qna_3_0", "d", "qna_3", None, "Analyst B", "a second, mislabeled question"),
+        _row("d_qna_4_0", "d", "qna_4", "corprep", "CFO Pat", "ans2 -- must never appear"),
+        _row("d_qna_5_0", "d", "qna_5", "operator", "Operator", "next question"),
+    ]
+    answer = ev._management_answer(doc_rows[0], doc_rows)
+    assert answer == "ans1", answer  # only the first answer -- ans2 never leaks in
+
+
+def test_management_answer_continues_through_a_same_speaker_none_typed_row():
+    # [q1, ans1a (corprep, Sam), None-typed continuation (same speaker), ans1b, operator]
+    doc_rows = [
+        _row("d_qna_1_0", "d", "qna_1", "analyst", "Analyst A", "q1"),
+        _row("d_qna_2_0", "d", "qna_2", "corprep", "CFO Sam", "part one."),
+        _row("d_qna_3_0", "d", "qna_3", None, "CFO Sam", "mislabeled middle part -- never joined"),
+        _row("d_qna_4_0", "d", "qna_4", "corprep", "CFO Sam", "part three."),
+        _row("d_qna_5_0", "d", "qna_5", "operator", "Operator", "next question"),
+    ]
+    answer = ev._management_answer(doc_rows[0], doc_rows)
+    # the scan continues PAST the ambiguous row (a real continuation) but never joins
+    # that row's own text -- only rows with a confirmed corprep speaker_type contribute
+    # text, see _management_answer's docstring for why.
+    assert answer == "part one. part three.", answer
+
+
+def test_management_answer_none_row_before_any_confirmed_speaker_stops_immediately():
+    # no corprep row has been seen yet (last_speaker is None) -- can't be a
+    # "continuation" of nothing, so this must stop with no answer at all.
+    doc_rows = [
+        _row("d_qna_1_0", "d", "qna_1", "analyst", "Analyst A", "q1"),
+        _row("d_qna_2_0", "d", "qna_2", None, "CFO Sam", "ambiguous, no prior speaker to match"),
+        _row("d_qna_3_0", "d", "qna_3", "corprep", "CFO Sam", "would-be answer"),
+    ]
+    assert ev._management_answer(doc_rows[0], doc_rows) is None
+
+
+def test_management_answer_caps_at_three_management_rows():
+    doc_rows = [_row("d_qna_0_0", "d", "qna_0", "analyst", "A", "q1")]
+    for n in range(1, 6):
+        doc_rows.append(_row(f"d_qna_{n}_0", "d", f"qna_{n}", "corprep", "CFO Sam", f"part{n}"))
+    answer = ev._management_answer(doc_rows[0], doc_rows)
+    assert answer == "part1 part2 part3", answer  # capped at 3, not all 5
 
 
 # ───────────────────────── exchange_for ─────────────────────────
