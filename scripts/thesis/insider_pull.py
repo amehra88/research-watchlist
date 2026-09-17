@@ -130,9 +130,28 @@ def clusters(rows: list[dict]) -> dict[str, dict]:
             for t, c in sorted(acc.items())}
 
 
-def investor_assumptions(fm: dict) -> list[str]:
-    return [a["id"] for a in fm.get("assumptions") or [] if a.get("status") != "retired"
-            and ("potential_investor_interest" in str(a.get("derived_from", "")) or "investor" in a["id"])]
+def investor_assumptions(fm: dict, direction: str | None = None, bearish: set[str] | None = None) -> list[str]:
+    """Assumption ids an insider cluster's evidence row attaches to.
+
+    Always: assumptions derived from potential_investor_interest (or with 'investor' in
+    the id). When direction == 'challenge' (RIS5 A4 bear-side path), ALSO: assumptions
+    tagged with a bearish (polarity -1, e.g. margin-compression) theme -- a cluster of
+    insiders selling is evidence against a competitive-advantage/margin thesis too, not
+    only against investor-interest. `bearish` lets callers/tests pass an explicit set;
+    the default loads config/theme_polarity.yaml (see thesis.theme_polarity.bearish_themes)."""
+    out = [a["id"] for a in fm.get("assumptions") or [] if a.get("status") != "retired"
+           and ("potential_investor_interest" in str(a.get("derived_from", "")) or "investor" in a["id"])]
+    if direction == "challenge":
+        if bearish is None:
+            from thesis.theme_polarity import bearish_themes
+            bearish = bearish_themes()
+        seen = set(out)
+        for a in fm.get("assumptions") or []:
+            if a.get("status") == "retired" or a["id"] in seen:
+                continue
+            if set(a.get("themes") or []) & bearish:
+                out.append(a["id"]); seen.add(a["id"])
+    return out
 
 
 def evidence_rows(cl: dict[str, dict], theses: dict[str, dict], week_end: str) -> list[dict]:
@@ -148,7 +167,7 @@ def evidence_rows(cl: dict[str, dict], theses: dict[str, dict], week_end: str) -
             direction, why = "challenge", f"{ns} insiders sold open-market (ex-10b5-1) ${c['sell_value'] / 1e6:.1f}M in the week to {week_end}"
         else:
             continue
-        for aid in investor_assumptions(fm):
+        for aid in investor_assumptions(fm, direction):
             rows.append({"source": "insider", "source_id": f"insider:{t}:{week_end}", "ref": "InsiderScore get_insider_transactions (tenb5=E)",
                          "date": week_end, "title": "insider cluster", "assumption_id": aid, "direction": direction, "strength": 1,
                          "why": why, "quote": "", "cross_ticker": False, "ticker": t})

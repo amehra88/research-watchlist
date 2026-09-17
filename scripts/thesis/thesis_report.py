@@ -114,7 +114,10 @@ def rank_movers(theses: dict, ev_rows: list[dict], chg_rows: list[dict], since: 
         if in_period(c.get("ts"), since, until):
             chg_by[c["ticker"]].append(c)
     rows = [ticker_delta(t, fm, ev_by.get(t, []), chg_by.get(t, [])) for t, fm in theses.items()]
-    return sorted(rows, key=lambda r: (-abs(r["delta"]), -r["delta"], r["ticker"]))
+    # RIS5 A4 (bear-side paths): tie-break on delta ascending (not -delta) so a tie in
+    # magnitude no longer systematically favors the positive (buy-side) name -- a
+    # challenged/reduce name at -3 now sorts ahead of a confirmed/increase name at +3.
+    return sorted(rows, key=lambda r: (-abs(r["delta"]), r["delta"], r["ticker"]))
 
 
 def ranking_rows(theses: dict, movers: list[dict]) -> list[dict]:
@@ -130,7 +133,11 @@ def ranking_rows(theses: dict, movers: list[dict]) -> list[dict]:
                     "rank_score_proposed": round(sum(nums) / len(nums), 3) if nums else None,
                     "applied": applied, "proposed": proposed, "n_assumptions": len(fm.get("assumptions") or []),
                     "status_counts": dict(Counter(a.get("status") for a in fm.get("assumptions") or []))})
-    return sorted(out, key=lambda r: (-abs(r["delta"]), -r["delta"], r["ticker"]))
+    # Same tie-break as rank_movers (RIS5 A4) -- kept identical so notes/reports/thesis-delta-*.md
+    # §1 and state/thesis/ranking_{date}.json never disagree on tie order. This line isn't the
+    # literal one the task brief cited (thesis_report.py:117, rank_movers); flip it back alone if
+    # divergence between the two views is actually wanted.
+    return sorted(out, key=lambda r: (-abs(r["delta"]), r["delta"], r["ticker"]))
 
 
 # ───────────────────────────── §3–§7 rollups ─────────────────────────────
