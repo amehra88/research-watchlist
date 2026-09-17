@@ -145,6 +145,12 @@ state/valuation/prices_*.jsonl
 state/valuation/consensus_*.jsonl
 state/valuation/fundamentals_*.jsonl
 
+# RIS5 A5 expectations-gap module (2026-09-17): same convention as the A3 snapshots above --
+# dated raw output is regenerable by re-running scripts/valuation/expectations.py, the
+# tracked rollup the portal/ideas engine reads is state/valuation/expectations_latest.json
+# (no rule below matches it).
+state/valuation/expectations_*.jsonl
+
 # RIS5 A3 peer-ETF trade archive: one JSON snapshot per day, regenerable by re-running
 # scripts/portal/etf_trades_archive.py against /root/ws's report history (as long as it's
 # retained there) — same "don't push a growing daily blob via auto_sync" reasoning as

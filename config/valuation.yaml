@@ -1,0 +1,206 @@
+# RIS5 A5 — expectations-gap valuation config (scripts/valuation/expectations.py).
+#
+# Never a price target. This file tunes the reverse-DCF-lite (Layer 1, "what is
+# priced"), the supported-growth durability model (Layer 2, "what the evidence
+# supports"), the gap thresholds, and the sector-family defaults used whenever
+# a ticker has no live fundamentals row yet (scripts/valuation/fundamentals.py's
+# FUNDAMENTALS_METRICS is empty pending the FactSet metric-code probe, so on the
+# first live run EVERY ticker hits the sector-family default path below -- this
+# is expected, not a bug, and every card that uses a default is flagged
+# "margin_default").
+
+# ---------------------------------------------------------------------------
+# Layer 1 — reverse-DCF-lite (brief's exact defaults, verbatim)
+# ---------------------------------------------------------------------------
+discount_rate: 0.10
+terminal_growth: 0.03
+years: 5
+
+# Sensitivity deltas shown on every card (brief: "±1pt discount rate and ±3pt
+# terminal margin").
+sensitivity:
+  discount_rate_delta: 0.01
+  terminal_margin_delta: 0.03
+
+# Bisection solve bounds/tolerance. g_lo/g_hi bracket the constant 5y growth
+# rate solved for; PV(g) is monotonically increasing in g only while every
+# margin_t along the path is positive AND discount_rate > terminal_growth
+# (Gordon denominator) -- expectations.py guards both and flags rather than
+# returning a bisection result when either breaks. A solved EV outside
+# [PV(g_lo), PV(g_hi)] clips to the boundary and is flagged
+# "implied_growth_out_of_bracket" (still shown, not hidden).
+bisection:
+  g_lo: -0.90
+  g_hi: 5.00
+  max_iter: 100
+  tol_relative: 0.000001   # |PV(g) - EV| / EV convergence target (tighter than
+                            # the 0.1% test tolerance so the test has margin)
+
+# terminal_margin per sector family (brief's exact values, verbatim). Applied
+# unless `overrides.<TICKER>.terminal_margin` is set below. This is the ONLY
+# table in this file with brief-specified numbers; every other default below
+# (fcf_margin_now, downside haircut, sector keyword map) is an operator-
+# adjustable interpretive call the brief did not enumerate a value for --
+# documented in each block's own comment and in the A5 report.
+terminal_margin_by_family:
+  software: 0.30
+  semis: 0.35
+  hardware: 0.12
+  internet: 0.25
+  default: 0.20
+
+# FCF-margin-"now" fallback (used only when scripts/valuation/fundamentals.py
+# has no live row for the ticker -- flags: ["margin_default"]). The brief
+# names the terminal-margin table explicitly but not this one. Interpretive
+# call: reuse the SAME per-family values as terminal_margin_by_family, i.e. a
+# flat (non-converging) margin path by default, which is the most defensible
+# assumption with zero fundamentals data on hand -- not "we think margins
+# expand/compress by X" with no evidence behind it. Once fundamentals.py goes
+# live this table becomes the true fallback for names FactSet doesn't cover;
+# an operator who wants a non-flat default path can diverge these numbers
+# from terminal_margin_by_family at that point.
+fcf_margin_now_by_family:
+  software: 0.30
+  semis: 0.35
+  hardware: 0.12
+  internet: 0.25
+  default: 0.20
+
+# Per-ticker overrides (brief: "overridable per ticker"). Empty until an
+# operator sets one; both keys optional per entry.
+overrides: {}
+# example:
+#   NVDA:
+#     terminal_margin: 0.40
+#     fcf_margin_now: 0.38
+
+# ---------------------------------------------------------------------------
+# Sector-family classification (interpretive call -- config/watchlist.yaml
+# entries carry NO `sector` field; only `themes`). Rule: classify each of the
+# ticker's theme slugs independently by substring match against the keyword
+# lists below, checked in PRIORITY order (first family whose keyword list
+# contains a hit wins that theme -- a theme is assigned to exactly one
+# family). Then majority-vote the ticker's per-theme family assignments;
+# a theme matching no keyword contributes no vote. Ties (including "zero
+# themes matched anything") break to PRIORITY order, first entry with the max
+# vote count; a ticker with zero votes at all gets "default". Verified against
+# the full T1+T2+T3 universe 2026-09-17: NVDA/AVGO -> semis (both tie-broken
+# via silicon_architecture_competition + PRIORITY order), COHR -> hardware
+# (networking_competitive_landscape + thermal_management_cooling outvote the
+# single silicon_architecture_competition hit) -- see the A5 report for the
+# full family distribution.
+# ---------------------------------------------------------------------------
+sector_family_priority: [semis, software, internet, hardware]
+
+sector_keywords:
+  semis:
+    - silicon
+    - semiconductor
+    - chip_design
+    - hbm
+    - foundry
+    - lithography
+    - wafer
+    - nand_demand
+    - advanced_packaging
+    - advanced_materials_ai_infra
+  software:
+    - ai_infrastructure_software
+    - cybersecurity
+    - observability
+    - platform_take_rate
+    - agent_framework
+    - agentic_commerce
+    - ai_agent_monetization
+    - vertical_ai_applications
+    - ai_native_vertical
+    - model_commoditization
+    - model_efficiency_evolution
+    - foundation_model_economics
+    - frontier_model_competition
+    - ai_generated_content
+    - inference_compute_economics
+    - ai_re_architected_incumbent
+    - software
+  internet:
+    - ad_market_strength
+    - search_disruption
+    - local_commerce_delivery
+    - china_consumer_demand
+    - hyperscaler_revenue_concentration
+    - demographic_demand_tailwinds
+  hardware:
+    - handset_competition
+    - pc_demand
+    - networking
+    - defense_drones
+    - aerospace_defense_aftermarket
+    - autonomous_vehicle_competition
+    - humanoid_robotics_competition
+    - space_economy
+    - space_supply_chain
+    - energy_storage_buildout
+    - solar_supply_chain
+    - nuclear_energy_buildout
+    - surveillance_security_tech
+    - thermal_management_cooling
+    - co_packaged_optics_ramp
+    - optical_speed_transition_1_6t
+    - laser_architecture_competition
+
+# ---------------------------------------------------------------------------
+# Layer 2 — supported_growth (brief: base = CAGR of consensus FY1->FY3 sales
+# extended to 5y by a durability multiplier from (a) theme-lifecycle stage
+# rank vs peer-median, (b) credibility, (c) last-2-quarter reads trend).
+# ---------------------------------------------------------------------------
+supported_growth:
+  # near_term_cagr = (fy3_sales/fy1_sales)^(1/2) - 1 (2-year CAGR over the
+  # FY1->FY3 consensus window), then base = near_term_cagr * durability_multiplier.
+  durability:
+    # Each of the 3 terms is independently clipped, then summed onto 1.0 and
+    # the whole multiplier is clipped again. All bounds are interpretive calls
+    # (not brief-specified) -- kept deliberately small (a name in the best-vs-
+    # worst quartile of stage/credibility/reads moves growth by single-digit
+    # percent, not doubles it) since this is a plausibility multiplier on a
+    # sell-side number, not an independent growth estimate.
+    stage_term_bound: 0.15         # max +/- from stage-rank-vs-peer-median
+    stage_term_per_level: 0.05     # pp of multiplier per stage-rank-level of lead/lag
+    credibility_term_bound: 0.10   # max +/- from consensus_beat_rate/guide_hit_rate
+    reads_term_bound: 0.10         # max +/- from the reads-trend average
+    multiplier_bounds: [0.5, 1.5]
+  # Absolute sanity bounds on supported_growth.base itself, after the
+  # multiplier is applied (never let a durability swing produce an
+  # unsupportable base rate).
+  base_bounds: [-0.50, 2.00]
+  # Reads-trend axis selection (amendment measured 2026-09-17): only 8/178
+  # tickers clear >=3 dated reads on ai_positioning ALONE (the same 8 clear it
+  # on every one of the 5 structured-read axes, since all 5 come from the same
+  # notes). Rather than pin one axis and starve the term everywhere else,
+  # average across every axis that individually clears the >=3 gate for that
+  # ticker, and omit the axis entirely if it doesn't clear. A ticker with zero
+  # qualifying axes gets the whole reads_term omitted ("insufficient history").
+  reads_min_dated: 3
+
+# downside haircut (brief: "downside = base minus a haircut when any
+# assumption with a competition/margin theme is challenged"; no numeric value
+# given -- interpretive call, operator-adjustable). Applied once per card
+# (not once per challenged assumption) when >=1 qualifying assumption exists;
+# every qualifying assumption's id is still listed on the card.
+downside_haircut_pp: 5.0
+
+# ---------------------------------------------------------------------------
+# Lenses
+# ---------------------------------------------------------------------------
+peer:
+  min_shared_themes: 2   # brief: "tickers sharing >= 2 themes"
+  min_peers_for_z: 3     # a stdev over <3 peers is noise -- median still shown at >=1
+
+history:
+  min_days_for_z: 60     # brief: "insufficient history below 60 daily points"
+
+# ---------------------------------------------------------------------------
+# valuation_extreme (brief's exact thresholds, verbatim)
+# ---------------------------------------------------------------------------
+valuation_extreme:
+  gap_pp_threshold: 8
+  peg_history_z_threshold: 2
