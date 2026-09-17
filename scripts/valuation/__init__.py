@@ -28,12 +28,13 @@ MODEL = "claude-sonnet-4-6"          # matches etfflows/newsdigest transport con
 # FactSet_GlobalPrices schema (fetched live via ToolSearch 2026-09-17): "500 for
 # single-day prices, 50 for all other data types and multi-day requests." We
 # batch prices at 100 (well under 500, per the task brief) but market_value is
-# NOT the single-day-prices case — it is "all other data types" — so its real
-# hard cap is 50, not 100. Sending 100 ids on a market_value call would be
-# rejected or silently truncated; the schema quote is the source of truth over
-# the brief's blanket "≤100 ids/call" gloss.
+# NOT the single-day-prices case — it is "all other data types". RIS5 A3 fix 2
+# (coordinator ruling, 2026-09-17 19:30 ET): the live run hit a real 408 Request
+# Timeout on a 50-id market_value batch, so the cap is tightened to 25 — smaller
+# batches, more calls, but each one is cheaper to retry and less quota is lost
+# to a single timed-out request.
 PRICE_BATCH = 100
-MARKET_VALUE_BATCH = 50
+MARKET_VALUE_BATCH = 25
 CONSENSUS_BATCH = 100                # consensus_rolling ids cap is 3000; 100 per the brief
 
 # ── Timeouts ───────────────────────────────────────────────────────────────
@@ -43,15 +44,36 @@ CONSENSUS_TIMEOUT = 240               # 3 fiscal periods per id, larger payload
 FUNDAMENTALS_TIMEOUT = 240
 METRICS_PROBE_TIMEOUT = 120
 
+# ── Retry (RIS5 A3 fix 2) ────────────────────────────────────────────────────
+# A FactSet-server-side 408/5xx on any batch call: wait this long, retry ONCE,
+# then mark the batch failed and continue (never retried a second time — a
+# session-limit/429 is a different, non-retryable error class that aborts the
+# whole run instead, see snapshot.py's SessionLimitError handling).
+RETRY_WAIT_SECONDS = 20
+
 # ── Consensus ──────────────────────────────────────────────────────────────
-CONSENSUS_METRICS = ("SALES", "EPS")
+# Amendment v1.2: daily consensus also pulls EBITDA and FCF alongside SALES/EPS
+# (FY1-FY3). "FCF" is the unprefixed FactSet Estimates code for consensus free
+# cash flow (confirmed via the live FactSet_Metrics discovery probe — see
+# docs/portal/mcp_schemas.md); EBITDA is confirmed directly from the
+# FactSet_EstimatesConsensus tool's own schema text ("SALES, EPS, EBITDA,
+# PRICE_TGT" are given as unprefixed estimate metric examples).
+CONSENSUS_METRICS = ("SALES", "EPS", "EBITDA", "FCF")
 RELATIVE_FISCAL_START = 1
 RELATIVE_FISCAL_END = 3               # FY1..FY3 in one call per metric (task brief)
 PERIODICITY = "ANN"
 
+# Weekly (Sunday, amendment v1.2): FY4-FY5 for the same four metrics, with counts.
+# Code path implemented in snapshot.py (--weekly); NOT run live today per the
+# coordinator's instruction -- staged cron line only (docs/portal/cron.txt).
+WEEKLY_CONSENSUS_METRICS = CONSENSUS_METRICS
+WEEKLY_RELATIVE_FISCAL_START = 4
+WEEKLY_RELATIVE_FISCAL_END = 5
+
 __all__ = [
     "MODEL", "PRICE_BATCH", "MARKET_VALUE_BATCH", "CONSENSUS_BATCH",
     "PRICE_TIMEOUT", "MARKET_VALUE_TIMEOUT", "CONSENSUS_TIMEOUT",
-    "FUNDAMENTALS_TIMEOUT", "METRICS_PROBE_TIMEOUT",
+    "FUNDAMENTALS_TIMEOUT", "METRICS_PROBE_TIMEOUT", "RETRY_WAIT_SECONDS",
     "CONSENSUS_METRICS", "RELATIVE_FISCAL_START", "RELATIVE_FISCAL_END", "PERIODICITY",
+    "WEEKLY_CONSENSUS_METRICS", "WEEKLY_RELATIVE_FISCAL_START", "WEEKLY_RELATIVE_FISCAL_END",
 ]

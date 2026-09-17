@@ -22,10 +22,24 @@ structurally-valid PARTIAL result. The task brief's "at most 3 live sessions ...
 +market_value, consensus SALES, consensus EPS)" is therefore read as three LOGICAL pull
 stages, not a literal subprocess ceiling — at this worktree's real filtered universe
 (178 ids mapped 2026-09-17), ≤100-id batching alone needs 2 prices + 2 SALES + 2 EPS
-calls before market_value (capped at 50 ids/call, see __init__.py) is even counted.
+calls before market_value (capped at 25 ids/call as of RIS5 A3 fix 2 -- tightened from 50
+after a live 408 Request Timeout on a 50-id batch, see __init__.py) is even counted.
 
 BATCH CAPS come from the live FactSet_GlobalPrices/_EstimatesConsensus tool schemas
 (fetched via ToolSearch 2026-09-17), not just the brief's "≤100" gloss — see __init__.py.
+
+RETRY (amendment v1.2 / RIS5 A3 fix 2): a FactSet-server-side 408/5xx on any batch call
+(any of prices/market_value/consensus) is retried ONCE after a 20s wait
+(RETRY_WAIT_SECONDS), then the batch is marked failed and the run continues — see
+`_retry_once`/`_is_retryable_error`. This is a distinct error class from the
+session-limit/429 abort below: a 408/5xx is a single flaky request, a 429 drains the
+whole subscription quota and is never retried.
+
+CONSENSUS METRICS (amendment v1.2): daily consensus now pulls SALES/EPS/EBITDA/FCF
+(FY1-FY3) — EBITDA and FCF are unprefixed FactSet Estimates codes (confirmed live; see
+docs/portal/mcp_schemas.md). Weekly (Sunday, `--weekly`): the same four metrics at
+FY4-FY5, with counts, merged into the existing daily latest.json via
+`merge_weekly_consensus` rather than rebuilding it — see run_weekly().
 
 QUALITY (amendment v1.1): every row gets `quality` = "ok" or "fail:<reason>" from
 `check_price_quality`/`check_consensus_quality` (range checks: price>0, mcap>0, count>=1)
@@ -69,9 +83,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import tempfile
+import time
 from datetime import date
 from pathlib import Path
 
@@ -99,8 +115,9 @@ from newsdigest.classify_llm import _detect_session_limit, SessionLimitError  # 
 
 from valuation import (                                       # noqa: E402
     MODEL, PRICE_BATCH, MARKET_VALUE_BATCH, CONSENSUS_BATCH,
-    PRICE_TIMEOUT, MARKET_VALUE_TIMEOUT, CONSENSUS_TIMEOUT,
+    PRICE_TIMEOUT, MARKET_VALUE_TIMEOUT, CONSENSUS_TIMEOUT, RETRY_WAIT_SECONDS,
     CONSENSUS_METRICS, RELATIVE_FISCAL_START, RELATIVE_FISCAL_END, PERIODICITY,
+    WEEKLY_CONSENSUS_METRICS, WEEKLY_RELATIVE_FISCAL_START, WEEKLY_RELATIVE_FISCAL_END,
 )
 
 ToolUnavailableError = claude_p.ToolUnavailableError
@@ -213,14 +230,16 @@ def _market_value_prompt(fids: list[str]) -> str:
     )
 
 
-def _consensus_args(fids: list[str], metric: str) -> dict:
+def _consensus_args(fids: list[str], metric: str, rel_start: int = RELATIVE_FISCAL_START,
+                    rel_end: int = RELATIVE_FISCAL_END) -> dict:
     return {"ids": fids, "estimate_type": "consensus_rolling", "metrics": [metric],
-           "periodicity": PERIODICITY, "relativeFiscalStart": RELATIVE_FISCAL_START,
-           "relativeFiscalEnd": RELATIVE_FISCAL_END}
+           "periodicity": PERIODICITY, "relativeFiscalStart": rel_start,
+           "relativeFiscalEnd": rel_end}
 
 
-def _consensus_prompt(fids: list[str], metric: str) -> str:
-    a = _consensus_args(fids, metric)
+def _consensus_prompt(fids: list[str], metric: str, rel_start: int = RELATIVE_FISCAL_START,
+                      rel_end: int = RELATIVE_FISCAL_END) -> str:
+    a = _consensus_args(fids, metric, rel_start, rel_end)
     return (
         "Call the FactSet_EstimatesConsensus tool EXACTLY ONCE with these arguments:\n"
         f"  ids: {json.dumps(a['ids'])}\n"
@@ -234,6 +253,35 @@ def _consensus_prompt(fids: list[str], metric: str) -> str:
         "reformat or repeat any of the data — it is read directly from the tool output, "
         "not from your reply."
     )
+
+
+# ---------------------------------------------------------------------------
+# 408/5xx retry (RIS5 A3 fix 2, coordinator ruling): a FactSet-server-side
+# timeout or server error on any batch -- observed live as httpx's own
+# raise_for_status string, "Client error '408 Request Timeout' for url ..." or
+# "Server error '502 Bad Gateway' for url ..." -- is retried ONCE after a wait,
+# then the batch is marked failed and the run continues. This is a DIFFERENT
+# error class from SessionLimitError (429/session-limit): that one is
+# non-retryable and aborts the whole run; this one is a single flaky request.
+# ---------------------------------------------------------------------------
+_HTTP_STATUS_RE = re.compile(r"error '(\d{3})", re.IGNORECASE)
+_RETRYABLE_STATUS_RE = re.compile(r"http_status=(408|5\d{2})\b")
+
+
+def _extract_http_status(text: str) -> str | None:
+    """Scans the FULL (untruncated) response text for httpx's own error-string shape,
+    not the tail-truncated error message a caller might log -- truncating first and
+    pattern-matching after would risk cutting the status code out of the visible window
+    on a longer payload."""
+    m = _HTTP_STATUS_RE.search(text or "")
+    return m.group(1) if m else None
+
+
+def _is_retryable_error(err: str | None) -> bool:
+    """True only for an explicit 'http_status=408' or 'http_status=5xx' marker placed by
+    _run_and_parse below -- never a bare digit match against the error string (a price,
+    volume or row count could easily contain '500' or '408' and would false-positive)."""
+    return bool(err) and bool(_RETRYABLE_STATUS_RE.search(err))
 
 
 def _run_mcp_checked(prompt: str, tool: str, model, cwd, timeout: int) -> str:
@@ -295,7 +343,12 @@ def _run_and_parse(prompt: str, tool: str, expected_args: dict, repo_root, timeo
         rows = rows_of(resolve_payload(text))
         if rows is not None:
             return [r for r in rows if isinstance(r, dict)], None
-    return [], f"tool_result unusable: {(blocks or [stdout])[-1][-200:]}"
+    full_text = (blocks or [stdout])[-1]
+    status = _extract_http_status(full_text)
+    tail = full_text[-200:]
+    if status:
+        return [], f"tool_result unusable (http_status={status}): {tail}"
+    return [], f"tool_result unusable: {tail}"
 
 
 def make_prices_runner(repo_root=REPO, timeout=PRICE_TIMEOUT):
@@ -312,10 +365,12 @@ def make_market_value_runner(repo_root=REPO, timeout=MARKET_VALUE_TIMEOUT):
     return run
 
 
-def make_consensus_runner(repo_root=REPO, timeout=CONSENSUS_TIMEOUT):
+def make_consensus_runner(repo_root=REPO, timeout=CONSENSUS_TIMEOUT,
+                          rel_start: int = RELATIVE_FISCAL_START,
+                          rel_end: int = RELATIVE_FISCAL_END):
     def run(fids: list[str], metric: str):
-        return _run_and_parse(_consensus_prompt(fids, metric), CONSENSUS_TOOL,
-                              _consensus_args(fids, metric), repo_root, timeout)
+        return _run_and_parse(_consensus_prompt(fids, metric, rel_start, rel_end), CONSENSUS_TOOL,
+                              _consensus_args(fids, metric, rel_start, rel_end), repo_root, timeout)
     return run
 
 
@@ -434,13 +489,29 @@ def normalize_consensus_rows(raw: list[dict], fid_to_ticker: dict, metric: str) 
 # ---------------------------------------------------------------------------
 # Orchestration
 # ---------------------------------------------------------------------------
-def fetch_prices(pairs: list[tuple[str, str]], on_date: str, runner, log=print) -> tuple[dict, list[dict]]:
+def _retry_once(runner_call, fids: list[str], label: str, log, retry_wait: int, sleep):
+    """Calls runner_call() (already bound to its args); on a retryable 408/5xx error,
+    waits `retry_wait`s and calls it exactly ONCE more, then returns whatever that second
+    call produced (success or the same/another failure) -- never a third attempt. A
+    SessionLimitError raised by the runner propagates through untouched (fetch_* callers
+    never catch it; main() aborts the whole run on it, per the existing precedent)."""
+    rows, err = runner_call()
+    if err and _is_retryable_error(err):
+        log(f"RETRY {label} {fids[0]}..{fids[-1]} after {retry_wait}s "
+           f"(retryable: {err[:100]})")
+        sleep(retry_wait)
+        rows, err = runner_call()
+    return rows, err
+
+
+def fetch_prices(pairs: list[tuple[str, str]], on_date: str, runner, log=print,
+                 retry_wait: int = RETRY_WAIT_SECONDS, sleep=time.sleep) -> tuple[dict, list[dict]]:
     fid_to_tk = {fid: tk for tk, fid in pairs}
     out: dict[str, dict] = {}
     errors: list[dict] = []
     for chunk in id_chunks(pairs, PRICE_BATCH):
         fids = [fid for _, fid in chunk]
-        rows, err = runner(fids, on_date)
+        rows, err = _retry_once(lambda: runner(fids, on_date), fids, "prices", log, retry_wait, sleep)
         if err:
             log(f"FAIL prices {fids[0]}..{fids[-1]}: {err}")
             errors.append({"ids": fids, "error": err})
@@ -450,13 +521,14 @@ def fetch_prices(pairs: list[tuple[str, str]], on_date: str, runner, log=print) 
     return out, errors
 
 
-def fetch_market_value(pairs: list[tuple[str, str]], runner, log=print) -> tuple[dict, list[dict]]:
+def fetch_market_value(pairs: list[tuple[str, str]], runner, log=print,
+                       retry_wait: int = RETRY_WAIT_SECONDS, sleep=time.sleep) -> tuple[dict, list[dict]]:
     fid_to_tk = {fid: tk for tk, fid in pairs}
     out: dict[str, dict] = {}
     errors: list[dict] = []
     for chunk in id_chunks(pairs, MARKET_VALUE_BATCH):
         fids = [fid for _, fid in chunk]
-        rows, err = runner(fids)
+        rows, err = _retry_once(lambda: runner(fids), fids, "market_value", log, retry_wait, sleep)
         if err:
             log(f"FAIL market_value {fids[0]}..{fids[-1]}: {err}")
             errors.append({"ids": fids, "error": err})
@@ -466,13 +538,15 @@ def fetch_market_value(pairs: list[tuple[str, str]], runner, log=print) -> tuple
     return out, errors
 
 
-def fetch_consensus(pairs: list[tuple[str, str]], metric: str, runner, log=print) -> tuple[list[dict], list[dict]]:
+def fetch_consensus(pairs: list[tuple[str, str]], metric: str, runner, log=print,
+                    retry_wait: int = RETRY_WAIT_SECONDS, sleep=time.sleep) -> tuple[list[dict], list[dict]]:
     fid_to_tk = {fid: tk for tk, fid in pairs}
     out: list[dict] = []
     errors: list[dict] = []
     for chunk in id_chunks(pairs, CONSENSUS_BATCH):
         fids = [fid for _, fid in chunk]
-        rows, err = runner(fids, metric)
+        rows, err = _retry_once(lambda: runner(fids, metric), fids, f"consensus {metric}",
+                                log, retry_wait, sleep)
         if err:
             log(f"FAIL consensus {metric} {fids[0]}..{fids[-1]}: {err}")
             errors.append({"ids": fids, "metric": metric, "error": err})
@@ -485,7 +559,7 @@ def fetch_consensus(pairs: list[tuple[str, str]], metric: str, runner, log=print
 # ---------------------------------------------------------------------------
 # latest.json
 # ---------------------------------------------------------------------------
-_REL_LABEL = {1: "fy1", 2: "fy2", 3: "fy3"}
+_REL_LABEL = {1: "fy1", 2: "fy2", 3: "fy3", 4: "fy4", 5: "fy5"}   # fy4/fy5 = weekly (v1.2)
 
 
 def build_latest(price_rows: list[dict], consensus_rows: list[dict],
@@ -514,6 +588,35 @@ def build_latest(price_rows: list[dict], consensus_rows: list[dict],
     return {"as_of": as_of, "universe_size": universe_size, "skipped": skipped,
            "summary": {"priced": priced, "consensus_only": consensus_only},
            "tickers": tickers}
+
+
+def merge_weekly_consensus(latest: dict, consensus_rows: list[dict], weekly_as_of: str) -> dict:
+    """Amendment v1.2 weekly path: folds FY4/FY5 consensus rows into an EXISTING
+    latest.json (as produced by build_latest for the daily FY1-FY3 run) in place, using
+    the identical nested metric/rel_period shape (`fy4_sales`/`fy5_ebitda`/... +
+    counts/up/down) -- never rebuilding price/mcap/fy1-3 fields, which this function does
+    not touch. A ticker with FY4/FY5 coverage but no daily entry yet (rare: weekly
+    consensus exists but the ticker never seated via the daily price/FY1-3 run) gets a
+    consensus-only entry created the same way build_latest does. Adds
+    `weekly_as_of` (the date the weekly pull ran) alongside the daily `as_of` rather than
+    overwriting it -- the two runs answer different questions ("when was this priced" vs
+    "when was FY4/FY5 last refreshed")."""
+    tickers = latest.setdefault("tickers", {})
+    for r in consensus_rows:
+        if r["quality"] != "ok":
+            continue
+        label = _REL_LABEL.get(r["rel_period"])
+        if not label:
+            continue
+        key = f"{label}_{r['metric'].lower()}"
+        entry = tickers.setdefault(r["ticker"], {"price": None, "mcap": None,
+                                                 "counts": {}, "up": {}, "down": {}})
+        entry[key] = r["mean"]
+        entry.setdefault("counts", {})[key] = r["count"]
+        entry.setdefault("up", {})[key] = r["up"]
+        entry.setdefault("down", {})[key] = r["down"]
+    latest["weekly_as_of"] = weekly_as_of
+    return latest
 
 
 # ---------------------------------------------------------------------------
@@ -571,11 +674,53 @@ def _fake_runners():
     return prices, market_value, consensus
 
 
+def run_weekly(pairs: list[tuple[str, str]], as_of: str, state_dir: Path,
+              consensus_runner, log=print) -> int:
+    """Amendment v1.2 weekly path: FY4-FY5 for WEEKLY_CONSENSUS_METRICS (the same four
+    metrics as the daily pull), with counts. Reads the existing (daily-written)
+    latest.json, merges in the FY4/FY5 fields via merge_weekly_consensus (never touching
+    price/mcap/fy1-3), and writes both the dated raw file and the updated latest.json
+    back. Refuses (exit 1, writes nothing) if no daily latest.json exists yet -- FY4/FY5
+    alone, with no FY1-3/price anchor, is not something the ideas engine has ever been
+    asked to consume standalone."""
+    latest_path = state_dir / "latest.json"
+    if not latest_path.exists():
+        print(f"no {latest_path} to merge into -- run the daily snapshot first", file=sys.stderr)
+        return 1
+    latest = json.loads(latest_path.read_text(encoding="utf-8"))
+
+    try:
+        consensus_rows: list[dict] = []
+        consensus_errs: list[dict] = []
+        for metric in WEEKLY_CONSENSUS_METRICS:
+            rows, errs = fetch_consensus(pairs, metric, consensus_runner, log=log)
+            consensus_rows.extend(rows)
+            consensus_errs.extend(errs)
+    except SessionLimitError as e:
+        print(f"ABORTED (session limit 429): {e} -- remaining batches skipped, "
+             f"nothing written to state/valuation/", file=sys.stderr)
+        return 1
+
+    ok_cons = sum(1 for r in consensus_rows if r["quality"] == "ok")
+    fail_cons = len(consensus_rows) - ok_cons
+    print(f"weekly consensus (FY4-FY5): {ok_cons} ok, {fail_cons} quality-failed, "
+         f"{len(consensus_errs)} batch errors")
+
+    write_jsonl(consensus_rows, state_dir / f"consensus_weekly_{as_of}.jsonl")
+    merge_weekly_consensus(latest, consensus_rows, as_of)
+    write_json(latest, latest_path)
+    print(f"latest.json updated with weekly FY4-FY5: {len(latest['tickers'])} tickers")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true", help="fake runner, no claude -p, no quota")
     ap.add_argument("--state-dir", default=None, help="override state/valuation/ (tests/smoke)")
     ap.add_argument("--date", default=None, help="override as_of date (YYYY-MM-DD)")
+    ap.add_argument("--weekly", action="store_true",
+                   help="amendment v1.2: FY4-FY5 consensus only, merged into an existing "
+                        "latest.json (Sunday cron; NOT the daily prices+market_value+FY1-3 run)")
     args = ap.parse_args(argv)
 
     as_of = args.date or date.today().isoformat()
@@ -588,10 +733,16 @@ def main(argv=None) -> int:
 
     if args.dry_run:
         prices_runner, mv_runner, consensus_runner = _fake_runners()
+        weekly_consensus_runner = consensus_runner
     else:
         prices_runner = make_prices_runner()
         mv_runner = make_market_value_runner()
         consensus_runner = make_consensus_runner()
+        weekly_consensus_runner = make_consensus_runner(
+            rel_start=WEEKLY_RELATIVE_FISCAL_START, rel_end=WEEKLY_RELATIVE_FISCAL_END)
+
+    if args.weekly:
+        return run_weekly(pairs, as_of, state_dir, weekly_consensus_runner)
 
     # A subscription 429 is non-retryable/non-splittable (fix round 1, coordinator review):
     # abort the WHOLE remaining run at the first one and exit non-zero, rather than the

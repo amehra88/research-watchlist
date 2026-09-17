@@ -94,9 +94,209 @@ def test_id_chunks_respects_size():
     check("price batches of <=100", all(len(c) <= 100 for c in chunks), [len(c) for c in chunks])
     check("2 price chunks for 125 ids", len(chunks) == 2, len(chunks))
     mv_chunks = S.id_chunks(pairs, S.MARKET_VALUE_BATCH)
-    check("market_value batch cap is 50, not 100", S.MARKET_VALUE_BATCH == 50, S.MARKET_VALUE_BATCH)
-    check("3 market_value chunks for 125 ids (cap 50)", len(mv_chunks) == 3, len(mv_chunks))
-    check("no chunk exceeds 50 for market_value", all(len(c) <= 50 for c in mv_chunks))
+    check("market_value batch cap is 25 (fix 2, tightened from 50 after a live 408)",
+         S.MARKET_VALUE_BATCH == 25, S.MARKET_VALUE_BATCH)
+    check("5 market_value chunks for 125 ids (cap 25)", len(mv_chunks) == 5, len(mv_chunks))
+    check("no chunk exceeds 25 for market_value", all(len(c) <= 25 for c in mv_chunks))
+
+
+# ─────────────────────── consensus metrics (amendment v1.2) ────────────────
+
+def test_consensus_metrics_includes_ebitda_and_fcf():
+    check("CONSENSUS_METRICS has 4 metrics", len(S.CONSENSUS_METRICS) == 4, S.CONSENSUS_METRICS)
+    check("SALES/EPS/EBITDA/FCF all present",
+         set(S.CONSENSUS_METRICS) == {"SALES", "EPS", "EBITDA", "FCF"}, S.CONSENSUS_METRICS)
+    check("WEEKLY_CONSENSUS_METRICS same four metrics",
+         set(S.WEEKLY_CONSENSUS_METRICS) == {"SALES", "EPS", "EBITDA", "FCF"})
+    check("weekly relative fiscal window is FY4-FY5",
+         (S.WEEKLY_RELATIVE_FISCAL_START, S.WEEKLY_RELATIVE_FISCAL_END) == (4, 5))
+
+
+def test_consensus_args_honour_explicit_rel_start_end():
+    a = S._consensus_args(["FOO-US"], "EBITDA", rel_start=4, rel_end=5)
+    check("rel_start/rel_end overridable per-call", a["relativeFiscalStart"] == 4 and a["relativeFiscalEnd"] == 5, a)
+    check("metric placed correctly", a["metrics"] == ["EBITDA"])
+    default = S._consensus_args(["FOO-US"], "SALES")
+    check("defaults still FY1-FY3", (default["relativeFiscalStart"], default["relativeFiscalEnd"]) == (1, 3))
+
+
+# ─────────────────────── 408/5xx retry (RIS5 A3 fix 2) ──────────────────────
+
+def test_extract_http_status_finds_408_and_5xx():
+    check("408 extracted", S._extract_http_status("Client error '408 Request Timeout' for url X") == "408")
+    check("502 extracted", S._extract_http_status("Server error '502 Bad Gateway' for url X") == "502")
+    check("no status -> None", S._extract_http_status("some other failure") is None)
+
+
+def test_is_retryable_error_only_matches_marker_not_bare_digits():
+    check("http_status=408 is retryable", S._is_retryable_error("tool_result unusable (http_status=408): x"))
+    check("http_status=503 is retryable", S._is_retryable_error("tool_result unusable (http_status=503): x"))
+    check("http_status=404 is NOT retryable (client error, not timeout/5xx)",
+         not S._is_retryable_error("tool_result unusable (http_status=404): x"))
+    check("a bare '500' in unrelated text does NOT false-positive (no http_status= marker)",
+         not S._is_retryable_error("mean=500.0 count=500 price=408.12"))
+    check("None error is not retryable", not S._is_retryable_error(None))
+
+
+def test_fetch_market_value_retries_once_then_succeeds():
+    pairs = [("FOO", "FOO-US")]
+    calls = []
+
+    def runner(fids):
+        calls.append(fids)
+        if len(calls) == 1:
+            return [], "tool_result unusable (http_status=408): Client error '408 Request Timeout'"
+        return [{"requestId": "FOO-US", "marketValue": 123.0}], None
+
+    sleeps = []
+    out, errs = S.fetch_market_value(pairs, runner, retry_wait=20, sleep=sleeps.append)
+    check("exactly one retry (2 calls total)", len(calls) == 2, calls)
+    check("slept the configured retry_wait once", sleeps == [20], sleeps)
+    check("succeeded on the retry", out["FOO"]["mcap"] == 123.0, out)
+    check("no error recorded (retry succeeded)", errs == [])
+
+
+def test_fetch_market_value_retries_once_then_still_fails_marks_batch_failed():
+    pairs = [("FOO", "FOO-US")]
+    calls = []
+
+    def runner(fids):
+        calls.append(fids)
+        return [], "tool_result unusable (http_status=408): still timing out"
+
+    sleeps = []
+    out, errs = S.fetch_market_value(pairs, runner, retry_wait=20, sleep=sleeps.append)
+    check("exactly 2 calls (1 original + 1 retry, never a 3rd)", len(calls) == 2, calls)
+    check("batch marked failed", len(errs) == 1 and errs[0]["ids"] == ["FOO-US"], errs)
+    check("nothing in out", out == {})
+
+
+def test_fetch_market_value_non_retryable_error_never_retries():
+    pairs = [("FOO", "FOO-US")]
+    calls = []
+
+    def runner(fids):
+        calls.append(fids)
+        return [], "argument drift in ids: placed {...}"
+
+    sleeps = []
+    out, errs = S.fetch_market_value(pairs, runner, retry_wait=20, sleep=sleeps.append)
+    check("only 1 call -- non-retryable error is not retried", len(calls) == 1, calls)
+    check("no sleep called", sleeps == [])
+    check("batch marked failed", len(errs) == 1)
+
+
+def test_fetch_market_value_session_limit_propagates_through_retry_path():
+    from newsdigest.classify_llm import SessionLimitError as SLE
+    pairs = [("FOO", "FOO-US"), ("BAR", "BAR-US")]
+
+    def runner(fids):
+        raise SLE("429 hit")
+
+    threw = False
+    try:
+        S.fetch_market_value(pairs, runner, retry_wait=0, sleep=lambda s: None)
+    except SLE:
+        threw = True
+    check("SessionLimitError propagates through the retry wrapper untouched", threw)
+
+
+def test_fetch_prices_and_fetch_consensus_also_get_the_retry():
+    calls = []
+
+    def price_runner(fids, on_date):
+        calls.append(1)
+        if len(calls) == 1:
+            return [], "tool_result unusable (http_status=500): Server error '500 Internal'"
+        return [{"requestId": fids[0], "date": on_date, "price": 10.0}], None
+
+    out, errs = S.fetch_prices([("FOO", "FOO-US")], "2026-09-17", price_runner,
+                              retry_wait=0, sleep=lambda s: None)
+    check("prices retried once then succeeded", len(calls) == 2 and errs == [], (calls, errs))
+
+    ccalls = []
+
+    def cons_runner(fids, metric):
+        ccalls.append(1)
+        if len(ccalls) == 1:
+            return [], "tool_result unusable (http_status=503): Server error '503'"
+        return [{"requestId": fids[0], "date": "2026-09-17", "relativePeriod": 1,
+                "fiscalEndDate": "2027-12-31", "mean": 1.0, "median": 1.0,
+                "count": 1, "up": 1, "down": 0}], None
+
+    crows, cerrs = S.fetch_consensus([("FOO", "FOO-US")], "FCF", cons_runner,
+                                     retry_wait=0, sleep=lambda s: None)
+    check("consensus retried once then succeeded", len(ccalls) == 2 and cerrs == [], (ccalls, cerrs))
+    check("recovered row has the right metric", crows[0]["metric"] == "FCF")
+
+
+# ─────────────────────── weekly FY4-FY5 (amendment v1.2) ────────────────────
+
+def test_merge_weekly_consensus_adds_fy4_fy5_without_touching_daily_fields():
+    latest = {"as_of": "2026-09-17", "tickers": {
+        "FOO": {"price": 10.0, "mcap": 500.0, "fy1_sales": 100.0,
+               "counts": {"fy1_sales": 5}, "up": {"fy1_sales": 2}, "down": {"fy1_sales": 1}},
+    }}
+    weekly_rows = [
+        {"ticker": "FOO", "metric": "SALES", "rel_period": 4, "mean": 400.0,
+        "count": 6, "up": 3, "down": 1, "quality": "ok"},
+        {"ticker": "FOO", "metric": "EBITDA", "rel_period": 5, "mean": 55.0,
+        "count": 4, "up": 1, "down": 0, "quality": "ok"},
+        {"ticker": "FOO", "metric": "SALES", "rel_period": 1, "mean": 999.0,
+        "count": 9, "up": 9, "down": 0, "quality": "fail:count<1"},  # must be skipped
+    ]
+    merged = S.merge_weekly_consensus(latest, weekly_rows, "2026-09-20")
+    foo = merged["tickers"]["FOO"]
+    check("daily price/mcap untouched", foo["price"] == 10.0 and foo["mcap"] == 500.0)
+    check("daily fy1_sales untouched", foo["fy1_sales"] == 100.0)
+    check("fy4_sales added", foo["fy4_sales"] == 400.0)
+    check("fy5_ebitda added", foo["fy5_ebitda"] == 55.0)
+    check("counts nested for fy4_sales", foo["counts"]["fy4_sales"] == 6)
+    check("failed-quality row not merged", "fy1_sales" in foo and foo["fy1_sales"] == 100.0)
+    check("weekly_as_of recorded", merged["weekly_as_of"] == "2026-09-20")
+
+
+def test_merge_weekly_consensus_creates_entry_for_ticker_with_no_daily_row():
+    latest = {"as_of": "2026-09-17", "tickers": {}}
+    rows = [{"ticker": "NEWCO", "metric": "FCF", "rel_period": 4, "mean": 12.0,
+            "count": 2, "up": 1, "down": 0, "quality": "ok"}]
+    merged = S.merge_weekly_consensus(latest, rows, "2026-09-20")
+    newco = merged["tickers"]["NEWCO"]
+    check("consensus-only weekly entry created", newco["price"] is None and newco["fy4_fcf"] == 12.0, newco)
+
+
+def test_run_weekly_refuses_without_an_existing_daily_latest_json():
+    with tempfile.TemporaryDirectory() as td:
+        state_dir = Path(td)
+
+        def runner(fids, metric):
+            return [], None
+        rc = S.run_weekly([("FOO", "FOO-US")], "2026-09-20", state_dir, runner)
+        check("run_weekly returns 1 with no daily latest.json", rc == 1)
+        check("nothing written", not (state_dir / "consensus_weekly_2026-09-20.jsonl").exists())
+
+
+def test_run_weekly_merges_into_existing_latest_json():
+    with tempfile.TemporaryDirectory() as td:
+        state_dir = Path(td)
+        S.write_json({"as_of": "2026-09-17", "tickers": {
+            "FOO": {"price": 10.0, "mcap": 500.0, "counts": {}, "up": {}, "down": {}}}},
+            state_dir / "latest.json")
+
+        def runner(fids, metric):
+            return [{"requestId": fids[0], "date": "2026-09-20", "relativePeriod": 4,
+                    "fiscalEndDate": "2030-12-31", "mean": 42.0, "median": 41.0,
+                    "count": 3, "up": 2, "down": 0}], None
+
+        rc = S.run_weekly([("FOO", "FOO-US")], "2026-09-20", state_dir, runner)
+        check("run_weekly returns 0", rc == 0)
+        check("consensus_weekly_<date>.jsonl written",
+             (state_dir / "consensus_weekly_2026-09-20.jsonl").exists())
+        latest = json.loads((state_dir / "latest.json").read_text())
+        check("daily price/mcap preserved", latest["tickers"]["FOO"]["price"] == 10.0)
+        check("weekly fy4 field merged in for every metric pulled",
+             all(latest["tickers"]["FOO"].get(f"fy4_{m.lower()}") == 42.0
+                for m in S.WEEKLY_CONSENSUS_METRICS), latest["tickers"]["FOO"])
 
 
 # ─────────────────────────── argument drift ────────────────────────────────
@@ -410,6 +610,19 @@ def test_module_is_importable_as_a_script():
 if __name__ == "__main__":
     test_build_universe_skips_pvt_and_unmapped_with_reasons()
     test_id_chunks_respects_size()
+    test_consensus_metrics_includes_ebitda_and_fcf()
+    test_consensus_args_honour_explicit_rel_start_end()
+    test_extract_http_status_finds_408_and_5xx()
+    test_is_retryable_error_only_matches_marker_not_bare_digits()
+    test_fetch_market_value_retries_once_then_succeeds()
+    test_fetch_market_value_retries_once_then_still_fails_marks_batch_failed()
+    test_fetch_market_value_non_retryable_error_never_retries()
+    test_fetch_market_value_session_limit_propagates_through_retry_path()
+    test_fetch_prices_and_fetch_consensus_also_get_the_retry()
+    test_merge_weekly_consensus_adds_fy4_fy5_without_touching_daily_fields()
+    test_merge_weekly_consensus_creates_entry_for_ticker_with_no_daily_row()
+    test_run_weekly_refuses_without_an_existing_daily_latest_json()
+    test_run_weekly_merges_into_existing_latest_json()
     test_argument_drift_clean_and_dirty()
     test_check_price_quality()
     test_check_consensus_quality()

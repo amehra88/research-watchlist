@@ -61,27 +61,33 @@ FUNDAMENTALS_FALLBACK = ("QTR", "SEMI", "ANN")
 # ---------------------------------------------------------------------------
 # Step 1: metric-code discovery (FactSet_Metrics)
 # ---------------------------------------------------------------------------
-def discover_metrics_prompt(queries: list[str]) -> str:
+def discover_metrics_prompt(queries: list[str], data_products: list[str] = ("fundamentals",)) -> str:
+    a = discover_metrics_args(queries, data_products)
     return (
         "Call the FactSet_Metrics tool EXACTLY ONCE with these arguments:\n"
-        f"  text: {json.dumps(queries)}\n"
+        f"  text: {json.dumps(a['text'])}\n"
         "  target: 'metric'\n"
-        "  data_products: [\"fundamentals\"]\n"
-        "  limit: 10\n"
+        f"  data_products: {json.dumps(a['data_products'])}\n"
+        f"  limit: {a['limit']}\n"
         "Do NOT call the tool more than once.\n\n"
         "Then reply with the single word DONE. Do NOT summarise, quote, reformat or repeat "
         "any of the data — it is read directly from the tool output, not from your reply."
     )
 
 
-def discover_metrics_args(queries: list[str]) -> dict:
-    return {"text": queries, "target": "metric", "data_products": ["fundamentals"], "limit": 10}
+def discover_metrics_args(queries: list[str], data_products: list[str] = ("fundamentals",)) -> dict:
+    return {"text": queries, "target": "metric", "data_products": list(data_products), "limit": 10}
 
 
-def make_discover_runner(repo_root=REPO, timeout=METRICS_PROBE_TIMEOUT):
+def make_discover_runner(repo_root=REPO, timeout=METRICS_PROBE_TIMEOUT,
+                         data_products: list[str] = ("fundamentals",)):
+    """data_products defaults to fundamentals-only (this module's own weekly Fundamentals
+    pull); the live A3 driver overrides to ("fundamentals", "estimates") for a single
+    COMBINED probe that also resolves snapshot.py's consensus FCF metric code before any
+    consensus batch call is spent on a guessed name (coordinator advisory, 2026-09-17)."""
     def run(queries: list[str]):
-        return _run_and_parse(discover_metrics_prompt(queries), METRICS_TOOL,
-                              discover_metrics_args(queries), repo_root, timeout)
+        return _run_and_parse(discover_metrics_prompt(queries, data_products), METRICS_TOOL,
+                              discover_metrics_args(queries, data_products), repo_root, timeout)
     return run
 
 
