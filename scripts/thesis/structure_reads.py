@@ -18,9 +18,14 @@ Failure handling (mirrors newsdigest/classify_llm.py's precheck-first pattern):
   - malformed/unparseable JSON, or a claude -p timeout, or a non-429 claude -p error ->
     retry the SAME batch once, then log and skip the whole batch (no split ladder --
     this job has no per-row fail-loud contract, unlike the news classifier).
-  - a subscription 429 (SessionLimitError) -> FAIL LOUD, propagates immediately, no
-    retry, no split. `--backfill` aborts the run (rows already written stay written,
-    since each batch is appended as it completes); the cron hook's caller catches it.
+  - a subscription 429 (SessionLimitError), or the lean-mode wrapper ceiling regressing
+    (claude_p.ClaudeWrapperRegression) -> FAIL LOUD, propagates immediately, no retry, no
+    split. `--backfill` aborts the run (rows already written stay written, since each
+    batch is appended as it completes); the cron hook's caller catches it.
+  - a batch that exhausts its retry and is skipped increments `batch_failures` in the
+    summary dict (and process_notes()'s `omitted` count), and `main()` exits 1 -- so a
+    100%-failed run (e.g. a lapsed subscription OAuth returning rc=1 on every call) is
+    never indistinguishable from a clean zero-drop run.
 
 Row id = sha1(note_id|axis|prompt_version) -- appends are idempotent across reruns of the
 same prompt version.
@@ -292,14 +297,18 @@ def _extract_json_array(text: str):
 
 
 def _call_batch(items: list[tuple[str, str, str]], logger=None,
-                timeout: int = CLAUDE_TIMEOUT_S) -> tuple[list[dict], float, dict]:
+                timeout: int = CLAUDE_TIMEOUT_S) -> tuple[list[dict], float, dict, bool]:
     """One claude -p call (with one retry) for `items` = [(note_id, axis, text)].
 
-    Returns (validated_rows, cost, drop_reason_counts). A 429 (SessionLimitError)
-    propagates immediately -- never caught here. Malformed JSON, a timeout, or any other
-    claude -p error retries the SAME batch once, then logs and returns ([], cost, {}) --
-    the whole batch is skipped, never partially recovered (no split ladder; see module
-    docstring)."""
+    Returns (validated_rows, cost, drop_reason_counts, batch_failed). A 429
+    (SessionLimitError) or a ClaudeWrapperRegression propagates immediately -- never
+    caught here. Malformed JSON, a timeout, or any other claude -p error retries the SAME
+    batch once, then logs and returns ([], cost, {}, True) -- the whole batch is skipped,
+    never partially recovered (no split ladder; see module docstring). `batch_failed`
+    (distinct from a legitimate zero-drop clean batch) is what lets the caller tell "the
+    model produced nothing worth keeping" apart from "claude -p never answered" -- the
+    2026-07-08/claude_p_oauth_expiry_hygiene failure modes this job must not silently
+    absorb (see module docstring)."""
     text_by_key = {(nid, ax): txt for nid, ax, txt in items}
     note_ids = sorted({nid for nid, _ax, _t in items})
     prompt = build_prompt(items)
@@ -311,6 +320,11 @@ def _call_batch(items: list[tuple[str, str, str]], logger=None,
             text, cost = _run_claude(prompt, timeout=timeout)
             cost_total += cost
         except SessionLimitError:
+            raise
+        except claude_p.ClaudeWrapperRegression:
+            # The harness-stripping flags stopped working -- a real claude -p call would
+            # cost ~10x. Never retry/absorb this into a routine "batch skipped": propagate
+            # so the run aborts loudly, same as a 429.
             raise
         except subprocess.TimeoutExpired:
             if logger:
@@ -332,7 +346,7 @@ def _call_batch(items: list[tuple[str, str, str]], logger=None,
     if arr is None:
         if logger:
             logger(f"STRUCTURE_READS batch skipped after {MAX_ATTEMPTS} failed attempts notes={note_ids}")
-        return [], cost_total, {}
+        return [], cost_total, {}, True
 
     rows: list[dict] = []
     drop_reasons: dict[str, int] = {}
@@ -344,7 +358,7 @@ def _call_batch(items: list[tuple[str, str, str]], logger=None,
                 logger(f"STRUCTURE_READS dropped row ({reason}): {obj!r}")
             continue
         rows.append(row)
-    return rows, cost_total, drop_reasons
+    return rows, cost_total, drop_reasons, False
 
 
 # ───────────────────────────── row building + append ─────────────────────────────
@@ -460,13 +474,15 @@ def process_notes(paths, *, out_path: Path | str | None = None, batch_size: int 
 
     ts = datetime.now(timezone.utc).isoformat()
     existing_ids = _load_existing_ids(out_path) if not rebuild else set()
-    written = dupes = 0
+    written = dupes = batch_failures = 0
     cost_total = 0.0
     drop_reasons: dict[str, int] = {}
     rebuild_rows: list[dict] = []
     for nids, items in batches:
-        rows, cost, reasons = _call_batch(items, logger=logger)
+        rows, cost, reasons, batch_failed = _call_batch(items, logger=logger)
         cost_total += cost
+        if batch_failed:
+            batch_failures += 1
         for reason, n in reasons.items():
             drop_reasons[reason] = drop_reasons.get(reason, 0) + n
         built = [build_row(r["note_id"], r, ts) for r in rows]
@@ -490,9 +506,15 @@ def process_notes(paths, *, out_path: Path | str | None = None, batch_size: int 
                 f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
     dropped = sum(drop_reasons.values())
+    # Items sent that never surfaced as ANY row -- a fully skipped batch, or the model just
+    # not echoing an object for that item within an otherwise-successful batch. Both are
+    # invisible to `written`/`dupes`/`dropped` alone; this is the guard against a 100%-failed
+    # run reporting a clean "written: 0" (see claude_p_oauth_expiry_hygiene memory: rc=1 from
+    # a lapsed subscription OAuth is a RuntimeError this job retries-then-skips, not raises).
+    omitted = total_items - written - dupes - dropped
     return {"batches": len(batches), "notes": total_notes, "items": total_items,
-            "written": written, "dupes": dupes, "dropped": dropped,
-            "drop_reasons": drop_reasons, "cost": cost_total}
+            "written": written, "dupes": dupes, "dropped": dropped, "omitted": omitted,
+            "drop_reasons": drop_reasons, "batch_failures": batch_failures, "cost": cost_total}
 
 
 # ───────────────────────────── CLI ─────────────────────────────
@@ -538,17 +560,22 @@ def main(argv=None) -> int:
 
     try:
         summary = process_notes(paths, out_path=out_path, rebuild=a.rebuild, logger=print)
-    except SessionLimitError as e:
+    except (SessionLimitError, claude_p.ClaudeWrapperRegression) as e:
         print(f"ABORT: {e}")
         return 1
     print(f"batches: {summary['batches']}  notes: {summary['notes']}  items: {summary['items']}")
-    print(f"written: {summary['written']}  dupes: {summary['dupes']}  dropped: {summary['dropped']}")
+    print(f"written: {summary['written']}  dupes: {summary['dupes']}  dropped: {summary['dropped']}  "
+         f"omitted: {summary['omitted']}")
     if summary["drop_reasons"]:
         print(f"drop reasons: {dict(sorted(summary['drop_reasons'].items()))}")
+    if summary["batch_failures"]:
+        print(f"BATCH FAILURES: {summary['batch_failures']}/{summary['batches']} batches never "
+             f"produced usable JSON after {MAX_ATTEMPTS} attempts -- see the STRUCTURE_READS log "
+             f"lines above for cause")
     print(f"cost: ${summary['cost']:.4f}")
     verb = "rebuilt" if a.rebuild else "written"
     print(f"{verb}: {summary['written']} rows -> {out_path}")
-    return 0
+    return 1 if summary["batch_failures"] else 0
 
 
 if __name__ == "__main__":

@@ -237,12 +237,12 @@ def test_call_batch_clean_run():
     orig = SRD._run_claude
     SRD._run_claude = stub
     try:
-        rows, cost, reasons = SRD._call_batch(items)
+        rows, cost, reasons, batch_failed = SRD._call_batch(items)
     finally:
         SRD._run_claude = orig
     assert len(rows) == 1 and rows[0]["score"] == 4
     assert abs(cost - 0.001) < 1e-9
-    assert reasons == {}
+    assert reasons == {} and batch_failed is False
 
 
 def test_call_batch_malformed_json_then_retry_succeeds():
@@ -260,12 +260,12 @@ def test_call_batch_malformed_json_then_retry_succeeds():
     SRD._run_claude = stub
     SRD.time.sleep = lambda *_a, **_k: None
     try:
-        rows, cost, reasons = SRD._call_batch(items)
+        rows, cost, reasons, batch_failed = SRD._call_batch(items)
     finally:
         SRD._run_claude = orig
         SRD.time.sleep = orig_sleep
     assert len(calls) == 2, "must retry exactly once on malformed JSON"
-    assert len(rows) == 1
+    assert len(rows) == 1 and batch_failed is False
 
 
 def test_call_batch_malformed_both_attempts_batch_skipped():
@@ -279,12 +279,12 @@ def test_call_batch_malformed_both_attempts_batch_skipped():
     SRD.time.sleep = lambda *_a, **_k: None
     logged = []
     try:
-        rows, cost, reasons = SRD._call_batch(items, logger=logged.append)
+        rows, cost, reasons, batch_failed = SRD._call_batch(items, logger=logged.append)
     finally:
         SRD._run_claude = orig
         SRD.time.sleep = orig_sleep
     assert len(calls) == 2, "exactly 2 attempts (1 try + 1 retry), never more"
-    assert rows == [] and reasons == {}
+    assert rows == [] and reasons == {} and batch_failed is True
     assert any("skipped after" in l for l in logged)
 
 
@@ -334,11 +334,11 @@ def test_call_batch_drops_invalid_row_and_row_with_quote_not_in_text():
     orig = SRD._run_claude
     SRD._run_claude = stub
     try:
-        rows, cost, reasons = SRD._call_batch(items)
+        rows, cost, reasons, batch_failed = SRD._call_batch(items)
     finally:
         SRD._run_claude = orig
     assert len(rows) == 1 and rows[0]["axis"] == "ai_positioning"
-    assert reasons == {"unknown_key": 1, "quote_not_verbatim": 1}
+    assert reasons == {"unknown_key": 1, "quote_not_verbatim": 1} and batch_failed is False
 
 
 # ───────────────────────────── process_notes (batching + write) ─────────────────────────────
@@ -394,11 +394,82 @@ def test_process_notes_full_run_writes_rows_and_is_idempotent_on_rerun():
 
     assert len(calls) == 2, "one claude -p call per process_notes() invocation (1 note <= batch size)"
     assert summary1["written"] == 5 and summary1["dupes"] == 0 and summary1["dropped"] == 0
+    assert summary1["omitted"] == 0 and summary1["batch_failures"] == 0
     assert summary2["written"] == 0 and summary2["dupes"] == 5
     lines = [json.loads(l) for l in out.read_text().splitlines() if l.strip()]
     assert len(lines) == 5
     assert {l["axis"] for l in lines} == set(tio.SCORE_KEYS)
     assert all(l["note_id"] == note_id for l in lines)
+
+
+def test_process_notes_counts_batch_failures_and_omitted_never_reports_false_clean():
+    """A batch that never produces usable JSON (e.g. a lapsed subscription OAuth returning
+    rc=1 on every attempt -- see claude_p_oauth_expiry_hygiene memory) must NOT look like a
+    clean run with zero drops. written/dupes/dropped stay 0, but `omitted` accounts for
+    every item that never became a row, and `batch_failures` flags the batch itself."""
+    tmp_notes = Path(tempfile.mkdtemp())
+    tdir = tmp_notes / "ZQTA"
+    tdir.mkdir()
+    note_path = tdir / "20260101-1Q26.md"
+    note_path.write_text(NOTE_A, encoding="utf-8")
+    out = Path(tempfile.mkdtemp()) / "reads.jsonl"
+
+    def stub(prompt, timeout=SRD.CLAUDE_TIMEOUT_S):
+        return "not json, ever", 0.0
+    orig_run, orig_notes, orig_sleep = SRD._run_claude, SRD.NOTES, SRD.time.sleep
+    SRD._run_claude = stub
+    SRD.NOTES = tmp_notes
+    SRD.time.sleep = lambda *_a, **_k: None
+    try:
+        summary = SRD.process_notes([note_path], out_path=out)
+    finally:
+        SRD._run_claude = orig_run
+        SRD.NOTES = orig_notes
+        SRD.time.sleep = orig_sleep
+    assert summary["written"] == 0 and summary["dupes"] == 0 and summary["dropped"] == 0
+    assert summary["omitted"] == 5           # all 5 axes of note_a never became a row
+    assert summary["batch_failures"] == 1
+
+
+def test_call_batch_wrapper_regression_propagates_never_retried():
+    """A ClaudeWrapperRegression (the harness-stripping flags stopped taking effect --
+    scripts/lib/claude_p.py's guard) must propagate immediately, same as a 429: retrying
+    it would silently burn ~10x cost per attempt instead of aborting loudly."""
+    items = _one_item()
+    calls = []
+    def stub(prompt, timeout=SRD.CLAUDE_TIMEOUT_S):
+        calls.append(1)
+        raise SRD.claude_p.ClaudeWrapperRegression("wrapper ceiling exceeded")
+    orig = SRD._run_claude
+    SRD._run_claude = stub
+    try:
+        try:
+            SRD._call_batch(items)
+            assert False, "expected ClaudeWrapperRegression to propagate"
+        except SRD.claude_p.ClaudeWrapperRegression:
+            pass
+    finally:
+        SRD._run_claude = orig
+    assert len(calls) == 1, "a wrapper regression must fast-abort after ONE call -- no retry"
+
+
+def test_main_returns_1_when_a_batch_fails():
+    """CLI-level: `main()` must exit non-zero when ANY batch never produced usable JSON,
+    even though it still writes whatever DID succeed -- a silent exit-0 on a 100%-failed
+    backfill is exactly the failure mode this counter exists to catch."""
+    orig_iter, orig_process = SRD.iter_note_paths, SRD.process_notes
+    SRD.iter_note_paths = lambda ticker=None: []
+    SRD.process_notes = lambda paths, **kw: {
+        "batches": 1, "notes": 1, "items": 5, "written": 0, "dupes": 0, "dropped": 0,
+        "omitted": 5, "drop_reasons": {}, "batch_failures": 1, "cost": 0.0,
+    }
+    tmp = Path(tempfile.mkdtemp()) / "reads.jsonl"
+    try:
+        rc = SRD.main(["--backfill", "--out", str(tmp)])
+    finally:
+        SRD.iter_note_paths = orig_iter
+        SRD.process_notes = orig_process
+    assert rc == 1
 
 
 # ───────────────────────────── CLI guards (--rebuild) ─────────────────────────────
@@ -446,6 +517,9 @@ if __name__ == "__main__":
     test_call_batch_drops_invalid_row_and_row_with_quote_not_in_text()
     test_process_notes_dry_run_reports_batches_notes_items_no_writes()
     test_process_notes_full_run_writes_rows_and_is_idempotent_on_rerun()
+    test_process_notes_counts_batch_failures_and_omitted_never_reports_false_clean()
+    test_call_batch_wrapper_regression_propagates_never_retried()
+    test_main_returns_1_when_a_batch_fails()
     test_rebuild_requires_explicit_out_or_yes()
     test_rebuild_refuses_ticker_filter()
     print("OK test_structure_reads")
