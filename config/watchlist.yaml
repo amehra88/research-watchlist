@@ -1003,6 +1003,9 @@ tier_1_bctk:
       notes: "AI/HBM capex beneficiary with strong buybacks, but WFE cyclicality and China-revenue/export drag temper it. Factors: hot sector adjacency, buybacks, earnings revisions; cyclicality/China cap."
     scoring_date: 2026-06-02
     scoring_notes: "Initial scoring 2026-06-02. Sources: public data, OPERATOR-PRIVATE SIGNAL: best management in semicap based on multi-cycle execution quality (competitive_advantage 5/5/5 reflects this; public-data analyst view alone might score 4/4/4). Refine after next earnings cycle. (source: ticker-synthesis session 2026-06-02)"
+  - ticker: MDB
+    themes: []
+    added_date: 2026-06-24
   - ticker: META
     themes: [hyperscaler_capex_buildout, ad_market_strength, silicon_architecture_competition, ai_agent_monetization, search_disruption, vertical_ai_applications, model_efficiency_evolution]
     added_date: 2026-05-09
@@ -1364,10 +1367,6 @@ tier_2_active_candidates:
     added_date: 2026-06-24
     scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
   - ticker: HTFL
-    themes: []
-    added_date: 2026-06-24
-    scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
-  - ticker: MDB
     themes: []
     added_date: 2026-06-24
     scoring_notes: "Added 2026-06-24 — Store B metrics-coverage expansion (residual-20 close, factset-pull-drop fix). Tier-2 candidate; themes/scoring pending next earnings cycle."
