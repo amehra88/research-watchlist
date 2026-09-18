@@ -377,13 +377,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -2.4240942914174726,
+    "gap_z": -2.4249236467019117,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -1.771537994303672,
     "primary_lens": "peg",
-    "priced_in_valuation": -2.097816142860572,
+    "priced_in_valuation": -2.098230820502792,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -689,13 +689,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.13031286811991236,
+    "gap_z": -0.12989793698339674,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.94730811817529,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.5388104931476012,
+    "priced_in_valuation": -0.5386030275793434,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -996,13 +996,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -2.264555895128786,
+    "gap_z": -2.2652987070930526,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -1.7815756186976224,
     "primary_lens": "peg",
-    "priced_in_valuation": -2.023065756913204,
+    "priced_in_valuation": -2.0234371628953376,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -1304,13 +1304,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.3876810444790573,
+    "gap_z": -1.3879481862428162,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.8187068248776234,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.1031939346783404,
+    "priced_in_valuation": -1.1033275055602199,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -1612,13 +1612,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.3903109859293312,
+    "gap_z": -1.3905795543331358,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.683991791707837,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.0371513888185842,
+    "priced_in_valuation": -1.0372856730204865,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -2168,13 +2168,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.20247117509755425,
+    "gap_z": -0.20209538701129592,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.20247117509755425,
+    "priced_in_valuation": -0.20209538701129592,
     "available": [
      "gap_z"
     ],
@@ -2479,13 +2479,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.4891465011848361,
+    "gap_z": 0.48989746472345014,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 3.2515570435996968,
     "primary_lens": "peg",
-    "priced_in_valuation": 1.8703517723922665,
+    "priced_in_valuation": 1.8707272541615734,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -2793,13 +2793,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.20769121040037042,
+    "gap_z": -0.20731825397844517,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.20769121040037042,
+    "priced_in_valuation": -0.20731825397844517,
     "available": [
      "gap_z"
     ],
@@ -3346,13 +3346,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.42188343323468186,
+    "gap_z": -0.4216266676893763,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.7435831289392353,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.5827332810869585,
+    "priced_in_valuation": -0.5826048983143057,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -3653,13 +3653,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 1.86370646247209,
+    "gap_z": 1.865203070856044,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.789927913189062,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.536889274641514,
+    "priced_in_valuation": 0.5376375788334911,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -3968,13 +3968,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.15206428694682214,
+    "gap_z": 0.1526323966103189,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.15206428694682214,
+    "priced_in_valuation": 0.1526323966103189,
     "available": [
      "gap_z"
     ],
@@ -4277,13 +4277,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.3456777488303199,
+    "gap_z": -0.3453796446913101,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.646612435520254,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.49614509217528696,
+    "priced_in_valuation": -0.4959960401057821,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -4609,13 +4609,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.2863506913017111,
+    "gap_z": 0.28699164607056993,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.2863506913017111,
+    "priced_in_valuation": 0.28699164607056993,
     "available": [
      "gap_z"
     ],
@@ -4918,13 +4918,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.22293576278961977,
+    "gap_z": -0.22257107593921466,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.13557257346455137,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.17925416812708556,
+    "priced_in_valuation": -0.17907182470188301,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -5228,13 +5228,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": "vetoed: fcf_margin_floored",
    "priced_in": {
-    "gap_z": 2.37724522449276,
+    "gap_z": 2.3790204075053714,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.6424822455155174,
     "primary_lens": "peg",
-    "priced_in_valuation": 1.5098637350041388,
+    "priced_in_valuation": 1.5107513265104444,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -5537,7 +5537,7 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": "vetoed: fcf_margin_floored",
    "priced_in": {
-    "gap_z": 2.3666571485241255,
+    "gap_z": 2.3684265879209683,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
@@ -5841,13 +5841,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.13970014662215835,
+    "gap_z": 0.1402615492246612,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 2.2935261098151063,
     "primary_lens": "peg",
-    "priced_in_valuation": 1.2166131282186323,
+    "priced_in_valuation": 1.2168938295198837,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -6146,13 +6146,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.6168520364205634,
+    "gap_z": -0.6167010336924962,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.9084252751568569,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.7626386557887102,
+    "priced_in_valuation": -0.7625631544246765,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -6454,13 +6454,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 1.4858772332967176,
+    "gap_z": 1.487168884148743,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 3.049812371982039,
     "primary_lens": "peg",
-    "priced_in_valuation": 2.2678448026393783,
+    "priced_in_valuation": 2.268490628065391,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -7021,13 +7021,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.501030382483065,
+    "gap_z": -1.5013590118151994,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.6323306523710296,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.0666805174270473,
+    "priced_in_valuation": -1.0668448320931145,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -7325,13 +7325,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.5222200073019155,
+    "gap_z": 0.5229889119198918,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.4122782960167877,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.054970855642563904,
+    "priced_in_valuation": 0.05535530795155205,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -7631,13 +7631,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.5971505685788722,
+    "gap_z": 0.597960120086288,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.070102436532579,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.2635240660231466,
+    "priced_in_valuation": 0.2639288417768545,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -7945,13 +7945,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": "vetoed: fcf_margin_floored",
    "priced_in": {
-    "gap_z": 0.5862494043423476,
+    "gap_z": 0.5870530423958945,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -1.2348555882495826,
     "primary_lens": "ev_ebitda_to_growth",
-    "priced_in_valuation": -0.3243030919536175,
+    "priced_in_valuation": -0.32390127292684406,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -8250,13 +8250,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.06649441707557625,
+    "gap_z": 0.06701610844217593,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.20177734966181657,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.13413588336869642,
+    "priced_in_valuation": 0.13439672905199623,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -8565,13 +8565,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.068930490071639,
+    "gap_z": -0.06848226140349477,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.068930490071639,
+    "priced_in_valuation": -0.06848226140349477,
     "available": [
      "gap_z"
     ],
@@ -8868,13 +8868,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.17626853333216408,
+    "gap_z": -0.17587853134086204,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.09805578653870158,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.13716215993543282,
+    "priced_in_valuation": -0.1369671589397818,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -9183,13 +9183,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.8542469461624852,
+    "gap_z": -0.8542247208582803,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.8542469461624852,
+    "priced_in_valuation": -0.8542247208582803,
     "available": [
      "gap_z"
     ],
@@ -9487,13 +9487,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 1.3741104141740432,
+    "gap_z": 1.3753414359120932,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.6629995774127607,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.35555541838064125,
+    "priced_in_valuation": 0.35617092924966626,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -9791,13 +9791,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.1577792479847847,
+    "gap_z": -0.15737921628164647,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.20121504613027183,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.17949714705752828,
+    "priced_in_valuation": -0.17929713120595914,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -10105,13 +10105,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.2453681954382678,
+    "gap_z": -1.2455581380653564,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.2453681954382678,
+    "priced_in_valuation": -1.2455581380653564,
     "available": [
      "gap_z"
     ],
@@ -10421,13 +10421,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": "vetoed: terminal_margin_default",
    "priced_in": {
-    "gap_z": 1.0714622168899386,
+    "gap_z": 1.0725290638559801,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 1.0714622168899386,
+    "priced_in_valuation": 1.0725290638559801,
     "available": [
      "gap_z"
     ],
@@ -10740,13 +10740,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.3620647316517152,
+    "gap_z": -1.3623179775708736,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.3620647316517152,
+    "priced_in_valuation": -1.3623179775708736,
     "available": [
      "gap_z"
     ],
@@ -11053,13 +11053,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 1.9698604628285958,
+    "gap_z": 1.971414655592575,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 2.290911367256116,
     "primary_lens": "peg",
-    "priced_in_valuation": 2.130385915042356,
+    "priced_in_valuation": 2.1311630114243454,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -11619,13 +11619,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.06474649230983978,
+    "gap_z": -0.06429599398707744,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.06474649230983978,
+    "priced_in_valuation": -0.06429599398707744,
     "available": [
      "gap_z"
     ],
@@ -11923,13 +11923,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 1.211811148613965,
+    "gap_z": 1.2129541293685908,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.8574792706085045,
     "primary_lens": "peg",
-    "priced_in_valuation": 1.0346452096112349,
+    "priced_in_valuation": 1.0352166999885477,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -12233,13 +12233,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.6886232524488143,
+    "gap_z": -0.6885111827893526,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.5169899987837238,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.602806625616269,
+    "priced_in_valuation": -0.6027505907865383,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -12545,13 +12545,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.7534726944792369,
+    "gap_z": 0.7543670446063369,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 1.5176358202240718,
     "primary_lens": "peg",
-    "priced_in_valuation": 1.1355542573516544,
+    "priced_in_valuation": 1.1360014324152043,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -12859,13 +12859,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.9056392851876107,
+    "gap_z": 0.906616179719604,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.9056392851876107,
+    "priced_in_valuation": 0.906616179719604,
     "available": [
      "gap_z"
     ],
@@ -13163,13 +13163,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.12631103080488532,
+    "gap_z": -0.12589392882864653,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.846028227295051,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.3598585982450828,
+    "priced_in_valuation": 0.36006714923320227,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -13473,13 +13473,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.2606546832789062,
+    "gap_z": 0.2612816989716478,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.7327116065759622,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.4966831449274342,
+    "priced_in_valuation": 0.496996652773805,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -13789,13 +13789,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": "vetoed: fcf_margin_floored",
    "priced_in": {
-    "gap_z": 1.3407124347611508,
+    "gap_z": 1.3419253394058068,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 1.3407124347611508,
+    "priced_in_valuation": 1.3419253394058068,
     "available": [
      "gap_z"
     ],
@@ -14093,13 +14093,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.7745915982973745,
+    "gap_z": -0.7745261630923925,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.32175940000988335,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.22641609914374555,
+    "priced_in_valuation": -0.2263833815412546,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -14398,13 +14398,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.35825251217156406,
+    "gap_z": -0.3579612293482705,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 1.831132199427245,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.7364398436278404,
+    "priced_in_valuation": 0.7365854850394872,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -14702,13 +14702,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.6639977600303117,
+    "gap_z": 0.6648435735162044,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.551559355166616,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.6077785575984639,
+    "priced_in_valuation": 0.6082014643414102,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -15255,13 +15255,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.6715855581616511,
+    "gap_z": -0.6714642462215471,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.6715855581616511,
+    "priced_in_valuation": -0.6714642462215471,
     "available": [
      "gap_z"
     ],
@@ -15808,13 +15808,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.4397806971300515,
+    "gap_z": -0.43953364014817364,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.6372003107634755,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.5384905039467636,
+    "priced_in_valuation": -0.5383669754558246,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -16113,13 +16113,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.13457656107717436,
+    "gap_z": -0.1341639428267934,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.16597030420439596,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.15027343264078516,
+    "priced_in_valuation": -0.15006712351559467,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -16421,13 +16421,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.407616228372691,
+    "gap_z": -1.407894184191515,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -1.2688302148700017,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.3382232216213463,
+    "priced_in_valuation": -1.3383621995307582,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -16726,13 +16726,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 1.0788966401238294,
+    "gap_z": 1.0799675199727705,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 1.1251110921836207,
     "primary_lens": "peg",
-    "priced_in_valuation": 1.102003866153725,
+    "priced_in_valuation": 1.1025393060781956,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -17283,13 +17283,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.3530381693827095,
+    "gap_z": -0.35274405798304836,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.3530381693827095,
+    "priced_in_valuation": -0.35274405798304836,
     "available": [
      "gap_z"
     ],
@@ -17594,7 +17594,7 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.23430972866447525,
+    "gap_z": 0.2349224532530365,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
@@ -17909,13 +17909,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.18066884662450527,
+    "gap_z": -0.1802812316305091,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.18066884662450527,
+    "priced_in_valuation": -0.1802812316305091,
     "available": [
      "gap_z"
     ],
@@ -18461,13 +18461,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.68698413140738,
+    "gap_z": 0.6878424140978276,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.9649097822185014,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.8259469568129407,
+    "priced_in_valuation": 0.8263760981581645,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -18535,7 +18535,7 @@
     "fy1_fcf_margin_consensus": -0.010495357378718897,
     "fy3_fcf_margin_consensus": -0.010128648693561032,
     "fcf_margin_ltm": 0.0962772929433248,
-    "terminal_margin": 0.3,
+    "terminal_margin": 0.25,
     "fy1_fiscal_end": "2026-12-31",
     "stub_years": 0.2876712328767123,
     "discount_rate": 0.1,
@@ -18543,15 +18543,15 @@
     "years": 5
    },
    "layer1_priced": {
-    "implied_growth_5y": 0.1716522574424743,
-    "implied_terminal_margin": 0.3,
-    "terminal_share_of_ev": 0.8168776492600012,
+    "implied_growth_5y": 0.21627146601676936,
+    "implied_terminal_margin": 0.25,
+    "terminal_share_of_ev": 0.8206060043273574,
     "flags": [],
     "sensitivity": {
-     "dr_plus": 0.2092170178890228,
-     "dr_minus": 0.1306685864925384,
-     "tm_plus": 0.14890359640121453,
-     "tm_minus": 0.1972582161426544
+     "dr_plus": 0.25534206628799433,
+     "dr_minus": 0.17365113496780393,
+     "tm_plus": 0.18836489915847776,
+     "tm_minus": 0.24844094514846798
     }
    },
    "layer2_supported": {
@@ -18612,17 +18612,17 @@
     ]
    },
    "gap": {
-    "gap_pp": 2.1813,
-    "gap_downside_pp": 2.1813,
-    "gap_vs_haircut_pp": 2.1813,
-    "gap_vs_street_pp": -0.1424,
+    "gap_pp": 6.6432,
+    "gap_downside_pp": 6.6432,
+    "gap_vs_haircut_pp": 6.6432,
+    "gap_vs_street_pp": 4.3196,
     "gap_range": [
-     -1.9171,
-     5.9378
+     2.3812,
+     10.5503
     ],
     "gap_downside_range": [
-     -1.9171,
-     5.9378
+     2.3812,
+     10.5503
     ]
    },
    "lenses": {
@@ -18783,13 +18783,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.32379003264784645,
+    "gap_z": -0.06934799289641372,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.2880759948278914,
     "primary_lens": "ev_ebitda_to_growth",
-    "priced_in_valuation": -0.30593301373786896,
+    "priced_in_valuation": -0.17871199386215258,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -18856,7 +18856,7 @@
     "fy1_fcf_margin_consensus": -0.010495873964691602,
     "fy3_fcf_margin_consensus": -0.010114109651617518,
     "fcf_margin_ltm": 0.0962772929433248,
-    "terminal_margin": 0.2,
+    "terminal_margin": 0.25,
     "fy1_fiscal_end": "2026-12-31",
     "stub_years": 0.2876712328767123,
     "discount_rate": 0.1,
@@ -18864,15 +18864,15 @@
     "years": 5
    },
    "layer1_priced": {
-    "implied_growth_5y": 0.2729254364967347,
-    "implied_terminal_margin": 0.2,
-    "terminal_share_of_ev": 0.8242624874515115,
+    "implied_growth_5y": 0.21628412604331967,
+    "implied_terminal_margin": 0.25,
+    "terminal_share_of_ev": 0.8206083224809616,
     "flags": [],
     "sensitivity": {
-     "dr_plus": 0.31389398574829097,
-     "dr_minus": 0.2282411694526672,
-     "tm_plus": 0.2371833682060241,
-     "tm_minus": 0.3156326293945312
+     "dr_plus": 0.2553550779819488,
+     "dr_minus": 0.17366309165954585,
+     "tm_plus": 0.18837720751762385,
+     "tm_minus": 0.2484543085098266
     }
    },
    "layer2_supported": {
@@ -18938,17 +18938,17 @@
     "flags": []
    },
    "gap": {
-    "gap_pp": 12.141,
-    "gap_downside_pp": 12.141,
-    "gap_vs_haircut_pp": 12.141,
-    "gap_vs_street_pp": 9.7859,
+    "gap_pp": 6.4769,
+    "gap_downside_pp": 6.4769,
+    "gap_vs_haircut_pp": 6.4769,
+    "gap_vs_street_pp": 4.1218,
     "gap_range": [
-     7.6726,
-     16.4117
+     2.2148,
+     10.384
     ],
     "gap_downside_range": [
-     7.6726,
-     16.4117
+     2.2148,
+     10.384
     ]
    },
    "lenses": {
@@ -19115,13 +19115,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.24316728038877397,
+    "gap_z": -0.07881977890117838,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "ev_ebitda_to_growth",
-    "priced_in_valuation": 0.24316728038877397,
+    "priced_in_valuation": -0.07881977890117838,
     "available": [
      "gap_z"
     ],
@@ -19422,13 +19422,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.23083697216836443,
+    "gap_z": -0.2304765714140272,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.9771241555297054,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.603980563849035,
+    "priced_in_valuation": -0.6038003634718663,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -19726,13 +19726,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.7578157596524463,
+    "gap_z": -0.7577412242132336,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -2.6040130828162393,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.6809144212343428,
+    "priced_in_valuation": -1.6808771535147364,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -20040,13 +20040,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.3562032071453767,
+    "gap_z": -0.355910812654515,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.3562032071453767,
+    "priced_in_valuation": -0.355910812654515,
     "available": [
      "gap_z"
     ],
@@ -20355,13 +20355,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.7802954972869294,
+    "gap_z": -0.7802331562233451,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.7802954972869294,
+    "priced_in_valuation": -0.7802331562233451,
     "available": [
      "gap_z"
     ],
@@ -20679,13 +20679,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.1815970493797668,
+    "gap_z": 0.18218117940810538,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.1815970493797668,
+    "priced_in_valuation": 0.18218117940810538,
     "available": [
      "gap_z"
     ],
@@ -21235,13 +21235,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.3134865823772933,
+    "gap_z": -0.3131710157935687,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.2368597912897905,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.038313395543751405,
+    "priced_in_valuation": -0.0381556122518891,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -21788,13 +21788,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.4296423297643857,
+    "gap_z": -0.4293897731160114,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.4296423297643857,
+    "priced_in_valuation": -0.4293897731160114,
     "available": [
      "gap_z"
     ],
@@ -22100,13 +22100,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 3.4726784561853714,
+    "gap_z": 3.475047868744623,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 1.0676964487046672,
     "primary_lens": "peg",
-    "priced_in_valuation": 2.270187452445019,
+    "priced_in_valuation": 2.271372158724645,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -22412,13 +22412,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.9014325173699649,
+    "gap_z": 0.9024071298954781,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.05664066116247689,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.422395928103744,
+    "priced_in_valuation": 0.4228832343665006,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -22729,13 +22729,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.15005450653885066,
+    "gap_z": -0.14965028446657397,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "ev_ebitda_to_growth",
-    "priced_in_valuation": -0.15005450653885066,
+    "priced_in_valuation": -0.14965028446657397,
     "available": [
      "gap_z"
     ],
@@ -23043,13 +23043,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.14950265566408794,
+    "gap_z": 0.15006937574312465,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.14950265566408794,
+    "priced_in_valuation": 0.15006937574312465,
     "available": [
      "gap_z"
     ],
@@ -23600,13 +23600,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.2898060472764215,
+    "gap_z": 0.2904488764403187,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 1.0008359789359238,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.6453210131061726,
+    "priced_in_valuation": 0.6456424276881212,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -23904,13 +23904,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.8028036974912206,
+    "gap_z": -0.8027535662430922,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.08171890720451438,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.4422613023478675,
+    "priced_in_valuation": -0.4422362367238033,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -24216,13 +24216,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.13138338372421468,
+    "gap_z": 0.13194027480917053,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.8258754898736811,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.47862943679894787,
+    "priced_in_valuation": 0.4789078823414258,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -24521,13 +24521,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.0002844642083237918,
+    "gap_z": 0.00020100223538471412,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.011270129197049986,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.005492832494363097,
+    "priced_in_valuation": 0.00573556571621735,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -24836,13 +24836,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.1435348131786405,
+    "gap_z": -1.1436695151914935,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.1435348131786405,
+    "priced_in_valuation": -1.1436695151914935,
     "available": [
      "gap_z"
     ],
@@ -25140,13 +25140,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.07544841855770718,
+    "gap_z": -0.07500372561002244,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.658632512085589,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.36704046532164813,
+    "priced_in_valuation": -0.36681811884780574,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -25458,13 +25458,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.3204602349598075,
+    "gap_z": 0.3211196928177435,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.3204602349598075,
+    "priced_in_valuation": 0.3211196928177435,
     "available": [
      "gap_z"
     ],
@@ -25762,13 +25762,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.3755446047128586,
+    "gap_z": -1.3758051629342425,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.3774059302864495,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.876475267499654,
+    "priced_in_valuation": -0.876605546610346,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -26076,13 +26076,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.24793159159514405,
+    "gap_z": -0.24758046400110365,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.14766513689284277,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.05013322735115064,
+    "priced_in_valuation": -0.049957663554130435,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -26381,13 +26381,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.34266071643065515,
+    "gap_z": -0.342360975669948,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -1.4011375817698564,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.8718991491002558,
+    "priced_in_valuation": -0.8717492787199022,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -26689,13 +26689,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.055069218575066095,
+    "gap_z": -0.05461347071101018,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 1.0717677563132144,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.5083492688690742,
+    "priced_in_valuation": 0.5085771428011021,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -26997,13 +26997,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.2866122239644306,
+    "gap_z": -0.2862820790957373,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.09443948876512169,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.09608636759965444,
+    "priced_in_valuation": -0.09592129516530778,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -27307,13 +27307,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 1.010871098282332,
+    "gap_z": 1.0119050769439446,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.8366991234224029,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.08708598742996448,
+    "priced_in_valuation": 0.08760297676077083,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -27612,13 +27612,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.23079175503618693,
+    "gap_z": 0.2314025712620897,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 2.554678664387065,
     "primary_lens": "peg",
-    "priced_in_valuation": 1.392735209711626,
+    "priced_in_valuation": 1.3930406178245773,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -27927,13 +27927,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.9172633986972624,
+    "gap_z": 0.9182465988547389,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.9172633986972624,
+    "priced_in_valuation": 0.9182465988547389,
     "available": [
      "gap_z"
     ],
@@ -28241,13 +28241,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.2661024191401876,
+    "gap_z": 0.26673239001588106,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.2661024191401876,
+    "priced_in_valuation": 0.26673239001588106,
     "available": [
      "gap_z"
     ],
@@ -28545,13 +28545,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -2.1319886299903095,
+    "gap_z": -2.132659529414785,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -1.8140505591964131,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.9730195945933613,
+    "priced_in_valuation": -1.9733550443055992,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -28854,13 +28854,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.11975357770060137,
+    "gap_z": 0.12030416007210852,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.20826515115180474,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.16400936442620306,
+    "priced_in_valuation": 0.16428465561195663,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -29190,13 +29190,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.16424626682471374,
+    "gap_z": 0.16482098473430948,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "ev_ebitda_to_growth",
-    "priced_in_valuation": 0.16424626682471374,
+    "priced_in_valuation": 0.16482098473430948,
     "available": [
      "gap_z"
     ],
@@ -29493,13 +29493,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 2.853036926433851,
+    "gap_z": 2.8550702077761088,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 3.0507783179074695,
     "primary_lens": "peg",
-    "priced_in_valuation": 2.95190762217066,
+    "priced_in_valuation": 2.952924262841789,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -29800,13 +29800,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.03422924794104843,
+    "gap_z": 0.034733436719382206,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.2551080467080982,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.14466864732457332,
+    "priced_in_valuation": 0.14492074171374023,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -30108,13 +30108,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.3055455254008173,
+    "gap_z": -0.30522565110526645,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.7961192907215073,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.5508324080611623,
+    "priced_in_valuation": -0.5506724709133869,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -30423,13 +30423,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.7774324857437441,
+    "gap_z": 0.7783398331174939,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.7774324857437441,
+    "priced_in_valuation": 0.7783398331174939,
     "available": [
      "gap_z"
     ],
@@ -30743,13 +30743,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 2.0159755184317736,
+    "gap_z": 2.017554726803999,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "ev_ebitda_to_growth",
-    "priced_in_valuation": 2.0159755184317736,
+    "priced_in_valuation": 2.017554726803999,
     "available": [
      "gap_z"
     ],
@@ -31059,13 +31059,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.7625046262826887,
+    "gap_z": -1.76297509513261,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.4736881079105343,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.1180963670966115,
+    "priced_in_valuation": -1.118331601521572,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -31375,13 +31375,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": "vetoed: terminal_margin_default",
    "priced_in": {
-    "gap_z": 0.4267793182212006,
+    "gap_z": 0.4274964500101602,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.4267793182212006,
+    "priced_in_valuation": 0.4274964500101602,
     "available": [
      "gap_z"
     ],
@@ -31684,13 +31684,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.7253456600152997,
+    "gap_z": -0.7252535108210645,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.4515962031261433,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.5884709315707215,
+    "priced_in_valuation": -0.5884248569736039,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -31989,13 +31989,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.9537634752397285,
+    "gap_z": -0.9537952337478144,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -1.4697026415091055,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.211733058374417,
+    "priced_in_valuation": -1.2117489376284598,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -32294,13 +32294,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.24470962869286056,
+    "gap_z": -0.244356753310366,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.9894291361396156,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.6170693824162381,
+    "priced_in_valuation": -0.6168929447249908,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -32863,13 +32863,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.9627010451390056,
+    "gap_z": 0.9637088934368382,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.9627010451390056,
+    "priced_in_valuation": 0.9637088934368382,
     "available": [
      "gap_z"
     ],
@@ -33179,13 +33179,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.22055661493317336,
+    "gap_z": 0.2211618789971668,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.22055661493317336,
+    "priced_in_valuation": 0.2211618789971668,
     "available": [
      "gap_z"
     ],
@@ -33483,13 +33483,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.6762516547360469,
+    "gap_z": -1.676675334733215,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.9785359145454509,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.3273937846407489,
+    "priced_in_valuation": -1.3276056246393328,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -33803,13 +33803,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 2.941401820660258,
+    "gap_z": 2.9434830364904574,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "ev_ebitda_to_growth",
-    "priced_in_valuation": 2.941401820660258,
+    "priced_in_valuation": 2.9434830364904574,
     "available": [
      "gap_z"
     ],
@@ -34121,13 +34121,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.6653391054715991,
+    "gap_z": -1.6657568658389674,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.6653391054715991,
+    "priced_in_valuation": -1.6657568658389674,
     "available": [
      "gap_z"
     ],
@@ -34424,13 +34424,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.21895701850995486,
+    "gap_z": 0.21956141485565212,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.10099378659426247,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.05898161595784619,
+    "priced_in_valuation": 0.05928381413069482,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -34979,13 +34979,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.5262104595890194,
+    "gap_z": 0.5269815288707878,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 1.8283343996120938,
     "primary_lens": "peg",
-    "priced_in_valuation": 1.1772724296005566,
+    "priced_in_valuation": 1.1776579642414409,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -35284,13 +35284,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.2061428466028066,
+    "gap_z": -0.2057690502542744,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 1.0569905239323412,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.4254238386647673,
+    "priced_in_valuation": 0.4256107368390334,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -35602,13 +35602,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.03809414194148075,
+    "gap_z": -0.0376291857644028,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "ev_ebitda_to_growth",
-    "priced_in_valuation": -0.03809414194148075,
+    "priced_in_valuation": -0.0376291857644028,
     "available": [
      "gap_z"
     ],
@@ -35905,13 +35905,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.5700257395516976,
+    "gap_z": 0.5708205769036641,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.3908145790414247,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.4804201592965611,
+    "priced_in_valuation": 0.4808175779725444,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -36213,13 +36213,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.2194501793709591,
+    "gap_z": -1.2196260624912776,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.15343416572582955,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.6864421725483943,
+    "priced_in_valuation": -0.6865301141085536,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -36529,13 +36529,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.1354229807833154,
+    "gap_z": -1.1355532824453782,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.1354229807833154,
+    "priced_in_valuation": -1.1355532824453782,
     "available": [
      "gap_z"
     ],
@@ -37090,13 +37090,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 2.400362523690946,
+    "gap_z": 2.402150246931318,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.6756848449331179,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.8623388393789141,
+    "priced_in_valuation": 0.8632327009991,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -37395,13 +37395,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.5230792539306064,
+    "gap_z": -0.5228773831474044,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.09290887497055018,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.2150851894800281,
+    "priced_in_valuation": -0.2149842540884271,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -37962,13 +37962,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.048270592030736,
+    "gap_z": -1.048353616941502,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.048270592030736,
+    "priced_in_valuation": -1.048353616941502,
     "available": [
      "gap_z"
     ],
@@ -38278,13 +38278,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.5532438854132922,
+    "gap_z": -0.5530583777590987,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.5532438854132922,
+    "priced_in_valuation": -0.5530583777590987,
     "available": [
      "gap_z"
     ],
@@ -38581,13 +38581,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.24855239859647743,
+    "gap_z": 0.24917284927463665,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.48164242660477574,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.36509741260062656,
+    "priced_in_valuation": 0.3654076379397062,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -38886,13 +38886,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.1520813644887071,
+    "gap_z": 0.15264948341610027,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 1.029261707693467,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.590671536091087,
+    "priced_in_valuation": 0.5909555955547836,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -39445,13 +39445,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.4028021264352928,
+    "gap_z": -0.40253501002974246,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.5272048167661201,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.46500347160070643,
+    "priced_in_valuation": -0.46486991339793127,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -39750,13 +39750,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.12494482745409374,
+    "gap_z": -0.12452698436614293,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.1523751315580817,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.13865997950608772,
+    "priced_in_valuation": -0.13845105796211232,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -40058,13 +40058,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.5422519639328971,
+    "gap_z": 0.543031735101351,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 1.238380114053585,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.8903160389932411,
+    "priced_in_valuation": 0.890705924577468,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -40366,13 +40366,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.21923025918011316,
+    "gap_z": 0.2198348037481528,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.9797031037833764,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.5994666814817448,
+    "priced_in_valuation": 0.5997689537657647,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -40671,13 +40671,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.05863874780852468,
+    "gap_z": 0.05915617778278015,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 1.0423070807180261,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.5504729142632754,
+    "priced_in_valuation": 0.5507316292504032,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -41233,13 +41233,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.1133836545775356,
+    "gap_z": 0.11393078151568539,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.1133836545775356,
+    "priced_in_valuation": 0.11393078151568539,
     "available": [
      "gap_z"
     ],
@@ -41547,13 +41547,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.4520082171196362,
+    "gap_z": -0.45176779308758097,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.4520082171196362,
+    "priced_in_valuation": -0.45176779308758097,
     "available": [
      "gap_z"
     ],
@@ -41864,13 +41864,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -1.0094476468124087,
+    "gap_z": -1.009509611798691,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -1.0094476468124087,
+    "priced_in_valuation": -1.009509611798691,
     "available": [
      "gap_z"
     ],
@@ -42168,13 +42168,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.10967750500899788,
+    "gap_z": -0.10925137999766509,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 2.384578536238503,
     "primary_lens": "peg",
-    "priced_in_valuation": 1.1374505156147525,
+    "priced_in_valuation": 1.137663578120419,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -42473,13 +42473,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.17333688864192381,
+    "gap_z": -0.17294529634840636,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.7450805220062066,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.4592087053240652,
+    "priced_in_valuation": -0.45901290917730647,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -43027,13 +43027,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.2949293098418899,
+    "gap_z": 0.29557491817470727,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.5870935731779747,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.4410114415099323,
+    "priced_in_valuation": 0.441334245676341,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -43342,13 +43342,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.18021344550757476,
+    "gap_z": -0.17982558347634123,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.18021344550757476,
+    "priced_in_valuation": -0.17982558347634123,
     "available": [
      "gap_z"
     ],
@@ -43655,13 +43655,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 1.0736879898489364,
+    "gap_z": 1.0747560442094755,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 1.0736879898489364,
+    "priced_in_valuation": 1.0747560442094755,
     "available": [
      "gap_z"
     ],
@@ -44197,7 +44197,7 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.7705271433287695,
+    "gap_z": -0.7704595033164443,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
@@ -44502,13 +44502,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.22568557001260336,
+    "gap_z": 0.2262936163334824,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.606814987834458,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.1905647089109273,
+    "priced_in_valuation": -0.19026068575048777,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -44816,13 +44816,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.14059387131413453,
+    "gap_z": 0.1411557587272157,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.14059387131413453,
+    "priced_in_valuation": 0.1411557587272157,
     "available": [
      "gap_z"
     ],
@@ -45120,13 +45120,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.10381453860803287,
+    "gap_z": 0.10435647467623296,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.7682621217563403,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.43603833018218663,
+    "priced_in_valuation": 0.43630929821628667,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -45424,13 +45424,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.09122237474538829,
+    "gap_z": -0.09078623855001208,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.9471515582386331,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.4279645917466224,
+    "priced_in_valuation": 0.4281826598443105,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -45742,13 +45742,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.5014363158484831,
+    "gap_z": -0.5012227046205763,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "ev_ebitda_to_growth",
-    "priced_in_valuation": -0.5014363158484831,
+    "priced_in_valuation": -0.5012227046205763,
     "available": [
      "gap_z"
     ],
@@ -46057,13 +46057,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -2.068397556524923,
+    "gap_z": -2.069033960287169,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": -2.068397556524923,
+    "priced_in_valuation": -2.069033960287169,
     "available": [
      "gap_z"
     ],
@@ -46365,13 +46365,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.9792090126482216,
+    "gap_z": -0.9792545743619442,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.08646642400265216,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.4463712943227847,
+    "priced_in_valuation": -0.446394075179646,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -46670,13 +46670,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.3323632816535792,
+    "gap_z": 0.3330291964473063,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.19537438624708506,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.06849444770324707,
+    "priced_in_valuation": 0.06882740510011061,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -46975,13 +46975,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.008607242599744743,
+    "gap_z": 0.009097532445512407,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": 0.1646561655347232,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.08663170406723397,
+    "priced_in_valuation": 0.0868768489901178,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -47280,13 +47280,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.5830897361141265,
+    "gap_z": -0.5829204186628756,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.5802112668633023,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.5816505014887143,
+    "priced_in_valuation": -0.581565842763089,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -47594,13 +47594,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 0.7955062175719245,
+    "gap_z": 0.7964233692360314,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 0.7955062175719245,
+    "priced_in_valuation": 0.7964233692360314,
     "available": [
      "gap_z"
     ],
@@ -47907,13 +47907,13 @@
    "valuation_extreme": true,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": 1.410155412579094,
+    "gap_z": 1.41140598731448,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": null,
     "primary_lens": "peg",
-    "priced_in_valuation": 1.410155412579094,
+    "priced_in_valuation": 1.41140598731448,
     "available": [
      "gap_z"
     ],
@@ -48464,13 +48464,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.9567463525556233,
+    "gap_z": -0.9567797291576139,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -1.0274524492325776,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.9920994008941004,
+    "priced_in_valuation": -0.9921160891950958,
     "available": [
      "gap_z",
      "lens_peer_score"
@@ -48776,13 +48776,13 @@
    "valuation_extreme": false,
    "valuation_extreme_reason": null,
    "priced_in": {
-    "gap_z": -0.10680847797233553,
+    "gap_z": -0.10638079662640745,
     "gap_z_basis": "cross_section",
     "gap_z_n": 141,
     "lens_history_z": null,
     "lens_peer_score": -0.3181767869421364,
     "primary_lens": "peg",
-    "priced_in_valuation": -0.21249263245723599,
+    "priced_in_valuation": -0.21227879178427195,
     "available": [
      "gap_z",
      "lens_peer_score"

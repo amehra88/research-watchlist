@@ -66,9 +66,25 @@ fcf_margin_now_by_family:
   internet: 0.25
   default: 0.20
 
-# Per-ticker overrides (brief: "overridable per ticker"). Empty until an
-# operator sets one; both keys optional per entry.
-overrides: {}
+# Per-ticker overrides (brief: "overridable per ticker"). Both keys optional per entry.
+# NOTE (fix round 4, V3): an override feeds the DEFAULT leg of the margin selection --
+# a name with positive FY3 consensus FCF still uses its own consensus margin, because a
+# real forward number beats a set one. Overrides therefore bite exactly where the sector
+# table used to: names with no usable consensus FCF.
+#
+# GOOGL/GOOG: the same company in two share classes, both with NEGATIVE consensus FCF at
+# FY1 and FY3, so both fall to the sector table -- and their differing watchlist theme tags
+# classified them into DIFFERENT families (GOOGL -> default 20%, GOOG -> software 30%),
+# which on the 2026-09-17 run produced implied growth 27.29% vs 17.17% and gap +12.14 vs
+# +2.18 for ONE company. B1 scores on that field, so one share class could open a Reduce
+# while the other did not. Pinned to the plan's `internet` value (0.25), which is the family
+# Alphabet belongs in and which neither ticker was getting. Operator-adjustable; the real
+# fix is either aligned theme tags or consensus FCF that isn't negative.
+overrides:
+  GOOGL:
+    terminal_margin: 0.25
+  GOOG:
+    terminal_margin: 0.25
 # example:
 #   NVDA:
 #     terminal_margin: 0.40
