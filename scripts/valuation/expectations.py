@@ -34,14 +34,20 @@ see that file and the A5 report for the full list of interpretive calls.
 
 Fundamentals (net debt, margins) are OPTIONAL: when scripts/valuation/fundamentals.py has
 no row for a ticker, that ticker's card falls back to the sector-family defaults (flagged
-"no_net_debt" / "margin_default"). As of the RIS5 A5 live run (2026-09-17), fundamentals
-ARE live for 176/178 tickers: `net_debt` reads straight off the `net_debt` row; FCF margin
-is DERIVED (`fcf / fy1_sales`, flag `fcf_margin_derived` -- see `derive_fcf_margin()`)
-since the real file has no `fcf_margin` key at all (only raw `fcf`, a dollar figure). Both
-`no_net_debt` and `margin_default` still fire for the 2 tickers with zero fundamentals
-coverage, or when the derivation itself can't run (`fy1_sales` missing/nonpositive).
-`fcf_margin_derived` is NOT one of `is_valuation_extreme()`'s veto flags -- a derived
-margin is real (if imperfect) data, not a guess.
+"no_net_debt" / "margin_default"). As of RIS5 A5 fix round 3 (2026-09-17, after A3 fix
+round 4's LTM/FF_SALES fix), fundamentals ARE live for 176/178 tickers: `net_debt` reads
+straight off the `net_debt` row; `fcf_margin` is READ, not derived here any more --
+`fundamentals.py` itself now derives it (`FF_FREE_CF / FF_SALES * 100`, both legs from the
+same LTM-periodicity call) and this module just converts the percentage to a fraction
+(see `read_fcf_margin()`). `no_net_debt`/`margin_default` still fire for the 2 tickers
+with zero fundamentals coverage. A NEGATIVE `fcf_margin` (32 tickers on the live pull,
+e.g. COHR -14.5%) is real FactSet data, not a bug: the margin PATH's starting point is
+floored at 0 (flag `fcf_margin_floored`, raw value kept in `inputs.fcf_margin_now_raw`)
+so the card still builds; if the LTM operating margin is ALSO <= 0 (genuinely pre-profit),
+the card is marked `long_duration` with reason `pre_profit` instead of silently pretending
+a real read on it is possible. `fcf_margin_floored` is NOT one of
+`is_valuation_extreme()`'s veto flags (only `margin_default`/`no_net_debt` are, unchanged)
+-- a floored-but-real margin is not a guess.
 
 CLI:
     python3 scripts/valuation/expectations.py --state-dir /tmp/snap ... # explicit fixture/live run
@@ -146,34 +152,21 @@ def sector_family(themes: list[str], cfg: dict) -> str:
     return "default"
 
 
-def derive_fcf_margin(fnd: dict, entry: dict, now_default: float) -> tuple[float, list[str]]:
-    """RIS5 A5 live run: `fundamentals_<date>.jsonl`'s FCF row is labelled `"fcf"` (a raw
-    dollar figure, `FF_FREE_CF`, in FactSet millions) -- there is NO `"fcf_margin"` key
-    anywhere in the real file (confirmed live 2026-09-17; see docs/portal/mcp_schemas.md:
-    "No dedicated FCF-margin FF_ code exists... derived downstream as FF_FREE_CF / SALES").
-    `fcf_margin_now = fnd["fcf"] / entry["fy1_sales"]`, flagged `fcf_margin_derived`.
-
-    SALES DENOMINATOR, stated explicitly (coordinator instruction: "state which"): this
-    module uses the SNAPSHOT's `fy1_sales` -- the consensus FY1 FORWARD ESTIMATE (the same
-    "year 0" anchor Layer 1 already uses; see the module's `fy0_sales` interpretive-call
-    docstring). Neither `fundamentals_<date>.jsonl` nor `latest.json` carries a trailing/
-    actual SALES figure anywhere in this pipeline, so a forward estimate is the only sales
-    figure available -- this is an approximation, not a trailing-actual margin.
-
-    KNOWN CAVEAT, not resolved here (flag it, don't silently correct it): `fcf` is pulled
-    at QTR periodicity (a single reported quarter's free cash flow) while `fy1_sales` is an
-    ANNUAL consensus estimate -- dividing a quarterly dollar figure by an annual one
-    understates the derived margin by roughly 4x unless FactSet's QTR figure is itself a
-    trailing-twelve-months aggregate (not confirmed either way). See the A5 report's Live
-    run section for the live numbers this produced and why it is surfaced as a finding for
-    the coordinator, not patched here.
-
-    Falls back to `now_default` (sector-family default, flag `margin_default`) when `fcf`
-    is absent from `fnd` OR `entry["fy1_sales"]` is missing/nonpositive (can't divide)."""
-    fcf_raw = fnd.get("fcf")
-    fy1_sales = entry.get("fy1_sales")
-    if fcf_raw is not None and fy1_sales is not None and fy1_sales > 0:
-        return fcf_raw / fy1_sales, ["fcf_margin_derived"]
+def read_fcf_margin(fnd: dict, now_default: float) -> tuple[float, list[str]]:
+    """RIS5 A5 fix round 3: `fundamentals_<date>.jsonl` now carries a PRE-DERIVED
+    `fcf_margin` row (A3 fix 4's `compute_fcf_margin_rows()`: `FF_FREE_CF / FF_SALES *
+    100`, both legs from the SAME `LTM`-periodicity call, matched on `fiscal_end` --
+    this is what fixed the QTR-fcf-vs-ANN-consensus-sales mismatch that understated the
+    fix round 1/2 live-run margins ~4x, e.g. NVDA 3.76% -> a real 39.68%). This module no
+    longer derives anything itself -- it just reads the row and converts FactSet's
+    PERCENTAGE convention (e.g. `39.68` = 39.68%, matching `gross_margin`/
+    `operating_margin`'s own convention) to the 0-1 fraction Layer 1's math uses
+    (`raw / 100.0`). No `fcf_margin_derived` flag any more (nothing is derived here);
+    falls back to `now_default` (sector-family default, flag `margin_default`) only when
+    the row itself is absent (no fundamentals coverage for this ticker)."""
+    raw = fnd.get("fcf_margin")
+    if raw is not None:
+        return raw / 100.0, []
     return now_default, ["margin_default"]
 
 
@@ -1195,16 +1188,34 @@ def horizon_info(entry: dict) -> dict:
            "fy4_count": fy4_count, "fy5_count": fy5_count, "extended": bool(extended)}
 
 
+def is_pre_profit(fcf_margin_raw: float | None, operating_margin_pct: float | None) -> bool:
+    """RIS5 A5 fix round 3, ruling 2: "genuinely pre-profit" = BOTH the raw (unfloored)
+    FCF margin AND the LTM operating margin are <= 0 -- one negative line alone (e.g.
+    COHR: FCF margin negative but operating margin positive, a capex/restructuring story,
+    not a pre-profit one) is not enough. Missing data on EITHER leg means pre_profit is
+    never ASSERTED (an unobserved margin is not evidence of pre-profit, same "unobserved
+    is never a default value" convention as the stage reader)."""
+    if fcf_margin_raw is None or operating_margin_pct is None:
+        return False
+    return fcf_margin_raw <= 0 and operating_margin_pct <= 0
+
+
 def determine_long_duration(terminal_share: float | None, lens_forward_years: int,
-                            primary_lens: str | None, cfg: dict) -> tuple[bool, list[str]]:
+                            primary_lens: str | None, cfg: dict, pre_profit: bool = False
+                            ) -> tuple[bool, list[str]]:
     """L3 (RIS5 A5 fix round 2, item 1 -- recalibrated): long_duration when
     terminal_share_of_ev > threshold (default 0.90, was 0.75 -- at a 10% discount rate a
     30% grower legitimately carries ~80% of EV past year 5, so 0.75 was flagging ordinary
     growth names, not just genuinely long-duration ones), OR fewer than
     `min_forward_years` (default 3) forward years of consensus FOR THE SELECTED LENS'S
     OWN DENOMINATOR (`lens_forward_years`, see forward_years_available_for_lens() -- not
-    always sales), OR the primary lens is the last-resort EV/Sales-to-growth rung. Any one
-    reason is sufficient; all firing reasons are listed (not just the first)."""
+    always sales), OR the primary lens is the last-resort EV/Sales-to-growth rung, OR
+    (fix round 3, ruling 2) the ticker is genuinely pre-profit (`pre_profit`, see
+    is_pre_profit()) -- a floored margin path can still SOLVE, but a name with no real
+    profitability signal on either FCF or operating margin has nothing solid under the
+    reverse-DCF's margin assumption, so it is marked long_duration ("show only what is
+    priced") rather than presented as an ordinary card. Any one reason is sufficient; all
+    firing reasons are listed (not just the first)."""
     ld_cfg = cfg.get("long_duration") or {}
     thresh = ld_cfg.get("terminal_share_threshold", 0.90)
     min_years = ld_cfg.get("min_forward_years", 3)
@@ -1215,6 +1226,8 @@ def determine_long_duration(terminal_share: float | None, lens_forward_years: in
         reasons.append("lens_forward_years<min")
     if primary_lens == "ev_sales_to_growth":
         reasons.append("primary_lens_last_resort")
+    if pre_profit:
+        reasons.append("pre_profit")
     return bool(reasons), reasons
 
 
@@ -1339,17 +1352,31 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
     if net_debt is None:
         flags.append("no_net_debt")
 
-    fcf_margin_now, fcf_margin_flags = derive_fcf_margin(fnd, entry, now_default)
+    fcf_margin_raw, fcf_margin_flags = read_fcf_margin(fnd, now_default)
     flags.extend(fcf_margin_flags)
     terminal_margin = term_default   # overrides already folded into margin_defaults()
     years = cfg.get("years", 5)
     discount_rate = cfg.get("discount_rate", 0.10)
     terminal_growth = cfg.get("terminal_growth", 0.03)
 
-    # C3: a nonpositive margin path makes the whole reverse-DCF meaningless (PV is not
-    # even monotonic in g) -- SKIP the ticker entirely rather than build a partial card.
-    if any(m <= 0 for m in _margin_path(fcf_margin_now, terminal_margin, years)):
+    # RIS5 A5 fix round 3, ruling 2: a REAL negative current-FCF-margin read (32 tickers
+    # on the live pull, e.g. COHR -14.5%) is not a defect -- floor the margin PATH's
+    # START at 0 (flag fcf_margin_floored) so the linear interpolation toward a positive
+    # terminal_margin stays non-negative throughout and the card still builds; the raw
+    # (possibly negative) value is kept on the card separately (inputs.fcf_margin_now_raw).
+    fcf_margin_now = max(fcf_margin_raw, 0.0)
+    if fcf_margin_now != fcf_margin_raw:
+        flags.append("fcf_margin_floored")
+
+    # C3 (recalibrated, ruling 2): with the floored start above, the margin path is
+    # monotonic and non-negative for any terminal_margin > 0 -- skip
+    # (margin_path_nonpositive) ONLY when the terminal margin itself is <= 0 (a config/
+    # override misconfiguration, not a real-data case observed live).
+    if terminal_margin <= 0:
         return {"ticker": ticker, "skipped": True, "reason": "margin_path_nonpositive"}
+
+    operating_margin_pct = fnd.get("operating_margin")
+    pre_profit = is_pre_profit(fcf_margin_raw, operating_margin_pct)
 
     l1 = implied_growth(ev, entry["fy1_sales"], fcf_margin_now, terminal_margin,
                         discount_rate=discount_rate, terminal_growth=terminal_growth,
@@ -1418,7 +1445,8 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
     terminal_share = l1["terminal_share_of_ev"]
     lens_forward_years = forward_years_available_for_lens(entry, primary)
     horizon["lens_forward_years"] = lens_forward_years
-    is_ld, ld_reasons = determine_long_duration(terminal_share, lens_forward_years, primary, cfg)
+    is_ld, ld_reasons = determine_long_duration(terminal_share, lens_forward_years, primary, cfg,
+                                               pre_profit=pre_profit)
 
     l1_card = {k: v for k, v in l1.items() if k != "pv_residual_check"}   # C7: dropped from the card
 
@@ -1447,7 +1475,8 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
             "fy1_ebitda": entry.get("fy1_ebitda"), "fy2_ebitda": entry.get("fy2_ebitda"),
             "fy3_ebitda": entry.get("fy3_ebitda"),
             "fy1_fcf": entry.get("fy1_fcf"), "fy2_fcf": entry.get("fy2_fcf"), "fy3_fcf": entry.get("fy3_fcf"),
-            "fcf_margin_now": fcf_margin_now, "terminal_margin": terminal_margin,
+            "fcf_margin_now": fcf_margin_now, "fcf_margin_now_raw": fcf_margin_raw,
+            "terminal_margin": terminal_margin,
             "discount_rate": discount_rate, "terminal_growth": terminal_growth, "years": years,
         },
         "layer1_priced": l1_card,

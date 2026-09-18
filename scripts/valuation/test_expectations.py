@@ -952,11 +952,12 @@ def test_build_card_quality_fail_reason_surfaced_as_flag_not_skip():
              "missing_fy2_sales:fail:count<1" in card["flags"], card["flags"])
 
 
-def test_build_card_margin_path_nonpositive_skips_no_partial_card():
-    """C3: margin_path_nonpositive SKIPS the whole ticker -- no partial card."""
+def test_build_card_terminal_margin_nonpositive_skips_no_partial_card():
+    """C3 (RIS5 A5 fix round 3, ruling 2 -- recalibrated): with the margin path START
+    now floored at 0, the only way the path stays nonpositive throughout is a nonpositive
+    TERMINAL margin itself -- SKIPS the whole ticker, no partial card."""
     cfg = json.loads(json.dumps(DEFAULT_CFG))
-    cfg["fcf_margin_now_by_family"]["default"] = -0.05   # nonpositive fcf_margin_now
-    cfg["terminal_margin_by_family"]["default"] = -0.05
+    cfg["terminal_margin_by_family"]["default"] = -0.05   # nonpositive terminal_margin
     entry = {"price": 100.0, "mcap": 50000.0, "fy1_sales": 1000.0, "fy2_sales": 1200.0, "fy3_sales": 1440.0}
     with tempfile.TemporaryDirectory() as td:
         card = E.build_card("XYZ", entry, cfg, state_dir=Path(td), as_of="2026-09-17",
@@ -965,6 +966,26 @@ def test_build_card_margin_path_nonpositive_skips_no_partial_card():
     check("skipped True", card["skipped"] is True, card)
     check("reason: margin_path_nonpositive", card["reason"] == "margin_path_nonpositive", card)
     check("no partial card fields leaked", set(card.keys()) == {"ticker", "skipped", "reason"}, card)
+
+
+def test_build_card_negative_fcf_margin_now_default_is_floored_not_skipped():
+    """RIS5 A5 fix round 3, ruling 2: a negative fcf_margin_now (even from the config
+    default table, not just real fundamentals) is FLOORED at 0, not a skip trigger, as
+    long as terminal_margin itself is positive -- the card builds."""
+    cfg = json.loads(json.dumps(DEFAULT_CFG))
+    cfg["fcf_margin_now_by_family"]["default"] = -0.05   # negative fcf_margin_now default
+    cfg["terminal_margin_by_family"]["default"] = 0.20   # positive terminal_margin
+    entry = {"price": 100.0, "mcap": 2500.0, "fy1_sales": 1000.0, "fy2_sales": 1200.0,
+            "fy3_sales": 1440.0, "fy1_eps": 4.0, "fy2_eps": 5.0, "fy3_eps": 6.0}
+    with tempfile.TemporaryDirectory() as td:
+        card = E.build_card("XYZ", entry, cfg, state_dir=Path(td), as_of="2026-09-17",
+                            stages={"pairs": {}, "gated": []}, ticker_themes_all={"XYZ": []},
+                            downside_theme_slugs=set())
+    check("NOT skipped", card["skipped"] is False, card)
+    check("flagged fcf_margin_floored", "fcf_margin_floored" in card["flags"], card["flags"])
+    check("fcf_margin_now (used) floored to 0.0", card["inputs"]["fcf_margin_now"] == 0.0, card["inputs"])
+    check("fcf_margin_now_raw keeps the true negative value",
+         card["inputs"]["fcf_margin_now_raw"] == -0.05, card["inputs"])
 
 
 def test_build_card_full_card_no_net_debt_no_fundamentals_flags():
@@ -1007,25 +1028,33 @@ def test_build_card_full_card_no_net_debt_no_fundamentals_flags():
          set(("snapshot_as_of", "stages_as_of", "reads_latest_date", "credibility_as_of"))
          <= set(card["provenance"].keys()), card["provenance"])
     check("horizon block present (L2)", card["horizon"]["years_used"] == [1, 2, 3], card["horizon"])
+    check("fcf_margin_now_raw present (no fundamentals -> equals the sector default, no flooring)",
+         card["inputs"]["fcf_margin_now_raw"] == card["inputs"]["fcf_margin_now"], card["inputs"])
+    check("fcf_margin_floored NOT flagged (sector defaults are all positive)",
+         "fcf_margin_floored" not in card["flags"], card["flags"])
 
 
 def test_build_card_net_debt_from_fundamentals_changes_ev():
-    # "fcf" (a raw dollar figure), NOT "fcf_margin" -- the real fundamentals_<date>.jsonl
-    # shape confirmed live 2026-09-17 (RIS5 A5 live run); see derive_fcf_margin().
+    # "fcf_margin" (a PERCENTAGE, e.g. 22.0 = 22%) is the real fundamentals_<date>.jsonl
+    # key as of RIS5 A3 fix 4/A5 fix round 3 -- pre-derived by fundamentals.py itself
+    # (FF_FREE_CF / FF_SALES * 100, both legs same LTM call); see read_fcf_margin().
     entry = {"price": 100.0, "mcap": 50000.0, "fy1_sales": 1000.0, "fy2_sales": 1200.0,
             "fy3_sales": 1440.0, "fy1_eps": 4.0}
-    fundamentals = {"XYZ": {"net_debt": 2000.0, "fcf": 220.0}}   # 220/1000 = 0.22 margin
+    fundamentals = {"XYZ": {"net_debt": 2000.0, "fcf_margin": 22.0}}   # 22.0% -> 0.22 fraction
     with tempfile.TemporaryDirectory() as td:
         card = E.build_card("XYZ", entry, DEFAULT_CFG, state_dir=Path(td), as_of="2026-09-17",
                             stages={"pairs": {}, "gated": []}, ticker_themes_all={"XYZ": []},
                             downside_theme_slugs=set(), fundamentals=fundamentals)
     check("EV = mcap + net_debt", card["inputs"]["ev"] == 52000.0, card["inputs"])
     check("no_net_debt NOT flagged", "no_net_debt" not in card["flags"], card["flags"])
-    check("margin_default NOT flagged (real fcf present, derived instead)",
+    check("margin_default NOT flagged (real fcf_margin present)",
          "margin_default" not in card["flags"], card["flags"])
-    check("flagged fcf_margin_derived", "fcf_margin_derived" in card["flags"], card["flags"])
-    check("fcf_margin_now derived as fcf / fy1_sales",
+    check("fcf_margin_derived NOT flagged (nothing derived here any more, fix round 3)",
+         "fcf_margin_derived" not in card["flags"], card["flags"])
+    check("fcf_margin_now = fcf_margin (percentage) / 100",
          abs(card["inputs"]["fcf_margin_now"] - 0.22) < 1e-9, card["inputs"])
+    check("fcf_margin_now_raw matches (positive, not floored)",
+         abs(card["inputs"]["fcf_margin_now_raw"] - 0.22) < 1e-9, card["inputs"])
 
 
 def test_build_card_negative_net_debt_reduces_ev():
@@ -1033,7 +1062,7 @@ def test_build_card_negative_net_debt_reduces_ev():
     plain addition, reducing EV below mcap."""
     entry = {"price": 100.0, "mcap": 50000.0, "fy1_sales": 1000.0, "fy2_sales": 1200.0,
             "fy3_sales": 1440.0, "fy1_eps": 4.0}
-    fundamentals = {"XYZ": {"net_debt": -8000.0, "fcf": 220.0}}   # net CASH position
+    fundamentals = {"XYZ": {"net_debt": -8000.0, "fcf_margin": 22.0}}   # net CASH position
     with tempfile.TemporaryDirectory() as td:
         card = E.build_card("XYZ", entry, DEFAULT_CFG, state_dir=Path(td), as_of="2026-09-17",
                             stages={"pairs": {}, "gated": []}, ticker_themes_all={"XYZ": []},
@@ -1043,61 +1072,88 @@ def test_build_card_negative_net_debt_reduces_ev():
          "no_net_debt" not in card["flags"], card["flags"])
 
 
-# ─────────────────────── derive_fcf_margin (RIS5 A5 live run) ───────────────
+# ─────────────────────── read_fcf_margin (RIS5 A5 fix round 3) ──────────────
 
-def test_derive_fcf_margin_computed_from_real_fcf_key():
-    entry = {"fy1_sales": 1000.0}
-    margin, flags = E.derive_fcf_margin({"fcf": 350.0}, entry, now_default=0.20)
-    check("margin = fcf / fy1_sales", abs(margin - 0.35) < 1e-9, margin)
-    check("flagged fcf_margin_derived, not margin_default", flags == ["fcf_margin_derived"], flags)
-
-
-def test_derive_fcf_margin_negative_fcf_gives_negative_margin():
-    """COHR-shaped real case: FF_FREE_CF can be negative (a quarter with negative free
-    cash flow) -- the derived margin is genuinely negative, still flagged derived (not
-    silently floored or discarded)."""
-    entry = {"fy1_sales": 10608.17}
-    margin, flags = E.derive_fcf_margin({"fcf": -486.225}, entry, now_default=0.12)
-    check("negative fcf -> negative derived margin", margin < 0, margin)
-    check("still flagged fcf_margin_derived (not silently defaulted)",
-         flags == ["fcf_margin_derived"], flags)
+def test_read_fcf_margin_converts_percentage_to_fraction():
+    margin, flags = E.read_fcf_margin({"fcf_margin": 39.68}, now_default=0.20)
+    check("39.68 (percent) -> 0.3968 (fraction)", abs(margin - 0.3968) < 1e-9, margin)
+    check("no flags on a clean read", flags == [], flags)
 
 
-def test_derive_fcf_margin_falls_back_when_fcf_missing():
-    margin, flags = E.derive_fcf_margin({}, {"fy1_sales": 1000.0}, now_default=0.20)
-    check("no fcf row -> falls back to now_default", margin == 0.20, margin)
+def test_read_fcf_margin_negative_stays_negative_no_flag_yet():
+    """read_fcf_margin() itself does NOT floor or flag a negative margin -- that is
+    build_card()'s job (the floor is a card-building decision, not a data-reading one)."""
+    margin, flags = E.read_fcf_margin({"fcf_margin": -14.537952849533333}, now_default=0.12)
+    check("negative percent -> negative fraction, unfloored",
+         abs(margin - (-0.14537952849533333)) < 1e-9, margin)
+    check("no flags -- reading a real (if negative) value is not a fallback", flags == [], flags)
+
+
+def test_read_fcf_margin_falls_back_when_absent():
+    margin, flags = E.read_fcf_margin({}, now_default=0.20)
+    check("no fcf_margin row -> falls back to now_default", margin == 0.20, margin)
     check("flagged margin_default", flags == ["margin_default"], flags)
 
 
-def test_derive_fcf_margin_falls_back_when_fy1_sales_missing_or_nonpositive():
-    margin1, flags1 = E.derive_fcf_margin({"fcf": 100.0}, {"fy1_sales": None}, now_default=0.20)
-    check("fy1_sales None -> falls back", margin1 == 0.20 and flags1 == ["margin_default"], (margin1, flags1))
-    margin2, flags2 = E.derive_fcf_margin({"fcf": 100.0}, {"fy1_sales": 0.0}, now_default=0.20)
-    check("fy1_sales == 0 -> falls back (can't divide)", margin2 == 0.20 and flags2 == ["margin_default"],
-         (margin2, flags2))
-    margin3, flags3 = E.derive_fcf_margin({"fcf": 100.0}, {"fy1_sales": -50.0}, now_default=0.20)
-    check("fy1_sales negative -> falls back (nonsensical denominator)",
-         margin3 == 0.20 and flags3 == ["margin_default"], (margin3, flags3))
+# ─────────────────────── is_pre_profit / pre_profit marking (fix round 3) ───
+
+def test_is_pre_profit_requires_both_legs_nonpositive():
+    check("both negative -> pre-profit", E.is_pre_profit(-0.10, -5.0) is True)
+    check("fcf margin negative, operating margin POSITIVE (COHR-shaped) -> NOT pre-profit",
+         E.is_pre_profit(-0.1454, 13.79) is False)
+    check("fcf margin positive, operating margin negative -> NOT pre-profit",
+         E.is_pre_profit(0.05, -2.0) is False)
+    check("both positive -> NOT pre-profit", E.is_pre_profit(0.30, 40.0) is False)
+    check("missing operating margin -> never asserted", E.is_pre_profit(-0.10, None) is False)
+    check("missing fcf margin -> never asserted", E.is_pre_profit(None, -5.0) is False)
+    check("exactly zero on both legs counts as <= 0 -> pre-profit", E.is_pre_profit(0.0, 0.0) is True)
 
 
-def test_build_card_real_shaped_fundamentals_cohr_like_negative_margin_skips():
-    """Sanity check on the live-run mechanism, hand-crafted: a COHR-shaped negative
-    derived FCF margin can push the margin PATH negative in year 1 (linear interpolation
-    from a negative fcf_margin_now toward a small positive terminal_margin) -- C3 then
-    SKIPS the ticker (margin_path_nonpositive), same guard as any other nonpositive
-    margin path. This is a real, surfaced consequence of live data, not a code bug --
-    see the A5 report's Live run section."""
+def test_build_card_cohr_like_negative_fcf_margin_builds_with_floor_not_skip():
+    """RIS5 A5 fix round 3, ruling 2: the REAL COHR shape (fcf_margin -14.54%, operating
+    margin +13.79% -- positive operating margin means NOT genuinely pre-profit, a capex/
+    restructuring story instead) now BUILDS a card, floored, instead of being skipped."""
     cfg = json.loads(json.dumps(DEFAULT_CFG))
     cfg["terminal_margin_by_family"]["default"] = 0.12
     entry = {"price": 296.0, "mcap": 56777.6, "fy1_sales": 10608.17, "fy2_sales": 14583.9,
-            "fy3_sales": 19071.8, "fy1_eps": 9.44, "fy3_eps": 18.55}
-    fundamentals = {"COHR_LIKE": {"net_debt": 1532.82, "fcf": -486.225}}
+            "fy3_sales": 19071.8, "fy1_eps": 9.44, "fy2_eps": 12.0, "fy3_eps": 18.55}
+    fundamentals = {"COHR_LIKE": {"net_debt": 1532.82, "fcf_margin": -14.537952849533333,
+                                  "operating_margin": 13.7887692135651}}
     with tempfile.TemporaryDirectory() as td:
         card = E.build_card("COHR_LIKE", entry, cfg, state_dir=Path(td), as_of="2026-09-17",
                             stages={"pairs": {}, "gated": []}, ticker_themes_all={"COHR_LIKE": []},
                             downside_theme_slugs=set(), fundamentals=fundamentals)
-    check("skipped due to the negative derived margin pushing the path nonpositive",
-         card["skipped"] is True and card["reason"] == "margin_path_nonpositive", card)
+    check("NOT skipped", card["skipped"] is False, card)
+    check("flagged fcf_margin_floored", "fcf_margin_floored" in card["flags"], card["flags"])
+    check("fcf_margin_now (used) floored to 0.0", card["inputs"]["fcf_margin_now"] == 0.0, card["inputs"])
+    check("fcf_margin_now_raw keeps the true negative value",
+         abs(card["inputs"]["fcf_margin_now_raw"] - (-0.14537952849533333)) < 1e-9, card["inputs"])
+    check("NOT marked pre_profit (operating margin is positive)",
+         "pre_profit" not in card["long_duration_reasons"], card["long_duration_reasons"])
+
+
+def test_build_card_pre_profit_marking_when_both_margins_nonpositive():
+    """A genuinely pre-profit name (both FCF margin and operating margin <= 0) is marked
+    long_duration with reason pre_profit -- supported/gap/valuation_extreme/priced_in
+    null, only what is priced is shown."""
+    cfg = json.loads(json.dumps(DEFAULT_CFG))
+    cfg["terminal_margin_by_family"]["default"] = 0.20
+    entry = {"price": 40.0, "mcap": 3000.0, "fy1_sales": 500.0, "fy2_sales": 700.0,
+            "fy3_sales": 950.0, "fy1_eps": -1.0, "fy2_eps": -0.5, "fy3_eps": 0.2}
+    fundamentals = {"PREPROFIT_LIKE": {"net_debt": 100.0, "fcf_margin": -25.0, "operating_margin": -8.0}}
+    with tempfile.TemporaryDirectory() as td:
+        card = E.build_card("PREPROFIT_LIKE", entry, cfg, state_dir=Path(td), as_of="2026-09-17",
+                            stages={"pairs": {}, "gated": []}, ticker_themes_all={"PREPROFIT_LIKE": []},
+                            downside_theme_slugs=set(), fundamentals=fundamentals)
+    check("NOT skipped (floored path still solves)", card["skipped"] is False, card)
+    check("flagged fcf_margin_floored", "fcf_margin_floored" in card["flags"], card["flags"])
+    check("long_duration True, reason pre_profit",
+         card["long_duration"] is True and "pre_profit" in card["long_duration_reasons"],
+         card["long_duration_reasons"])
+    check("supported/gap/valuation_extreme/valuation_extreme_reason/priced_in nulled",
+         card["layer2_supported"] is None and card["gap"] is None and card["valuation_extreme"] is None
+         and card["valuation_extreme_reason"] is None and card["priced_in"] is None, card)
+    check("layer1_priced (what is priced) still shown", card["layer1_priced"]["implied_growth_5y"] is not None, card)
 
 
 def test_build_card_ebitda_fcf_unavailable_flag_and_no_profit_lens():
