@@ -43,6 +43,16 @@ BASE_PATHS = sb.Paths(
     cron_log=FIXTURES / "cron_runs_fixture.txt",
     etf_lookthrough=FIXTURES / "does_not_exist_lookthrough.json",
     etf_flows=FIXTURES / "does_not_exist_flows.jsonl",
+    # RIS5 A6: pin this explicitly, same convention as etf_lookthrough/etf_flows
+    # above. Before A6, Paths.repo defaulted to the hardcoded main-checkout REPO,
+    # which never had a live state/valuation/ -- so valuation_state's own
+    # REPO-derived default was accidentally fixture-safe. A6 made REPO track
+    # __file__ (so build_portal.py --dry-run reads THIS checkout's real
+    # state/valuation/expectations_latest.json, e.g. the 161-ticker A5 live run
+    # sitting right here in this worktree) -- which would otherwise make
+    # test_valuation_bundle_degrades_when_absent() below read real data instead
+    # of testing the missing-file path.
+    valuation_state=FIXTURES / "does_not_exist_valuation",
 )
 
 
@@ -124,6 +134,50 @@ def test_market_bundle_degrades_when_etf_files_absent():
     mb = sb.market_bundle(BASE_PATHS, today=TODAY)
     assert mb["etf_lookthrough"] == {}
     assert mb["etf_flows_14d"] == []
+
+
+# ───────────────────────── valuation_bundle (RIS5 A5) ─────────────────────────
+
+def test_valuation_bundle_degrades_when_absent():
+    vb = sb.valuation_bundle(BASE_PATHS)
+    assert vb == {"as_of": None, "universe_size": 0, "skipped": [], "tickers": {}}
+
+
+def test_valuation_bundle_reads_expectations_latest_verbatim():
+    import json
+    import shutil
+    import tempfile
+    tmp_dir = Path(tempfile.mkdtemp(prefix="ris5_a5_valuation_bundle_test_"))
+    try:
+        val_dir = tmp_dir / "valuation"
+        val_dir.mkdir()
+        payload = {"as_of": "2026-09-17", "universe_size": 3, "skipped": [{"ticker": "ZZZ", "reason": "x"}],
+                  "tickers": {"AAA": {"ticker": "AAA", "gap": {"gap_pp": 5.0}}}}
+        (val_dir / "expectations_latest.json").write_text(json.dumps(payload))
+        paths = sb.Paths(notes=BASE_PATHS.notes, watchlist=BASE_PATHS.watchlist,
+                         topics_state=BASE_PATHS.topics_state, thesis_state=BASE_PATHS.thesis_state,
+                         portal_state=BASE_PATHS.portal_state, docs=BASE_PATHS.docs,
+                         cron_log=BASE_PATHS.cron_log, valuation_state=val_dir)
+        vb = sb.valuation_bundle(paths)
+        assert vb == payload
+    finally:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+
+
+def test_build_state_writes_valuation_json():
+    import json
+    import shutil
+    import tempfile
+    tmp_out_dir = Path(tempfile.mkdtemp(prefix="ris5_a5_build_state_test_"))
+    try:
+        stats = sb.build_state(tmp_out_dir, sb.Ctx(today=TODAY, paths=BASE_PATHS, report_summaries=[]))
+        vpath = tmp_out_dir / "data" / "valuation.json"
+        assert vpath.exists()
+        vdata = json.loads(vpath.read_text())
+        assert set(("as_of", "universe_size", "skipped", "tickers")) <= set(vdata.keys())
+        assert "valuation_tickers" in stats
+    finally:
+        shutil.rmtree(tmp_out_dir, ignore_errors=True)
 
 
 # ───────────────────────── manifest ─────────────────────────

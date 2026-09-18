@@ -53,6 +53,22 @@ def test_movers_ranking_is_deterministic_and_signed():
     assert ctx["ranking"][0]["rank_score_proposed"] == 4.125             # (4.25 + 4) / 2 for AAA
 
 
+def test_movers_tie_break_favors_negative_delta_not_positive():
+    """RIS5 A4: two names tied on |delta| (one +3 confirm-pressure, one -3 challenge-pressure)
+    -- the bearish (reduce/sell) name must sort first, not the bullish one. Synthetic fixture,
+    independent of setup(tmp)/tio.save: no status or score changes, so delta == conf - chal."""
+    theses = {"POS": {"scores": {}}, "NEG": {"scores": {}}}
+    ev = [{"ticker": "POS", "source": "news", "source_id": "p1", "date": "2026-09-05", "assumption_id": "a1", "direction": "confirm", "strength": 3},
+          {"ticker": "NEG", "source": "news", "source_id": "n1", "date": "2026-09-05", "assumption_id": "a1", "direction": "challenge", "strength": 3}]
+    movers = R.rank_movers(theses, ev, [], "2026-09-01", "2026-09-14")
+    assert [m["ticker"] for m in movers] == ["NEG", "POS"]
+    assert movers[0]["delta"] == -3 and movers[1]["delta"] == 3
+    # ranking_rows must agree with rank_movers on tie order (no divergence between the
+    # report's §1 movers list and state/thesis/ranking_{date}.json).
+    ranking = R.ranking_rows(theses, movers)
+    assert [r["ticker"] for r in ranking] == ["NEG", "POS"]
+
+
 def test_render_leads_with_h2_and_wikilinks():
     ctx = R.build_context("weekly", TODAY, "2026-09-08", "2026-09-14")
     md, txt = R.render(ctx, wiki=True), R.render(ctx, wiki=False)
@@ -103,7 +119,8 @@ if __name__ == "__main__":
     tmp = Path(tempfile.mkdtemp())
     try:
         setup(tmp)
-        test_score_num(); test_movers_ranking_is_deterministic_and_signed(); test_render_leads_with_h2_and_wikilinks()
+        test_score_num(); test_movers_ranking_is_deterministic_and_signed(); test_movers_tie_break_favors_negative_delta_not_positive()
+        test_render_leads_with_h2_and_wikilinks()
         test_weekly_writes_note_ranking_questions_ledger(); test_alerts_fire_once(); test_quarterly_due_rule(tmp)
     finally:
         shutil.rmtree(tmp)

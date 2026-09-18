@@ -9,12 +9,16 @@ the sibling modules scripts/portal/news_sec.py and scripts/portal/theme_ideas.py
 was split in fix round 1, after review, and its docstring explains the resulting
 two-way import between it and this module).
 
-Seven public builders. Each returns a plain dict; build_state(out_dir, ctx) is the
+Eight public builders. Each returns a plain dict; build_state(out_dir, ctx) is the
 only thing that writes them, per the Task 4 brief:
   - theme_ideas.themes_bundle()   -> data/themes.json
   - theme_ideas.ideas_bundle()    -> data/ideas.json
   - scores_bundle(ticker_bundles) -> data/scores.json
   - market_bundle()               -> data/market.json
+  - valuation_bundle()            -> data/valuation.json (RIS5 A5: a verbatim read of
+                                      state/valuation/expectations_latest.json, the one
+                                      producer is scripts/valuation/expectations.py --
+                                      this module computes nothing valuation-related)
   - news_sec.news_bundle(days)    -> data/news/<ISO-week>.json shards + news_index.json
   - news_sec.sec_bundle(days)     -> data/sec_30d.json
   - manifest(ctx)                 -> data/manifest.json (written LAST -- it hashes
@@ -95,6 +99,7 @@ class Paths:
     cron_log: Path = None
     etf_lookthrough: Path = None
     etf_flows: Path = None
+    valuation_state: Path = None
 
     def __post_init__(self):
         self.notes = self.notes if self.notes is not None else (self.repo / "notes")
@@ -107,6 +112,8 @@ class Paths:
         self.etf_lookthrough = (self.etf_lookthrough if self.etf_lookthrough is not None
                                  else (self.repo / "state" / "etf_lookthrough.json"))
         self.etf_flows = self.etf_flows if self.etf_flows is not None else (self.repo / "state" / "etf_flows.jsonl")
+        self.valuation_state = (self.valuation_state if self.valuation_state is not None
+                                else (self.repo / "state" / "valuation"))
 
 
 DEFAULT_PATHS = Paths()
@@ -447,6 +454,27 @@ def market_bundle(paths: Paths = None, today: date = None) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# valuation_bundle (RIS5 A5)
+# ---------------------------------------------------------------------------
+def valuation_bundle(paths: Paths = None) -> dict:
+    """data/valuation.json: reads the already-built, already-tracked
+    state/valuation/expectations_latest.json verbatim (scripts/valuation/expectations.py
+    is the producer -- this function never computes anything, same read-only contract as
+    every other builder in this module). Missing file (expectations.py hasn't had its
+    first live run yet, or a fixture build with no valuation state) degrades to
+    {"as_of": None, "universe_size": 0, "skipped": [], "tickers": {}} with one log line,
+    never an error -- mirrors market_bundle()'s own degrade-on-absent convention for the
+    gitignored ETF files.
+    """
+    paths = paths or DEFAULT_PATHS
+    p = Path(paths.valuation_state) / "expectations_latest.json"
+    if not p.exists():
+        log(f"valuation_bundle: {p} absent (expectations.py hasn't run yet) -- empty bundle")
+        return {"as_of": None, "universe_size": 0, "skipped": [], "tickers": {}}
+    return _read_json(p, default={"as_of": None, "universe_size": 0, "skipped": [], "tickers": {}})
+
+
+# ---------------------------------------------------------------------------
 # manifest
 # ---------------------------------------------------------------------------
 _CRON_RE = re.compile(r"^(\S+)\s+job=(\S+)\s+exit=(-?\d+)\s+cmd=(.*)$")
@@ -657,6 +685,9 @@ def build_state(out_dir: Path, ctx: Ctx = None) -> dict:
 
     mb_json = market_bundle(paths, today)
     _write_json(data_dir / "market.json", mb_json)
+
+    vb_json = valuation_bundle(paths)
+    _write_json(data_dir / "valuation.json", vb_json)
     # The Insiders tab needs ~12 rows and nothing else in market.json, which
     # runs to ~1MB (etf_flows_14d dominates). Same rows, own file, so a phone
     # does not pay for the rest; market.json is unchanged for every other
@@ -681,6 +712,7 @@ def build_state(out_dir: Path, ctx: Ctx = None) -> dict:
     return {
         "themes": len(tb_json["themes"]), "candidates_pending": len(tb_json["candidates"]),
         "ideas": len(ib_json["ideas"]), "scores_tickers": len(sb_json["tickers"]),
+        "valuation_tickers": len(vb_json["tickers"]),
         "news_shards": len(news["shards"]), "news_rows": sum(len(v["rows"]) for v in news["shards"].values()),
         "sec_rows": len(sec_json["rows"]), "manifest_tickers": len(mani["tickers"]),
     }

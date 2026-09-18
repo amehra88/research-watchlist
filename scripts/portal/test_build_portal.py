@@ -536,6 +536,80 @@ def test_default_stages_omits_the_app_stage_with_no_app():
     assert names[-1] == "state", names
 
 
+def test_default_stages_include_theme_share_before_state():
+    # RIS5 A4 fix round 1: theme_share is wired in as its own stage, same
+    # (name, fn(tmp_dir) -> stats) closure-factory pattern as every other
+    # production stage, and must land before "state" so build_state()'s
+    # manifest.json hashing (which runs last, over whatever is already on
+    # disk) picks up data/theme_share.json. _default_stages() does no I/O.
+    names = [n for n, _ in bp._default_stages(bp._parse_args([]))]
+    assert "theme_share" in names, names
+    assert names.index("theme_share") < names.index("state"), names
+
+
+def test_theme_share_stage_copies_an_existing_state_file_into_the_bundle():
+    # RIS5 A4 fix round 2: the stage is READ-ONLY -- it copies an already-produced
+    # state/topics/theme_share.json verbatim; it never generates or writes one itself.
+    real_repo, fake_repo = bp.REPO, _tmpdir("bp_theme_share_repo_")
+    try:
+        bp.REPO = fake_repo
+        state_dir = fake_repo / "state" / "topics"
+        state_dir.mkdir(parents=True)
+        content = b'{"some_theme": {"CY2026-Q1": {"n": 1, "tickers": {}}}}'
+        state_file = state_dir / "theme_share.json"
+        state_file.write_bytes(content)
+        tmp_dir = _tmpdir("bp_theme_share_tmp_")
+        try:
+            stats = bp._stage_theme_share()(tmp_dir)
+            dst = tmp_dir / "data" / "theme_share.json"
+            assert dst.exists() and dst.read_bytes() == content
+            assert stats.get("copied") is True
+            assert state_file.read_bytes() == content   # source untouched by the copy
+        finally:
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+    finally:
+        bp.REPO = real_repo
+        shutil.rmtree(fake_repo, ignore_errors=True)
+
+
+def test_theme_share_stage_is_a_clean_noop_when_state_file_is_missing():
+    real_repo, fake_repo = bp.REPO, _tmpdir("bp_theme_share_repo_missing_")
+    try:
+        bp.REPO = fake_repo   # no state/topics/theme_share.json anywhere under here
+        tmp_dir = _tmpdir("bp_theme_share_tmp_missing_")
+        try:
+            stats = bp._stage_theme_share()(tmp_dir)   # must not raise
+            assert not (tmp_dir / "data" / "theme_share.json").exists()
+            assert stats.get("copied") is False
+            assert not (fake_repo / "state").exists()   # never creates state/ either
+        finally:
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+    finally:
+        bp.REPO = real_repo
+        shutil.rmtree(fake_repo, ignore_errors=True)
+
+
+def test_theme_share_stage_dry_run_never_touches_repo_state():
+    # The coordinator's literal ask: --dry-run must be fully dry for this stage too.
+    real_repo, fake_repo = bp.REPO, _tmpdir("bp_theme_share_dryrun_repo_")
+    try:
+        bp.REPO = fake_repo
+        state_dir = fake_repo / "state" / "topics"
+        state_dir.mkdir(parents=True)
+        state_file = state_dir / "theme_share.json"
+        content = b'{"theme_x": {}}'
+        state_file.write_bytes(content)
+        before = sorted(p.relative_to(fake_repo).as_posix() for p in fake_repo.rglob("*") if p.is_file())
+        rc = bp.dry_run([("theme_share", bp._stage_theme_share())])
+        after = sorted(p.relative_to(fake_repo).as_posix() for p in fake_repo.rglob("*") if p.is_file())
+        assert rc == 0
+        assert before == after == ["state/topics/theme_share.json"]
+        assert state_file.read_bytes() == content
+    finally:
+        bp.REPO = real_repo
+        shutil.rmtree(fake_repo, ignore_errors=True)
+
+
 def test_parse_args_rejects_a_non_json_format():
     buf = io.StringIO()
     try:

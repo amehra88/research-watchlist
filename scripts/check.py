@@ -9,6 +9,10 @@ Checks:
   4. Every system.file, skills[].path, callable_agents[].manifest in agent.yaml
      and subagent yamls resolves to an existing file/dir.
   5. Every managed-agents/<slug>/ has agent.yaml, README.md, steering-examples.json.
+  6. Every notes/*/_thesis.md parses and validates (thesis_io).
+  7. Every config/watchlist.yaml theme slug has a config/theme_polarity.yaml entry,
+     and every theme_polarity.yaml `competition_slugs:` entry is a real watchlist
+     slug (RIS5 Part A pre-merge fix 1).
 
 Exit 0 if clean, 1 otherwise. Requires: pyyaml.
 """
@@ -37,47 +41,40 @@ def rel(p: Path) -> str:
     return str(p.relative_to(ROOT))
 
 
-# --- 1. YAML parse ----------------------------------------------------------
-for yml in sorted(MANAGED.rglob("*.yaml")):
-    checked += 1
+def theme_polarity_issues(watchlist_path: Path, polarity_path: Path) -> list[str]:
+    """Every slug under `watchlist_path`'s `themes:` block must have an entry in
+    `polarity_path`, and every `competition_slugs:` entry there must itself be a real
+    watchlist theme slug. `[]` when `watchlist_path` doesn't exist (nothing to check --
+    lets this function run standalone against a fixture pair in tests).
+
+    scripts/thesis/theme_polarity.py's load()/competition_slugs() already fail loud
+    (ValueError) as the RUNTIME backstop for insider_pull.py/etf_evidence.py -- a new
+    theme added to the watchlist without a polarity entry must never silently reach
+    those crons. This wraps the SAME two calls as a build-time lint reported through
+    check.py's ordinary issue list (a coverage gap shows up on the next `check.py` run,
+    not the next 15:00 production cron), without adding any try/except at those call
+    sites themselves.
+    """
+    watchlist_path, polarity_path = Path(watchlist_path), Path(polarity_path)
+    if not watchlist_path.is_file():
+        return []
+    sys.path.insert(0, str(ROOT / "scripts"))
     try:
-        with open(yml) as f:
-            yaml.safe_load(f)
-    except yaml.YAMLError as e:
-        err(f"YAML parse: {rel(yml)}: {e}")
-
-# --- 2. JSON parse ----------------------------------------------------------
-json_globs = [
-    ".claude-plugin/marketplace.json",
-    "plugins/**/.claude-plugin/plugin.json",
-    "managed-agent-cookbooks/*/steering-examples.json",
-]
-for pat in json_globs:
-    for jf in sorted(ROOT.glob(pat)):
-        checked += 1
-        try:
-            json.loads(jf.read_text())
-        except json.JSONDecodeError as e:
-            err(f"JSON parse: {rel(jf)}: {e}")
-
-# --- 3. agent.md frontmatter -----------------------------------------------
-for md in sorted(PLUGINS.glob("agent-plugins/*/agents/*.md")):
-    checked += 1
-    text = md.read_text()
-    if not text.startswith("---"):
-        err(f"frontmatter: {rel(md)}: missing leading ---")
-        continue
+        from thesis import theme_polarity as _tp
+    except ImportError as e:
+        return [f"theme_polarity: coverage check skipped ({e})"]
+    out: list[str] = []
     try:
-        _, fm, _ = text.split("---", 2)
-        meta = yaml.safe_load(fm)
-        for k in ("name", "description"):
-            if k not in meta:
-                err(f"frontmatter: {rel(md)}: missing '{k}'")
-    except (ValueError, yaml.YAMLError) as e:
-        err(f"frontmatter: {rel(md)}: {e}")
+        _tp.load(polarity_path, watchlist_path)
+    except (FileNotFoundError, ValueError) as e:
+        out.append(f"theme_polarity coverage: {e}")
+    try:
+        _tp.competition_slugs(polarity_path, watchlist_path)
+    except (FileNotFoundError, ValueError) as e:
+        out.append(f"theme_polarity competition_slugs: {e}")
+    return out
 
 
-# --- 4. reference resolution -----------------------------------------------
 def check_refs(yml: Path) -> None:
     try:
         data = yaml.safe_load(yml.read_text()) or {}
@@ -108,80 +105,135 @@ def check_refs(yml: Path) -> None:
                 err(f"ref: {rel(yml)}: callable_agents.manifest -> {c['manifest']} (not found)")
 
 
-for yml in sorted(MANAGED.rglob("*.yaml")):
-    check_refs(yml)
+def main() -> int:
+    global checked
+    errors.clear()
+    checked = 0
 
-# --- 4b. agent-plugin bundled skills match vertical source -----------------
-import filecmp  # noqa: E402
-import re  # noqa: E402
-
-src_by_name = {p.name: p for p in PLUGINS.glob("vertical-plugins/*/skills/*") if p.is_dir()}
-for bundled in sorted(PLUGINS.glob("agent-plugins/*/skills/*")):
-    if not bundled.is_dir():
-        continue
-    src = src_by_name.get(bundled.name)
-    if not src:
-        err(f"bundled-skill: {rel(bundled)}: no vertical-plugins source named '{bundled.name}'")
-        continue
-    cmp = filecmp.dircmp(src, bundled)
-    if cmp.diff_files or cmp.left_only or cmp.right_only:
-        err(
-            f"bundled-skill: {rel(bundled)}: drifted from {rel(src)} "
-            f"(run scripts/sync-agent-skills.py)"
-        )
-
-# --- 4b2. agent.md skill references exist in the agent's own bundle --------
-for md in sorted(PLUGINS.glob("agent-plugins/*/agents/*.md")):
-    slug = md.parents[1].name
-    sk_dir = PLUGINS / "agent-plugins" / slug / "skills"
-    bundle = {p.name for p in sk_dir.iterdir() if p.is_dir()} if sk_dir.is_dir() else set()
-    for ref in set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)+)`", md.read_text())):
-        if ref in src_by_name and ref not in bundle:
-            err(
-                f"agent-prose: {rel(md)}: references `{ref}` but "
-                f"plugins/agent-plugins/{slug}/skills/{ref}/ is not bundled"
-            )
-
-# --- 4c. marketplace source paths resolve ----------------------------------
-mp = ROOT / ".claude-plugin" / "marketplace.json"
-for p in json.loads(mp.read_text()).get("plugins", []):
-    src = (ROOT / p["source"]).resolve()
-    if not (src / ".claude-plugin" / "plugin.json").is_file():
-        err(f"marketplace: {p['name']} source -> {p['source']} (no plugin.json)")
-
-# --- 5. required files per managed-agent -----------------------------------
-for d in sorted(MANAGED.iterdir()):
-    if not d.is_dir():
-        continue
-    for req in ("agent.yaml", "README.md", "steering-examples.json"):
-        if not (d / req).is_file():
-            err(f"missing: {rel(d)}/{req}")
-
-# --- 6. thesis files (notes/*/_thesis.md) -----------------------------------
-sys.path.insert(0, str(ROOT / "scripts"))
-try:
-    from thesis import thesis_io as _tio
-    for th in sorted((ROOT / "notes").glob("*/_thesis.md")):
+    # --- 1. YAML parse ------------------------------------------------------
+    for yml in sorted(MANAGED.rglob("*.yaml")):
         checked += 1
         try:
-            _fm = _tio.load(th.parent.name) or {}
-        except Exception as e:  # noqa: BLE001
-            err(f"thesis: {rel(th)}: unreadable ({type(e).__name__}: {e})")
-            continue
-        for e in _tio.validate(_fm):
-            err(f"thesis: {rel(th)}: {e}")
-        if _fm.get("ticker") != th.parent.name:
-            err(f"thesis: {rel(th)}: ticker {_fm.get('ticker')!r} != directory {th.parent.name}")
-    _missing = [t for t in _tio.universe() if not t.endswith(".pvt") and not (ROOT / "notes" / t / "_thesis.md").exists()]
-    if _missing:
-        print(f"WARN thesis: {len(_missing)} T1/T2 ticker(s) without _thesis.md: {', '.join(_missing)}")
-except ImportError as e:
-    print(f"WARN thesis: validation skipped ({e})")
+            with open(yml) as f:
+                yaml.safe_load(f)
+        except yaml.YAMLError as e:
+            err(f"YAML parse: {rel(yml)}: {e}")
 
-# --- report ----------------------------------------------------------------
-if errors:
-    print(f"FAIL — {len(errors)} issue(s) across {checked} file(s):\n", file=sys.stderr)
-    for e in errors:
-        print(f"  ✗ {e}", file=sys.stderr)
-    sys.exit(1)
-print(f"OK — {checked} file(s) checked, 0 issues.")
+    # --- 2. JSON parse -------------------------------------------------------
+    json_globs = [
+        ".claude-plugin/marketplace.json",
+        "plugins/**/.claude-plugin/plugin.json",
+        "managed-agent-cookbooks/*/steering-examples.json",
+    ]
+    for pat in json_globs:
+        for jf in sorted(ROOT.glob(pat)):
+            checked += 1
+            try:
+                json.loads(jf.read_text())
+            except json.JSONDecodeError as e:
+                err(f"JSON parse: {rel(jf)}: {e}")
+
+    # --- 3. agent.md frontmatter ----------------------------------------------
+    for md in sorted(PLUGINS.glob("agent-plugins/*/agents/*.md")):
+        checked += 1
+        text = md.read_text()
+        if not text.startswith("---"):
+            err(f"frontmatter: {rel(md)}: missing leading ---")
+            continue
+        try:
+            _, fm, _ = text.split("---", 2)
+            meta = yaml.safe_load(fm)
+            for k in ("name", "description"):
+                if k not in meta:
+                    err(f"frontmatter: {rel(md)}: missing '{k}'")
+        except (ValueError, yaml.YAMLError) as e:
+            err(f"frontmatter: {rel(md)}: {e}")
+
+    # --- 4. reference resolution ----------------------------------------------
+    for yml in sorted(MANAGED.rglob("*.yaml")):
+        check_refs(yml)
+
+    # --- 4b. agent-plugin bundled skills match vertical source -----------------
+    import filecmp  # noqa: E402
+    import re  # noqa: E402
+
+    src_by_name = {p.name: p for p in PLUGINS.glob("vertical-plugins/*/skills/*") if p.is_dir()}
+    for bundled in sorted(PLUGINS.glob("agent-plugins/*/skills/*")):
+        if not bundled.is_dir():
+            continue
+        src = src_by_name.get(bundled.name)
+        if not src:
+            err(f"bundled-skill: {rel(bundled)}: no vertical-plugins source named '{bundled.name}'")
+            continue
+        cmp = filecmp.dircmp(src, bundled)
+        if cmp.diff_files or cmp.left_only or cmp.right_only:
+            err(
+                f"bundled-skill: {rel(bundled)}: drifted from {rel(src)} "
+                f"(run scripts/sync-agent-skills.py)"
+            )
+
+    # --- 4b2. agent.md skill references exist in the agent's own bundle --------
+    for md in sorted(PLUGINS.glob("agent-plugins/*/agents/*.md")):
+        slug = md.parents[1].name
+        sk_dir = PLUGINS / "agent-plugins" / slug / "skills"
+        bundle = {p.name for p in sk_dir.iterdir() if p.is_dir()} if sk_dir.is_dir() else set()
+        for ref in set(re.findall(r"`([a-z0-9]+(?:-[a-z0-9]+)+)`", md.read_text())):
+            if ref in src_by_name and ref not in bundle:
+                err(
+                    f"agent-prose: {rel(md)}: references `{ref}` but "
+                    f"plugins/agent-plugins/{slug}/skills/{ref}/ is not bundled"
+                )
+
+    # --- 4c. marketplace source paths resolve ----------------------------------
+    mp = ROOT / ".claude-plugin" / "marketplace.json"
+    for p in json.loads(mp.read_text()).get("plugins", []):
+        src = (ROOT / p["source"]).resolve()
+        if not (src / ".claude-plugin" / "plugin.json").is_file():
+            err(f"marketplace: {p['name']} source -> {p['source']} (no plugin.json)")
+
+    # --- 5. required files per managed-agent -----------------------------------
+    for d in sorted(MANAGED.iterdir()):
+        if not d.is_dir():
+            continue
+        for req in ("agent.yaml", "README.md", "steering-examples.json"):
+            if not (d / req).is_file():
+                err(f"missing: {rel(d)}/{req}")
+
+    # --- 6. thesis files (notes/*/_thesis.md) -----------------------------------
+    sys.path.insert(0, str(ROOT / "scripts"))
+    try:
+        from thesis import thesis_io as _tio
+        for th in sorted((ROOT / "notes").glob("*/_thesis.md")):
+            checked += 1
+            try:
+                _fm = _tio.load(th.parent.name) or {}
+            except Exception as e:  # noqa: BLE001
+                err(f"thesis: {rel(th)}: unreadable ({type(e).__name__}: {e})")
+                continue
+            for e in _tio.validate(_fm):
+                err(f"thesis: {rel(th)}: {e}")
+            if _fm.get("ticker") != th.parent.name:
+                err(f"thesis: {rel(th)}: ticker {_fm.get('ticker')!r} != directory {th.parent.name}")
+        _missing = [t for t in _tio.universe() if not t.endswith(".pvt") and not (ROOT / "notes" / t / "_thesis.md").exists()]
+        if _missing:
+            print(f"WARN thesis: {len(_missing)} T1/T2 ticker(s) without _thesis.md: {', '.join(_missing)}")
+    except ImportError as e:
+        print(f"WARN thesis: validation skipped ({e})")
+
+    # --- 7. theme polarity coverage (RIS5 Part A pre-merge fix 1) ---------------
+    checked += 1
+    for issue in theme_polarity_issues(ROOT / "config" / "watchlist.yaml", ROOT / "config" / "theme_polarity.yaml"):
+        err(issue)
+
+    # --- report ------------------------------------------------------------
+    if errors:
+        print(f"FAIL — {len(errors)} issue(s) across {checked} file(s):\n", file=sys.stderr)
+        for e in errors:
+            print(f"  ✗ {e}", file=sys.stderr)
+        return 1
+    print(f"OK — {checked} file(s) checked, 0 issues.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

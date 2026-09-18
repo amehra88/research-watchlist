@@ -22,6 +22,7 @@ sys.path.insert(0, str(REPO / "scripts"))
 from lib import claude_p                                   # noqa: E402
 from newsdigest.classify_llm import _detect_session_limit, SessionLimitError  # noqa: E402
 from thesis import STATE_DIR, extract_json, save_failed_reply, thesis_io as tio   # noqa: E402
+from thesis import score_reads                              # noqa: E402
 from thesis.sources import Evidence, collect_all           # noqa: E402
 
 MODEL = "claude-sonnet-4-6"
@@ -32,7 +33,6 @@ CHAR_CAP = 12_000
 DEFAULT_MAX_BATCHES = 3
 DEFAULT_LOOKBACK_DAYS = 3
 SYSTEM = "You are a buy-side analyst testing thesis assumptions against new evidence. Output JSON only."
-_REC_RE = re.compile(r"(?:drift to|revise to|propose(?: initial score)?)\s*\**\s*([1-5][+-]?)", re.I)
 
 
 def _precheck(stdout: str):
@@ -82,22 +82,48 @@ def parse_verdicts(text: str, evidence: list[Evidence], valid_ids: set[str]) -> 
     return out
 
 
-def lift_score_recs(note_text: str) -> dict[str, str]:
-    """Explicit 'drift to X' / 'revise to X' / 'propose X' recommendations in an earnings note, by score key."""
-    out = {}
-    sec = {}
-    for m in re.finditer(r"## (5|6|7)\..*?(?=\n## |\Z)", note_text, re.S):
-        sec[m.group(1)] = m.group(0)
-    if "5" in sec and (r := _REC_RE.search(sec["5"])):
-        out["ai_positioning"] = r.group(1)
-    if "6" in sec:
-        for label, key in (("Innovation rate", "competitive_advantage.innovation_rate"), ("Distribution", "competitive_advantage.distribution"), ("Overall", "competitive_advantage.overall")):
-            blk = re.search(rf"\*\*{label}\*\*.*?(?=\n- \*\*|\Z)", sec["6"], re.S)
-            if blk and (r := _REC_RE.search(blk.group(0))):
-                out[key] = r.group(1)
-    if "7" in sec and (r := _REC_RE.search(sec["7"])):
-        out["potential_investor_interest.score"] = r.group(1)
+def lift_score_recs(note_text: str, note_id: str | None = None, applied: dict | None = None,
+                     out_path: Path | None = None) -> dict[str, str]:
+    """Explicit score-recommendation lines (all six verb forms) in an earnings/conference note, by score key.
+
+    Returns axis -> value only for proposal-worthy verbs (drift/revise/propose); hold/populate are
+    reaffirmations and never appear in the returned dict -- this is the semantics run_ticker's
+    proposed_scores logic has always relied on, unchanged.
+
+    When note_id is given (a live ingest, not a dry run), every parsed recommendation -- all six
+    verbs, not just the proposal-worthy three -- is additionally recorded as a row in
+    state/thesis/score_reads.jsonl via score_reads.parse_recs/build_rows/append_rows, so
+    reaffirmations ('hold at', 'Populate as') leave a record too.
+    """
+    recs = score_reads.parse_recs(note_text)
+    out = {r["axis"]: r["value"] for r in recs if r["verb"] in ("drift", "revise", "propose")}
+    if note_id is not None:
+        ts = datetime.now(timezone.utc).isoformat()
+        rows = score_reads.build_rows(note_id, note_text, applied, ts)
+        score_reads.append_rows(out_path or score_reads.SCORE_READS, rows)
     return out
+
+
+def score_rec_text(e: Evidence) -> str | None:
+    """Full note text to hand to lift_score_recs, or None if `e` carries no §5/§6/§7.
+
+    earnings_note Evidence.text already keeps §5/6/7 (collectors.earnings_notes_since's
+    section allowlist includes them) -- use it as-is, no extra disk read. conference
+    Evidence.text is stripped to §2-4 (the evidence-matching prompt only needs the
+    Q&A/guidance sections), so §5/6/7 is never in it; for a file-backed conference note
+    (source_id is a real notes/<T>/...-conf-*.md path, not a pg-derived "exch:..." id)
+    read the file fresh to recover them. The evidence-matching text (e.text) itself is
+    untouched either way.
+    """
+    if e.source == "earnings_note":
+        return e.text
+    if e.source == "conference" and e.source_id.startswith("notes/") and e.source_id.endswith(".md"):
+        try:
+            return (REPO / e.source_id).read_text(encoding="utf-8", errors="replace")
+        except (OSError, UnicodeDecodeError) as exc:
+            print(f"WARN score_rec_text: could not read {e.source_id}: {exc}", file=sys.stderr)
+            return None
+    return None
 
 
 def rows_from_4b(note_text: str, e: Evidence, valid_ids: set[str]) -> list[dict]:
@@ -171,12 +197,27 @@ def run_ticker(ticker: str, since: date, today: date, dry_run: bool = False, wat
     valid = {a["id"] for a in fm["assumptions"] if a.get("status") != "retired"}
     ts = datetime.now(timezone.utc).isoformat()
     rows, change_rows = [], []
-    # earnings notes: §4b verdicts + explicit score recommendations are lifted without an LLM call
+    # earnings notes: §4b verdicts are lifted without an LLM call; earnings + conference
+    # notes both get their explicit score recommendations (§5/§6/§7) lifted the same way
     for e in evidence:
-        if e.source != "earnings_note":
+        if e.source == "earnings_note":
+            rows += rows_from_4b(e.text, e, valid)
+        rec_text = score_rec_text(e)
+        if rec_text is None:
             continue
-        rows += rows_from_4b(e.text, e, valid)
-        for k, v in lift_score_recs(e.text).items():
+        # score_reads.jsonl is a real filesystem write: skip it on --dry-run like every other side effect below
+        note_id = e.source_id[len("notes/"):] if e.source_id.startswith("notes/") else e.source_id
+        rec_kwargs = {} if dry_run else {"note_id": note_id, "applied": fm.get("scores", {})}
+        # RIS5 Part A pre-merge fix 6: a malformed source_id (e.g. no "/", so
+        # score_reads.parse_note_id's ticker/filename split raises) must never abort the
+        # 15:00 production run for the WHOLE ticker over one bad evidence item -- log and
+        # move on to the next item instead.
+        try:
+            recs = lift_score_recs(rec_text, **rec_kwargs)
+        except Exception as exc:  # noqa: BLE001
+            print(f"WARN lift_score_recs failed for {e.source_id}: {type(exc).__name__}: {exc}", file=sys.stderr)
+            continue
+        for k, v in recs.items():
             cur = (fm.setdefault("proposed_scores", {}) or {}).get(k) or {}
             if fm.get("scores", {}).get(k) != v and cur.get("value") != v:
                 fm["proposed_scores"][k] = {"value": v, "since": e.date, "source": e.source_id}

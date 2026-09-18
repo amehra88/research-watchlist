@@ -130,9 +130,39 @@ def clusters(rows: list[dict]) -> dict[str, dict]:
             for t, c in sorted(acc.items())}
 
 
-def investor_assumptions(fm: dict) -> list[str]:
-    return [a["id"] for a in fm.get("assumptions") or [] if a.get("status") != "retired"
-            and ("potential_investor_interest" in str(a.get("derived_from", "")) or "investor" in a["id"])]
+def investor_assumptions(fm: dict, direction: str | None = None, bearish: set[str] | None = None,
+                          competition: set[str] | None = None) -> list[str]:
+    """Assumption ids an insider cluster's evidence row attaches to.
+
+    Always: assumptions derived from potential_investor_interest (or with 'investor' in
+    the id). When direction == 'challenge' (RIS5 A4 bear-side path), ALSO: any non-retired
+    assumption that (a) derives from the competitive_advantage scoring key (the same
+    substring-match convention as potential_investor_interest above, on the derived_from
+    shape actually seen in notes/*/_thesis.md, e.g. "competitive_advantage.overall: 4 —
+    '...'"), OR (b) carries a theme in the explicit competition_slugs list (RIS5 A4 fix 0
+    -- the RIS5 plan requires insider clusters to reach competitive-advantage assumptions
+    specifically, which polarity -1 alone under-covers: competition themes stay polarity 0
+    since a competition theme firing is two-sided), OR (c) carries a bearish (polarity -1,
+    e.g. margin-compression) theme. `bearish`/`competition` let callers/tests pass explicit
+    sets; the defaults load config/theme_polarity.yaml (see thesis.theme_polarity)."""
+    out = [a["id"] for a in fm.get("assumptions") or [] if a.get("status") != "retired"
+           and ("potential_investor_interest" in str(a.get("derived_from", "")) or "investor" in a["id"])]
+    if direction == "challenge":
+        if bearish is None:
+            from thesis.theme_polarity import bearish_themes
+            bearish = bearish_themes()
+        if competition is None:
+            from thesis.theme_polarity import competition_slugs
+            competition = competition_slugs()
+        seen = set(out)
+        for a in fm.get("assumptions") or []:
+            if a.get("status") == "retired" or a["id"] in seen:
+                continue
+            themes = set(a.get("themes") or [])
+            if ("competitive_advantage" in str(a.get("derived_from", ""))
+                    or themes & competition or themes & bearish):
+                out.append(a["id"]); seen.add(a["id"])
+    return out
 
 
 def evidence_rows(cl: dict[str, dict], theses: dict[str, dict], week_end: str) -> list[dict]:
@@ -148,7 +178,7 @@ def evidence_rows(cl: dict[str, dict], theses: dict[str, dict], week_end: str) -
             direction, why = "challenge", f"{ns} insiders sold open-market (ex-10b5-1) ${c['sell_value'] / 1e6:.1f}M in the week to {week_end}"
         else:
             continue
-        for aid in investor_assumptions(fm):
+        for aid in investor_assumptions(fm, direction):
             rows.append({"source": "insider", "source_id": f"insider:{t}:{week_end}", "ref": "InsiderScore get_insider_transactions (tenb5=E)",
                          "date": week_end, "title": "insider cluster", "assumption_id": aid, "direction": direction, "strength": 1,
                          "why": why, "quote": "", "cross_ticker": False, "ticker": t})

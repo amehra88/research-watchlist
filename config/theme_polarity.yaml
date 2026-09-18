@@ -1,0 +1,171 @@
+# Theme polarity for the bear-side ideas engine (RIS5 Part A, Task 4).
+#
+# Every slug in config/watchlist.yaml's `themes:` block gets exactly one value here:
+#   +1  the theme's label itself encodes a clearly positive/growth direction (assigned
+#       within the demand/supply families per rule 3 below, OR the single margins_pricing
+#       exception in rule 1 -- pricing_power_in_shortage, corrected in fix round 1)
+#    0  directionless / two-sided / a plain topic label (the default)
+#   -1  the theme's label itself encodes a bearish/challenge dynamic against a
+#       competitive-advantage or margin thesis (only assignable within the
+#       margins_pricing family, per the decision rule below)
+#
+# This is a closed decision procedure, not a per-slug editorial judgment call:
+#   1. margins_pricing family (5 slugs): each gets 0 or -1, individually decided and
+#      commented below, EXCEPT pricing_power_in_shortage: fix round 1 (RIS5 A4) corrected
+#      it to +1 on its own documented provenance (config/watchlist.yaml lines 100-102) --
+#      the family's {0,-1} scope was the original (wrong) call for that one slug specifically,
+#      not a hole in the rule for the other four. -1 itself is still reserved for this
+#      family; a "-1 for a supply or strategic slug" is never assigned here even where a
+#      name (e.g. china_export_controls) reads intuitively bearish.
+#   2. competition slugs (any slug with "competition"/"competitive" in its name,
+#      wherever it lives) -> 0. A competition theme firing says nothing by
+#      itself about which side of the competition it favors.
+#   3. demand/supply families -> +1 only where the slug's own label is clearly
+#      positive-framed (tailwinds/strength/buildout/adoption/deployments/ramp/
+#      de-risking-supply language); everything else in those families -> 0.
+#   4. strategic/macro_policy families -> 0 for every slug. These are topic
+#      labels (frontier_model_competition, ai_regulation, ...), not
+#      directional signals, even when a slug's own name contains a
+#      growth-sounding word (e.g. strategic's datacenter_buildout_pacing) --
+#      +1 is reserved for demand/supply per rule 3, deliberately not extended
+#      here.
+#   5. default -> 0.
+#
+# Consumer: scripts/thesis/insider_pull.py routes a `challenge` insider cluster to a
+# ticker's assumptions that (a) derive from the competitive_advantage scoring key, or
+# (b) carry a theme in the `competition_slugs:` list below, or (c) carry a theme whose
+# polarity == -1 above -- in addition to its existing potential_investor_interest
+# routing (RIS5 A4 fix 0: (a)/(b) added on top of the original (c)-only cut, per the
+# RIS5 plan's requirement that insider clusters must reach competitive-advantage
+# assumptions specifically, not just polarity -1 ones). See
+# scripts/thesis/theme_polarity.py: bearish_themes() for (c), competition_slugs() for
+# (b). Loaded via theme_polarity.py, which fails loud if a watchlist slug is missing
+# from the polarity mapping above, or if a competition_slugs entry below isn't a real
+# watchlist theme.
+#
+# Editing: manual, via Claude Code on droplet, same convention as watchlist.yaml.
+
+# ---------------------------------------------------------------------------
+# demand (18) -- rule 3: +1 only for clearly positive-framed labels
+# ---------------------------------------------------------------------------
+ad_market_strength: 1              # "strength" -- explicit positive-demand framing
+aerospace_defense_aftermarket: 0
+ai_infrastructure_capex: 0         # capex level alone isn't clearly bullish or bearish
+automotive_semiconductor_demand: 0 # generic cyclical demand, no inherent direction
+china_ai_infrastructure_demand: 0  # generic demand, no inherent direction
+china_consumer_demand: 0           # generic demand, no inherent direction
+data_center_deployment_constraints: 0   # "constraints" cuts both ways (bottleneck vs. scarcity pricing power) -- two-sided
+demographic_demand_tailwinds: 1    # "tailwinds" -- explicit positive-demand framing
+enterprise_ai_adoption: 1          # "adoption" -- explicit positive-demand framing
+hyperscaler_capex_buildout: 1      # "buildout" -- explicit positive-demand framing
+hyperscaler_revenue_concentration: 0   # "concentration" reads as much like a risk factor as a growth signal -- two-sided
+nand_demand_cycle: 0               # "_cycle" is two-directional by definition
+nuclear_energy_buildout: 1         # "buildout" -- explicit positive-demand framing
+pc_demand: 0                       # generic, mature-market demand, no inherent direction
+sovereign_ai_deployments: 1        # "deployments" -- explicit positive-adoption framing
+neocloud_demand: 0                 # generic demand, no inherent direction
+server_cpu_agentic_tam: 0          # a TAM sizing label, not itself a directional signal
+physical_ai_adoption: 1            # "adoption" -- explicit positive-demand framing
+
+# ---------------------------------------------------------------------------
+# supply (24) -- rule 2 (competition -> 0) + rule 3 (+1 only where clearly positive)
+# ---------------------------------------------------------------------------
+advanced_materials_ai_infra: 0
+ai_compute_topology: 0
+ai_infrastructure_software: 0
+china_export_controls: 0                    # reads bearish, but -1 is reserved for margins_pricing (rule 1); not "clearly positive" either -> 0
+chip_design_competition: 0                  # competition slug -> 0 (rule 2)
+cybersecurity_competitive_landscape: 0      # competition slug -> 0 (rule 2)
+foundry_capacity: 0
+handset_competition: 0                      # competition slug -> 0 (rule 2)
+hbm_competitive_landscape: 0                # competition slug -> 0 (rule 2)
+lithography_roadmap: 0
+networking_competitive_landscape: 0         # competition slug -> 0 (rule 2)
+observability_competitive_landscape: 0      # competition slug -> 0 (rule 2)
+platform_take_rate: 0
+semiconductor_cycle: 0                      # "_cycle" is two-directional by definition
+silicon_architecture_competition: 0         # competition slug -> 0 (rule 2)
+solar_supply_chain: 0
+space_supply_chain: 0
+thermal_management_cooling: 0
+advanced_packaging_substrate_supply: 0
+capacity_supply_tightness: 0                # tightness can mean pricing power (bullish, suppliers) or a growth bottleneck (bearish, buyers) -- two-sided, unlike pricing_power_in_shortage (which has an explicit, documented bullish-only provenance -- see that entry)
+co_packaged_optics_ramp: 1                  # "ramp" -- explicit positive-adoption framing
+laser_architecture_competition: 0           # competition slug -> 0 (rule 2)
+long_term_supply_agreements: 1              # LTAs replacing spot = de-risked, stabilizing demand visibility (per watchlist.yaml's own 2026-09-10 comment) -- clearly positive
+optical_speed_transition_1_6t: 0            # a mix-shift transition, no inherent direction
+
+# ---------------------------------------------------------------------------
+# margins_pricing (5) -- rule 1 (as originally scoped): each individually decided
+# between 0 and -1, EXCEPT pricing_power_in_shortage, which fix round 1 (RIS5 A4)
+# corrected to +1 -- see that entry's own comment for why the family scope doesn't
+# hold for it.
+# ---------------------------------------------------------------------------
+ai_inference_margin_compression: -1   # explicit margin compression -- a direct challenge signal to a margin/competitive-advantage thesis
+capex_vs_opex_shift: 0                # a structural spend-mix shift; which side it favors depends on which company/segment the theme fires against -- not a reliable challenge signal at the theme level
+networking_margin_trajectory: 0       # "trajectory" carries no inherent direction in its own label, and unlike the other margin slugs here it has no watchlist.yaml provenance tying it specifically to erosion -- kept neutral rather than inventing one
+software_seat_pricing_pressure: -1    # explicit pricing pressure -- a direct challenge signal to a pricing-power/competitive-advantage thesis
+pricing_power_in_shortage: 1          # RIS5 A4 fix round 1 correction (was 0): config/watchlist.yaml lines 100-102 ("added 2026-09-10 from
+                                       # the topic_map review (MARGINS): value capture / price increases while demand outruns supply (ASML,
+                                       # AMAT, CIEN, COHR)") document this as a BULLISH value-capture theme per its own provenance, not a
+                                       # bearish/challenge one -- despite living in the margins_pricing family, it doesn't belong in the {0,-1}
+                                       # scope the rest of that family is held to; +1 is the correct read, not a forced-neutral compromise
+
+# ---------------------------------------------------------------------------
+# strategic (21) -- rule 4: topic labels, always 0 (even datacenter_buildout_pacing:
+# +1 is reserved for demand/supply per rule 3, deliberately not extended here)
+# ---------------------------------------------------------------------------
+agent_framework_landscape: 0
+agentic_commerce: 0
+ai_agent_monetization: 0
+ai_generated_content: 0
+ai_native_vertical: 0
+ai_re_architected_incumbent: 0
+autonomous_vehicle_competition: 0     # competition slug -> 0 (rule 2)
+datacenter_buildout_pacing: 0         # rule 4: strategic family stays 0 despite "buildout" in the label
+defense_drones: 0
+energy_storage_buildout: 0            # rule 4: strategic family stays 0 despite "buildout" in the label
+foundation_model_economics: 0
+frontier_model_competition: 0         # competition slug -> 0 (rule 2)
+humanoid_robotics_competition: 0      # competition slug -> 0 (rule 2)
+inference_compute_economics: 0
+local_commerce_delivery: 0
+model_commoditization: 0
+model_efficiency_evolution: 0
+search_disruption: 0
+space_economy: 0
+surveillance_security_tech: 0
+vertical_ai_applications: 0
+
+# ---------------------------------------------------------------------------
+# macro_policy (4) -- rule 4: always 0
+# ---------------------------------------------------------------------------
+ai_regulation: 0
+antitrust_action: 0
+china_us_tensions: 0
+fed_policy_tech: 0
+
+# ---------------------------------------------------------------------------
+# competition_slugs (RIS5 A4 fix 0) -- every watchlist theme with competition/
+# competitive/market-share semantics, listed explicitly rather than pattern-matched
+# at runtime. These all stay polarity 0 above (rule 2: a competition theme firing is
+# two-sided, it doesn't confirm or challenge on its own) -- this list is a SEPARATE,
+# additive routing signal insider_pull.py uses only for the challenge direction: an
+# insider-selling cluster on a name whose thesis includes a live competition theme is
+# evidence worth attaching to that competitive-advantage assumption, regardless of
+# which way the theme itself points. theme_polarity.py validates every entry here is
+# a real config/watchlist.yaml theme slug.
+# ---------------------------------------------------------------------------
+competition_slugs:
+  - autonomous_vehicle_competition
+  - chip_design_competition
+  - cybersecurity_competitive_landscape
+  - frontier_model_competition
+  - handset_competition
+  - hbm_competitive_landscape
+  - humanoid_robotics_competition
+  - laser_architecture_competition
+  - networking_competitive_landscape
+  - observability_competitive_landscape
+  - platform_take_rate       # market-share/take-rate semantics, not literally "competition" in the name
+  - silicon_architecture_competition

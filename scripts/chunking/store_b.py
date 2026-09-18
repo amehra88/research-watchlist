@@ -220,7 +220,20 @@ def credibility_score(records: list[dict]) -> dict:
 # ---------------------------------------------------------------------------
 class MetricsStore:
     """File-backed Store B. metrics.jsonl mirrors schema.sql `metrics`;
-    credibility.json caches the per-(ticker,metric) §2a score."""
+    credibility.json caches the per-(ticker,metric) §2a score.
+
+    RIS5 A3 diagnosis (2026-09-17): this file's mtime is 2026-06-12 and does not move —
+    that is EXPECTED, not stale/broken. CHUNK_STORE_BACKEND was pinned to 'pg' in
+    /root/podcasts/.env that same week (see the "managed-pgvector cutover" memory note),
+    so get_metrics_store() below has returned PgMetricsStore ever since; this file-backed
+    class is simply not the active write path anymore and metrics.jsonl is an orphaned
+    pre-cutover artifact. The live store is PgMetricsStore: confirmed current via
+    logs/store_b_weekly.log (Sunday cron, ingest_metrics.py --cron), most recently a clean
+    run on 2026-09-13 writing 6236 rows / 260 credibility pairs. The dedicated weekly cron
+    line itself was only added to crontab ~2026-09-10 (see /root/backups/crontab.pre_conf_
+    cron_20260910_134821.bak) — 09-13 is its first scheduled run, which is why the append-
+    mode log has exactly one run's worth of output rather than fourteen weeks' worth.
+    """
 
     def __init__(self, store_dir: Path = STORE_DIR):
         self.dir = Path(store_dir)

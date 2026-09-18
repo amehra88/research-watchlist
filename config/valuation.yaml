@@ -1,0 +1,264 @@
+# RIS5 A5 — expectations-gap valuation config (scripts/valuation/expectations.py).
+#
+# Never a price target. This file tunes the reverse-DCF-lite (Layer 1, "what is
+# priced"), the supported-growth durability model (Layer 2, "what the evidence
+# supports"), the gap thresholds, and the sector-family defaults used whenever
+# a ticker has no live fundamentals row yet (scripts/valuation/fundamentals.py's
+# FUNDAMENTALS_METRICS is empty pending the FactSet metric-code probe, so on the
+# first live run EVERY ticker hits the sector-family default path below -- this
+# is expected, not a bug, and every card that uses a default is flagged
+# "margin_default").
+
+# ---------------------------------------------------------------------------
+# Layer 1 — reverse-DCF-lite (brief's exact defaults, verbatim)
+# ---------------------------------------------------------------------------
+discount_rate: 0.10
+terminal_growth: 0.03
+years: 5
+
+# Sensitivity deltas shown on every card (brief: "±1pt discount rate and ±3pt
+# terminal margin").
+sensitivity:
+  discount_rate_delta: 0.01
+  terminal_margin_delta: 0.03
+
+# Bisection solve bounds/tolerance. g_lo/g_hi bracket the constant 5y growth
+# rate solved for; PV(g) is monotonically increasing in g only while every
+# margin_t along the path is positive AND discount_rate > terminal_growth
+# (Gordon denominator) -- expectations.py guards both and flags rather than
+# returning a bisection result when either breaks. A solved EV outside
+# [PV(g_lo), PV(g_hi)] clips to the boundary and is flagged
+# "implied_growth_out_of_bracket" (still shown, not hidden).
+bisection:
+  g_lo: -0.90
+  g_hi: 5.00
+  max_iter: 100
+  tol_relative: 0.000001   # |PV(g) - EV| / EV convergence target (tighter than
+                            # the 0.1% test tolerance so the test has margin)
+
+# terminal_margin per sector family (brief's exact values, verbatim). Applied
+# unless `overrides.<TICKER>.terminal_margin` is set below. This is the ONLY
+# table in this file with brief-specified numbers; every other default below
+# (fcf_margin_now, downside haircut, sector keyword map) is an operator-
+# adjustable interpretive call the brief did not enumerate a value for --
+# documented in each block's own comment and in the A5 report.
+terminal_margin_by_family:
+  software: 0.30
+  semis: 0.35
+  hardware: 0.12
+  internet: 0.25
+  default: 0.20
+
+# FCF-margin-"now" fallback (used only when scripts/valuation/fundamentals.py
+# has no live row for the ticker -- flags: ["margin_default"]). The brief
+# names the terminal-margin table explicitly but not this one. Interpretive
+# call: reuse the SAME per-family values as terminal_margin_by_family, i.e. a
+# flat (non-converging) margin path by default, which is the most defensible
+# assumption with zero fundamentals data on hand -- not "we think margins
+# expand/compress by X" with no evidence behind it. Once fundamentals.py goes
+# live this table becomes the true fallback for names FactSet doesn't cover;
+# an operator who wants a non-flat default path can diverge these numbers
+# from terminal_margin_by_family at that point.
+fcf_margin_now_by_family:
+  software: 0.30
+  semis: 0.35
+  hardware: 0.12
+  internet: 0.25
+  default: 0.20
+
+# Per-ticker overrides (brief: "overridable per ticker"). Both keys optional per entry.
+# NOTE (fix round 4, V3): an override feeds the DEFAULT leg of the margin selection --
+# a name with positive FY3 consensus FCF still uses its own consensus margin, because a
+# real forward number beats a set one. Overrides therefore bite exactly where the sector
+# table used to: names with no usable consensus FCF.
+#
+# GOOGL/GOOG: the same company in two share classes, both with NEGATIVE consensus FCF at
+# FY1 and FY3, so both fall to the sector table -- and their differing watchlist theme tags
+# classified them into DIFFERENT families (GOOGL -> default 20%, GOOG -> software 30%),
+# which on the 2026-09-17 run produced implied growth 27.29% vs 17.17% and gap +12.14 vs
+# +2.18 for ONE company. B1 scores on that field, so one share class could open a Reduce
+# while the other did not. Pinned to the plan's `internet` value (0.25), which is the family
+# Alphabet belongs in and which neither ticker was getting. Operator-adjustable; the real
+# fix is either aligned theme tags or consensus FCF that isn't negative.
+overrides:
+  GOOGL:
+    terminal_margin: 0.25
+  GOOG:
+    terminal_margin: 0.25
+# example:
+#   NVDA:
+#     terminal_margin: 0.40
+#     fcf_margin_now: 0.38
+
+# ---------------------------------------------------------------------------
+# Sector-family classification (interpretive call -- config/watchlist.yaml
+# entries carry NO `sector` field; only `themes`). Rule: classify each of the
+# ticker's theme slugs independently by substring match against the keyword
+# lists below, checked in PRIORITY order (first family whose keyword list
+# contains a hit wins that theme -- a theme is assigned to exactly one
+# family). Then majority-vote the ticker's per-theme family assignments;
+# a theme matching no keyword contributes no vote. Ties (including "zero
+# themes matched anything") break to PRIORITY order, first entry with the max
+# vote count; a ticker with zero votes at all gets "default". Verified against
+# the full T1+T2+T3 universe 2026-09-17: NVDA/AVGO -> semis (both tie-broken
+# via silicon_architecture_competition + PRIORITY order), COHR -> hardware
+# (networking_competitive_landscape + thermal_management_cooling outvote the
+# single silicon_architecture_competition hit) -- see the A5 report for the
+# full family distribution.
+# ---------------------------------------------------------------------------
+sector_family_priority: [semis, software, internet, hardware]
+
+sector_keywords:
+  semis:
+    - silicon
+    - semiconductor
+    - chip_design
+    - hbm
+    - foundry
+    - lithography
+    - wafer
+    - nand_demand
+    - advanced_packaging
+    - advanced_materials_ai_infra
+  software:
+    - ai_infrastructure_software
+    - cybersecurity
+    - observability
+    - platform_take_rate
+    - agent_framework
+    - agentic_commerce
+    - ai_agent_monetization
+    - vertical_ai_applications
+    - ai_native_vertical
+    - model_commoditization
+    - model_efficiency_evolution
+    - foundation_model_economics
+    - frontier_model_competition
+    - ai_generated_content
+    - inference_compute_economics
+    - ai_re_architected_incumbent
+    - software
+  internet:
+    - ad_market_strength
+    - search_disruption
+    - local_commerce_delivery
+    - china_consumer_demand
+    - hyperscaler_revenue_concentration
+    - demographic_demand_tailwinds
+  hardware:
+    - handset_competition
+    - pc_demand
+    - networking
+    - defense_drones
+    - aerospace_defense_aftermarket
+    - autonomous_vehicle_competition
+    - humanoid_robotics_competition
+    - space_economy
+    - space_supply_chain
+    - energy_storage_buildout
+    - solar_supply_chain
+    - nuclear_energy_buildout
+    - surveillance_security_tech
+    - thermal_management_cooling
+    - co_packaged_optics_ramp
+    - optical_speed_transition_1_6t
+    - laser_architecture_competition
+
+# ---------------------------------------------------------------------------
+# Layer 2 — supported_growth (RIS5 A5 fix round 1, F3: a FADE, not a flat
+# multiplier on the near-term CAGR). Years 1-3 run at the consensus FY1->FY3
+# CAGR; years 4-5 fade toward terminal_growth by `persistence` (see F3's
+# formula in expectations.py's supported_growth() docstring and the A5
+# report's "Fix round 1" section). durability_score replaces the old
+# durability_multiplier concept entirely.
+# ---------------------------------------------------------------------------
+supported_growth:
+  durability:
+    # F3 binding ruling: durability_score = sum of 3 independently-clipped
+    # terms, each bounded at +/- 1/6 so the sum cannot exceed +/- 0.5 (the
+    # brief's own durability_score bound). 1/6 stored at float precision
+    # (0.16666666666666666) so config and code bounds are EXACTLY equal, per
+    # F3 ("config/valuation.yaml bounds must equal the real ones").
+    stage_term_bound: 0.16666666666666666          # = 1/6
+    stage_term_per_level: 0.05                      # pp of term per stage-rank-level of lead/lag (unchanged scale, only the bound moved)
+    credibility_term_bound: 0.16666666666666666     # = 1/6
+    reads_term_bound: 0.16666666666666666           # = 1/6
+    durability_score_bounds: [-0.5, 0.5]            # F3: durability_score in [-0.5, +0.5]
+  # Absolute sanity bounds on supported_growth.base (the 5-year CAGR of the
+  # fade path) -- never let a durability swing + fade produce an
+  # unsupportable base rate.
+  base_bounds: [-0.50, 2.00]
+  # Reads-trend axis selection (amendment measured 2026-09-17): only 8/178
+  # tickers clear >=3 dated reads on ai_positioning ALONE (the same 8 clear it
+  # on every one of the 5 structured-read axes, since all 5 come from the same
+  # notes). Rather than pin one axis and starve the term everywhere else,
+  # average across every axis that individually clears the >=3 gate for that
+  # ticker, and omit the axis entirely if it doesn't clear. A ticker with zero
+  # qualifying axes gets the whole reads_term omitted ("insufficient history").
+  reads_min_dated: 3
+  # V1 (RIS5 A5 fix round 4) -- the STREET HAIRCUT. supported_growth no longer extends
+  # the consensus CAGR as given: it shrinks it toward terminal_growth by
+  #   lambda = clip(0.75 + 0.25*(2*cred - 1) + 0.15*breadth_ratio
+  #                 - 0.20*clip(log10(fy1_sales_musd / 10000), 0, 1), 0.50, 1.00)
+  # cred = the guidance/consensus track record (0.5 when unknown), breadth_ratio =
+  # (up-down)/(up+down) on FY1 EPS revisions, and the size term reaches its full -0.20 at
+  # $100bn+ of FY1 sales. The unhaircut (lambda = 1) path is still printed on every card
+  # as `base_street`/`gap_vs_street_pp`. Weights are operator-adjustable; the bounds are
+  # binding (a haircut may never cut more than half the excess over terminal growth, and
+  # may never MARK UP the street).
+  street_haircut:
+    base_const: 0.75
+    cred_weight: 0.25
+    breadth_weight: 0.15
+    size_weight: 0.20
+    size_ref_musd: 10000.0     # $10bn of FY1 sales -- below this there is no size penalty
+    bounds: [0.50, 1.00]
+  # V2: a hard ceiling on supported_growth.base (NOT on base_street, which is the printed
+  # lambda=1 diagnostic). No company sustains a >40% 5-year revenue CAGR often enough for
+  # the evidence side to assert it; uncapped, a few very-early-revenue names (CBRS 153%,
+  # NBIS 118%) dominated the gap cross-section that every card's gap_z is measured against.
+  base_cap: 0.40
+  # F5: downside is now RELATIVE (base * downside_multiplier), applied once
+  # when >=1 qualifying assumption is challenged -- replaces the old flat
+  # downside_haircut_pp (an absolute pp subtraction, which could push a small
+  # base negative disproportionately; a relative haircut scales with base).
+  # No brief-specified number -- interpretive call, operator-adjustable.
+  downside_multiplier: 0.85
+
+# ---------------------------------------------------------------------------
+# long_duration (amendment v1.2, L3; recalibrated RIS5 A5 fix round 2).
+# terminal_share_threshold was 0.75 in fix round 1 -- at a 10% discount rate a
+# 30% grower legitimately carries ~80% of EV past year 5, so 0.75 flagged
+# ordinary high-growth names as "long duration", not just genuinely
+# long-duration ones (pre-revenue/pre-profit or pipeline-stage stories).
+# Recalibrated to 0.90 (coordinator ruling). min_forward_years is now checked
+# against the SELECTED lens's own denominator (EPS/EBITDA/FCF/sales), not
+# always sales -- see forward_years_available_for_lens().
+# ---------------------------------------------------------------------------
+long_duration:
+  terminal_share_threshold: 0.90
+  min_forward_years: 3
+
+# V8 (amendment v1.2, 3): names the operator handles himself. "Companies like Tesla and
+# SpaceX are obviously tougher" -- for these the engine shows only what is priced
+# (implied growth, terminal share, the multiples) and never a gap or a
+# valuation_extreme, regardless of what the mechanical triggers say. Add a ticker here to
+# take it out of the engine's scoring without removing it from the universe.
+operator_handled: [TSLA, SPCX]
+
+# ---------------------------------------------------------------------------
+# Lenses
+# ---------------------------------------------------------------------------
+peer:
+  min_shared_themes: 2   # brief: "tickers sharing >= 2 themes"
+  min_peers_for_z: 3     # a stdev over <3 peers is noise -- median still shown at >=1
+
+history:
+  min_days_for_z: 60     # brief: "insufficient history below 60 daily points"
+
+# ---------------------------------------------------------------------------
+# valuation_extreme (brief's exact thresholds, verbatim)
+# ---------------------------------------------------------------------------
+valuation_extreme:
+  gap_pp_threshold: 8
+  peg_history_z_threshold: 2

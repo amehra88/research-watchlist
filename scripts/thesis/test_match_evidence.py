@@ -1,5 +1,5 @@
 """Run directly: python3 scripts/thesis/test_match_evidence.py"""
-import json, sys
+import json, sys, tempfile
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from thesis import match_evidence as M  # noqa: E402
@@ -50,8 +50,77 @@ def test_batches_respect_cap_and_keep_order():
     bs = M.batches(big, char_cap=12_000)
     assert [len(b) for b in bs] == [2, 2, 1] and bs[0][0].source_id == "n0"
 
+def test_score_rec_text_earnings_note_uses_evidence_text_unchanged():
+    e = Evidence("earnings_note", "notes/COHR/20260904-2Q27.md", "COHR", "2026-09-04", "x", "## 5. stub", "r")
+    assert M.score_rec_text(e) == "## 5. stub"
+
+def test_score_rec_text_conference_reads_full_file_not_stripped_evidence_text():
+    """conference Evidence.text is stripped to §2-4 (no §5/6/7); score_rec_text must re-read
+    the full note from disk so §5/6/7 recommendations are still lifted on live ingest."""
+    full_text = (Path(__file__).resolve().parent / "fixtures" / "score_reads" / "full_layout.md").read_text()
+    tmp_repo = Path(tempfile.mkdtemp())
+    (tmp_repo / "notes" / "COHR").mkdir(parents=True)
+    conf_path = tmp_repo / "notes" / "COHR" / "20260904-conf-analyst-day.md"
+    conf_path.write_text(full_text)
+    orig_repo = M.REPO
+    M.REPO = tmp_repo
+    try:
+        e = Evidence("conference", "notes/COHR/20260904-conf-analyst-day.md", "COHR", "2026-09-04",
+                     "analyst-day", "## 2. stub (§2-4 only, no §5/6/7)", "notes/COHR/20260904-conf-analyst-day.md")
+        text = M.score_rec_text(e)
+        assert text == full_text and "## 5." in text
+        # and it actually feeds lift_score_recs correctly, same as an earnings note would
+        out = M.lift_score_recs(text)
+        assert out == {"competitive_advantage.innovation_rate": "4+", "competitive_advantage.distribution": "3",
+                        "competitive_advantage.overall": "4"}
+    finally:
+        M.REPO = orig_repo
+
+def test_score_rec_text_none_for_non_file_backed_or_other_sources():
+    assert M.score_rec_text(Evidence("news", "notes/news/a.md", "COHR", "2026-09-02", "t", "x", "u")) is None
+    # pg-derived conference exchange excerpt: no on-disk note to re-read
+    assert M.score_rec_text(Evidence("conference", "exch:abc123", "COHR", "2026-09-02", "t", "x", "r")) is None
+
+def test_score_rec_text_missing_conf_file_returns_none_not_raise():
+    """RIS5 A1 fix round 2: a missing/unreadable conference note must never abort the
+    15:00 production run -- OSError/UnicodeDecodeError are caught and logged, not raised."""
+    e = Evidence("conference", "notes/ZZZZ/20260101-conf-does-not-exist.md", "ZZZZ", "2026-01-01",
+                 "x", "stub", "notes/ZZZZ/20260101-conf-does-not-exist.md")
+    assert M.score_rec_text(e) is None
+
+
+def test_run_ticker_malformed_source_id_does_not_abort_the_run():
+    """RIS5 Part A pre-merge fix 6: a source_id with no "/" makes score_reads.build_rows's
+    parse_note_id raise (ValueError: not enough values to unpack) -- run_ticker must catch
+    it, log, and keep going, not die for the whole ticker on one bad evidence item."""
+    from datetime import date
+
+    note_text = ("## 5. AI positioning signal\n- **Current score:** 4\n"
+                "- **Recommendation:** drift to 4+\n")
+    bad = Evidence("earnings_note", "bad-source-id-no-slash", "AAA", "2026-09-01", "t", note_text, "r")
+
+    tmp = Path(tempfile.mkdtemp())
+    orig = (M.tio.load, M.tio.save, M.collect_all, M._read_log, M._ask, M.LOG, M.CHANGES, M.WATERMARKS)
+    M.tio.load = lambda ticker: {"ticker": ticker, "assumptions": [], "scores": {}}
+    M.tio.save = lambda ticker, fm: None       # no real vault write in a test
+    M.collect_all = lambda ticker, since: [bad]
+    M._read_log = lambda: []
+    M._ask = lambda fm, sent, valid: []        # no live claude -p call in a test
+    M.LOG, M.CHANGES, M.WATERMARKS = tmp / "evidence_log.jsonl", tmp / "changes.jsonl", tmp / "watermarks.json"
+    try:
+        stats = M.run_ticker("AAA", since=date(2026, 9, 1), today=date(2026, 9, 17), dry_run=False)
+    finally:
+        (M.tio.load, M.tio.save, M.collect_all, M._read_log, M._ask, M.LOG, M.CHANGES, M.WATERMARKS) = orig
+    assert stats["ticker"] == "AAA" and stats["evidence"] == 1, stats
+
+
 if __name__ == "__main__":
     test_parse_verdicts_maps_by_index_and_validates(); test_lift_score_recs()
     test_earnings_break_becomes_strength3_row(); test_prompt_lists_every_assumption_and_item()
     test_batches_respect_cap_and_keep_order()
+    test_score_rec_text_earnings_note_uses_evidence_text_unchanged()
+    test_score_rec_text_conference_reads_full_file_not_stripped_evidence_text()
+    test_score_rec_text_none_for_non_file_backed_or_other_sources()
+    test_score_rec_text_missing_conf_file_returns_none_not_raise()
+    test_run_ticker_malformed_source_id_does_not_abort_the_run()
     print("OK test_match_evidence")
