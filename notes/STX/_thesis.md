@@ -26,13 +26,13 @@ assumptions:
     quarter-over-quarter
   - STX management reaffirms pricing-strategy language without disclosing new volume-discount
     arrangements in next earnings filing
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 6.0
+    confirm: 7.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-18'
   draft: true
 - id: datacenter_80pct_mix_holds
   statement: Data center revenue constituting 80% of STX total revenue — as reported

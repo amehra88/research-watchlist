@@ -109,10 +109,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
+    confirm: 3.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-18'
   draft: true
 - id: hyperrail_single_anchor_at_2q26
   statement: RLS Hyper-Rail revenue expected in 2027 was anchored by a single lead

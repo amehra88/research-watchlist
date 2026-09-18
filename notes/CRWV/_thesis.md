@@ -35,10 +35,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 4.0
+    confirm: 5.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-18'
   draft: true
 - id: crwv_debt_cost_conditions_held
   statement: The financing conditions that produced a ~300bps year-over-year reduction
@@ -61,7 +61,7 @@ assumptions:
   status_source: evidence
   pressure:
     confirm: 6.0
-    challenge: 2.0
+    challenge: 8.0
     window_days: 90
     last_evidence: '2026-09-17'
   draft: true
@@ -89,10 +89,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 2.0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-17'
   draft: true
 - id: crwv_a100_residual_pricing
   statement: 2020-vintage A100 GPU fleet was re-contracting at prices described as
@@ -116,8 +116,8 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
-    challenge: 0
+    confirm: 2.0
+    challenge: 1.0
     window_days: 90
     last_evidence: '2026-09-17'
   draft: true
@@ -177,9 +177,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-18'
   draft: true
 ---
 ## Rationale

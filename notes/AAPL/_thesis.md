@@ -141,9 +141,9 @@ assumptions:
   status_source: evidence
   pressure:
     confirm: 2.5
-    challenge: 9.0
+    challenge: 10.0
     window_days: 90
-    last_evidence: '2026-09-15'
+    last_evidence: '2026-09-17'
   draft: true
 - id: aapl_fcf_buyback_inv_int_support
   statement: FCF generation magnitude and buyback activity were, at scoring, the primary
@@ -163,9 +163,9 @@ assumptions:
   status_source: evidence
   pressure:
     confirm: 7.0
-    challenge: 1.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-18'
   draft: true
 ---
 ## Rationale

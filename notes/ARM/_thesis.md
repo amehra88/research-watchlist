@@ -32,7 +32,7 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 8.0
+    confirm: 10.0
     challenge: 0
     window_days: 90
     last_evidence: '2026-09-17'
@@ -58,10 +58,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 3.0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-17'
   draft: true
 - id: arm_anet_capex_additive
   statement: At scoring, AI infrastructure capex directed at compute silicon (ARM's

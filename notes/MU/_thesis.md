@@ -64,9 +64,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 10.0
-    challenge: 1.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-15'
+    last_evidence: '2026-09-18'
   draft: true
 - id: hbm_alloc_locking_ai_customers
   statement: At the time of scoring, HBM allocation to major AI customers was described
@@ -144,7 +144,7 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
+    confirm: 2.0
     challenge: 0
     window_days: 90
     last_evidence: '2026-09-17'
@@ -167,10 +167,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 20.0
+    confirm: 26.0
     challenge: 5.0
     window_days: 90
-    last_evidence: '2026-09-15'
+    last_evidence: '2026-09-18'
   draft: true
 ---
 ## Rationale

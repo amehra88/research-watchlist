@@ -70,9 +70,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 3.0
-    challenge: 0
+    challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-17'
   draft: true
 - id: land_expand_installed_base
   statement: At scoring, RBRK's land-and-expand motion was generating measurable growth

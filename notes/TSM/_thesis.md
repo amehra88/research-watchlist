@@ -124,10 +124,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 7.0
+    confirm: 11.0
     challenge: 4.0
     window_days: 90
-    last_evidence: '2026-09-16'
+    last_evidence: '2026-09-18'
   draft: true
 - id: geopolitical_risk_conditions_hold
   statement: The Taiwan/China geopolitical risk level — cited at scoring as the single
