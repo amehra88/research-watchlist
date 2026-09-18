@@ -134,13 +134,13 @@ assumptions:
     growth in customers with ARR above $100K
   - 10-Q disclosing increasing average module count per customer consistent with multi-product
     upsell
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 7.0
+    confirm: 8.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-18'
   draft: true
 - id: growth_and_fcf_positive_at_scoring
   statement: DDOG's revenue growth rate and free cash flow are both positive in the

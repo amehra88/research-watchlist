@@ -114,10 +114,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 5.0
+    confirm: 6.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-18'
   draft: true
 - id: wfe_cycle_caps_not_comp_erosion
   statement: At scoring, the constraint on LRCX's investor-interest score reflected

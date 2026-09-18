@@ -92,10 +92,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 3.0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-17'
   draft: true
 - id: distribution_dominates_over_innovation
   statement: At the time of scoring, distribution advantage is the dominant competitive

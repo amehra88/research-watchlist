@@ -58,13 +58,13 @@ assumptions:
     wins on Atlas Vector Search
   - Press release or 8-K disclosing an expanded LangChain or Frontier Lab partnership
     with MongoDB
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 19.0
+    confirm: 20.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-18'
   draft: true
 - id: mdb_not_bctk_held_at_addition
   statement: T2 candidacy at addition (2026-06-24) implies MDB was not held in the

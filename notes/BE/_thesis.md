@@ -40,10 +40,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 5.0
-    challenge: 1.0
+    confirm: 7.0
+    challenge: 1.5
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-18'
   draft: true
 - id: hyperscaler_partnerships_active
   statement: At scoring, hyperscaler partnerships were the mechanism supporting distribution
@@ -110,13 +110,13 @@ assumptions:
     as the primary BE thesis
   - Hyperscaler earnings calls reference on-site generation constraints driving interest
     in fuel cell sourcing
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 5.0
+    confirm: 7.0
     challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-15'
+    last_evidence: '2026-09-18'
   draft: true
 - id: investor_interest_not_deteriorated
   statement: Factors supporting investor interest trajectory at scoring have not deteriorated.

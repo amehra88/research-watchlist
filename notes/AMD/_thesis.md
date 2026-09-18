@@ -40,10 +40,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 2.0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-07'
+    last_evidence: '2026-09-18'
   draft: true
 - id: rocm_materially_trails_cuda
   statement: Conditions at scoring — AMD's ROCm software ecosystem materially trails

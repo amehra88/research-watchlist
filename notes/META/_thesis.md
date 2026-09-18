@@ -39,10 +39,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 4.0
+    confirm: 5.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-15'
+    last_evidence: '2026-09-17'
   draft: true
 - id: meta_llama_below_frontier
   statement: Llama open-weight models ranked below OpenAI, Google, and Anthropic frontier
@@ -112,10 +112,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 4.5
+    confirm: 5.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-15'
+    last_evidence: '2026-09-18'
   draft: true
 - id: meta_reality_labs_net_loss
   statement: The Reality Labs segment was reporting an operating loss at the time

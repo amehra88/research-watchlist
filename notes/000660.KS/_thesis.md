@@ -56,10 +56,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 43.0
+    confirm: 47.0
     challenge: 15.0
     window_days: 90
-    last_evidence: '2026-09-17'
+    last_evidence: '2026-09-18'
   draft: true
 - id: hynix_first_to_market_hbm_gens
   statement: At scoring, SK Hynix had shipped each major HBM generation ahead of Samsung
@@ -126,10 +126,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
+    confirm: 4.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-07'
+    last_evidence: '2026-09-18'
   draft: true
 - id: korea_listing_friction_unresolved
   statement: At scoring, no broadly accessible US-listed instrument eliminated Korea-listing
@@ -148,9 +148,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 15.0
+    challenge: 17.0
     window_days: 90
-    last_evidence: '2026-09-16'
+    last_evidence: '2026-09-18'
   draft: true
 ---
 ## Rationale
