@@ -103,3 +103,7 @@
 {"id": "status:CRWV:crwv_debt_cost_conditions_held:confirmed:2026-09-17", "ticker": "CRWV", "ts": "2026-09-17T19:45:03.462898+00:00"}
 {"id": "status:MU:dram_cyclicality_caps_inv_interest:confirmed:2026-09-17", "ticker": "MU", "ts": "2026-09-17T19:45:03.462898+00:00"}
 {"id": "status:TSEM:sipho_5x_cap_qual_by_dec26:confirmed:2026-09-17", "ticker": "TSEM", "ts": "2026-09-17T19:45:03.462898+00:00"}
+{"id": "status:BE:dc_power_narrative_conditions_intact:confirmed:2026-09-18", "ticker": "BE", "ts": "2026-09-18T19:45:03.270508+00:00"}
+{"id": "status:DDOG:land_expand_over_cloud_native_base:confirmed:2026-09-18", "ticker": "DDOG", "ts": "2026-09-18T19:45:03.270508+00:00"}
+{"id": "status:MDB:ai_memory_layer_not_displaced:confirmed:2026-09-18", "ticker": "MDB", "ts": "2026-09-18T19:45:03.270508+00:00"}
+{"id": "status:STX:nearline_pricing_actions_hold:confirmed:2026-09-18", "ticker": "STX", "ts": "2026-09-18T19:45:03.270508+00:00"}
