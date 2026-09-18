@@ -42,7 +42,7 @@ FY4-FY5, with counts, merged into the existing daily latest.json via
 `merge_weekly_consensus` rather than rebuilding it — see run_weekly().
 
 QUALITY (amendment v1.1): every row gets `quality` = "ok" or "fail:<reason>" from
-`check_price_quality`/`check_consensus_quality` (range checks: price>0, mcap>0, count>=1)
+`check_price_quality`/`check_consensus_quality` (range checks: price>0, count>=1)
 and, where a row carries the FactSet surprise-identity trio, `check_surprise_identity`
 (surpriseBefore + surpriseAmount == surpriseAfter, tolerance 1e-6). NEITHER endpoint this
 module pulls (`prices`, `market_value`, `consensus_rolling`) returns
@@ -55,24 +55,46 @@ forward-compat, but on every real row this module writes it is a no-op (fields a
 is never read: rows are built by explicit key assignment against the module-constant
 schema below, never a dict-splat of the raw FactSet payload.
 
+MCAP QUALITY (RIS5 A3 fix 3, coordinator review, HIGH): `mcap`'s validity is judged
+INDEPENDENTLY of `price`'s via `check_mcap_quality` -> `mcap_quality` = "ok" |
+"fail:mcap<=0" | "fail:currency_mismatch" | "fail:mcap_scale". The live run showed
+SONY/TSM/UMC/ASX/TCEHY with implied share counts (mcap/price) in the 61B-925B range --
+physically impossible for any real company -- because `market_value` returns the
+security's LOCAL-exchange market cap while `prices` can return a USD ADR quote for the
+same ticker; nothing checked that the two legs were even in the same currency. A bad
+mcap no longer drops the ticker's price: `build_latest` seats `price` whenever
+`quality=="ok"` and independently nulls `mcap` whenever `mcap_quality!="ok"`, recording
+why in `summary.mcap_missing` (count) and `skipped_mcap` (per-ticker reasons). FX
+conversion is explicitly NOT attempted here (see mcp_schemas.md for a follow-up: the
+`FactSet_GlobalPrices` `currency` PARAMETER is documented as usable for `prices` but NOT
+for `market_value` -- there is no direct fetch-time fix, only a downstream conversion or
+a `shares_outstanding` x price computation, neither built here).
+
 Row schemas (module constants — see PRICE_FIELDS/CONSENSUS_FIELDS):
-    prices:     {ticker, fsym, date, price, volume, mcap, currency, quality}
+    prices:     {ticker, fsym, date, price, volume, mcap, price_currency, mcap_currency,
+                 quality, mcap_quality}
     consensus:  {ticker, fsym, date, metric, rel_period, fiscal_end, mean, median,
                  count, up, down, quality}
 
-`latest.json` (tracked; the dated raw files are gitignored) is built ONLY from
-quality=="ok" rows: `{as_of, universe_size, skipped: [{id, reason}], summary: {priced,
-consensus_only}, tickers: {T: {...}}}`. Per ticker: price, mcap, fy{1,2,3}_sales,
-fy{1,2,3}_eps (consensus MEAN), plus nested `counts`/`up`/`down` dicts keyed by the same
-"fy1_sales"/"fy2_eps"/... labels — the brief's flat `counts, up, down` keys are read as
-per-(metric,period) breakdowns (a single scalar would not say which of the 6 periods it
-described); flagged as an interpretive call. **A ticker can appear with `price: None,
-mcap: None`** — a consensus row surviving quality alone (count>=1) is enough to seat a
-ticker in `tickers` even when its price/market_value batch failed or that id had no
-covered price quote; `build_latest` never requires BOTH legs to be `"ok"` (fix round 1,
-coordinator review — this is deliberate, not an oversight: A5 owns null-checking these
-before doing math on them). `summary.priced` counts tickers with a real price;
-`summary.consensus_only` counts tickers seated only via a consensus row.
+`latest.json` (tracked; the dated raw files are gitignored) is built from price rows with
+`quality=="ok"` (price-only gate; see MCAP QUALITY above for why mcap has its own,
+independent gate) plus consensus rows with `quality=="ok"`: `{as_of, universe_size,
+skipped: [{id, reason}], summary: {priced, consensus_only, mcap_missing},
+skipped_mcap: [{ticker, reason}], tickers: {T: {...}}}`. Per ticker: price, mcap (None
+when `mcap_quality!="ok"` even though price is fine — fix 3), price_currency,
+mcap_currency, fy{1,2,3}_sales, fy{1,2,3}_eps (consensus MEAN), plus nested
+`counts`/`up`/`down` dicts keyed by the same "fy1_sales"/"fy2_eps"/... labels — the
+brief's flat `counts, up, down` keys are read as per-(metric,period) breakdowns (a single
+scalar would not say which of the 6 periods it described); flagged as an interpretive
+call. **A ticker can appear with `price: None, mcap: None`** — a consensus row surviving
+quality alone (count>=1) is enough to seat a ticker in `tickers` even when its
+price/market_value batch failed or that id had no covered price quote; `build_latest`
+never requires BOTH legs to be `"ok"` (fix round 1, coordinator review — this is
+deliberate, not an oversight: A5 owns null-checking these before doing math on them).
+`summary.priced` counts tickers with a real price; `summary.consensus_only` counts
+tickers seated only via a consensus row; `summary.mcap_missing` (fix 3) counts PRICED
+tickers whose mcap is null for any reason (missing, currency mismatch, or scale) —
+`skipped_mcap` names each one with its specific reason.
 
 CLI:
     python3 scripts/valuation/snapshot.py --dry-run                 # fake runner, no claude -p
@@ -127,7 +149,8 @@ CONSENSUS_TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_EstimatesConsens
 
 STATE_DIR = REPO / "state" / "valuation"
 
-PRICE_FIELDS = ("ticker", "fsym", "date", "price", "volume", "mcap", "currency", "quality")
+PRICE_FIELDS = ("ticker", "fsym", "date", "price", "volume", "mcap",
+                "price_currency", "mcap_currency", "quality", "mcap_quality")
 CONSENSUS_FIELDS = ("ticker", "fsym", "date", "metric", "rel_period", "fiscal_end",
                     "mean", "median", "count", "up", "down", "quality")
 
@@ -399,11 +422,88 @@ def check_surprise_identity(row: dict, tol: float = 1e-6) -> str:
     return "ok" if abs((before + amount) - after) <= tol else "fail:surprise_identity"
 
 
-def check_price_quality(price, mcap) -> str:
+def check_price_quality(price) -> str:
+    """PRICE-only gate (RIS5 A3 fix 3, coordinator review): used to decide whether a
+    ticker seats AT ALL. mcap validity is now judged INDEPENDENTLY by
+    check_mcap_quality() -- a currency-mismatched or scale-impossible mcap must not drop
+    a perfectly good price (see that function's docstring for why)."""
     if not isinstance(price, (int, float)) or price <= 0:
         return "fail:price<=0"
+    return "ok"
+
+
+# `currentMarketValue` is reported in MILLIONS of the row's currency (RIS5 A3 fix 3
+# round 2, coordinator review) -- confirmed by reconciling 6 well-known USD names'
+# implied share counts (mcap/price) against their real, public share counts, computed
+# from the live rows already on disk (state/valuation/prices_2026-09-17.jsonl) with NO
+# further FactSet calls:
+#   ticker  raw mcap        price    implied_shares(raw)   x1e6 -> real shares   actual (~)
+#   NVDA    5,154,990.0     219.34   23,502.28              23.50B                ~24.3B
+#   AAPL    4,851,251.4     337.00   14,395.40              14.40B                ~14.8B
+#   MSFT    3,640,745.0     497.75    7,314.40               7.31B                ~7.43B
+#   WMT       852,877.7     106.79    7,986.49               7.99B                ~8.0B
+#   ZS         31,238.0     197.47      158.19               0.158B               ~0.15B
+#   COHR       56,777.6     295.98      191.83               0.192B               ~0.16B
+# Every one lands in the right ballpark ONLY after multiplying the raw value by 1e6 --
+# this also matches the tool's own schema text ("market_value=current market cap,
+# millions") and the independent "factor": "1000000" FactSet_Metrics reported for the
+# analogous FF_NET_DEBT/FF_DEBT/FF_CASH_GENERIC fundamentals metrics (docs/portal/
+# mcp_schemas.md).
+#
+# CRITICAL: this multiplier is used ONLY inside check_mcap_quality's implied-share-count
+# arithmetic, to compare against a RAW share-count threshold. The `mcap` value actually
+# PERSISTED in the dated file / latest.json is deliberately left UNSCALED (still in
+# millions) -- `scripts/valuation/expectations.py`'s `_entry_ev()` computes
+# `ev = entry["mcap"] + net_debt`, and `net_debt` (FactSet_Fundamentals' FF_NET_DEBT,
+# `fundamentals_<date>.jsonl`) is ALSO natively in millions with no rescaling applied
+# anywhere in this codebase (confirmed: fundamentals.py's normalize_fundamentals_rows
+# stores `r.get("value")` verbatim) -- as are the consensus SALES/EBITDA/FCF figures
+# this module itself writes. Multiplying only mcap to raw dollars would silently break
+# every downstream EV/multiple computation by 6 orders of magnitude. Scaling the STORED
+# mcap is explicitly OUT of scope for this fix.
+MCAP_UNIT_MULTIPLIER = 1_000_000
+
+# implied shares outstanding = (mcap * MCAP_UNIT_MULTIPLIER) / price must fall in this
+# range for ANY real public company (1e6 = a micro-cap with a low share count; 5e10 =
+# above the largest real share counts seen, e.g. mega-caps with ~1-2e10 shares after
+# splits) -- an implied share count outside this band is not a valuation signal, it is
+# proof mcap and price are not denominated in the same currency (or otherwise not
+# comparable).
+MCAP_IMPLIED_SHARES_MIN = 1e6
+MCAP_IMPLIED_SHARES_MAX = 5e10
+
+
+def check_mcap_quality(mcap, price, price_currency, mcap_currency) -> str:
+    """"ok" | "fail:mcap<=0" | "fail:currency_mismatch" | "fail:mcap_scale".
+
+    RIS5 A3 fix 3 (coordinator review, HIGH): the live run's market_value pull returns
+    the security's LOCAL-exchange market cap while `prices` can return an ADR's USD
+    quote -- SONY/TSM/UMC/ASX/TCEHY all showed a currency mismatch (caught below) and,
+    separately, EVERY OTHER ticker in the universe initially showed a physically
+    impossible implied share count too, because `mcap` is reported in MILLIONS
+    (see MCAP_UNIT_MULTIPLIER above) and the very first version of this check divided
+    the raw (unscaled) mcap by price directly -- comparing a "thousands of millions of
+    shares" figure against a threshold calibrated for raw share counts. Fixed by scaling
+    mcap up by MCAP_UNIT_MULTIPLIER for this comparison ONLY (the persisted `mcap` field
+    itself stays in millions -- see the constant's own docstring for why). This whole
+    function is INDEPENDENT of check_price_quality: a ticker whose mcap fails here still
+    seats with a real price in latest.json, just with mcap: null (see build_latest) -- a
+    bad mcap must never take a good price down with it.
+
+    Order: missing/non-positive mcap first (can't evaluate anything else about it), then
+    a currency mismatch (cheap, decisive -- no need for the price to even be valid), then
+    the implied-share-count scale check (needs a valid price to divide by; skipped,
+    not failed, when price itself is unusable -- check_price_quality already keeps such
+    a row out of latest.json entirely, so the scale verdict here is moot but still
+    honestly "ok" rather than a manufactured failure)."""
     if not isinstance(mcap, (int, float)) or mcap <= 0:
         return "fail:mcap<=0"
+    if price_currency and mcap_currency and price_currency != mcap_currency:
+        return "fail:currency_mismatch"
+    if isinstance(price, (int, float)) and price > 0:
+        implied_shares = (mcap * MCAP_UNIT_MULTIPLIER) / price
+        if not (MCAP_IMPLIED_SHARES_MIN <= implied_shares <= MCAP_IMPLIED_SHARES_MAX):
+            return "fail:mcap_scale"
     return "ok"
 
 
@@ -443,8 +543,17 @@ def normalize_price_rows(raw: list[dict], fid_to_ticker: dict) -> dict[str, dict
 _MCAP_KEYS = ("currentMarketValue", "marketValue", "mktVal", "market_value", "mcap", "value")
 
 
-def normalize_market_value_rows(raw: list[dict], fid_to_ticker: dict) -> dict[str, dict]:
-    """{ticker: {mcap, date}}."""
+def normalize_market_value_rows(raw: list[dict], fid_to_ticker: dict, log=print) -> dict[str, dict]:
+    """{ticker: {mcap, currency, date}}. `currency` (RIS5 A3 fix 3) is the market_value
+    row's OWN currency -- confirmed present live alongside `currentMarketValue`
+    (`{"currentMarketValue": ..., "currency": "KRW", ...}`) even though the tool schema
+    marks the request-side `currency` PARAMETER "NOT USED" for this data_type; that note
+    is about the request, not the response. This is the local-exchange currency, which
+    for an ADR ticker can differ from `prices`' own currency -- see check_mcap_quality.
+
+    LOW (coordinator review): logs a WARNING via `log` when a FALLBACK key (anything
+    after `_MCAP_KEYS[0]`) is used, since that would mean FactSet's response shape
+    changed from the confirmed live one and deserves attention, not silent tolerance."""
     out: dict[str, dict] = {}
     for r in raw:
         fid = r.get("requestId")
@@ -452,26 +561,41 @@ def normalize_market_value_rows(raw: list[dict], fid_to_ticker: dict) -> dict[st
         if not tk:
             continue
         mcap = None
+        matched_key = None
         for k in _MCAP_KEYS:
             if isinstance(r.get(k), (int, float)):
                 mcap = r[k]
+                matched_key = k
                 break
-        out[tk] = {"mcap": mcap, "date": r.get("date")}
+        if matched_key is not None and matched_key != _MCAP_KEYS[0]:
+            log(f"WARNING: market_value used fallback key {matched_key!r} for id "
+               f"{fid!r} instead of the confirmed {_MCAP_KEYS[0]!r} -- FactSet's "
+               f"response shape may have changed; see docs/portal/mcp_schemas.md")
+        out[tk] = {"mcap": mcap, "currency": r.get("currency"), "date": r.get("date")}
     return out
 
 
 def build_price_rows(price_by_tk: dict, mcap_by_tk: dict, fid_to_ticker: dict,
                      ticker_to_fid: dict, as_of: str) -> list[dict]:
+    """RIS5 A3 fix 3 (coordinator review, HIGH): `price_currency`/`mcap_currency` are now
+    carried on every row, and mcap's own validity (`mcap_quality`) is judged
+    INDEPENDENTLY of price's (`quality`) -- a currency-mismatched or scale-impossible
+    mcap (the SONY/TSM/UMC/ASX/TCEHY incident: local-currency market_value against a
+    USD ADR price, implied share counts in the tens/hundreds of billions) no longer
+    drops a perfectly good price. See build_latest for how `mcap_quality` gates what
+    actually reaches latest.json."""
     rows = []
     for tk, fid in sorted(ticker_to_fid.items()):
         p = price_by_tk.get(tk, {})
         m = mcap_by_tk.get(tk, {})
         price, mcap = p.get("price"), m.get("mcap")
+        price_currency, mcap_currency = p.get("currency"), m.get("currency")
         rows.append({
             "ticker": tk, "fsym": fid, "date": p.get("date") or as_of,
             "price": price, "volume": p.get("volume"), "mcap": mcap,
-            "currency": p.get("currency"),
-            "quality": check_price_quality(price, mcap),
+            "price_currency": price_currency, "mcap_currency": mcap_currency,
+            "quality": check_price_quality(price),
+            "mcap_quality": check_mcap_quality(mcap, price, price_currency, mcap_currency),
         })
     return rows
 
@@ -552,7 +676,7 @@ def fetch_market_value(pairs: list[tuple[str, str]], runner, log=print,
             log(f"FAIL market_value {fids[0]}..{fids[-1]}: {err}")
             errors.append({"ids": fids, "error": err})
             continue
-        out.update(normalize_market_value_rows(rows, fid_to_tk))
+        out.update(normalize_market_value_rows(rows, fid_to_tk, log=log))
         log(f"ok market_value {len(fids)}ids -> {len(rows)} rows")
     return out, errors
 
@@ -583,12 +707,28 @@ _REL_LABEL = {1: "fy1", 2: "fy2", 3: "fy3", 4: "fy4", 5: "fy5"}   # fy4/fy5 = we
 
 def build_latest(price_rows: list[dict], consensus_rows: list[dict],
                  universe_size: int, skipped: list[dict], as_of: str) -> dict:
+    """RIS5 A3 fix 3 (coordinator review, HIGH): a price row's `mcap_quality` is checked
+    INDEPENDENTLY of `quality` (price-only) -- a ticker with a good price but a bad mcap
+    (currency mismatch or an impossible implied share count) still seats with a real
+    `price` here, just `mcap: None`, instead of losing the whole ticker the way any mcap
+    failure used to. `price_currency`/`mcap_currency` are carried through even when mcap
+    itself is nulled (so a reader can see WHY mcap is missing without re-reading the
+    dated file). `summary.mcap_missing` counts seated (priced) tickers whose mcap ended
+    up None for any reason; `skipped_mcap` names each one with its `mcap_quality`
+    failure reason."""
     tickers: dict[str, dict] = {}
+    mcap_missing: dict[str, str] = {}   # ticker -> reason, built while iterating price_rows
     for r in price_rows:
         if r["quality"] != "ok":
             continue
-        tickers[r["ticker"]] = {"price": r["price"], "mcap": r["mcap"],
-                                "counts": {}, "up": {}, "down": {}}
+        mcap_ok = r.get("mcap_quality") == "ok"
+        if not mcap_ok:
+            mcap_missing[r["ticker"]] = r.get("mcap_quality") or "fail:unknown"
+        tickers[r["ticker"]] = {
+            "price": r["price"], "mcap": r["mcap"] if mcap_ok else None,
+            "price_currency": r.get("price_currency"), "mcap_currency": r.get("mcap_currency"),
+            "counts": {}, "up": {}, "down": {},
+        }
     for r in consensus_rows:
         if r["quality"] != "ok":
             continue
@@ -597,6 +737,7 @@ def build_latest(price_rows: list[dict], consensus_rows: list[dict],
             continue
         key = f"{label}_{r['metric'].lower()}"
         entry = tickers.setdefault(r["ticker"], {"price": None, "mcap": None,
+                                                 "price_currency": None, "mcap_currency": None,
                                                  "counts": {}, "up": {}, "down": {}})
         entry[key] = r["mean"]
         entry["counts"][key] = r["count"]
@@ -604,8 +745,11 @@ def build_latest(price_rows: list[dict], consensus_rows: list[dict],
         entry["down"][key] = r["down"]
     priced = sum(1 for t in tickers.values() if t["price"] is not None)
     consensus_only = len(tickers) - priced
+    skipped_mcap = [{"ticker": tk, "reason": reason} for tk, reason in sorted(mcap_missing.items())]
     return {"as_of": as_of, "universe_size": universe_size, "skipped": skipped,
-           "summary": {"priced": priced, "consensus_only": consensus_only},
+           "summary": {"priced": priced, "consensus_only": consensus_only,
+                      "mcap_missing": len(mcap_missing)},
+           "skipped_mcap": skipped_mcap,
            "tickers": tickers}
 
 
@@ -629,6 +773,7 @@ def merge_weekly_consensus(latest: dict, consensus_rows: list[dict], weekly_as_o
             continue
         key = f"{label}_{r['metric'].lower()}"
         entry = tickers.setdefault(r["ticker"], {"price": None, "mcap": None,
+                                                 "price_currency": None, "mcap_currency": None,
                                                  "counts": {}, "up": {}, "down": {}})
         entry[key] = r["mean"]
         entry.setdefault("counts", {})[key] = r["count"]
@@ -679,9 +824,16 @@ def _fake_runners():
                  "currency": "USD"} for i, f in enumerate(fids)], None
 
     def market_value(fids):
-        # key matches the CONFIRMED live response shape (currentMarketValue).
-        return [{"requestId": f, "currentMarketValue": 50_000.0 + i * 10}
-               for i, f in enumerate(fids)], None
+        # key/currency match the CONFIRMED live response shape (currentMarketValue +
+        # currency); USD here matches the fake prices() below so --dry-run rows are
+        # mcap_quality "ok" by default (no synthetic currency mismatch). Value is in
+        # FactSet's native MILLIONS convention (RIS5 A3 fix 3 round 2 --
+        # MCAP_UNIT_MULTIPLIER), e.g. 500_000.0 = $500B against the ~100-178 fake prices
+        # below -> ~5B implied shares, well inside [MCAP_IMPLIED_SHARES_MIN,
+        # MCAP_IMPLIED_SHARES_MAX]. A raw-dollars value here would trip fail:mcap_scale
+        # on every dry-run row.
+        return [{"requestId": f, "currentMarketValue": (500_000.0 + i * 10),
+                "currency": "USD"} for i, f in enumerate(fids)], None
 
     def consensus(fids, metric):
         rows = []

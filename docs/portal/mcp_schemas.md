@@ -41,19 +41,47 @@ Raw row observed (first live 25-id batch, ticker 000660.KS / SK Hynix):
  "currency": "KRW", "date": "2026-09-17"}
 ```
 Notes:
-- `currency` IS present on the market_value row (the tool schema's "NOT USED" note was
-  about the request-side `currency` param, not the response), but
-  `normalize_market_value_rows()` does not currently carry it through to `mcap` — only
-  the price row's own `currency` survives into `latest.json`. For a non-USD name (like
-  this one, KRW) that means `mcap` and `price` could in principle disagree on currency if
-  FactSet ever returns them differently; observed today they were consistent (both local
-  currency), but this is undocumented behavior worth a follow-up if A5's math assumes
-  `mcap` is USD or matches `price`'s currency unconditionally.
-- The literal magnitude (`1240826747.5`) is NOT obviously "millions" as the module
-  docstring assumed going in — flagged for whoever reconciles it against a known SK Hynix
-  market cap; not fixed here since the field NAME (not scale) was fix 2's job.
+- **RESOLVED (RIS5 A3 fix 3, coordinator review, HIGH):** `currency` IS now carried
+  through into both the dated row and `latest.json` as `mcap_currency` (alongside
+  `price_currency` from the `prices` pull) — `normalize_market_value_rows()` was fixed to
+  stop dropping it. The live run showed real disagreement between the two: `market_value`
+  returns the security's LOCAL-exchange currency while `prices` can return an ADR's USD
+  quote for the SAME ticker — 15 names (ASML/ASMIY/ASX/BABA/BESIY/BIDU/GDS/NOK/NTES/
+  RELX/SONY/SPOT/TCEHY/TSM/UMC) hit this live. `check_mcap_quality` now fails these as
+  `fail:currency_mismatch`; `build_latest` seats the ticker's `price` regardless and nulls
+  only `mcap`, recording the reason in `skipped_mcap`.
+- **RESOLVED (RIS5 A3 fix 3 round 2):** `currentMarketValue` is confirmed to be in
+  MILLIONS of the row's currency (matching the tool schema's own "(millions)" label),
+  not raw units. Confirmed by reconciling 6 live USD names' implied share counts
+  (mcap/price) against their real public share counts — NVDA/AAPL/MSFT/WMT/ZS/COHR all
+  land in the right ballpark ONLY when the raw value is multiplied by 1e6 before the
+  comparison (see `scripts/valuation/snapshot.py`'s `MCAP_UNIT_MULTIPLIER` for the full
+  worked table). **This multiplier is applied ONLY inside the plausibility check
+  (`check_mcap_quality`'s implied-share-count math) — the `mcap` value actually
+  PERSISTED in the dated file and `latest.json` stays in millions, unscaled.** Rescaling
+  the persisted value would break `scripts/valuation/expectations.py`'s
+  `ev = entry["mcap"] + net_debt`, since `net_debt` (`FactSet_Fundamentals`' FF_NET_DEBT)
+  and the consensus SALES/EBITDA/FCF figures this same module writes are ALL natively in
+  millions with no rescaling applied anywhere in the codebase — multiplying only mcap
+  would silently break every downstream EV/multiple computation by 6 orders of magnitude.
+  Before this fix, EVERY non-ADR ticker in the universe (161 of them) failed
+  `fail:mcap_scale` because the implied-share check compared an un-multiplied
+  "millions of shares" figure against a threshold calibrated for raw share counts.
 - `scripts/valuation/snapshot.py`'s `_MCAP_KEYS` now tries `currentMarketValue` first,
-  with the original guesses kept as a defensive (currently dead) fallback list.
+  with the original guesses kept as a defensive (currently dead) fallback list — logs a
+  WARNING naming the fallback key if one is ever actually used.
+- **FX conversion follow-up (explicitly NOT attempted this session, per coordinator
+  instruction — no live calls spent testing it):** `FactSet_GlobalPrices`' `currency`
+  PARAMETER (checked from this session's own tool-schema fetch, not a live call) is
+  documented as usable for `data_type='prices'`/`returns`/`corporate_actions`/
+  `annualized_dividends`/`returns_range` but explicitly **"NOT USED" for
+  `market_value`/`shares_outstanding`** — there is no way to request `market_value`
+  pre-converted into the ADR's currency at fetch time. Two real paths for the next
+  session: (1) a downstream FX-rate lookup applied to the 15 currency-mismatched names
+  specifically, or (2) pull `data_type='shares_outstanding'` (also currency-agnostic —
+  a share count, not a monetary value) and compute `mcap = shares_outstanding * price`
+  directly in the ADR's own currency, sidestepping the mismatch entirely instead of
+  converting it. Neither is built here.
 
 ## FactSet_EstimatesConsensus
 

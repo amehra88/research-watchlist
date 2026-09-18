@@ -331,10 +331,76 @@ def test_argument_drift_none_and_literal_null_string_are_equivalent():
 # ─────────────────────────── normalize + quality ───────────────────────────
 
 def test_check_price_quality():
-    check("price>0 and mcap>0 -> ok", S.check_price_quality(10.0, 500.0) == "ok")
-    check("price<=0 -> fail", S.check_price_quality(0.0, 500.0) == "fail:price<=0")
-    check("mcap<=0 -> fail", S.check_price_quality(10.0, -1.0) == "fail:mcap<=0")
-    check("missing price -> fail", S.check_price_quality(None, 500.0) == "fail:price<=0")
+    """RIS5 A3 fix 3: check_price_quality is now PRICE-ONLY (single arg) -- mcap validity
+    moved to the independent check_mcap_quality below, so a bad mcap never fails price."""
+    check("price>0 -> ok", S.check_price_quality(10.0) == "ok")
+    check("price<=0 -> fail", S.check_price_quality(0.0) == "fail:price<=0")
+    check("missing price -> fail", S.check_price_quality(None) == "fail:price<=0")
+
+
+def test_check_mcap_quality():
+    """mcap values below are in FactSet's native MILLIONS convention (RIS5 A3 fix 3
+    round 2) -- e.g. 500_000.0 means $500 billion, matching real large-cap NVDA/AAPL/
+    MSFT-scale numbers reconciled live (see MCAP_UNIT_MULTIPLIER's own docstring)."""
+    check("mcap>0, same currency, sane scale -> ok (500_000 = $500B / $100 = 5B shares)",
+         S.check_mcap_quality(500_000.0, 100.0, "USD", "USD") == "ok")
+    check("missing mcap -> fail:mcap<=0", S.check_mcap_quality(None, 100.0, "USD", "USD") == "fail:mcap<=0")
+    check("mcap<=0 -> fail:mcap<=0", S.check_mcap_quality(-1.0, 100.0, "USD", "USD") == "fail:mcap<=0")
+    check("currency mismatch -> fail:currency_mismatch",
+         S.check_mcap_quality(500_000.0, 100.0, "USD", "KRW") == "fail:currency_mismatch")
+    check("same currency but implied shares too small -> fail:mcap_scale",
+         S.check_mcap_quality(0.001, 10.0, "USD", "USD") == "fail:mcap_scale", "implied 100 shares")
+    check("same currency but implied shares too large -> fail:mcap_scale",
+         S.check_mcap_quality(6_000_000.0, 100.0, "USD", "USD") == "fail:mcap_scale", "implied 6e10 shares")
+    check("currency mismatch is checked BEFORE scale (mismatch wins even if scale would also fail)",
+         S.check_mcap_quality(1_240_826_747.5, 219.34, "USD", "KRW") == "fail:currency_mismatch")
+    check("no price to divide by -> scale check skipped, still ok",
+         S.check_mcap_quality(500_000.0, None, "USD", "USD") == "ok")
+    check("missing currency info -> mismatch check skipped (can't judge)",
+         S.check_mcap_quality(500_000.0, 100.0, None, None) == "ok")
+    check("boundary: exactly MCAP_IMPLIED_SHARES_MIN is ok",
+         S.check_mcap_quality(10.0, 10.0, "USD", "USD") == "ok",
+         "mcap*1e6/price = 10*1e6/10 = 1e6 = MIN exactly")
+    check("boundary: exactly MCAP_IMPLIED_SHARES_MAX is ok",
+         S.check_mcap_quality(500_000.0, 10.0, "USD", "USD") == "ok",
+         "mcap*1e6/price = 500_000*1e6/10 = 5e10 = MAX exactly")
+    check("just below MIN boundary -> fail:mcap_scale",
+         S.check_mcap_quality(9.999, 10.0, "USD", "USD") == "fail:mcap_scale")
+    check("just above MAX boundary -> fail:mcap_scale",
+         S.check_mcap_quality(500_001.0, 10.0, "USD", "USD") == "fail:mcap_scale")
+
+
+def test_check_mcap_quality_reconciles_real_live_names():
+    """The exact reconciliation that motivated MCAP_UNIT_MULTIPLIER (coordinator review,
+    fix 3 round 2): 6 well-known USD large/mid/small-caps, using the LIVE raw
+    price/mcap pulled 2026-09-17, all land at "ok" once the millions multiplier is
+    applied -- these all previously (pre round-2) failed fail:mcap_scale, which is what
+    triggered this fix."""
+    live = {
+        # ticker: (mcap_raw_millions, price)
+        "NVDA": (5_154_990.0, 219.34),
+        "AAPL": (4_851_251.3738, 337.00),
+        "MSFT": (3_640_744.954237, 497.75),
+        "WMT": (852_877.720908, 106.79),
+        "ZS": (31_238.019043, 197.47),
+        "COHR": (56_777.643083, 295.98),
+    }
+    for tk, (mcap, price) in live.items():
+        q = S.check_mcap_quality(mcap, price, "USD", "USD")
+        check(f"{tk} mcap_quality ok after the millions multiplier", q == "ok", (tk, mcap, price, q))
+
+
+def test_sony_tsm_style_adr_currency_mismatch_reproduced():
+    """Reproduces the exact live incident (coordinator review, HIGH): a local-currency
+    market_value against a USD ADR price, implied share count in the tens/hundreds of
+    billions. Uses SK Hynix's own live numbers (price 1,745,000 KRW... but as an ADR
+    case: price in USD, mcap still in the local exchange's currency)."""
+    # ADR price ($20 USD) vs a local-currency (KRW) market_value meant for the SAME
+    # company but never converted -- implied "shares" would be nonsense either way, but
+    # the currency check catches it before the scale math even runs.
+    q = S.check_mcap_quality(1_240_826_747.5, 20.0, "USD", "KRW")
+    check("currency mismatch caught first (ADR-vs-local-market-value incident)",
+         q == "fail:currency_mismatch", q)
 
 
 def test_check_consensus_quality():
@@ -376,15 +442,33 @@ def test_normalize_market_value_rows_uses_currentMarketValue_confirmed_live():
            "currentMarketValue": 1240826747.5, "currency": "KRW", "date": "2026-09-17"}]
     out = S.normalize_market_value_rows(raw, {"000660-KR": "000660.KS"})
     check("currentMarketValue matched first", out["000660.KS"]["mcap"] == 1240826747.5, out)
+    check("currency carried through (fix 3)", out["000660.KS"]["currency"] == "KRW", out)
     check("currentMarketValue is tried before the fallback guesses",
          S._MCAP_KEYS[0] == "currentMarketValue", S._MCAP_KEYS)
+
+
+def test_normalize_market_value_rows_warns_on_fallback_key():
+    """LOW (coordinator review): using anything other than the confirmed primary key
+    should be loud, not silent -- it would mean FactSet's response shape changed."""
+    logs = []
+    raw_fallback = [{"requestId": "FOO-US", "marketValue": 99.0, "currency": "USD"}]
+    S.normalize_market_value_rows(raw_fallback, {"FOO-US": "FOO"}, log=logs.append)
+    check("a WARNING is logged when a fallback key is used",
+         any("WARNING" in m and "marketValue" in m for m in logs), logs)
+
+    logs.clear()
+    raw_primary = [{"requestId": "FOO-US", "currentMarketValue": 99.0, "currency": "USD"}]
+    S.normalize_market_value_rows(raw_primary, {"FOO-US": "FOO"}, log=logs.append)
+    check("no warning when the confirmed primary key is used", logs == [], logs)
 
 
 def test_build_price_rows_missing_mcap_fails_quality():
     fid_to_tk = {"BAR-US": "BAR"}
     rows = S.build_price_rows({"BAR": {"price": 10.0, "date": "2026-09-17", "volume": 1, "currency": "USD"}},
                               {}, fid_to_tk, {"BAR": "BAR-US"}, "2026-09-17")
-    check("missing mcap -> fail:mcap<=0", rows[0]["quality"] == "fail:mcap<=0", rows[0])
+    check("price-only quality is unaffected by a missing mcap (fix 3 decouples them)",
+         rows[0]["quality"] == "ok", rows[0])
+    check("missing mcap -> mcap_quality fail:mcap<=0", rows[0]["mcap_quality"] == "fail:mcap<=0", rows[0])
 
 
 def test_normalize_consensus_rows_null_mean_preserved():
@@ -555,9 +639,11 @@ def test_other_transport_errors_still_log_and_continue_not_abort():
 def test_build_latest_shape_and_skips_failed_quality():
     price_rows = [
         {"ticker": "FOO", "fsym": "FOO-US", "date": "2026-09-17", "price": 100.0,
-        "volume": 1, "mcap": 5000.0, "currency": "USD", "quality": "ok"},
+        "volume": 1, "mcap": 5000.0, "price_currency": "USD", "mcap_currency": "USD",
+        "quality": "ok", "mcap_quality": "ok"},
         {"ticker": "BAD", "fsym": "BAD-US", "date": "2026-09-17", "price": None,
-        "volume": None, "mcap": None, "currency": None, "quality": "fail:price<=0"},
+        "volume": None, "mcap": None, "price_currency": None, "mcap_currency": None,
+        "quality": "fail:price<=0", "mcap_quality": "fail:mcap<=0"},
     ]
     consensus_rows = [
         {"ticker": "FOO", "fsym": "FOO-US", "date": "2026-09-17", "metric": "SALES",
@@ -579,6 +665,7 @@ def test_build_latest_shape_and_skips_failed_quality():
     check("BAD excluded (quality fail on price)", "BAD" not in latest["tickers"], latest["tickers"])
     foo = latest["tickers"]["FOO"]
     check("price/mcap present", foo["price"] == 100.0 and foo["mcap"] == 5000.0)
+    check("price_currency/mcap_currency carried through", foo["price_currency"] == "USD" and foo["mcap_currency"] == "USD", foo)
     check("fy1_sales mean", foo["fy1_sales"] == 1000.0, foo)
     check("fy2_eps mean", foo["fy2_eps"] == 5.0, foo)
     check("counts nested per period", foo["counts"]["fy1_sales"] == 10 and foo["counts"]["fy2_eps"] == 8, foo)
@@ -586,6 +673,35 @@ def test_build_latest_shape_and_skips_failed_quality():
     check("summary.priced == 1 (only FOO)", latest["summary"]["priced"] == 1, latest["summary"])
     check("summary.consensus_only == 0 (BAD excluded entirely)",
          latest["summary"]["consensus_only"] == 0, latest["summary"])
+    check("summary.mcap_missing == 0 (FOO's mcap is ok)", latest["summary"]["mcap_missing"] == 0, latest["summary"])
+    check("skipped_mcap empty", latest["skipped_mcap"] == [], latest["skipped_mcap"])
+
+
+def test_build_latest_currency_mismatch_keeps_price_nulls_mcap():
+    """RIS5 A3 fix 3 (coordinator review, HIGH): the SONY/TSM/UMC/ASX/TCEHY incident --
+    a good price with a currency-mismatched mcap must still seat with a real price,
+    mcap: None, and show up in summary.mcap_missing/skipped_mcap. This is the core
+    behavior change from the pre-fix-3 code, where ANY mcap failure dropped the whole
+    ticker (losing a perfectly good price)."""
+    price_rows = [
+        {"ticker": "TSM", "fsym": "TSM-US", "date": "2026-09-17", "price": 220.0,
+        "volume": 1, "mcap": 1_240_826_747.5, "price_currency": "USD", "mcap_currency": "TWD",
+        "quality": "ok", "mcap_quality": "fail:currency_mismatch"},
+        {"ticker": "GOOD", "fsym": "GOOD-US", "date": "2026-09-17", "price": 50.0,
+        "volume": 1, "mcap": 500_000_000_000.0, "price_currency": "USD", "mcap_currency": "USD",
+        "quality": "ok", "mcap_quality": "ok"},
+    ]
+    latest = S.build_latest(price_rows, [], universe_size=2, skipped=[], as_of="2026-09-17")
+    check("TSM seated (not dropped)", "TSM" in latest["tickers"], latest["tickers"])
+    tsm = latest["tickers"]["TSM"]
+    check("TSM price kept", tsm["price"] == 220.0, tsm)
+    check("TSM mcap nulled", tsm["mcap"] is None, tsm)
+    check("TSM mcap_currency still shown for diagnosis", tsm["mcap_currency"] == "TWD", tsm)
+    check("summary.priced == 2 (both TSM and GOOD have a price)", latest["summary"]["priced"] == 2, latest["summary"])
+    check("summary.mcap_missing == 1 (only TSM)", latest["summary"]["mcap_missing"] == 1, latest["summary"])
+    check("skipped_mcap names TSM with the right reason",
+         latest["skipped_mcap"] == [{"ticker": "TSM", "reason": "fail:currency_mismatch"}],
+         latest["skipped_mcap"])
 
 
 def test_build_latest_bad_ticker_consensus_alone_not_included():
@@ -677,10 +793,14 @@ if __name__ == "__main__":
     test_argument_drift_clean_and_dirty()
     test_argument_drift_none_and_literal_null_string_are_equivalent()
     test_check_price_quality()
+    test_check_mcap_quality()
+    test_check_mcap_quality_reconciles_real_live_names()
+    test_sony_tsm_style_adr_currency_mismatch_reproduced()
     test_check_consensus_quality()
     test_check_surprise_identity()
     test_normalize_price_and_market_value_join()
     test_normalize_market_value_rows_uses_currentMarketValue_confirmed_live()
+    test_normalize_market_value_rows_warns_on_fallback_key()
     test_build_price_rows_missing_mcap_fails_quality()
     test_normalize_consensus_rows_null_mean_preserved()
     test_normalize_consensus_rows_uses_estimateCount_and_estimateDate_not_count_and_date()
@@ -692,6 +812,7 @@ if __name__ == "__main__":
     test_main_aborts_on_session_limit_returns_1_and_writes_nothing()
     test_other_transport_errors_still_log_and_continue_not_abort()
     test_build_latest_shape_and_skips_failed_quality()
+    test_build_latest_currency_mismatch_keeps_price_nulls_mcap()
     test_build_latest_bad_ticker_consensus_alone_not_included()
     test_write_jsonl_idempotent_overwrite()
     test_cli_dry_run_writes_latest_json()

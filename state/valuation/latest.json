@@ -20,13 +20,82 @@
   }
  ],
  "summary": {
-  "priced": 176,
-  "consensus_only": 0
+  "priced": 177,
+  "consensus_only": 0,
+  "mcap_missing": 16
  },
+ "skipped_mcap": [
+  {
+   "ticker": "ASMIY",
+   "reason": "fail:currency_mismatch"
+  },
+  {
+   "ticker": "ASML",
+   "reason": "fail:currency_mismatch"
+  },
+  {
+   "ticker": "ASX",
+   "reason": "fail:currency_mismatch"
+  },
+  {
+   "ticker": "BABA",
+   "reason": "fail:currency_mismatch"
+  },
+  {
+   "ticker": "BESIY",
+   "reason": "fail:currency_mismatch"
+  },
+  {
+   "ticker": "BIDU",
+   "reason": "fail:currency_mismatch"
+  },
+  {
+   "ticker": "GDS",
+   "reason": "fail:currency_mismatch"
+  },
+  {
+   "ticker": "LAZR",
+   "reason": "fail:mcap<=0"
+  },
+  {
+   "ticker": "NOK",
+   "reason": "fail:currency_mismatch"
+  },
+  {
+   "ticker": "NTES",
+   "reason": "fail:currency_mismatch"
+  },
+  {
+   "ticker": "RELX",
+   "reason": "fail:currency_mismatch"
+  },
+  {
+   "ticker": "SONY",
+   "reason": "fail:currency_mismatch"
+  },
+  {
+   "ticker": "SPOT",
+   "reason": "fail:currency_mismatch"
+  },
+  {
+   "ticker": "TCEHY",
+   "reason": "fail:currency_mismatch"
+  },
+  {
+   "ticker": "TSM",
+   "reason": "fail:currency_mismatch"
+  },
+  {
+   "ticker": "UMC",
+   "reason": "fail:currency_mismatch"
+  }
+ ],
  "tickers": {
   "000660.KS": {
    "price": 1745000.0,
    "mcap": 1240826747.5,
+   "price_currency": "KRW",
+   "mcap_currency": "KRW",
    "counts": {
     "fy1_sales": 48,
     "fy2_sales": 48,
@@ -85,6 +154,8 @@
   "002384.SZ": {
    "price": 193.53,
    "mcap": 440057.243751,
+   "price_currency": "CNY",
+   "mcap_currency": "CNY",
    "counts": {
     "fy1_sales": 6,
     "fy2_sales": 6,
@@ -131,6 +202,8 @@
   "005930.KS": {
    "price": 252500.0,
    "mcap": 1610556809.0474,
+   "price_currency": "KRW",
+   "mcap_currency": "KRW",
    "counts": {
     "fy1_sales": 36,
     "fy2_sales": 36,
@@ -189,6 +262,8 @@
   "300308.SZ": {
    "price": 896.0,
    "mcap": 1060880.628091,
+   "price_currency": "CNY",
+   "mcap_currency": "CNY",
    "counts": {
     "fy1_sales": 17,
     "fy2_sales": 17,
@@ -247,6 +322,8 @@
   "300502.SZ": {
    "price": 424.34,
    "mcap": 651052.355852,
+   "price_currency": "CNY",
+   "mcap_currency": "CNY",
    "counts": {
     "fy1_sales": 10,
     "fy2_sales": 10,
@@ -305,6 +382,8 @@
   "AAOI": {
    "price": 98.06,
    "mcap": 8213.834398,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 6,
     "fy2_sales": 5,
@@ -355,6 +434,8 @@
   "AAON": {
    "price": 76.43,
    "mcap": 6230.196963,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 7,
     "fy2_sales": 7,
@@ -413,6 +494,8 @@
   "AAPL": {
    "price": 337.0,
    "mcap": 4851251.3738,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 37,
     "fy2_sales": 37,
@@ -471,6 +554,8 @@
   "ADI": {
    "price": 362.65,
    "mcap": 175432.080949,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 28,
     "fy2_sales": 28,
@@ -529,6 +614,8 @@
   "ADPT": {
    "price": 28.55,
    "mcap": 4416.016948,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 8,
     "fy2_sales": 8,
@@ -587,6 +674,8 @@
   "AEIS": {
    "price": 254.43,
    "mcap": 10101.522481,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 12,
     "fy2_sales": 12,
@@ -645,6 +734,8 @@
   "AKAM": {
    "price": 107.08,
    "mcap": 15015.511308,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 23,
     "fy2_sales": 23,
@@ -703,6 +794,8 @@
   "ALAB": {
    "price": 293.56,
    "mcap": 46698.720295,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 21,
     "fy2_sales": 21,
@@ -761,6 +854,8 @@
   "AMAT": {
    "price": 417.4,
    "mcap": 329644.505873,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 31,
     "fy2_sales": 31,
@@ -819,6 +914,8 @@
   "AMBA": {
    "price": 66.91,
    "mcap": 2770.72875,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 12,
     "fy2_sales": 12,
@@ -877,6 +974,8 @@
   "AMD": {
    "price": 545.09,
    "mcap": 836643.459025,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 49,
     "fy2_sales": 50,
@@ -935,6 +1034,8 @@
   "AMKR": {
    "price": 47.95,
    "mcap": 11498.380404,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 13,
     "fy2_sales": 13,
@@ -993,6 +1094,8 @@
   "AMZN": {
    "price": 251.19,
    "mcap": 2653001.686169,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 61,
     "fy2_sales": 59,
@@ -1051,6 +1154,8 @@
   "ANET": {
    "price": 199.53,
    "mcap": 249142.316966,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 26,
     "fy2_sales": 26,
@@ -1109,6 +1214,8 @@
   "APP": {
    "price": 321.6,
    "mcap": 109283.63056,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 32,
     "fy2_sales": 31,
@@ -1167,6 +1274,8 @@
   "ARM": {
    "price": 264.9,
    "mcap": 260570.64,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 39,
     "fy2_sales": 39,
@@ -1224,7 +1333,9 @@
   },
   "ASMIY": {
    "price": 908.5,
-   "mcap": 38734.93634,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "EUR",
    "counts": {
     "fy1_sales": 17,
     "fy2_sales": 17,
@@ -1282,7 +1393,9 @@
   },
   "ASML": {
    "price": 1629.67,
-   "mcap": 546522.24897,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "EUR",
    "counts": {
     "fy1_sales": 36,
     "fy2_sales": 35,
@@ -1340,7 +1453,9 @@
   },
   "ASX": {
    "price": 39.99,
-   "mcap": 2709402.098,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "TWD",
    "counts": {
     "fy1_sales": 16,
     "fy2_sales": 16,
@@ -1399,6 +1514,8 @@
   "AUR": {
    "price": 6.49,
    "mcap": 12746.427505,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 12,
     "fy2_sales": 12,
@@ -1457,6 +1574,8 @@
   "AVGO": {
    "price": 347.3,
    "mcap": 1620695.075466,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 44,
     "fy2_sales": 44,
@@ -1515,6 +1634,8 @@
   "AXON": {
    "price": 453.5,
    "mcap": 38053.229934,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 16,
     "fy2_sales": 16,
@@ -1572,7 +1693,9 @@
   },
   "BABA": {
    "price": 108.54,
-   "mcap": 1786986.800304,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "CNY",
    "counts": {
     "fy1_sales": 51,
     "fy2_sales": 51,
@@ -1631,6 +1754,8 @@
   "BE": {
    "price": 280.76,
    "mcap": 79528.273967,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 30,
     "fy2_sales": 30,
@@ -1688,7 +1813,9 @@
   },
   "BESIY": {
    "price": 207.75,
-   "mcap": 14669.228937,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "EUR",
    "counts": {
     "fy1_sales": 18,
     "fy2_sales": 18,
@@ -1746,7 +1873,9 @@
   },
   "BIDU": {
    "price": 90.03,
-   "mcap": 194788.241633,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "CNY",
    "counts": {
     "fy1_sales": 36,
     "fy2_sales": 36,
@@ -1805,6 +1934,8 @@
   "CBRS": {
    "price": 194.14,
    "mcap": 45248.822889,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 10,
     "fy2_sales": 10,
@@ -1863,6 +1994,8 @@
   "CEG": {
    "price": 262.8,
    "mcap": 91953.394072,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 15,
     "fy2_sales": 15,
@@ -1921,6 +2054,8 @@
   "CHRW": {
    "price": 153.82,
    "mcap": 17933.162565,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 21,
     "fy2_sales": 21,
@@ -1979,6 +2114,8 @@
   "CIEN": {
    "price": 344.25,
    "mcap": 48285.802762,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 16,
     "fy2_sales": 16,
@@ -2037,6 +2174,8 @@
   "CLBT": {
    "price": 11.82,
    "mcap": 2866.483214,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 8,
     "fy2_sales": 8,
@@ -2095,6 +2234,8 @@
   "CLS": {
    "price": 329.94,
    "mcap": 40938.152967,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 18,
     "fy2_sales": 18,
@@ -2153,6 +2294,8 @@
   "COHR": {
    "price": 295.98,
    "mcap": 56777.643083,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 23,
     "fy2_sales": 18,
@@ -2211,6 +2354,8 @@
   "CRDO": {
    "price": 168.25,
    "mcap": 30352.355238,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 20,
     "fy2_sales": 20,
@@ -2269,6 +2414,8 @@
   "CRS": {
    "price": 406.71,
    "mcap": 20408.217479,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 8,
     "fy2_sales": 7,
@@ -2323,6 +2470,8 @@
   "CRUS": {
    "price": 120.37,
    "mcap": 5913.872198,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 4,
     "fy2_sales": 4,
@@ -2357,6 +2506,8 @@
   "CRWD": {
    "price": 245.7,
    "mcap": 247136.913465,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 49,
     "fy2_sales": 49,
@@ -2415,6 +2566,8 @@
   "CRWV": {
    "price": 79.88,
    "mcap": 45970.575777,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 35,
     "fy2_sales": 35,
@@ -2473,6 +2626,8 @@
   "CSCO": {
    "price": 110.24,
    "mcap": 424774.309697,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 23,
     "fy2_sales": 22,
@@ -2531,6 +2686,8 @@
   "CVNA": {
    "price": 65.84,
    "mcap": 71970.330558,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 21,
     "fy2_sales": 21,
@@ -2589,6 +2746,8 @@
   "DASH": {
    "price": 194.56,
    "mcap": 85255.252881,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 40,
     "fy2_sales": 39,
@@ -2647,6 +2806,8 @@
   "DDOG": {
    "price": 236.0,
    "mcap": 82870.924789,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 43,
     "fy2_sales": 43,
@@ -2705,6 +2866,8 @@
   "DE": {
    "price": 685.63,
    "mcap": 180506.124572,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 17,
     "fy2_sales": 17,
@@ -2763,6 +2926,8 @@
   "DELL": {
    "price": 588.4,
    "mcap": 358146.963948,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 24,
     "fy2_sales": 24,
@@ -2821,6 +2986,8 @@
   "DOCN": {
    "price": 132.98,
    "mcap": 14551.645108,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 16,
     "fy2_sales": 16,
@@ -2879,6 +3046,8 @@
   "DPC": {
    "price": 40.4,
    "mcap": 5904.011992,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 4,
     "fy2_sales": 4,
@@ -2937,6 +3106,8 @@
   "DUOL": {
    "price": 147.1,
    "mcap": 6932.321478,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 22,
     "fy2_sales": 22,
@@ -2995,6 +3166,8 @@
   "EBAY": {
    "price": 112.9,
    "mcap": 48580.65,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 27,
     "fy2_sales": 27,
@@ -3053,6 +3226,8 @@
   "ENTG": {
    "price": 134.67,
    "mcap": 19894.56,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 11,
     "fy2_sales": 11,
@@ -3111,6 +3286,8 @@
   "EQIX": {
    "price": 1025.94,
    "mcap": 100266.220446,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 30,
     "fy2_sales": 29,
@@ -3169,6 +3346,8 @@
   "ESTC": {
    "price": 88.97,
    "mcap": 8927.408538,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 28,
     "fy2_sales": 28,
@@ -3227,6 +3406,8 @@
   "EVLV": {
    "price": 5.04,
    "mcap": 913.781407,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 5,
     "fy2_sales": 5,
@@ -3277,6 +3458,8 @@
   "FDS": {
    "price": 278.85,
    "mcap": 9830.671741,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 15,
     "fy2_sales": 15,
@@ -3335,6 +3518,8 @@
   "FFIV": {
    "price": 434.62,
    "mcap": 23986.708023,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 10,
     "fy2_sales": 10,
@@ -3393,6 +3578,8 @@
   "FPS": {
    "price": 38.06,
    "mcap": 10606.302493,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 10,
     "fy2_sales": 10,
@@ -3451,6 +3638,8 @@
   "FROG": {
    "price": 93.98,
    "mcap": 11420.167425,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 22,
     "fy2_sales": 22,
@@ -3509,6 +3698,8 @@
   "FRVO": {
    "price": 16.66,
    "mcap": 4539.353265,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 12,
     "fy2_sales": 12,
@@ -3566,7 +3757,9 @@
   },
   "GDS": {
    "price": 31.3,
-   "mcap": 41951.245087,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "CNY",
    "counts": {
     "fy1_sales": 14,
     "fy2_sales": 14,
@@ -3625,6 +3818,8 @@
   "GEHC": {
    "price": 64.44,
    "mcap": 28677.560139,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 17,
     "fy2_sales": 17,
@@ -3683,6 +3878,8 @@
   "GEV": {
    "price": 924.93,
    "mcap": 246382.532447,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 33,
     "fy2_sales": 33,
@@ -3741,6 +3938,8 @@
   "GFS": {
    "price": 45.84,
    "mcap": 23612.759058,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 20,
     "fy2_sales": 20,
@@ -3799,6 +3998,8 @@
   "GH": {
    "price": 183.1,
    "mcap": 23470.910133,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 25,
     "fy2_sales": 25,
@@ -3857,6 +4058,8 @@
   "GLW": {
    "price": 147.8,
    "mcap": 124177.741797,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 14,
     "fy2_sales": 14,
@@ -3915,6 +4118,8 @@
   "GOOG": {
    "price": 343.68,
    "mcap": 3887603.88,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 58,
     "fy2_sales": 56,
@@ -3973,6 +4178,8 @@
   "GOOGL": {
    "price": 347.33,
    "mcap": 3887603.88,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 59,
     "fy2_sales": 57,
@@ -4031,6 +4238,8 @@
   "GWRE": {
    "price": 144.98,
    "mcap": 12030.784322,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 15,
     "fy2_sales": 15,
@@ -4089,6 +4298,8 @@
   "HNGE": {
    "price": 94.72,
    "mcap": 7563.487705,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 15,
     "fy2_sales": 15,
@@ -4147,6 +4358,8 @@
   "HPE": {
    "price": 61.04,
    "mcap": 75240.703674,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 18,
     "fy2_sales": 18,
@@ -4205,6 +4418,8 @@
   "HPQ": {
    "price": 34.66,
    "mcap": 29488.564686,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 14,
     "fy2_sales": 14,
@@ -4263,6 +4478,8 @@
   "HSAI": {
    "price": 16.92,
    "mcap": 2572.521978,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 28,
     "fy2_sales": 28,
@@ -4321,6 +4538,8 @@
   "HTFL": {
    "price": 49.57,
    "mcap": 4199.860184,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 10,
     "fy2_sales": 10,
@@ -4379,6 +4598,8 @@
   "IBM": {
    "price": 237.75,
    "mcap": 223747.496281,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 20,
     "fy2_sales": 20,
@@ -4437,6 +4658,8 @@
   "INDI": {
    "price": 3.13,
    "mcap": 700.062827,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 8,
     "fy2_sales": 8,
@@ -4483,6 +4706,8 @@
   "INIO": {
    "price": 20.96,
    "mcap": 14032.5,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 10,
     "fy2_sales": 10,
@@ -4541,6 +4766,8 @@
   "INTC": {
    "price": 108.8,
    "mcap": 534160.936725,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 45,
     "fy2_sales": 45,
@@ -4599,6 +4826,8 @@
   "IOT": {
    "price": 40.0,
    "mcap": 23810.707798,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 23,
     "fy2_sales": 23,
@@ -4657,6 +4886,8 @@
   "IRTC": {
    "price": 111.75,
    "mcap": 3685.922995,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 15,
     "fy2_sales": 15,
@@ -4715,6 +4946,8 @@
   "ISRG": {
    "price": 383.54,
    "mcap": 135054.661147,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 30,
     "fy2_sales": 30,
@@ -4773,6 +5006,8 @@
   "KDK": {
    "price": 3.83,
    "mcap": 722.225412,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 10,
     "fy2_sales": 10,
@@ -4831,6 +5066,8 @@
   "KLAC": {
    "price": 168.98,
    "mcap": 218663.669603,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 23,
     "fy2_sales": 19,
@@ -4886,9 +5123,20 @@
    "fy2_fcf": 7434.6820806,
    "fy3_fcf": 8543.219017
   },
+  "LAZR": {
+   "price": 43.2,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": null,
+   "counts": {},
+   "up": {},
+   "down": {}
+  },
   "LITE": {
    "price": 893.61,
    "mcap": 82470.18,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 26,
     "fy2_sales": 23,
@@ -4947,6 +5195,8 @@
   "LRCX": {
    "price": 269.31,
    "mcap": 336893.15283,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 28,
     "fy2_sales": 23,
@@ -5005,6 +5255,8 @@
   "LSCC": {
    "price": 108.53,
    "mcap": 15100.658519,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 13,
     "fy2_sales": 13,
@@ -5063,6 +5315,8 @@
   "MBLY": {
    "price": 8.04,
    "mcap": 6648.467016,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 22,
     "fy2_sales": 22,
@@ -5121,6 +5375,8 @@
   "MCHP": {
    "price": 70.82,
    "mcap": 37787.974807,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 22,
     "fy2_sales": 22,
@@ -5179,6 +5435,8 @@
   "MDB": {
    "price": 393.42,
    "mcap": 30316.573372,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 34,
     "fy2_sales": 34,
@@ -5237,6 +5495,8 @@
   "MELI": {
    "price": 1825.21,
    "mcap": 93267.413607,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 20,
     "fy2_sales": 20,
@@ -5295,6 +5555,8 @@
   "META": {
    "price": 682.31,
    "mcap": 1715261.416355,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 60,
     "fy2_sales": 58,
@@ -5353,6 +5615,8 @@
   "MKSI": {
    "price": 240.23,
    "mcap": 15909.059046,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 14,
     "fy2_sales": 14,
@@ -5411,6 +5675,8 @@
   "MPWR": {
    "price": 1169.58,
    "mcap": 56396.99823,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 15,
     "fy2_sales": 15,
@@ -5469,6 +5735,8 @@
   "MRVL": {
    "price": 240.76,
    "mcap": 201432.699,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 39,
     "fy2_sales": 39,
@@ -5527,6 +5795,8 @@
   "MSFT": {
    "price": 497.75,
    "mcap": 3640744.954237,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 53,
     "fy2_sales": 51,
@@ -5585,6 +5855,8 @@
   "MSI": {
    "price": 459.68,
    "mcap": 76214.854188,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 8,
     "fy2_sales": 8,
@@ -5643,6 +5915,8 @@
   "MTRN": {
    "price": 250.47,
    "mcap": 5173.222255,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 7,
     "fy2_sales": 7,
@@ -5701,6 +5975,8 @@
   "MTSI": {
    "price": 263.14,
    "mcap": 19226.381879,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 15,
     "fy2_sales": 15,
@@ -5759,6 +6035,8 @@
   "MU": {
    "price": 977.5,
    "mcap": 1046439.224059,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 44,
     "fy2_sales": 45,
@@ -5817,6 +6095,8 @@
   "MXL": {
    "price": 74.99,
    "mcap": 6304.083706,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 10,
     "fy2_sales": 10,
@@ -5867,6 +6147,8 @@
   "NBIS": {
    "price": 217.99,
    "mcap": 53423.636851,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 19,
     "fy2_sales": 19,
@@ -5925,6 +6207,8 @@
   "NET": {
    "price": 333.94,
    "mcap": 115601.279475,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 28,
     "fy2_sales": 28,
@@ -5983,6 +6267,8 @@
   "NFLX": {
    "price": 75.31,
    "mcap": 318166.630643,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 46,
     "fy2_sales": 45,
@@ -6040,7 +6326,9 @@
   },
   "NOK": {
    "price": 10.6,
-   "mcap": 51787.46625,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "EUR",
    "counts": {
     "fy1_sales": 26,
     "fy2_sales": 26,
@@ -6099,6 +6387,8 @@
   "NOW": {
    "price": 138.47,
    "mcap": 144554.58484,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 43,
     "fy2_sales": 43,
@@ -6157,6 +6447,8 @@
   "NP": {
    "price": 30.21,
    "mcap": 4188.353907,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 11,
     "fy2_sales": 11,
@@ -6214,7 +6506,9 @@
   },
   "NTES": {
    "price": 116.62,
-   "mcap": 506663.241251,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "CNY",
    "counts": {
     "fy1_sales": 37,
     "fy2_sales": 37,
@@ -6273,6 +6567,8 @@
   "NTRA": {
    "price": 366.31,
    "mcap": 49778.747668,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 23,
     "fy2_sales": 23,
@@ -6331,6 +6627,8 @@
   "NVDA": {
    "price": 219.34,
    "mcap": 5154990.0,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 63,
     "fy2_sales": 62,
@@ -6389,6 +6687,8 @@
   "NVMI": {
    "price": 348.07,
    "mcap": 10782.373251,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 7,
     "fy2_sales": 7,
@@ -6443,6 +6743,8 @@
   "NXPI": {
    "price": 227.95,
    "mcap": 55218.910823,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 23,
     "fy2_sales": 23,
@@ -6501,6 +6803,8 @@
   "ON": {
    "price": 68.3,
    "mcap": 25928.160619,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 26,
     "fy2_sales": 26,
@@ -6559,6 +6863,8 @@
   "ONTO": {
    "price": 250.03,
    "mcap": 11956.449539,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 11,
     "fy2_sales": 11,
@@ -6617,6 +6923,8 @@
   "OPEN": {
    "price": 2.56,
    "mcap": 2515.12582,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 9,
     "fy2_sales": 9,
@@ -6675,6 +6983,8 @@
   "PANW": {
    "price": 375.06,
    "mcap": 307281.7,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 49,
     "fy2_sales": 45,
@@ -6733,6 +7043,8 @@
   "PI": {
    "price": 179.73,
    "mcap": 5426.158205,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 8,
     "fy2_sales": 8,
@@ -6787,6 +7099,8 @@
   "PINS": {
    "price": 18.31,
    "mcap": 10561.737953,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 35,
     "fy2_sales": 34,
@@ -6845,6 +7159,8 @@
   "PL": {
    "price": 16.99,
    "mcap": 5828.844784,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 13,
     "fy2_sales": 13,
@@ -6903,6 +7219,8 @@
   "PLAB": {
    "price": 28.51,
    "mcap": 1643.071101,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 3,
     "fy2_sales": 3,
@@ -6937,6 +7255,8 @@
   "PLTR": {
    "price": 176.24,
    "mcap": 418949.215403,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 31,
     "fy2_sales": 30,
@@ -6995,6 +7315,8 @@
   "POET": {
    "price": 7.51,
    "mcap": 1280.629851,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 2,
     "fy2_sales": 2,
@@ -7053,6 +7375,8 @@
   "PWR": {
    "price": 616.54,
    "mcap": 93104.656417,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 27,
     "fy2_sales": 26,
@@ -7111,6 +7435,8 @@
   "QCOM": {
    "price": 188.71,
    "mcap": 194125.237958,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 34,
     "fy2_sales": 34,
@@ -7169,6 +7495,8 @@
   "RBLX": {
    "price": 47.5,
    "mcap": 33882.850882,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 27,
     "fy2_sales": 26,
@@ -7227,6 +7555,8 @@
   "RBRK": {
    "price": 107.83,
    "mcap": 21762.819376,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 27,
     "fy2_sales": 27,
@@ -7285,6 +7615,8 @@
   "RDDT": {
    "price": 152.83,
    "mcap": 30321.689976,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 29,
     "fy2_sales": 28,
@@ -7343,6 +7675,8 @@
   "RDNT": {
    "price": 77.78,
    "mcap": 5963.716025,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 7,
     "fy2_sales": 6,
@@ -7396,7 +7730,9 @@
   },
   "RELX": {
    "price": 34.38,
-   "mcap": 42955.422682,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "GBP",
    "counts": {
     "fy1_sales": 13,
     "fy2_sales": 13,
@@ -7455,6 +7791,8 @@
   "RKLB": {
    "price": 67.82,
    "mcap": 38121.885374,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 19,
     "fy2_sales": 19,
@@ -7513,6 +7851,8 @@
   "RKT": {
    "price": 12.57,
    "mcap": 36669.769352,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 9,
     "fy2_sales": 9,
@@ -7571,6 +7911,8 @@
   "RMBS": {
    "price": 85.87,
    "mcap": 8829.8591,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 7,
     "fy2_sales": 7,
@@ -7629,6 +7971,8 @@
   "RXRX": {
    "price": 3.54,
    "mcap": 1710.704767,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 8,
     "fy2_sales": 8,
@@ -7683,6 +8027,8 @@
   "SE": {
    "price": 101.27,
    "mcap": 62862.299649,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 26,
     "fy2_sales": 26,
@@ -7741,6 +8087,8 @@
   "SEI": {
    "price": 69.22,
    "mcap": 4946.188923,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 15,
     "fy2_sales": 15,
@@ -7799,6 +8147,8 @@
   "SHOP": {
    "price": 128.6,
    "mcap": 167821.866381,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 49,
     "fy2_sales": 49,
@@ -7857,6 +8207,8 @@
   "SITM": {
    "price": 598.6,
    "mcap": 16505.99166,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 9,
     "fy2_sales": 9,
@@ -7915,6 +8267,8 @@
   "SLAB": {
    "price": 219.7,
    "mcap": 7331.011059,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 5,
     "fy2_sales": 5,
@@ -7957,6 +8311,8 @@
   "SMCI": {
    "price": 40.35,
    "mcap": 24209.1744,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 15,
     "fy2_sales": 15,
@@ -8015,6 +8371,8 @@
   "SMTC": {
    "price": 178.19,
    "mcap": 15636.708636,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 14,
     "fy2_sales": 14,
@@ -8073,6 +8431,8 @@
   "SNOW": {
    "price": 338.39,
    "mcap": 116783.856,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 42,
     "fy2_sales": 42,
@@ -8131,6 +8491,8 @@
   "SNPS": {
    "price": 381.17,
    "mcap": 72528.721412,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 21,
     "fy2_sales": 21,
@@ -8189,6 +8551,8 @@
   "SOLS": {
    "price": 58.8,
    "mcap": 9291.854217,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 7,
     "fy2_sales": 7,
@@ -8246,7 +8610,9 @@
   },
   "SONY": {
    "price": 23.83,
-   "mcap": 22045222.61078,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "JPY",
    "counts": {
     "fy1_sales": 22,
     "fy2_sales": 21,
@@ -8305,6 +8671,8 @@
   "SPCX": {
    "price": 154.81,
    "mcap": 2047602.920745,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 42,
     "fy2_sales": 42,
@@ -8363,6 +8731,8 @@
   "SPGI": {
    "price": 404.11,
    "mcap": 126776.83758,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 21,
     "fy2_sales": 21,
@@ -8420,7 +8790,9 @@
   },
   "SPOT": {
    "price": 528.84,
-   "mcap": 97541.132411,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "EUR",
    "counts": {
     "fy1_sales": 38,
     "fy2_sales": 37,
@@ -8479,6 +8851,8 @@
   "STM": {
    "price": 48.61,
    "mcap": 43523.907568,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 23,
     "fy2_sales": 23,
@@ -8537,6 +8911,8 @@
   "STX": {
    "price": 803.13,
    "mcap": 178089.660705,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 23,
     "fy2_sales": 21,
@@ -8595,6 +8971,8 @@
   "SWKS": {
    "price": 91.32,
    "mcap": 12878.965411,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 19,
     "fy2_sales": 19,
@@ -8652,7 +9030,9 @@
   },
   "TCEHY": {
    "price": 54.5,
-   "mcap": 3312910.094299,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "CNY",
    "counts": {
     "fy1_sales": 50,
     "fy2_sales": 50,
@@ -8711,6 +9091,8 @@
   "TEAM": {
    "price": 192.53,
    "mcap": 48167.253718,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 30,
     "fy2_sales": 29,
@@ -8769,6 +9151,8 @@
   "TEM": {
    "price": 80.36,
    "mcap": 12625.019877,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 20,
     "fy2_sales": 20,
@@ -8827,6 +9211,8 @@
   "TER": {
    "price": 353.13,
    "mcap": 53335.646862,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 15,
     "fy2_sales": 15,
@@ -8885,6 +9271,8 @@
   "TRI": {
    "price": 99.48,
    "mcap": 44031.234973,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 15,
     "fy2_sales": 14,
@@ -8943,6 +9331,8 @@
   "TSEM": {
    "price": 219.24,
    "mcap": 22854.8682,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 8,
     "fy2_sales": 8,
@@ -9001,6 +9391,8 @@
   "TSLA": {
    "price": 366.2,
    "mcap": 1414253.930844,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 41,
     "fy2_sales": 41,
@@ -9058,7 +9450,9 @@
   },
   "TSM": {
    "price": 430.26,
-   "mcap": 62885997.4925,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "TWD",
    "counts": {
     "fy1_sales": 41,
     "fy2_sales": 40,
@@ -9117,6 +9511,8 @@
   "TTD": {
    "price": 14.26,
    "mcap": 6808.564011,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 38,
     "fy2_sales": 37,
@@ -9175,6 +9571,8 @@
   "TTMI": {
    "price": 114.77,
    "mcap": 12009.770496,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 5,
     "fy2_sales": 5,
@@ -9233,6 +9631,8 @@
   "TTWO": {
    "price": 210.62,
    "mcap": 39604.327632,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 26,
     "fy2_sales": 27,
@@ -9291,6 +9691,8 @@
   "TWLO": {
    "price": 246.24,
    "mcap": 36686.048554,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 28,
     "fy2_sales": 29,
@@ -9349,6 +9751,8 @@
   "TXN": {
    "price": 258.14,
    "mcap": 238056.27431,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 28,
     "fy2_sales": 28,
@@ -9407,6 +9811,8 @@
   "U": {
    "price": 41.84,
    "mcap": 18540.946747,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 29,
     "fy2_sales": 28,
@@ -9464,7 +9870,9 @@
   },
   "UMC": {
    "price": 24.47,
-   "mcap": 1849582.577602,
+   "mcap": null,
+   "price_currency": "USD",
+   "mcap_currency": "TWD",
    "counts": {
     "fy1_sales": 18,
     "fy2_sales": 18,
@@ -9523,6 +9931,8 @@
   "UPST": {
    "price": 24.77,
    "mcap": 2418.229193,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 14,
     "fy2_sales": 14,
@@ -9577,6 +9987,8 @@
   "VIAV": {
    "price": 34.74,
    "mcap": 8505.466571,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 7,
     "fy2_sales": 6,
@@ -9631,6 +10043,8 @@
   "VICR": {
    "price": 216.39,
    "mcap": 8479.489082,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 5,
     "fy2_sales": 5,
@@ -9689,6 +10103,8 @@
   "VRT": {
    "price": 241.49,
    "mcap": 92170.018498,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 28,
     "fy2_sales": 28,
@@ -9747,6 +10163,8 @@
   "VST": {
    "price": 143.56,
    "mcap": 47119.825026,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 15,
     "fy2_sales": 15,
@@ -9805,6 +10223,8 @@
   "WELL": {
    "price": 232.26,
    "mcap": 169014.69101,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 16,
     "fy2_sales": 16,
@@ -9863,6 +10283,8 @@
   "WMT": {
    "price": 106.79,
    "mcap": 852877.720908,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 39,
     "fy2_sales": 38,
@@ -9921,6 +10343,8 @@
   "WOLF": {
    "price": 23.74,
    "mcap": 1252.866568,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 2,
     "fy2_sales": 2,
@@ -9947,6 +10371,8 @@
   "Z": {
    "price": 30.1,
    "mcap": 7069.40224,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 25,
     "fy2_sales": 25,
@@ -10005,6 +10431,8 @@
   "ZS": {
    "price": 197.47,
    "mcap": 31238.019043,
+   "price_currency": "USD",
+   "mcap_currency": "USD",
    "counts": {
     "fy1_sales": 41,
     "fy2_sales": 38,
