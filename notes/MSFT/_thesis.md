@@ -81,10 +81,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 0.5
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-16'
   draft: true
 - id: msft_ai_tooling_below_peer_quality
   statement: At scoring, MSFT's AI developer tooling quality was below that of primary

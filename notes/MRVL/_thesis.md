@@ -41,10 +41,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-17'
   draft: true
 - id: avgo_no_photonic_bundle_match
   statement: 'At scoring, AVGO had not publicly announced a competing optical-decoupled
@@ -185,10 +185,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
+    confirm: 2.0
     challenge: 6.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-18'
   draft: true
 ---
 ## Rationale

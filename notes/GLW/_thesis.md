@@ -45,10 +45,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 23.0
+    confirm: 24.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-18'
   draft: true
 - id: solar_margin_drag_capacity_ramp
   statement: Gross margin pressure in the Solar segment as of Q2 2026 reflects a capacity
