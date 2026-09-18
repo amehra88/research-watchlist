@@ -675,6 +675,15 @@ def supported_growth(ticker: str, entry: dict, cfg: dict, *, stages: dict,
     lam, lambda_terms, lam_flags = street_lambda(cred_for_lambda, breadth_ratio,
                                                  entry.get("fy1_sales"), cfg)
     flags.extend(lam_flags); flags.extend(breadth_flags)
+    # V1's size leg is specified in MILLIONS OF USD, but `fy1_sales` is FactSet consensus
+    # in the company's REPORTING currency -- there is no FX leg anywhere in this pipeline
+    # (see mcp_schemas.md's open FX follow-up). For a non-USD reporter the term is computed
+    # on local millions and therefore overstates size; flagged rather than silently fudged
+    # with an invented rate (live: 3 CNY reporters get a -0.15..-0.20 penalty that would be
+    # 0..-0.04 in USD; the two KRW names are mega-caps that max the term either way).
+    if (entry.get("price_currency") or "USD") != "USD":
+        flags.append("size_term_currency_unverified")
+        lambda_terms["fy1_sales_currency"] = entry.get("price_currency")
     cagr_used = terminal_growth + (cagr_street - terminal_growth) * lam
 
     fade = fade_growth_path(cagr_used, terminal_growth, durability_score)
@@ -731,24 +740,55 @@ def _margin_path(fcf_margin_now: float, terminal_margin: float, years: int) -> l
     return [fcf_margin_now + (terminal_margin - fcf_margin_now) * (t / years) for t in range(1, years + 1)]
 
 
+DEFAULT_STUB_YEARS = 0.5
+
+
+def stub_years(fy1_fiscal_end: str | None, as_of: str,
+               default: float = DEFAULT_STUB_YEARS) -> tuple[float, list[str]]:
+    """RIS5 A5 fix round 4, V7: how much of FY1 is still ahead of us, in years --
+    `(fy1_fiscal_end - as_of) / 365`. Layer 1 anchors on the FY1 consensus sales estimate,
+    so projection year t spans [stub + (t-1), stub + t] and its cash flow is discounted at
+    its MIDPOINT, `t_actual = stub + (t-1) + 0.5` (mid-period convention). Without this,
+    a company 13 days from its fiscal year end and one a full year away were discounted
+    identically -- worth several points of implied growth on a 5-year path.
+
+    The default when `fiscal_end` is unknown is 0.5, which makes `t_actual = t` exactly,
+    i.e. reproduces the pre-V7 end-of-period discounting rather than inventing a stub."""
+    if not fy1_fiscal_end:
+        return default, ["fy1_fiscal_end_missing"]
+    try:
+        days = (date.fromisoformat(str(fy1_fiscal_end)[:10]) - date.fromisoformat(as_of)).days
+    except ValueError:
+        return default, ["fy1_fiscal_end_unparseable"]
+    if days < 0:
+        return 0.0, ["fy1_fiscal_end_past"]
+    return days / 365.0, []
+
+
 def _pv_for_growth(g: float, fy0_sales: float, margins: list[float], discount_rate: float,
-                   terminal_growth: float, years: int) -> float:
+                   terminal_growth: float, years: int, stub: float = DEFAULT_STUB_YEARS) -> float:
+    """V7 mid-period convention, stated once: year t's flow is discounted at
+    `t_actual = stub + (t-1) + 0.5`, and the terminal value at `t_actual(years)`. The
+    latter is exact, not an approximation: the Gordon value of mid-year flows starting at
+    year `years+1` (centred at stub + years + 0.5) discounted one full year back is
+    precisely `FCF_years * (1+tg) / (r - tg)` valued at stub + years - 0.5."""
     pv = 0.0
     fcf_years = 0.0
     for t in range(1, years + 1):
+        t_actual = stub + (t - 1) + 0.5
         sales_t = fy0_sales * (1.0 + g) ** t
         fcf_t = sales_t * margins[t - 1]
-        pv += fcf_t / (1.0 + discount_rate) ** t
+        pv += fcf_t / (1.0 + discount_rate) ** t_actual
         if t == years:
             fcf_years = fcf_t
     tv = fcf_years * (1.0 + terminal_growth) / (discount_rate - terminal_growth)
-    pv += tv / (1.0 + discount_rate) ** years
+    pv += tv / (1.0 + discount_rate) ** (stub + years - 0.5)
     return pv
 
 
 def solve_implied_growth(ev: float, fy0_sales: float, fcf_margin_now: float, terminal_margin: float,
                          discount_rate: float, terminal_growth: float, years: int,
-                         bisection_cfg: dict) -> dict:
+                         bisection_cfg: dict, stub: float = DEFAULT_STUB_YEARS) -> dict:
     """-> {growth, pv_at_growth, flags}. `growth` is None when a guard fails (nonpositive
     margin path, invalid Gordon denominator, or fy0_sales<=0); otherwise bisected to
     `tol_relative` on |PV(g)-EV|/EV, clipped to [g_lo, g_hi] with a flag if EV falls
@@ -772,7 +812,7 @@ def solve_implied_growth(ev: float, fy0_sales: float, fcf_margin_now: float, ter
     tol_rel = bisection_cfg.get("tol_relative", 1e-6)
 
     def pv(g):
-        return _pv_for_growth(g, fy0_sales, margins, discount_rate, terminal_growth, years)
+        return _pv_for_growth(g, fy0_sales, margins, discount_rate, terminal_growth, years, stub)
 
     pv_lo, pv_hi = pv(g_lo), pv(g_hi)
     flags: list[str] = []
@@ -797,7 +837,7 @@ def solve_implied_growth(ev: float, fy0_sales: float, fcf_margin_now: float, ter
 
 def terminal_share_of_ev(g: float | None, fy0_sales: float, fcf_margin_now: float, terminal_margin: float,
                          discount_rate: float, terminal_growth: float, years: int,
-                         ev: float | None) -> float | None:
+                         ev: float | None, stub: float = DEFAULT_STUB_YEARS) -> float | None:
     """L2 (amendment v1.2): PV of the terminal value / EV, at the solved (or
     bracket-clipped) growth `g`. None if `g` is None (a guard already failed) or `ev` is
     falsy/None. Convention (F4): the terminal value is computed off the SAME margin path
@@ -811,13 +851,13 @@ def terminal_share_of_ev(g: float | None, fy0_sales: float, fcf_margin_now: floa
         return None
     fcf_years = fy0_sales * (1.0 + g) ** years * margins[-1]
     tv = fcf_years * (1.0 + terminal_growth) / (discount_rate - terminal_growth)
-    tv_pv = tv / (1.0 + discount_rate) ** years
+    tv_pv = tv / (1.0 + discount_rate) ** (stub + years - 0.5)   # V7: same convention as the PV stream
     return tv_pv / ev
 
 
 def implied_growth(ev: float, fy0_sales: float, fcf_margin_now: float, terminal_margin: float,
                    discount_rate: float = 0.10, terminal_growth: float = 0.03, years: int = 5,
-                   cfg: dict | None = None) -> dict:
+                   cfg: dict | None = None, stub: float = DEFAULT_STUB_YEARS) -> dict:
     """Brief's exact signature. `cfg` supplies bisection bounds/tolerance and the
     sensitivity deltas (config/valuation.yaml); defaults match that file's shipped
     values if `cfg` is omitted."""
@@ -828,7 +868,7 @@ def implied_growth(ev: float, fy0_sales: float, fcf_margin_now: float, terminal_
     tm_delta = sens_cfg.get("terminal_margin_delta", 0.03)
 
     core = solve_implied_growth(ev, fy0_sales, fcf_margin_now, terminal_margin,
-                                discount_rate, terminal_growth, years, bisection_cfg)
+                                discount_rate, terminal_growth, years, bisection_cfg, stub)
 
     def _g(**overrides):
         kwargs = dict(ev=ev, fy0_sales=fy0_sales, fcf_margin_now=fcf_margin_now,
@@ -837,7 +877,8 @@ def implied_growth(ev: float, fy0_sales: float, fcf_margin_now: float, terminal_
         kwargs.update(overrides)
         return solve_implied_growth(kwargs["ev"], kwargs["fy0_sales"], kwargs["fcf_margin_now"],
                                     kwargs["terminal_margin"], kwargs["discount_rate"],
-                                    kwargs["terminal_growth"], kwargs["years"], bisection_cfg)["growth"]
+                                    kwargs["terminal_growth"], kwargs["years"], bisection_cfg,
+                                    stub)["growth"]
 
     sensitivity = {
         "dr_plus": _g(discount_rate=discount_rate + dr_delta),
@@ -846,7 +887,7 @@ def implied_growth(ev: float, fy0_sales: float, fcf_margin_now: float, terminal_
         "tm_minus": _g(terminal_margin=terminal_margin - tm_delta),
     }
     tshare = terminal_share_of_ev(core["growth"], fy0_sales, fcf_margin_now, terminal_margin,
-                                  discount_rate, terminal_growth, years, ev)
+                                  discount_rate, terminal_growth, years, ev, stub)
     return {
         "implied_growth_5y": core["growth"],
         "implied_terminal_margin": terminal_margin,   # echoed input, not solved (2 unknowns, 1 equation)
@@ -1151,39 +1192,57 @@ def is_valuation_extreme(gap_range: list | None, lens_history_z: float | None,
 RUNG_NAMES = ("peg", "ev_ebitda_to_growth", "ev_fcf_to_growth", "ev_sales_to_growth")
 
 
-def ev_multiple_fwd(ev: float | None, v1: float | None, v2: float | None = None) -> float | None:
-    """EV / mean(available of v1, v2) -- v1/v2 <= 0 excluded (a negative denominator
-    multiple is not meaningful here). L1(b) explicitly averages FY1+FY2 EBITDA
-    ("forward EV/EBITDA (FY1, FY2)"); L1(c)'s EV/FCF passes v2=None (FY1 only, same
-    convention as pe_fy1)."""
-    if ev is None:
+def _fwd_multiple(numerator: float | None, v1: float | None, v2: float | None = None) -> float | None:
+    """`numerator / mean(available positive of v1, v2)` -- amendment v1.2's "(FY1, FY2)"
+    forward convention, stated ONCE here and used by EVERY rung (K3: PEG and EV/FCF used
+    to be FY1-only). A nonpositive forward denominator is excluded rather than averaged in
+    (a multiple on a negative denominator is not a multiple); when BOTH are nonpositive the
+    rung either takes V6's FY3 path or comes back null with a reason."""
+    if numerator is None:
         return None
     vals = [v for v in (v1, v2) if v is not None and v > 0]
     if not vals:
         return None
-    return ev / statistics.mean(vals)
+    return numerator / statistics.mean(vals)
 
 
-def _rung_raw_cagr(name: str, entry: dict, ev: float | None) -> tuple[float | None, float | None]:
-    """(raw_multiple, cagr) for ladder rung `name`, from ANY entry dict (current-ticker
-    or a historical/peer entry) + that entry's own EV -- the single function every rung,
-    every history point, and every peer point goes through (one code path, per the
-    coordinator review: "a parameterized rung loop, not four hand-written lenses")."""
-    if name == "peg":
-        raw, _ = pe_fy1(entry.get("price"), entry.get("fy1_eps"))
-        cagr = two_yr_cagr(entry.get("fy1_eps"), entry.get("fy3_eps"))
-    elif name == "ev_ebitda_to_growth":
-        raw = ev_multiple_fwd(ev, entry.get("fy1_ebitda"), entry.get("fy2_ebitda"))
-        cagr = two_yr_cagr(entry.get("fy1_ebitda"), entry.get("fy3_ebitda"))
-    elif name == "ev_fcf_to_growth":
-        raw = ev_multiple_fwd(ev, entry.get("fy1_fcf"))
-        cagr = two_yr_cagr(entry.get("fy1_fcf"), entry.get("fy3_fcf"))
-    elif name == "ev_sales_to_growth":
-        raw = ev_sales_fy1(ev, entry.get("fy1_sales"))
-        cagr = near_term_cagr(entry.get("fy1_sales"), entry.get("fy3_sales"))
-    else:
-        raise ValueError(f"unknown rung {name!r}")
-    return raw, cagr
+def ev_multiple_fwd(ev: float | None, v1: float | None, v2: float | None = None) -> float | None:
+    """EV-numerator form of _fwd_multiple() (kept as the public name L1(b)/(c) use)."""
+    return _fwd_multiple(ev, v1, v2)
+
+
+_RUNG_METRIC = {"peg": "eps", "ev_ebitda_to_growth": "ebitda",
+                "ev_fcf_to_growth": "fcf", "ev_sales_to_growth": "sales"}
+
+
+def _rung_raw_cagr(name: str, entry: dict, ev: float | None) -> tuple[float | None, float | None, list[str]]:
+    """(raw_multiple, cagr, flags) for ladder rung `name`, from ANY entry dict
+    (current-ticker or a historical/peer entry) + that entry's own EV -- the single
+    function every rung, every history point, and every peer point goes through.
+
+    Numerator: `price` for PEG (a per-share multiple), `ev` for the other three.
+    Denominator: the FY1-FY2 average (K3), except the last-resort EV/Sales rung, which
+    stays on FY1 sales so it matches the `ev_sales_fy1` lens printed next to it.
+    Growth: the FY1->FY3 2-year CAGR of the rung's OWN denominator.
+
+    RIS5 A5 fix round 4, V6 -- NEGATIVE FY1 DENOMINATOR: a name whose FY1 denominator is
+    <= 0 but whose FY3 is positive (INDI/RKLB/OPEN/GH-type: loss-making today, forecast
+    profitable by FY3) used to lose the rung entirely and fall to the sales rung /
+    `long_duration`. Such a rung is now computed as `numerator / FY3 denominator` with
+    FY2->FY3 (one-year) growth, flagged `denominator_negative_fy1` -- a DIFFERENT
+    statement from "growth<=0", and one a reader must see, because the multiple is on a
+    year further out than every other card's. If FY2 is also <= 0 the growth leg is
+    undefined and the rung stays null (with both flags)."""
+    metric = _RUNG_METRIC[name]
+    v1, v2, v3 = (entry.get(f"fy{n}_{metric}") for n in (1, 2, 3))
+    numerator = entry.get("price") if name == "peg" else ev
+    if name == "ev_sales_to_growth":
+        return ev_sales_fy1(ev, v1), two_yr_cagr(v1, v3), []
+    if v1 is not None and v1 <= 0 and v3 is not None and v3 > 0:
+        raw = numerator / v3 if numerator is not None else None
+        cagr = (v3 / v2 - 1.0) if (v2 is not None and v2 > 0) else None
+        return raw, cagr, ["denominator_negative_fy1"]
+    return _fwd_multiple(numerator, v1, v2), two_yr_cagr(v1, v3), []
 
 
 def _rung_adjusted(raw: float | None, cagr: float | None) -> float | None:
@@ -1200,31 +1259,37 @@ def _entry_ev(entry: dict, net_debt: float | None) -> float | None:
     return entry["mcap"] + net_debt if net_debt is not None else entry["mcap"]
 
 
+def _rung_computable(name: str, entry: dict) -> bool:
+    """A rung is computable when its DENOMINATOR is usable and growing. The numerator
+    (EV, or price for PEG) only scales the multiple and is irrelevant to eligibility, so
+    placeholders stand in for both -- selection must not depend on whether a price row
+    happened to seat."""
+    e = entry if entry.get("price") is not None else {**entry, "price": 1.0}
+    raw, cagr, _flags = _rung_raw_cagr(name, e, ev=1.0)
+    return raw is not None and cagr is not None and cagr > 0
+
+
 def select_primary_lens(entry: dict) -> str | None:
-    """L1's literal waterfall, in priority order: (a) PEG when FY1 EPS > 0 and its own
-    EPS-CAGR growth > 0; (b) EV/EBITDA-to-growth ONLY when EPS <= 0 (not merely when
-    PEG's growth check failed) and EBITDA > 0 and growing; (c) EV/FCF-to-growth when
-    FCF > 0 and growing (no EPS-sign gate); (d) EV/Sales-to-growth, last resort. Each
-    rung's raw/adjusted values are computed independently in build_ladder() regardless
-    of which one is primary -- e.g. EV/FCF-to-growth is still shown "next to PEG for
-    cash-rich names" even when PEG is primary. None if no rung is eligible at all."""
+    """L1's waterfall, RIS5 A5 fix round 4, V5 (rung (b)'s gate widened):
+      (a) **PEG** when FY1 EPS > 0 AND its own EPS growth is positive;
+      (b) **EV/EBITDA-to-growth** whenever PEG is ineligible for ANY reason -- EPS <= 0,
+          EPS growth <= 0, or EPS missing -- and the EBITDA rung is computable. The old
+          gate was `eps_positive == False` only, which sent GOOG/GOOGL (positive FY1 EPS,
+          a -6.6% EPS CAGR) past a perfectly ordinary 0.51 EV/EBITDA-to-growth all the way
+          down to the last-resort sales rung and `long_duration`;
+      (c) **EV/FCF-to-growth** when the FCF rung is computable (no EPS-sign gate, so it is
+          still "shown next to PEG for cash-rich names");
+      (d) **EV/Sales-to-growth**, last resort, flagged `no_profit_lens`.
+    "Computable" includes V6's FY3-denominator path for a negative-FY1 name. Every rung is
+    computed independently in build_ladder() regardless of which one is primary; None when
+    no rung is eligible at all."""
     fy1_eps = entry.get("fy1_eps")
     eps_positive = fy1_eps is not None and fy1_eps > 0
-    eps_cagr = two_yr_cagr(entry.get("fy1_eps"), entry.get("fy3_eps"))
-    if eps_positive and eps_cagr is not None and eps_cagr > 0:
+    if eps_positive and _rung_computable("peg", entry):
         return "peg"
-    fy1_ebitda = entry.get("fy1_ebitda")
-    ebitda_cagr = two_yr_cagr(entry.get("fy1_ebitda"), entry.get("fy3_ebitda"))
-    if (not eps_positive) and fy1_ebitda is not None and fy1_ebitda > 0 \
-            and ebitda_cagr is not None and ebitda_cagr > 0:
-        return "ev_ebitda_to_growth"
-    fy1_fcf = entry.get("fy1_fcf")
-    fcf_cagr = two_yr_cagr(entry.get("fy1_fcf"), entry.get("fy3_fcf"))
-    if fy1_fcf is not None and fy1_fcf > 0 and fcf_cagr is not None and fcf_cagr > 0:
-        return "ev_fcf_to_growth"
-    sales_cagr = near_term_cagr(entry.get("fy1_sales"), entry.get("fy3_sales"))
-    if sales_cagr is not None and sales_cagr > 0:
-        return "ev_sales_to_growth"
+    for name in ("ev_ebitda_to_growth", "ev_fcf_to_growth", "ev_sales_to_growth"):
+        if _rung_computable(name, entry):
+            return name
     return None
 
 
@@ -1237,9 +1302,9 @@ def build_ladder(entry: dict, ev: float | None, ticker: str, ticker_themes_all: 
     every rung -- EV/EBITDA and EV/FCF get exactly the same treatment PEG always did."""
     ladder: dict[str, dict] = {}
     for name in RUNG_NAMES:
-        raw, cagr = _rung_raw_cagr(name, entry, ev)
+        raw, cagr, flags = _rung_raw_cagr(name, entry, ev)
+        flags = list(flags)
         adjusted = _rung_adjusted(raw, cagr)
-        flags: list[str] = []
         if raw is None:
             flags.append(f"{name}_unavailable")
         elif adjusted is None:
@@ -1248,7 +1313,7 @@ def build_ladder(entry: dict, ev: float | None, ticker: str, ticker_themes_all: 
         def _hist_fn(e, _name=name):
             e_net_debt = fundamentals.get(ticker, {}).get("net_debt")
             e_ev = _entry_ev(e, e_net_debt)
-            r, c = _rung_raw_cagr(_name, e, e_ev)
+            r, c, _f = _rung_raw_cagr(_name, e, e_ev)
             return _rung_adjusted(r, c)
 
         hist = zscore_history(adjusted, history_series(ticker, history_cache, _hist_fn), min_days)
@@ -1260,7 +1325,7 @@ def build_ladder(entry: dict, ev: float | None, ticker: str, ticker_themes_all: 
                 continue
             p_net_debt = fundamentals.get(p, {}).get("net_debt")
             p_ev = _entry_ev(pe_entry, p_net_debt)
-            r, c = _rung_raw_cagr(name, pe_entry, p_ev)
+            r, c, _f = _rung_raw_cagr(name, pe_entry, p_ev)
             peer_vals.append(_rung_adjusted(r, c))
         peer = peer_lens(adjusted, peer_vals, min_peers_for_z)
         peer["peer_basis"] = "watchlist_themes"
@@ -1340,8 +1405,8 @@ def is_pre_profit(fcf_margin_raw: float | None, operating_margin_pct: float | No
 
 
 def determine_long_duration(terminal_share: float | None, lens_forward_years: int,
-                            primary_lens: str | None, cfg: dict, pre_profit: bool = False
-                            ) -> tuple[bool, list[str]]:
+                            primary_lens: str | None, cfg: dict, pre_profit: bool = False,
+                            operator_handled: bool = False) -> tuple[bool, list[str]]:
     """L3 (RIS5 A5 fix round 2, item 1 -- recalibrated): long_duration when
     terminal_share_of_ev > threshold (default 0.90, was 0.75 -- at a 10% discount rate a
     30% grower legitimately carries ~80% of EV past year 5, so 0.75 was flagging ordinary
@@ -1367,6 +1432,11 @@ def determine_long_duration(terminal_share: float | None, lens_forward_years: in
         reasons.append("primary_lens_last_resort")
     if pre_profit:
         reasons.append("pre_profit")
+    if operator_handled:
+        # V8 (amendment v1.2, 3): names the operator has said are his call, not the
+        # engine's (TSLA/SPCX). What is priced is still shown; the supported leg, the gap
+        # and valuation_extreme are not, so nothing downstream can score them.
+        reasons.append("operator_handled")
     return bool(reasons), reasons
 
 
@@ -1513,9 +1583,14 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
     # -- it asks "has this company ever made money", which a forward estimate cannot answer.
     pre_profit = is_pre_profit(read_ltm_fcf_margin(fnd), operating_margin_pct)
 
+    # V7: the FY1 stub -- how much of the anchor fiscal year is still ahead of us.
+    fy1_fiscal_end = (entry.get("fiscal_end") or {}).get("fy1_sales")
+    stub, stub_flags = stub_years(fy1_fiscal_end, as_of)
+    flags.extend(stub_flags)
+
     l1 = implied_growth(ev, entry["fy1_sales"], fcf_margin_now, terminal_margin,
                         discount_rate=discount_rate, terminal_growth=terminal_growth,
-                        years=years, cfg=cfg)
+                        years=years, cfg=cfg, stub=stub)
 
     thesis_fm = load_thesis_fm(ticker, notes_dir)
     cred_entry = (credibility_cache or {}).get(ticker)
@@ -1587,8 +1662,9 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
     terminal_share = l1["terminal_share_of_ev"]
     lens_forward_years = forward_years_available_for_lens(entry, primary)
     horizon["lens_forward_years"] = lens_forward_years
+    operator_handled = ticker in set(cfg.get("operator_handled") or [])
     is_ld, ld_reasons = determine_long_duration(terminal_share, lens_forward_years, primary, cfg,
-                                               pre_profit=pre_profit)
+                                               pre_profit=pre_profit, operator_handled=operator_handled)
 
     l1_card = {k: v for k, v in l1.items() if k != "pv_residual_check"}   # C7: dropped from the card
 
@@ -1622,6 +1698,7 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
             "fy3_fcf_margin_consensus": consensus_margin(entry.get("fy3_fcf"), entry.get("fy3_sales")),
             "fcf_margin_ltm": read_ltm_fcf_margin(fnd),
             "terminal_margin": terminal_margin,
+            "fy1_fiscal_end": fy1_fiscal_end, "stub_years": stub,
             "discount_rate": discount_rate, "terminal_growth": terminal_growth, "years": years,
         },
         "layer1_priced": l1_card,
@@ -1677,9 +1754,23 @@ def attach_priced_in(cards: dict[str, dict], state_dir: Path, as_of: str, min_da
         lens_history_z = ladder[primary]["history"]["z"] if primary else None
         lens_peer_score = ladder[primary]["peers"]["peer_score"] if primary else None
         piv, available = combine_priced_in(gap_z, lens_history_z, lens_peer_score)
+        # V9: until a real own-history z exists (>= min_days daily points), priced_in is a
+        # cross-sectional/peer reading of one day, not a statement about where this name
+        # normally trades. It is still computed and shown, but marked provisional with its
+        # reasons so B1 can down-weight it instead of treating day-2 z-scores as settled.
+        lens_hist = (ladder.get(primary, {}).get("history") or {}) if primary else {}
+        lens_n = lens_hist.get("n_days", 0)
+        provisional_reasons = []
+        if basis != "own_history":
+            provisional_reasons.append(f"gap_z is cross-sectional ({n} cards today, "
+                                       f"own history < {min_days} daily points)")
+        if lens_history_z is None:
+            provisional_reasons.append(f"lens_history_z unavailable ({lens_n}/{min_days} daily points)")
         c["priced_in"] = {"gap_z": gap_z, "gap_z_basis": basis, "gap_z_n": n,
                           "lens_history_z": lens_history_z, "lens_peer_score": lens_peer_score,
-                          "primary_lens": primary, "priced_in_valuation": piv, "available": available}
+                          "primary_lens": primary, "priced_in_valuation": piv, "available": available,
+                          "provisional": bool(provisional_reasons),
+                          "provisional_reasons": provisional_reasons}
 
 
 def build_expectations(snapshot: dict, cfg: dict, *, state_dir: Path, as_of: str,

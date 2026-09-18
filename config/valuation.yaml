@@ -223,6 +223,13 @@ long_duration:
   terminal_share_threshold: 0.90
   min_forward_years: 3
 
+# V8 (amendment v1.2, 3): names the operator handles himself. "Companies like Tesla and
+# SpaceX are obviously tougher" -- for these the engine shows only what is priced
+# (implied growth, terminal share, the multiples) and never a gap or a
+# valuation_extreme, regardless of what the mechanical triggers say. Add a ticker here to
+# take it out of the engine's scoring without removing it from the universe.
+operator_handled: [TSLA, SPCX]
+
 # ---------------------------------------------------------------------------
 # Lenses
 # ---------------------------------------------------------------------------

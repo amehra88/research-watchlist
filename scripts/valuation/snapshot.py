@@ -727,7 +727,7 @@ def build_latest(price_rows: list[dict], consensus_rows: list[dict],
         tickers[r["ticker"]] = {
             "price": r["price"], "mcap": r["mcap"] if mcap_ok else None,
             "price_currency": r.get("price_currency"), "mcap_currency": r.get("mcap_currency"),
-            "counts": {}, "up": {}, "down": {},
+            "counts": {}, "up": {}, "down": {}, "fiscal_end": {},
         }
     for r in consensus_rows:
         if r["quality"] != "ok":
@@ -738,11 +738,17 @@ def build_latest(price_rows: list[dict], consensus_rows: list[dict],
         key = f"{label}_{r['metric'].lower()}"
         entry = tickers.setdefault(r["ticker"], {"price": None, "mcap": None,
                                                  "price_currency": None, "mcap_currency": None,
-                                                 "counts": {}, "up": {}, "down": {}})
+                                                 "counts": {}, "up": {}, "down": {}, "fiscal_end": {}})
         entry[key] = r["mean"]
         entry["counts"][key] = r["count"]
         entry["up"][key] = r["up"]
         entry["down"][key] = r["down"]
+        if r["rel_period"] == 1:
+            # RIS5 A5 fix round 4, V7: the FY1 period END is the only thing downstream can
+            # use to know how much of the anchor fiscal year is still ahead (the stub), and
+            # it was being dropped here even though consensus_<date>.jsonl carries it.
+            # rel_period 1 only -- FY2/FY3 ends are implied by it and nothing reads them.
+            entry.setdefault("fiscal_end", {})[key] = r.get("fiscal_end")
     priced = sum(1 for t in tickers.values() if t["price"] is not None)
     consensus_only = len(tickers) - priced
     skipped_mcap = [{"ticker": tk, "reason": reason} for tk, reason in sorted(mcap_missing.items())]

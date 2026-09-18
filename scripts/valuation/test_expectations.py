@@ -128,9 +128,11 @@ _WORKTREE_ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_sector_family_nvda_avgo_cohr():
-    # explicit worktree path (E.CONFIG_PATH defaults to REPO = the main checkout, same
-    # "worktree copy is only visible here until merge" convention as theme_polarity.py's
-    # POLARITY_PATH docstring) -- exercises the SHIPPED config/valuation.yaml.
+    # K1 (fix round 4): the path is spelled out here only to make the assertion explicit --
+    # since C2, E.CONFIG_PATH already resolves to THIS checkout (REPO comes from __file__),
+    # so `_WORKTREE_ROOT / "config" / "valuation.yaml"` and E.CONFIG_PATH are the same file.
+    # Exercises the SHIPPED config/valuation.yaml either way; see
+    # test_repo_is_derived_from_file_not_hardcoded for the guard that keeps it that way.
     real_cfg = E.load_config(_WORKTREE_ROOT / "config" / "valuation.yaml")
     nvda_themes = ["ai_infrastructure_capex", "silicon_architecture_competition",
                   "networking_competitive_landscape", "sovereign_ai_deployments",
@@ -1477,6 +1479,237 @@ def test_valuation_extreme_vetoed_by_fcf_margin_floored():
     extreme3, reason3 = E.is_valuation_extreme([20.0, 30.0], None,
                                                ["start_margin_consensus", "terminal_margin_consensus"], cfg)
     check("real consensus margin ends do NOT veto", extreme3 is True and reason3 is None, (extreme3, reason3))
+
+
+
+# ─────────────────── fix round 4: V5 rung (b) gate ─────────────────────────
+
+def test_select_primary_lens_ebitda_reachable_whenever_peg_is_ineligible():
+    """V5: EV/EBITDA-to-growth is eligible whenever PEG is ineligible for ANY reason --
+    not only when EPS <= 0. GOOG/GOOGL (positive FY1 EPS, NEGATIVE EPS CAGR) fell all the
+    way to `long_duration`/`ev_sales_to_growth` under the old gate while their
+    EV/EBITDA-to-growth was a perfectly ordinary 0.51."""
+    googl_like = {"price": 347.33, "fy1_eps": 20.6, "fy2_eps": 19.0, "fy3_eps": 17.98,  # EPS SHRINKING
+                  "fy1_ebitda": 233_841.0, "fy2_ebitda": 280_000.0, "fy3_ebitda": 330_000.0,
+                  "fy1_fcf": -5223.0, "fy3_fcf": -7420.0,
+                  "fy1_sales": 497_657.0, "fy3_sales": 733_656.0}
+    check("positive-but-shrinking EPS -> EBITDA rung, not the last-resort sales rung",
+         E.select_primary_lens(googl_like) == "ev_ebitda_to_growth", E.select_primary_lens(googl_like))
+    missing_eps = {"price": 100.0, "fy1_ebitda": 50.0, "fy2_ebitda": 60.0, "fy3_ebitda": 80.0,
+                  "fy1_sales": 100.0, "fy3_sales": 130.0}
+    check("missing EPS also reaches the EBITDA rung",
+         E.select_primary_lens(missing_eps) == "ev_ebitda_to_growth", E.select_primary_lens(missing_eps))
+
+
+# ─────────────────── fix round 4: V6 negative FY1 denominator ──────────────
+
+def test_rung_uses_fy3_denominator_when_fy1_is_negative():
+    """V6: FY1 denominator <= 0 < FY3 -> EV / FY3 denominator with FY2->FY3 growth,
+    flagged `denominator_negative_fy1` (distinct from `growth<=0`)."""
+    entry = {"price": 10.0, "fy1_ebitda": -50.0, "fy2_ebitda": 100.0, "fy3_ebitda": 200.0}
+    raw, cagr, flags = E._rung_raw_cagr("ev_ebitda_to_growth", entry, ev=4000.0)
+    check("multiple is EV / FY3 EBITDA", abs(raw - 4000.0 / 200.0) < 1e-12, raw)
+    check("growth is FY2->FY3 (one year), not a FY1->FY3 CAGR", abs(cagr - 1.0) < 1e-12, cagr)
+    check("flagged denominator_negative_fy1", flags == ["denominator_negative_fy1"], flags)
+    adj = E._rung_adjusted(raw, cagr)
+    check("rung is reachable (adjusted computable)", adj is not None, adj)
+
+    no_fy2 = {"fy1_fcf": -100.0, "fy2_fcf": -10.0, "fy3_fcf": 50.0}
+    raw2, cagr2, flags2 = E._rung_raw_cagr("ev_fcf_to_growth", no_fy2, ev=1000.0)
+    check("FY2 still negative -> growth undefined, rung null with its reason",
+         raw2 is not None and cagr2 is None, (raw2, cagr2))
+    check("still flagged denominator_negative_fy1", "denominator_negative_fy1" in flags2, flags2)
+
+
+def test_v6_makes_named_live_shapes_reachable():
+    """The exact shapes the ruling names (RKLB/OPEN/GH: FY1 FCF negative, FY3 positive)."""
+    rklb = {"price": 67.82, "fy1_eps": -0.2767, "fy2_eps": 0.05, "fy3_eps": 0.28,
+           "fy1_fcf": -252.46, "fy2_fcf": -20.0, "fy3_fcf": 64.4,
+           "fy1_ebitda": -52.98, "fy2_ebitda": 30.0, "fy3_ebitda": 120.0,
+           "fy1_sales": 959.79, "fy3_sales": 1862.24}
+    lens = E.select_primary_lens(rklb)
+    check("RKLB-like reaches a profit lens, not the last-resort sales rung",
+         lens in ("ev_ebitda_to_growth", "ev_fcf_to_growth"), lens)
+
+
+# ─────────────────── fix round 4: K3 FY1-FY2 averaging ─────────────────────
+
+def test_peg_and_ev_fcf_rungs_use_fy1_fy2_averages():
+    """K3: every rung's multiple is on the FY1-FY2 AVERAGE denominator (amendment v1.2's
+    own "(FY1, FY2)" wording), PEG and EV/FCF included. The standalone `lenses.pe_fy1`
+    stays FY1-only -- it is labelled as such."""
+    entry = {"price": 100.0, "fy1_eps": 4.0, "fy2_eps": 6.0, "fy3_eps": 9.0,
+            "fy1_fcf": 100.0, "fy2_fcf": 200.0, "fy3_fcf": 400.0}
+    raw_peg, _c, _f = E._rung_raw_cagr("peg", entry, ev=1000.0)
+    check("PEG multiple = price / mean(FY1, FY2 EPS)", abs(raw_peg - 100.0 / 5.0) < 1e-12, raw_peg)
+    raw_fcf, _c2, _f2 = E._rung_raw_cagr("ev_fcf_to_growth", entry, ev=1500.0)
+    check("EV/FCF multiple = EV / mean(FY1, FY2 FCF)", abs(raw_fcf - 1500.0 / 150.0) < 1e-12, raw_fcf)
+
+
+def test_every_rung_peer_dict_carries_peer_basis():
+    """K2: peer_basis is asserted on EVERY rung's peer dict, not only PEG's."""
+    entry = {"price": 50.0, "fy1_eps": 2.0, "fy2_eps": 2.5, "fy3_eps": 3.0,
+            "fy1_ebitda": 100.0, "fy2_ebitda": 120.0, "fy3_ebitda": 150.0,
+            "fy1_fcf": 60.0, "fy2_fcf": 70.0, "fy3_fcf": 90.0,
+            "fy1_sales": 1000.0, "fy3_sales": 1300.0}
+    ladder = E.build_ladder(entry, ev=5000.0, ticker="T", ticker_themes_all={"T": []},
+                            all_entries={}, fundamentals={}, history_cache={}, peers=[],
+                            min_days=60, min_peers_for_z=3)
+    for name in E.RUNG_NAMES:
+        check(f"{name} peers.peer_basis == watchlist_themes",
+             ladder[name]["peers"].get("peer_basis") == "watchlist_themes", ladder[name]["peers"])
+
+
+# ─────────────────── fix round 4: V7 stub-period discounting ───────────────
+
+def test_stub_years_from_fiscal_end():
+    sy, flags = E.stub_years("2026-09-30", "2026-09-17")
+    check("13-day stub", abs(sy - 13 / 365) < 1e-12, sy)
+    check("no flag", flags == [], flags)
+    sy2, flags2 = E.stub_years(None, "2026-09-17")
+    check("missing fiscal_end -> 0.5 default (reproduces end-of-year discounting)",
+         sy2 == 0.5 and "fy1_fiscal_end_missing" in flags2, (sy2, flags2))
+    sy3, flags3 = E.stub_years("2026-08-31", "2026-09-17")
+    check("already-past fiscal end -> 0.0 + flag", sy3 == 0.0 and "fy1_fiscal_end_past" in flags3,
+         (sy3, flags3))
+
+
+def test_stub_discounting_direction_13_days_vs_12_months():
+    """V7: the same EV with a nearly-closed FY1 (13-day stub) must imply LESS growth than
+    one whose FY1 has a full year to run (cash arrives later -> each unit of growth is
+    worth less today -> more growth is needed to justify the same EV)."""
+    kw = dict(ev=8000.0, fy0_sales=1000.0, fcf_margin_now=0.15, terminal_margin=0.25,
+              discount_rate=0.10, terminal_growth=0.03, years=5,
+              bisection_cfg={"g_lo": -0.9, "g_hi": 5.0, "max_iter": 200, "tol_relative": 1e-9})
+    short = E.solve_implied_growth(stub=13 / 365, **kw)["growth"]
+    long = E.solve_implied_growth(stub=1.0, **kw)["growth"]
+    check("12-month stub implies MORE growth than a 13-day stub", long > short, (short, long))
+    mid = E.solve_implied_growth(stub=0.5, **kw)["growth"]
+    check("0.5 stub sits between the two", short < mid < long, (short, mid, long))
+
+
+def test_stub_default_reproduces_end_of_period_discounting():
+    """stub = 0.5 makes t_actual = 0.5 + (t-1) + 0.5 = t, i.e. exactly the pre-V7
+    end-of-year convention -- so a missing fiscal_end changes nothing."""
+    margins = E._margin_path(0.15, 0.25, 5)
+    pv_mid = E._pv_for_growth(0.20, 1000.0, margins, 0.10, 0.03, 5, 0.5)
+    pv_old = sum(1000.0 * 1.2 ** t * margins[t - 1] / 1.1 ** t for t in range(1, 6))
+    tv = 1000.0 * 1.2 ** 5 * margins[-1] * 1.03 / (0.10 - 0.03)
+    pv_old += tv / 1.1 ** 5
+    check("stub 0.5 == the old end-of-period PV", abs(pv_mid - pv_old) < 1e-6, (pv_mid, pv_old))
+
+
+def test_build_card_prints_fiscal_end_and_stub_years():
+    entry = {"price": 100.0, "mcap": 2500.0, "fy1_sales": 1000.0, "fy2_sales": 1200.0,
+            "fy3_sales": 1440.0, "fy1_eps": 4.0, "fy2_eps": 5.0, "fy3_eps": 6.0,
+            "fiscal_end": {"fy1_sales": "2026-12-31"}}
+    with tempfile.TemporaryDirectory() as td:
+        card = E.build_card("XYZ", entry, DEFAULT_CFG, state_dir=Path(td), as_of="2026-09-17",
+                            stages={"pairs": {}, "gated": []}, ticker_themes_all={"XYZ": []},
+                            downside_theme_slugs=set())
+    check("fy1_fiscal_end on the card", card["inputs"]["fy1_fiscal_end"] == "2026-12-31", card["inputs"])
+    check("stub_years on the card", abs(card["inputs"]["stub_years"] - 105 / 365) < 1e-9,
+         card["inputs"]["stub_years"])
+
+
+def test_build_latest_carries_fy1_fiscal_end():
+    """V7 (the one allowed edit outside this module): snapshot.build_latest must carry
+    rel_period-1 `fiscal_end` per metric, or the stub is unknowable downstream."""
+    from valuation import snapshot as S
+    price_rows = [{"ticker": "FOO", "price": 100.0, "mcap": 5000.0, "quality": "ok",
+                  "mcap_quality": "ok", "price_currency": "USD", "mcap_currency": "USD"}]
+    cons_rows = [{"ticker": "FOO", "metric": "SALES", "rel_period": 1, "mean": 1000.0, "count": 10,
+                 "up": 2, "down": 1, "quality": "ok", "fiscal_end": "2027-01-31"},
+                {"ticker": "FOO", "metric": "SALES", "rel_period": 2, "mean": 1200.0, "count": 9,
+                 "up": 2, "down": 1, "quality": "ok", "fiscal_end": "2028-01-31"}]
+    latest = S.build_latest(price_rows, cons_rows, 1, [], "2026-09-17")
+    foo = latest["tickers"]["FOO"]
+    check("fy1 fiscal_end carried", foo["fiscal_end"]["fy1_sales"] == "2027-01-31", foo.get("fiscal_end"))
+    check("only rel_period 1 is carried", "fy2_sales" not in foo["fiscal_end"], foo["fiscal_end"])
+    check("existing shape untouched", foo["fy1_sales"] == 1000.0 and foo["counts"]["fy2_sales"] == 9, foo)
+
+
+# ─────────────────── fix round 4: V8 operator-handled names ────────────────
+
+def test_operator_handled_names_are_long_duration_with_reason():
+    cfg = json.loads(json.dumps(DEFAULT_CFG))
+    cfg["operator_handled"] = ["TSLA", "SPCX"]
+    entry = {"price": 100.0, "mcap": 2500.0, "fy1_sales": 1000.0, "fy2_sales": 1200.0,
+            "fy3_sales": 1440.0, "fy1_eps": 4.0, "fy2_eps": 5.0, "fy3_eps": 6.0}
+    with tempfile.TemporaryDirectory() as td:
+        card = E.build_card("TSLA", entry, cfg, state_dir=Path(td), as_of="2026-09-17",
+                            stages={"pairs": {}, "gated": []}, ticker_themes_all={"TSLA": []},
+                            downside_theme_slugs=set())
+        other = E.build_card("XYZ", entry, cfg, state_dir=Path(td), as_of="2026-09-17",
+                            stages={"pairs": {}, "gated": []}, ticker_themes_all={"XYZ": []},
+                            downside_theme_slugs=set())
+    check("operator-handled name is long_duration", card["long_duration"] is True, card)
+    check("reason is operator_handled", "operator_handled" in card["long_duration_reasons"],
+         card["long_duration_reasons"])
+    check("what is priced is still shown", card["layer1_priced"]["implied_growth_5y"] is not None, card)
+    check("gap/valuation_extreme masked", card["gap"] is None and card["valuation_extreme"] is None, card)
+    check("an identical non-listed name is NOT long_duration", other["long_duration"] is False, other)
+    check("the shipped config lists TSLA and SPCX",
+         set(E.load_config(_WORKTREE_ROOT / "config" / "valuation.yaml").get("operator_handled") or [])
+         == {"TSLA", "SPCX"})
+
+
+# ─────────────────── fix round 4: V9 provisional priced_in ─────────────────
+
+def test_priced_in_is_provisional_until_60_history_points():
+    cards = {"AAA": {"ticker": "AAA", "long_duration": False, "gap": {"gap_pp": 10.0},
+                    "primary_lens": "peg",
+                    "lenses": {"ladder": {"peg": {"history": {"z": None, "n_days": 2},
+                                                  "peers": {"peer_score": 0.5}}}}},
+            "BBB": {"ticker": "BBB", "long_duration": False, "gap": {"gap_pp": -4.0},
+                    "primary_lens": "peg",
+                    "lenses": {"ladder": {"peg": {"history": {"z": 1.1, "n_days": 60},
+                                                  "peers": {"peer_score": 0.2}}}}}}
+    with tempfile.TemporaryDirectory() as td:
+        E.attach_priced_in(cards, Path(td), "2026-09-17", 60)
+    a = cards["AAA"]["priced_in"]
+    check("provisional true with a reason list", a["provisional"] is True and a["provisional_reasons"], a)
+    check("reason names the lens history shortfall",
+         any("lens_history_z" in r for r in a["provisional_reasons"]), a["provisional_reasons"])
+    check("reason names the cross-sectional gap_z",
+         any("gap_z" in r for r in a["provisional_reasons"]), a["provisional_reasons"])
+    check("priced_in_valuation still computed (provisional, not withheld)",
+         a["priced_in_valuation"] is not None, a)
+
+
+# ─────────────────── fix round 4: K1 REPO derives from __file__ ────────────
+
+def test_repo_is_derived_from_file_not_hardcoded():
+    """K1/C2: REPO must be this checkout (the worktree these tests live in), never the
+    hardcoded main checkout -- reverting to `Path("/root/research-watchlist")` fails here.
+    Every default config/state/notes path must hang off it."""
+    check("REPO == the checkout this file lives in", E.REPO == _WORKTREE_ROOT, E.REPO)
+    check("REPO is not hardcoded to the main checkout when running from a worktree",
+         str(E.REPO) == str(_WORKTREE_ROOT), (E.REPO, _WORKTREE_ROOT))
+    for name, path in (("CONFIG_PATH", E.CONFIG_PATH), ("STATE_DIR", E.STATE_DIR),
+                      ("WATCHLIST_PATH", E.WATCHLIST_PATH), ("NOTES_DIR", E.NOTES_DIR),
+                      ("READS_PATH", E.READS_PATH), ("POLARITY_PATH", E.POLARITY_PATH),
+                      ("STAGES_PATH", E.STAGES_PATH)):
+        check(f"{name} resolves under REPO", str(path).startswith(str(E.REPO)), path)
+    src = (Path(E.__file__).read_text())
+    check("no hardcoded main-checkout path left in the module",
+         'Path("/root/research-watchlist")' not in src and "'/root/research-watchlist'" not in src)
+
+
+
+def test_lambda_size_term_flags_non_usd_reporters():
+    """V1's size leg is specified in millions of USD; `fy1_sales` is in the reporting
+    currency and no FX leg exists in this pipeline. A non-USD reporter is FLAGGED, not
+    silently converted with an invented rate."""
+    entry = {"fy1_sales": 68_610.0, "fy2_sales": 75_000.0, "fy3_sales": 90_000.0,
+            "price_currency": "CNY"}
+    r = _supported(entry)
+    check("flagged size_term_currency_unverified", "size_term_currency_unverified" in r["flags"], r["flags"])
+    check("currency recorded next to the term", r["lambda_terms"]["fy1_sales_currency"] == "CNY",
+         r["lambda_terms"])
+    usd = _supported({"fy1_sales": 68_610.0, "fy2_sales": 75_000.0, "fy3_sales": 90_000.0,
+                     "price_currency": "USD"})
+    check("USD reporter is not flagged", "size_term_currency_unverified" not in usd["flags"], usd["flags"])
 
 
 if __name__ == "__main__":
