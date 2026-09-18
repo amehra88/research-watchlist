@@ -34,10 +34,10 @@ assumptions:
   status: challenged
   status_source: evidence
   pressure:
-    confirm: 8.0
-    challenge: 19.5
+    confirm: 9.0
+    challenge: 20.5
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-14'
   draft: true
 - id: roadmap_2yr_named_platforms
   statement: At scoring date, NVDA has publicly named successor platforms with disclosed
@@ -59,10 +59,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 0.5
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-14'
   draft: true
 - id: vera_cpu_20b_fy27_commitment
   statement: At scoring date, the ~$20B FY27 standalone Vera CPU revenue visibility
@@ -143,7 +143,7 @@ assumptions:
   status_source: evidence
   pressure:
     confirm: 0
-    challenge: 14.5
+    challenge: 19.5
     window_days: 90
     last_evidence: '2026-09-14'
   draft: true
@@ -169,9 +169,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 0
-    challenge: 1.0
+    challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-07'
+    last_evidence: '2026-09-14'
   draft: true
 ---
 ## Rationale

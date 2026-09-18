@@ -110,10 +110,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 6.0
+    confirm: 8.0
     challenge: 3.0
     window_days: 90
-    last_evidence: '2026-09-15'
+    last_evidence: '2026-09-17'
   draft: true
 - id: auto_base_under_financial_pressure
   statement: At scoring, conditions of pricing pressure or delivery volume softness
@@ -163,9 +163,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 3.0
-    challenge: 7.0
+    challenge: 9.0
     window_days: 90
-    last_evidence: '2026-09-15'
+    last_evidence: '2026-09-17'
   draft: true
 ---
 ## Rationale

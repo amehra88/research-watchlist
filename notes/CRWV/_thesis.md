@@ -57,13 +57,13 @@ assumptions:
   - Next debt issuance disclosed via 8-K prices at or below the 2Q26 weighted average
     cost of debt
   - 3Q26 10-Q interest expense grows no faster than total debt outstanding
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 5.0
+    confirm: 6.0
     challenge: 2.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-17'
   draft: true
 - id: crwv_vera_rubin_margin_premium
   statement: At 2Q26 close, CRWV's first-to-market position on NVIDIA Vera Rubin NVL72
@@ -116,10 +116,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-17'
   draft: true
 - id: crwv_regulatory_no_impact_scored
   statement: At 2Q26 close, the increased regulatory scrutiny and local opposition

@@ -59,10 +59,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 2.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-17'
   draft: true
 - id: top2_hyperscaler_concentration_71pct
   statement: At the Q3 FY26 print, the two largest customers accounted for approximately

@@ -60,10 +60,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 1.0
+    confirm: 7.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-12'
+    last_evidence: '2026-09-17'
   draft: true
 - id: connected_power_yend26_milestone
   statement: The connected power milestone of 800 MW–1 GW by year-end 2026, reaffirmed

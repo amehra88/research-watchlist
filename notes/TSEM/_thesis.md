@@ -35,10 +35,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-17'
   draft: true
 - id: sipho_5x_cap_qual_by_dec26
   statement: New SiPho tool installation, guided to complete mid-Q3'26, was scheduled
@@ -58,13 +58,13 @@ assumptions:
     on schedule with customer qualification initiation underway
   - Tower announcing customer qualification completion for new SiPho capacity lines
     before end of 2026
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 0
+    confirm: 7.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-17'
   draft: true
 - id: intel_fab11x_no_model_impair
   statement: The Intel Fab 11X mediation had not produced a financial settlement or

@@ -32,10 +32,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-17'
   draft: true
 - id: lidar_seg_op_income_positive
   statement: Lidar segment operating income, positive at scoring (+RMB 42M in 1Q26,

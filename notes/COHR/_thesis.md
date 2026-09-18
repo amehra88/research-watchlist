@@ -96,9 +96,9 @@ assumptions:
   status_source: operator
   pressure:
     confirm: 2.0
-    challenge: 5.0
+    challenge: 7.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-17'
   draft: false
 - id: leverage_is_a_watch_item
   statement: Post-II-VI/Finisar balance-sheet leverage is a monitored risk, explicitly

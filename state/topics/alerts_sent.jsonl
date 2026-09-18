@@ -13,3 +13,4 @@
 {"as_of": "2026-09-16", "id": "stage3:automotive_semiconductor_demand:ANET", "kind": "stage3", "theme": "automotive_semiconductor_demand", "ticker": "ANET", "ts": "2026-09-16T16:57:09.091509+00:00"}
 {"as_of": "2026-09-16", "id": "stage3:capex_vs_opex_shift:ANET", "kind": "stage3", "theme": "capex_vs_opex_shift", "ticker": "ANET", "ts": "2026-09-16T16:57:09.091509+00:00"}
 {"as_of": "2026-09-16", "id": "stage3:pc_demand:ANET", "kind": "stage3", "theme": "pc_demand", "ticker": "ANET", "ts": "2026-09-16T16:57:09.091509+00:00"}
+{"as_of": "2026-09-17", "id": "stage4:ad_market_strength", "kind": "stage4", "theme": "ad_market_strength", "ticker": null, "ts": "2026-09-17T16:54:52.397287+00:00"}

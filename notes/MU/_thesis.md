@@ -90,10 +90,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 3.0
+    confirm: 5.0
     challenge: 11.0
     window_days: 90
-    last_evidence: '2026-09-15'
+    last_evidence: '2026-09-17'
   draft: true
 - id: dram_cyclicality_caps_inv_interest
   statement: At the time of scoring, commodity DRAM cyclicality constituted a material
@@ -114,13 +114,13 @@ assumptions:
     dynamics persist
   - MU management revises capex guidance downward citing weakening demand in a press
     release or 8-K
-  status: open
-  status_source: draft
+  status: confirmed
+  status_source: evidence
   pressure:
-    confirm: 6.0
+    confirm: 7.5
     challenge: 3.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-17'
   draft: true
 - id: china_export_ctrl_not_escalated
   statement: China export-control exposure, flagged as a watch-item at the time of
@@ -144,10 +144,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-17'
   draft: true
 - id: hbm_pricing_power_at_scoring
   statement: At the time of scoring, HBM commanded surging pricing power for MU —

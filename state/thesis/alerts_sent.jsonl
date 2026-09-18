@@ -100,3 +100,6 @@
 {"id": "status:FPS:fps_lockup_overhang_active_at_scoring:confirmed:2026-09-16", "ticker": "FPS", "ts": "2026-09-16T19:45:02.652218+00:00"}
 {"id": "status:FPS:transformer_supply_constrained_at_scoring:confirmed:2026-09-16", "ticker": "FPS", "ts": "2026-09-16T19:45:02.652218+00:00"}
 {"id": "status:NVDA:gm_compression_input_cost_not_pricing:confirmed:2026-09-16", "ticker": "NVDA", "ts": "2026-09-16T19:45:02.652218+00:00"}
+{"id": "status:CRWV:crwv_debt_cost_conditions_held:confirmed:2026-09-17", "ticker": "CRWV", "ts": "2026-09-17T19:45:03.462898+00:00"}
+{"id": "status:MU:dram_cyclicality_caps_inv_interest:confirmed:2026-09-17", "ticker": "MU", "ts": "2026-09-17T19:45:03.462898+00:00"}
+{"id": "status:TSEM:sipho_5x_cap_qual_by_dec26:confirmed:2026-09-17", "ticker": "TSEM", "ts": "2026-09-17T19:45:03.462898+00:00"}

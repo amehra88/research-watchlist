@@ -32,10 +32,10 @@ assumptions:
   status: confirmed
   status_source: evidence
   pressure:
-    confirm: 6.0
+    confirm: 8.0
     challenge: 0
     window_days: 90
-    last_evidence: '2026-09-13'
+    last_evidence: '2026-09-17'
   draft: true
 - id: arm_arch_no_qualified_alt
   statement: At scoring, no competing ISA has reached production-scale qualification

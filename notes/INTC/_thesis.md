@@ -59,9 +59,9 @@ assumptions:
   status_source: draft
   pressure:
     confirm: 1.0
-    challenge: 2.0
+    challenge: 5.0
     window_days: 90
-    last_evidence: '2026-09-16'
+    last_evidence: '2026-09-17'
   draft: true
 - id: net_debt_gap_holds_post_equity_raise
   statement: At Q2 2026 close, Intel carries approximately $20.8B net debt (total

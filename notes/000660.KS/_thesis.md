@@ -33,10 +33,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 1.0
     challenge: 0
     window_days: 90
-    last_evidence: null
+    last_evidence: '2026-09-16'
   draft: true
 - id: hbm_ai_compute_bottleneck_holds
   statement: Conditions at scoring — HBM being the critical AI-compute memory bottleneck
@@ -56,10 +56,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 39.0
-    challenge: 14.0
+    confirm: 43.0
+    challenge: 15.0
     window_days: 90
-    last_evidence: '2026-09-15'
+    last_evidence: '2026-09-17'
   draft: true
 - id: hynix_first_to_market_hbm_gens
   statement: At scoring, SK Hynix had shipped each major HBM generation ahead of Samsung

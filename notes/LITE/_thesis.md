@@ -35,9 +35,9 @@ assumptions:
   status_source: operator
   pressure:
     confirm: 18.0
-    challenge: 18.0
+    challenge: 20.0
     window_days: 90
-    last_evidence: '2026-09-09'
+    last_evidence: '2026-09-17'
   draft: false
 - id: component_tier_is_why_innovation_is_3
   statement: LITE sits at the component tier rather than the systems tier, and that
@@ -73,10 +73,10 @@ assumptions:
   status: open
   status_source: operator
   pressure:
-    confirm: 17.0
+    confirm: 22.0
     challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-14'
+    last_evidence: '2026-09-17'
   draft: false
 - id: telecom_drag_no_worse
   statement: Legacy telecom weakness is ALREADY subtracting from the score — it is
@@ -128,9 +128,9 @@ assumptions:
   status_source: operator
   pressure:
     confirm: 8.0
-    challenge: 2.0
+    challenge: 3.0
     window_days: 90
-    last_evidence: '2026-09-11'
+    last_evidence: '2026-09-17'
   draft: false
 ---
 ## Rationale

@@ -89,10 +89,10 @@ assumptions:
   status: open
   status_source: draft
   pressure:
-    confirm: 0
+    confirm: 0.5
     challenge: 1.0
     window_days: 90
-    last_evidence: '2026-09-10'
+    last_evidence: '2026-09-16'
   draft: true
 - id: meta_capex_100b_commitment
   statement: META's publicly disclosed AI infrastructure capex commitment for the
