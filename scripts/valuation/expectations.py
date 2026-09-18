@@ -32,10 +32,16 @@ the downside haircut, the sector-keyword map, durability-term bounds, bisection 
 z-score minimums) lives in config/valuation.yaml with its rationale in a comment there —
 see that file and the A5 report for the full list of interpretive calls.
 
-Fundamentals (net debt, margins) are OPTIONAL: scripts/valuation/fundamentals.py's
-FUNDAMENTALS_METRICS is empty pending a live FactSet metric-code probe, so on the first
-live run of this module every card falls back to the sector-family defaults (flagged
-"no_net_debt" / "margin_default") — not a bug, the documented v1 state.
+Fundamentals (net debt, margins) are OPTIONAL: when scripts/valuation/fundamentals.py has
+no row for a ticker, that ticker's card falls back to the sector-family defaults (flagged
+"no_net_debt" / "margin_default"). As of the RIS5 A5 live run (2026-09-17), fundamentals
+ARE live for 176/178 tickers: `net_debt` reads straight off the `net_debt` row; FCF margin
+is DERIVED (`fcf / fy1_sales`, flag `fcf_margin_derived` -- see `derive_fcf_margin()`)
+since the real file has no `fcf_margin` key at all (only raw `fcf`, a dollar figure). Both
+`no_net_debt` and `margin_default` still fire for the 2 tickers with zero fundamentals
+coverage, or when the derivation itself can't run (`fy1_sales` missing/nonpositive).
+`fcf_margin_derived` is NOT one of `is_valuation_extreme()`'s veto flags -- a derived
+margin is real (if imperfect) data, not a guess.
 
 CLI:
     python3 scripts/valuation/expectations.py --state-dir /tmp/snap ... # explicit fixture/live run
@@ -138,6 +144,37 @@ def sector_family(themes: list[str], cfg: dict) -> str:
         if votes.get(fam) == best:
             return fam
     return "default"
+
+
+def derive_fcf_margin(fnd: dict, entry: dict, now_default: float) -> tuple[float, list[str]]:
+    """RIS5 A5 live run: `fundamentals_<date>.jsonl`'s FCF row is labelled `"fcf"` (a raw
+    dollar figure, `FF_FREE_CF`, in FactSet millions) -- there is NO `"fcf_margin"` key
+    anywhere in the real file (confirmed live 2026-09-17; see docs/portal/mcp_schemas.md:
+    "No dedicated FCF-margin FF_ code exists... derived downstream as FF_FREE_CF / SALES").
+    `fcf_margin_now = fnd["fcf"] / entry["fy1_sales"]`, flagged `fcf_margin_derived`.
+
+    SALES DENOMINATOR, stated explicitly (coordinator instruction: "state which"): this
+    module uses the SNAPSHOT's `fy1_sales` -- the consensus FY1 FORWARD ESTIMATE (the same
+    "year 0" anchor Layer 1 already uses; see the module's `fy0_sales` interpretive-call
+    docstring). Neither `fundamentals_<date>.jsonl` nor `latest.json` carries a trailing/
+    actual SALES figure anywhere in this pipeline, so a forward estimate is the only sales
+    figure available -- this is an approximation, not a trailing-actual margin.
+
+    KNOWN CAVEAT, not resolved here (flag it, don't silently correct it): `fcf` is pulled
+    at QTR periodicity (a single reported quarter's free cash flow) while `fy1_sales` is an
+    ANNUAL consensus estimate -- dividing a quarterly dollar figure by an annual one
+    understates the derived margin by roughly 4x unless FactSet's QTR figure is itself a
+    trailing-twelve-months aggregate (not confirmed either way). See the A5 report's Live
+    run section for the live numbers this produced and why it is surfaced as a finding for
+    the coordinator, not patched here.
+
+    Falls back to `now_default` (sector-family default, flag `margin_default`) when `fcf`
+    is absent from `fnd` OR `entry["fy1_sales"]` is missing/nonpositive (can't divide)."""
+    fcf_raw = fnd.get("fcf")
+    fy1_sales = entry.get("fy1_sales")
+    if fcf_raw is not None and fy1_sales is not None and fy1_sales > 0:
+        return fcf_raw / fy1_sales, ["fcf_margin_derived"]
+    return now_default, ["margin_default"]
 
 
 def margin_defaults(ticker: str, sector_fam: str, cfg: dict) -> tuple[float, float]:
@@ -1261,8 +1298,18 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
     history_cache = history_cache if history_cache is not None else {}
     if entry is None:
         return {"ticker": ticker, "skipped": True, "reason": "not in snapshot"}
-    if entry.get("price") is None or entry.get("mcap") is None:
+    if entry.get("price") is None:
         return {"ticker": ticker, "skipped": True, "reason": "no price/mcap"}
+    if entry.get("mcap") is None:
+        # RIS5 A5 live run: A3's real build_latest() seats `price` whenever price quality
+        # is "ok" and independently nulls `mcap` on its own quality failure (currency
+        # mismatch, e.g. an ADR quoted in USD vs a local-exchange market_value in the home
+        # currency; or a genuine fail:mcap<=0) -- see docs/portal/mcp_schemas.md and
+        # task-3-report.md's "Fix round 3". A ticker in exactly this state has a real price
+        # but no valuation card is possible without EV, so it's skipped with a SPECIFIC
+        # reason (distinct from the "no price at all" case above) -- these 16 real-run
+        # tickers (15 ADR currency mismatches + LAZR) return once FX conversion lands.
+        return {"ticker": ticker, "skipped": True, "reason": "no_mcap"}
     if entry.get("fy1_sales") is None:
         # RIS5 A5 fix round 1, L3: ONLY fy1_sales is mandatory now (it anchors Layer 1 and
         # the ev_sales_to_growth rung) -- fy2/fy3 missing no longer skips the ticker, it
@@ -1292,9 +1339,8 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
     if net_debt is None:
         flags.append("no_net_debt")
 
-    fcf_margin_now = fnd.get("fcf_margin", now_default)
-    if "fcf_margin" not in fnd:
-        flags.append("margin_default")
+    fcf_margin_now, fcf_margin_flags = derive_fcf_margin(fnd, entry, now_default)
+    flags.extend(fcf_margin_flags)
     terminal_margin = term_default   # overrides already folded into margin_defaults()
     years = cfg.get("years", 5)
     discount_rate = cfg.get("discount_rate", 0.10)
