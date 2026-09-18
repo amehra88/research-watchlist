@@ -152,22 +152,60 @@ def sector_family(themes: list[str], cfg: dict) -> str:
     return "default"
 
 
-def read_fcf_margin(fnd: dict, now_default: float) -> tuple[float, list[str]]:
-    """RIS5 A5 fix round 3: `fundamentals_<date>.jsonl` now carries a PRE-DERIVED
-    `fcf_margin` row (A3 fix 4's `compute_fcf_margin_rows()`: `FF_FREE_CF / FF_SALES *
-    100`, both legs from the SAME `LTM`-periodicity call, matched on `fiscal_end` --
-    this is what fixed the QTR-fcf-vs-ANN-consensus-sales mismatch that understated the
-    fix round 1/2 live-run margins ~4x, e.g. NVDA 3.76% -> a real 39.68%). This module no
-    longer derives anything itself -- it just reads the row and converts FactSet's
-    PERCENTAGE convention (e.g. `39.68` = 39.68%, matching `gross_margin`/
-    `operating_margin`'s own convention) to the 0-1 fraction Layer 1's math uses
-    (`raw / 100.0`). No `fcf_margin_derived` flag any more (nothing is derived here);
-    falls back to `now_default` (sector-family default, flag `margin_default`) only when
-    the row itself is absent (no fundamentals coverage for this ticker)."""
+def read_ltm_fcf_margin(fnd: dict) -> float | None:
+    """The LTM FCF margin as a 0-1 FRACTION, or None when the ticker has no fundamentals
+    row. `fundamentals_<date>.jsonl` carries `fcf_margin` PRE-DERIVED by A3's
+    `fundamentals.py` (`FF_FREE_CF / FF_SALES * 100`, both legs from the SAME
+    LTM-periodicity call, matched on `fiscal_end`) as a PERCENTAGE (e.g. NVDA `39.68`),
+    matching `gross_margin`/`operating_margin`'s own convention -- this module converts,
+    it derives nothing. May be NEGATIVE (32 tickers on the live pull, e.g. COHR -14.5%):
+    real data, handled by select_start_margin()'s ladder, not a defect."""
     raw = fnd.get("fcf_margin")
-    if raw is not None:
-        return raw / 100.0, []
-    return now_default, ["margin_default"]
+    return None if raw is None else raw / 100.0
+
+
+def select_terminal_margin(entry: dict, term_default: float) -> tuple[float, list[str]]:
+    """RIS5 A5 fix round 4, V3: the margin END is NAME-SPECIFIC -- `fy3_fcf / fy3_sales`
+    (consensus, the last forecast year on the working horizon) whenever both legs are
+    positive, else the sector-family default from config/valuation.yaml. One sector
+    number applied to every name in a family was the single largest unearned assumption
+    in the reverse-DCF: it set how much of EV the terminal value explains, and therefore
+    most of the implied growth. Flags: `terminal_margin_consensus` / `terminal_margin_default`
+    (the latter is a VETO flag for `valuation_extreme` -- see _VALUATION_EXTREME_VETO_FLAGS)."""
+    fy3_fcf, fy3_sales = entry.get("fy3_fcf"), entry.get("fy3_sales")
+    if fy3_fcf is not None and fy3_sales is not None and fy3_fcf > 0 and fy3_sales > 0:
+        return fy3_fcf / fy3_sales, ["terminal_margin_consensus"]
+    return term_default, ["terminal_margin_default"]
+
+
+def consensus_margin(fcf, sales) -> float | None:
+    """fcf/sales when `sales` > 0 (the RAW margin, which may be negative); None when the
+    denominator is missing/nonpositive."""
+    if fcf is None or sales is None or sales <= 0:
+        return None
+    return fcf / sales
+
+
+def select_start_margin(entry: dict, fnd: dict) -> tuple[float, float | None, list[str]]:
+    """RIS5 A5 fix round 4, V3 (amendment v1.2: "every lens is computed on consensus
+    estimates, never trailing figures"): the margin path's START is FORWARD, never
+    trailing --
+      1. `fy1_fcf / fy1_sales` when both > 0            -> flag `start_margin_consensus`
+      2. else the LTM `fcf_margin` when > 0             -> flag `start_margin_ltm`
+      3. else floored at 0                              -> flag `fcf_margin_floored`
+    -> (used, raw, flags). `raw` is the unfloored number the floor replaced (the FORWARD
+    consensus margin when computable at all, else the LTM one, else None) and is kept on
+    the card as `inputs.fcf_margin_now_raw` so a reader sees both what was assumed and
+    what the real number was. `fcf_margin_floored` is a VETO flag for `valuation_extreme`
+    (V4: EQIX +25.5 / CEG +17.9 were floor artefacts, not valuation signals)."""
+    fwd = consensus_margin(entry.get("fy1_fcf"), entry.get("fy1_sales"))
+    ltm = read_ltm_fcf_margin(fnd)
+    raw = fwd if fwd is not None else ltm
+    if fwd is not None and fwd > 0:
+        return fwd, fwd, ["start_margin_consensus"]
+    if ltm is not None and ltm > 0:
+        return ltm, raw, ["start_margin_ltm"]
+    return 0.0, raw, ["fcf_margin_floored"]
 
 
 def margin_defaults(ticker: str, sector_fam: str, cfg: dict) -> tuple[float, float]:
@@ -507,6 +545,72 @@ def near_term_cagr(fy1_sales, fy3_sales) -> float | None:
     return two_yr_cagr(fy1_sales, fy3_sales)
 
 
+def eps_breadth_ratio(entry: dict) -> tuple[float, list[str]]:
+    """V1's `breadth_ratio` leg: `(up - down) / (up + down)` on the snapshot's FY1 **EPS**
+    revision counts (the 4-week FactSet window the daily pull carries; the
+    `breadth_semantics_unverified` caveat on every card applies here too). EPS, not sales
+    and not FCF: the street's own conviction in the earnings line is what a growth haircut
+    should lean on, and the three metrics genuinely disagree (NVDA fy1_eps 42up/2down =
+    +0.909 vs fy1_fcf 5up/10down = -0.333). 0.0 + flag `lambda_breadth_na` when the counts
+    are missing or nobody revised."""
+    up = (entry.get("up") or {}).get("fy1_eps")
+    down = (entry.get("down") or {}).get("fy1_eps")
+    if up is None or down is None or (up + down) == 0:
+        return 0.0, ["lambda_breadth_na"]
+    return (up - down) / (up + down), []
+
+
+def street_lambda(cred_avg_rate: float | None, breadth_ratio: float, fy1_sales_musd: float | None,
+                  cfg: dict) -> tuple[float, dict, list[str]]:
+    """RIS5 A5 fix round 4, V1 -- the STREET HAIRCUT, binding formula:
+
+        lambda = clip(0.75 + 0.25*(2*cred - 1) + 0.15*breadth_ratio
+                      - 0.20*clip(log10(fy1_sales_musd / 10000), 0, 1), 0.50, 1.00)
+
+    Why it exists: through fix round 3 the "evidence" leg of supported growth was inert
+    (median |base - neutral| was 0.00pp across the live universe -- the three durability
+    terms cancelled to nothing almost everywhere), so `supported.base` was, in practice,
+    the consensus CAGR restated. A haircut on the STREET's own forecast, driven by
+    things that are actually observed per name -- the company's guidance/consensus track
+    record (`cred`), the current direction of FY1 EPS revisions, and size (a $400bn-sales
+    company cannot compound like a $2bn one) -- gives the gap a second leg that moves.
+
+    `cred` is the credibility avg_rate (mean of consensus_beat_rate/guide_hit_rate);
+    0.5 (neutral) with flag `lambda_cred_default` when the ticker has no record. The size
+    term is 0 below $10bn of FY1 sales and reaches its full -0.20 at $100bn+ (log10 of the
+    ratio to $10bn, clipped to [0,1]). lambda is then applied as a shrinkage of the street
+    CAGR toward terminal growth: `cagr_used = tg + (cagr_street - tg) * lambda`.
+    NOTE the shrinkage is toward tg in BOTH directions: for the rare name whose consensus
+    CAGR is BELOW terminal growth, lambda < 1 raises it. That is inherent to shrinkage
+    toward a central value and is left as written, not special-cased."""
+    hc = (cfg.get("supported_growth") or {}).get("street_haircut") or {}
+    base_const = hc.get("base_const", 0.75)
+    cred_w = hc.get("cred_weight", 0.25)
+    breadth_w = hc.get("breadth_weight", 0.15)
+    size_w = hc.get("size_weight", 0.20)
+    size_ref = hc.get("size_ref_musd", 10000.0)
+    lo, hi = hc.get("bounds", [0.50, 1.00])
+
+    flags: list[str] = []
+    cred = cred_avg_rate
+    if cred is None:
+        cred = 0.5
+        flags.append("lambda_cred_default")
+    cred_term = cred_w * (2.0 * cred - 1.0)
+    breadth_term = breadth_w * breadth_ratio
+    if fy1_sales_musd and fy1_sales_musd > 0:
+        size_raw = _clip(__import__("math").log10(fy1_sales_musd / size_ref), 0.0, 1.0)
+    else:
+        size_raw = 0.0
+    size_term = -size_w * size_raw
+    lam = _clip(base_const + cred_term + breadth_term + size_term, lo, hi)
+    terms = {"base_const": base_const, "cred": cred, "cred_term": cred_term,
+             "breadth_ratio": breadth_ratio, "breadth_term": breadth_term,
+             "size_log10_clipped": size_raw, "size_term": size_term,
+             "fy1_sales_musd": fy1_sales_musd}
+    return lam, terms, flags
+
+
 def fade_growth_path(cagr: float, terminal_growth: float, durability_score: float) -> dict:
     """F3's binding formula: years 1-3 at `cagr` (the consensus FY1->FY3 CAGR), years 4-5
     at `g_fade = tg + (cagr - tg) * persistence`, `persistence = clip(0.5 + durability_score,
@@ -543,12 +647,13 @@ def supported_growth(ticker: str, entry: dict, cfg: dict, *, stages: dict,
     lenses / theme_peers() elsewhere still use it)."""
     flags: list[str] = []
 
-    cagr = near_term_cagr(entry.get("fy1_sales"), entry.get("fy3_sales"))
-    if cagr is None:
+    cagr_street = near_term_cagr(entry.get("fy1_sales"), entry.get("fy3_sales"))
+    if cagr_street is None:
         base_flags = ["missing fy1/fy3 sales for CAGR"]
         if polarity_unavailable:
             base_flags.append("polarity_unavailable")
-        return {"base": None, "downside": None, "near_term_cagr": None,
+        return {"base": None, "base_street": None, "downside": None, "near_term_cagr": None,
+                "cagr_street": None, "cagr_used": None, "lambda_street": None, "lambda_terms": {},
                 "g_fade": None, "persistence": None, "durability_score": None,
                 "drivers": {}, "challenged_assumption_ids": None if polarity_unavailable else [],
                 "flags": base_flags}
@@ -564,11 +669,31 @@ def supported_growth(ticker: str, entry: dict, cfg: dict, *, stages: dict,
         "durability_score_bounds", [-0.5, 0.5])
     durability_score = _clip(st_term + cr_term + rd_term, ds_lo, ds_hi)
 
-    fade = fade_growth_path(cagr, terminal_growth, durability_score)
+    # V1: haircut the STREET's own CAGR before extending it (see street_lambda()).
+    cred_for_lambda = cr_detail.get("avg_rate")   # same store read as credibility_term()
+    breadth_ratio, breadth_flags = eps_breadth_ratio(entry)
+    lam, lambda_terms, lam_flags = street_lambda(cred_for_lambda, breadth_ratio,
+                                                 entry.get("fy1_sales"), cfg)
+    flags.extend(lam_flags); flags.extend(breadth_flags)
+    cagr_used = terminal_growth + (cagr_street - terminal_growth) * lam
+
+    fade = fade_growth_path(cagr_used, terminal_growth, durability_score)
+    fade_street = fade_growth_path(cagr_street, terminal_growth, durability_score)
     lo, hi = (cfg.get("supported_growth") or {}).get("base_bounds", [-0.5, 2.0])
     base = _clip(fade["base"], lo, hi)
     if base != fade["base"]:
         flags.append("supported_growth_clipped")
+    # V2: a hard cap on what the evidence is ever allowed to support. Uncapped, a handful
+    # of very-early-revenue names (CBRS 153%, NBIS 118% on the fix-round-3 run) produced
+    # supported bases no company sustains for five years and, being the subtrahend of
+    # every gap, dominated the cross-section (and therefore gap_z for every OTHER card).
+    # The cap is on `base` ONLY -- `base_street` is the printed lambda=1 diagnostic and is
+    # left uncapped, so the haircut stays visible exactly where it does the most work.
+    base_cap = (cfg.get("supported_growth") or {}).get("base_cap", 0.40)
+    if base_cap is not None and base > base_cap:
+        base = base_cap
+        flags.append("supported_capped")
+    base_street = _clip(fade_street["base"], lo, hi)
 
     downside_mult = (cfg.get("supported_growth") or {}).get("downside_multiplier", 0.85)
     if polarity_unavailable:
@@ -581,7 +706,12 @@ def supported_growth(ticker: str, entry: dict, cfg: dict, *, stages: dict,
         downside = _clip(downside_raw, lo, hi)
 
     return {
-        "base": base, "downside": downside, "near_term_cagr": cagr,
+        "base": base, "base_street": base_street, "downside": downside,
+        # `near_term_cagr` is kept as an alias of `cagr_street` (the raw consensus FY1->FY3
+        # CAGR) so nothing that already read it changes meaning; `cagr_used` is what the
+        # fade path actually ran on after V1's haircut.
+        "near_term_cagr": cagr_street, "cagr_street": cagr_street, "cagr_used": cagr_used,
+        "lambda_street": lam, "lambda_terms": lambda_terms,
         "g_fade": fade["g_fade"], "persistence": fade["persistence"],
         "durability_score": durability_score,
         "drivers": {
@@ -971,7 +1101,16 @@ def _quality_fail_reason(state_dir: Path, as_of: str, ticker: str, field: str) -
     return None
 
 
-_VALUATION_EXTREME_VETO_FLAGS = ("margin_default", "no_net_debt")
+_VALUATION_EXTREME_VETO_FLAGS = ("margin_default", "terminal_margin_default",
+                                 "fcf_margin_floored", "no_net_debt")
+# RIS5 A5 fix round 4: V4 adds `fcf_margin_floored` (EQIX +25.5 / CEG +17.9 on the fix
+# round 3 run were artefacts of a 0% assumed start margin, not valuation signals).
+# `terminal_margin_default` is added for the same reason and is a ruling-gap this round
+# closed deliberately: V3 retires the old `margin_default` code path entirely (the start
+# ladder is consensus -> LTM -> floor, the terminal end falls back to the sector table
+# under its OWN name), so without this the sector-default veto F1 established would have
+# gone silently dead for the ~29 names with no positive FY3 consensus FCF. `margin_default`
+# itself is kept in the tuple for compatibility although nothing emits it any more.
 
 
 def is_valuation_extreme(gap_range: list | None, lens_history_z: float | None,
@@ -1352,23 +1491,17 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
     if net_debt is None:
         flags.append("no_net_debt")
 
-    fcf_margin_raw, fcf_margin_flags = read_fcf_margin(fnd, now_default)
-    flags.extend(fcf_margin_flags)
-    terminal_margin = term_default   # overrides already folded into margin_defaults()
+    # RIS5 A5 fix round 4, V3: BOTH ends of the margin path are name-specific and FORWARD
+    # where consensus allows it -- terminal from fy3_fcf/fy3_sales, start from
+    # fy1_fcf/fy1_sales (never a trailing figure), each degrading with its own named flag.
+    terminal_margin, term_flags = select_terminal_margin(entry, term_default)
+    fcf_margin_now, fcf_margin_raw, start_flags = select_start_margin(entry, fnd)
+    flags.extend(term_flags); flags.extend(start_flags)
     years = cfg.get("years", 5)
     discount_rate = cfg.get("discount_rate", 0.10)
     terminal_growth = cfg.get("terminal_growth", 0.03)
 
-    # RIS5 A5 fix round 3, ruling 2: a REAL negative current-FCF-margin read (32 tickers
-    # on the live pull, e.g. COHR -14.5%) is not a defect -- floor the margin PATH's
-    # START at 0 (flag fcf_margin_floored) so the linear interpolation toward a positive
-    # terminal_margin stays non-negative throughout and the card still builds; the raw
-    # (possibly negative) value is kept on the card separately (inputs.fcf_margin_now_raw).
-    fcf_margin_now = max(fcf_margin_raw, 0.0)
-    if fcf_margin_now != fcf_margin_raw:
-        flags.append("fcf_margin_floored")
-
-    # C3 (recalibrated, ruling 2): with the floored start above, the margin path is
+    # C3 (recalibrated, fix round 3 ruling 2): with the floored start above, the margin path is
     # monotonic and non-negative for any terminal_margin > 0 -- skip
     # (margin_path_nonpositive) ONLY when the terminal margin itself is <= 0 (a config/
     # override misconfiguration, not a real-data case observed live).
@@ -1376,7 +1509,9 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
         return {"ticker": ticker, "skipped": True, "reason": "margin_path_nonpositive"}
 
     operating_margin_pct = fnd.get("operating_margin")
-    pre_profit = is_pre_profit(fcf_margin_raw, operating_margin_pct)
+    # pre_profit stays a TRAILING read (LTM FCF margin AND LTM operating margin both <= 0)
+    # -- it asks "has this company ever made money", which a forward estimate cannot answer.
+    pre_profit = is_pre_profit(read_ltm_fcf_margin(fnd), operating_margin_pct)
 
     l1 = implied_growth(ev, entry["fy1_sales"], fcf_margin_now, terminal_margin,
                         discount_rate=discount_rate, terminal_growth=terminal_growth,
@@ -1393,7 +1528,14 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
 
     gap_pp_downside = compute_gap(l1["implied_growth_5y"], l2["base"], l2["downside"])
     gap_range, gap_downside_range = compute_gap_ranges(l1["sensitivity"], l2["base"], l2["downside"])
-    gap = {**gap_pp_downside, "gap_range": gap_range, "gap_downside_range": gap_downside_range}
+    # V1: BOTH readings are emitted. `gap_pp` (== `gap_vs_haircut_pp`) is the haircut gap --
+    # the one B1 consumes and the one `gap_range`/`valuation_extreme`/`priced_in` are built
+    # on. `gap_vs_street_pp` is the same difference against the UNHAIRCUT (lambda = 1)
+    # supported base, so a reader can see how much of the gap is the haircut's doing.
+    gap_vs_street = compute_gap(l1["implied_growth_5y"], l2.get("base_street"), None)
+    gap = {**gap_pp_downside, "gap_vs_haircut_pp": gap_pp_downside["gap_pp"],
+           "gap_vs_street_pp": gap_vs_street["gap_pp"],
+           "gap_range": gap_range, "gap_downside_range": gap_downside_range}
 
     ev_sales = ev_sales_fy1(ev, entry["fy1_sales"])
     pe, pe_flags = pe_fy1(entry["price"], entry.get("fy1_eps"))
@@ -1476,6 +1618,9 @@ def build_card(ticker: str, entry: dict | None, cfg: dict, *, state_dir: Path, a
             "fy3_ebitda": entry.get("fy3_ebitda"),
             "fy1_fcf": entry.get("fy1_fcf"), "fy2_fcf": entry.get("fy2_fcf"), "fy3_fcf": entry.get("fy3_fcf"),
             "fcf_margin_now": fcf_margin_now, "fcf_margin_now_raw": fcf_margin_raw,
+            "fy1_fcf_margin_consensus": consensus_margin(entry.get("fy1_fcf"), entry.get("fy1_sales")),
+            "fy3_fcf_margin_consensus": consensus_margin(entry.get("fy3_fcf"), entry.get("fy3_sales")),
+            "fcf_margin_ltm": read_ltm_fcf_margin(fnd),
             "terminal_margin": terminal_margin,
             "discount_rate": discount_rate, "terminal_growth": terminal_growth, "years": years,
         },

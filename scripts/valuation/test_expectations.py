@@ -968,24 +968,27 @@ def test_build_card_terminal_margin_nonpositive_skips_no_partial_card():
     check("no partial card fields leaked", set(card.keys()) == {"ticker", "skipped", "reason"}, card)
 
 
-def test_build_card_negative_fcf_margin_now_default_is_floored_not_skipped():
-    """RIS5 A5 fix round 3, ruling 2: a negative fcf_margin_now (even from the config
-    default table, not just real fundamentals) is FLOORED at 0, not a skip trigger, as
-    long as terminal_margin itself is positive -- the card builds."""
-    cfg = json.loads(json.dumps(DEFAULT_CFG))
-    cfg["fcf_margin_now_by_family"]["default"] = -0.05   # negative fcf_margin_now default
-    cfg["terminal_margin_by_family"]["default"] = 0.20   # positive terminal_margin
+def test_build_card_negative_margins_both_rungs_floored_not_skipped():
+    """Fix round 4, V3/V4: forward consensus FCF negative AND LTM FCF margin negative
+    (the EQIX shape) -> the start margin floors at 0, the card still BUILDS, the raw
+    forward margin is preserved, and `fcf_margin_floored` now vetoes valuation_extreme."""
     entry = {"price": 100.0, "mcap": 2500.0, "fy1_sales": 1000.0, "fy2_sales": 1200.0,
-            "fy3_sales": 1440.0, "fy1_eps": 4.0, "fy2_eps": 5.0, "fy3_eps": 6.0}
+            "fy3_sales": 1440.0, "fy1_eps": 4.0, "fy2_eps": 5.0, "fy3_eps": 6.0,
+            "fy1_fcf": -80.0, "fy2_fcf": -20.0, "fy3_fcf": 100.0}
+    fundamentals = {"XYZ": {"fcf_margin": -34.89}}
     with tempfile.TemporaryDirectory() as td:
-        card = E.build_card("XYZ", entry, cfg, state_dir=Path(td), as_of="2026-09-17",
+        card = E.build_card("XYZ", entry, DEFAULT_CFG, state_dir=Path(td), as_of="2026-09-17",
                             stages={"pairs": {}, "gated": []}, ticker_themes_all={"XYZ": []},
-                            downside_theme_slugs=set())
+                            downside_theme_slugs=set(), fundamentals=fundamentals)
     check("NOT skipped", card["skipped"] is False, card)
     check("flagged fcf_margin_floored", "fcf_margin_floored" in card["flags"], card["flags"])
     check("fcf_margin_now (used) floored to 0.0", card["inputs"]["fcf_margin_now"] == 0.0, card["inputs"])
-    check("fcf_margin_now_raw keeps the true negative value",
-         card["inputs"]["fcf_margin_now_raw"] == -0.05, card["inputs"])
+    check("fcf_margin_now_raw keeps the true negative FORWARD margin",
+         abs(card["inputs"]["fcf_margin_now_raw"] + 0.08) < 1e-12, card["inputs"])
+    check("terminal margin still comes from FY3 consensus (positive there)",
+         "terminal_margin_consensus" in card["flags"], card["flags"])
+    check("a floored start margin can never produce a valuation_extreme (V4)",
+         card["valuation_extreme"] is False or card["valuation_extreme"] is None, card["valuation_extreme"])
 
 
 def test_build_card_full_card_no_net_debt_no_fundamentals_flags():
@@ -1003,7 +1006,8 @@ def test_build_card_full_card_no_net_debt_no_fundamentals_flags():
     check("not skipped", card["skipped"] is False, card)
     check("ev falls back to mcap", card["inputs"]["ev"] == 2500.0, card["inputs"])
     check("no_net_debt flagged", "no_net_debt" in card["flags"], card["flags"])
-    check("margin_default flagged", "margin_default" in card["flags"], card["flags"])
+    check("terminal_margin_default flagged (no FY3 consensus FCF -> sector table, V3)",
+         "terminal_margin_default" in card["flags"], card["flags"])
     check("breadth_semantics_unverified always flagged (C4)",
          "breadth_semantics_unverified" in card["flags"], card["flags"])
     check("sector_family present", card["sector_family"] in ("software", "semis", "hardware", "internet", "default"))
@@ -1028,10 +1032,10 @@ def test_build_card_full_card_no_net_debt_no_fundamentals_flags():
          set(("snapshot_as_of", "stages_as_of", "reads_latest_date", "credibility_as_of"))
          <= set(card["provenance"].keys()), card["provenance"])
     check("horizon block present (L2)", card["horizon"]["years_used"] == [1, 2, 3], card["horizon"])
-    check("fcf_margin_now_raw present (no fundamentals -> equals the sector default, no flooring)",
-         card["inputs"]["fcf_margin_now_raw"] == card["inputs"]["fcf_margin_now"], card["inputs"])
-    check("fcf_margin_floored NOT flagged (sector defaults are all positive)",
-         "fcf_margin_floored" not in card["flags"], card["flags"])
+    check("no consensus FCF and no fundamentals -> start margin floored at 0, raw None (V3)",
+         card["inputs"]["fcf_margin_now"] == 0.0 and card["inputs"]["fcf_margin_now_raw"] is None,
+         card["inputs"])
+    check("flagged fcf_margin_floored", "fcf_margin_floored" in card["flags"], card["flags"])
 
 
 def test_build_card_net_debt_from_fundamentals_changes_ev():
@@ -1074,28 +1078,15 @@ def test_build_card_negative_net_debt_reduces_ev():
 
 # ─────────────────────── read_fcf_margin (RIS5 A5 fix round 3) ──────────────
 
-def test_read_fcf_margin_converts_percentage_to_fraction():
-    margin, flags = E.read_fcf_margin({"fcf_margin": 39.68}, now_default=0.20)
-    check("39.68 (percent) -> 0.3968 (fraction)", abs(margin - 0.3968) < 1e-9, margin)
-    check("no flags on a clean read", flags == [], flags)
+def test_read_ltm_fcf_margin_converts_percentage_to_fraction():
+    """Fix round 4, V3: the LTM row is now only the SECOND rung of the start-margin
+    ladder (forward consensus first), but the percentage -> fraction conversion is
+    unchanged -- fundamentals.py writes `fcf_margin` as a percentage (NVDA 39.68)."""
+    check("39.68% -> 0.3968", abs(E.read_ltm_fcf_margin({"fcf_margin": 39.68}) - 0.3968) < 1e-12)
+    check("negative stays negative (real data, e.g. COHR -14.54%)",
+         abs(E.read_ltm_fcf_margin({"fcf_margin": -14.537952849533333}) + 0.14537952849533333) < 1e-12)
+    check("absent -> None (never a silent 0)", E.read_ltm_fcf_margin({}) is None)
 
-
-def test_read_fcf_margin_negative_stays_negative_no_flag_yet():
-    """read_fcf_margin() itself does NOT floor or flag a negative margin -- that is
-    build_card()'s job (the floor is a card-building decision, not a data-reading one)."""
-    margin, flags = E.read_fcf_margin({"fcf_margin": -14.537952849533333}, now_default=0.12)
-    check("negative percent -> negative fraction, unfloored",
-         abs(margin - (-0.14537952849533333)) < 1e-9, margin)
-    check("no flags -- reading a real (if negative) value is not a fallback", flags == [], flags)
-
-
-def test_read_fcf_margin_falls_back_when_absent():
-    margin, flags = E.read_fcf_margin({}, now_default=0.20)
-    check("no fcf_margin row -> falls back to now_default", margin == 0.20, margin)
-    check("flagged margin_default", flags == ["margin_default"], flags)
-
-
-# ─────────────────────── is_pre_profit / pre_profit marking (fix round 3) ───
 
 def test_is_pre_profit_requires_both_legs_nonpositive():
     check("both negative -> pre-profit", E.is_pre_profit(-0.10, -5.0) is True)
@@ -1305,6 +1296,187 @@ def test_module_is_importable_as_a_script():
     r = subprocess.run([sys.executable, str(Path(__file__).resolve().parents[0] / "expectations.py"),
                        "--help"], capture_output=True, text=True, timeout=30)
     check("expectations.py --help exits 0", r.returncode == 0, r.stderr[-300:])
+
+
+
+# ─────────────────── fix round 4: V1 street haircut (lambda) ────────────────
+
+def test_street_lambda_neutral_inputs_is_075():
+    lam, terms, flags = E.street_lambda(cred_avg_rate=0.5, breadth_ratio=0.0,
+                                        fy1_sales_musd=10000.0, cfg=DEFAULT_CFG)
+    check("neutral cred/breadth/size -> lambda 0.75", abs(lam - 0.75) < 1e-12, (lam, terms))
+    check("terms printed", set(terms) >= {"cred", "cred_term", "breadth_ratio", "breadth_term",
+                                          "size_term", "base_const"}, terms)
+
+
+def test_street_lambda_clips_to_050_100():
+    hi, _t, _f = E.street_lambda(1.0, 1.0, 100.0, DEFAULT_CFG)      # tiny name, perfect record
+    check("lambda clipped at 1.00", hi == 1.0, hi)
+    lo, _t2, _f2 = E.street_lambda(0.0, -1.0, 1_000_000.0, DEFAULT_CFG)   # mega-cap, bad record
+    check("lambda clipped at 0.50", lo == 0.5, lo)
+
+
+def test_street_lambda_cred_default_half_when_unavailable():
+    lam, terms, flags = E.street_lambda(None, 0.0, 10000.0, DEFAULT_CFG)
+    check("cred defaults to 0.5 (neutral term)", terms["cred"] == 0.5 and terms["cred_term"] == 0.0, terms)
+    check("flagged lambda_cred_default", "lambda_cred_default" in flags, flags)
+    check("lambda == 0.75 with everything else neutral", abs(lam - 0.75) < 1e-12, lam)
+
+
+def test_street_lambda_size_term_only_bites_above_10bn():
+    _l1, t_small, _f = E.street_lambda(0.5, 0.0, 5_000.0, DEFAULT_CFG)     # $5bn sales
+    _l2, t_mid, _f2 = E.street_lambda(0.5, 0.0, 31_622.8, DEFAULT_CFG)     # 10^0.5 x 10bn
+    _l3, t_big, _f3 = E.street_lambda(0.5, 0.0, 400_000.0, DEFAULT_CFG)    # NVDA-scale
+    check("below $10bn sales -> no size penalty", t_small["size_term"] == 0.0, t_small)
+    check("halfway in log10 -> half the penalty", abs(t_mid["size_term"] + 0.10) < 1e-3, t_mid)
+    check("above $100bn -> full -0.20 penalty", abs(t_big["size_term"] + 0.20) < 1e-12, t_big)
+
+
+def test_eps_breadth_ratio_reads_fy1_eps_not_any_other_metric():
+    entry = {"up": {"fy1_eps": 42, "fy1_fcf": 5, "fy1_sales": 52},
+             "down": {"fy1_eps": 2, "fy1_fcf": 10, "fy1_sales": 2}}
+    ratio, flags = E.eps_breadth_ratio(entry)
+    check("breadth_ratio is (up-down)/(up+down) on fy1_eps (NVDA: 42/2 -> +0.909)",
+         abs(ratio - (42 - 2) / 44) < 1e-12, ratio)
+    check("not the fy1_fcf ratio (-0.333)", ratio > 0, ratio)
+    ratio0, flags0 = E.eps_breadth_ratio({"up": {}, "down": {}})
+    check("missing -> 0.0 + flag", ratio0 == 0.0 and "lambda_breadth_na" in flags0, (ratio0, flags0))
+    ratioz, flagsz = E.eps_breadth_ratio({"up": {"fy1_eps": 0}, "down": {"fy1_eps": 0}})
+    check("zero revisions -> 0.0 + flag", ratioz == 0.0 and "lambda_breadth_na" in flagsz, (ratioz, flagsz))
+
+
+def _supported(entry, **kw):
+    kw.setdefault("stages", {"pairs": {}, "gated": []})
+    kw.setdefault("ticker_themes_all", {"T": []})
+    kw.setdefault("reads_rows", [])
+    kw.setdefault("thesis_fm", None)
+    kw.setdefault("downside_theme_slugs", set())
+    return E.supported_growth("T", entry, DEFAULT_CFG, **kw)
+
+
+def test_supported_growth_haircut_shrinks_street_cagr_toward_terminal_growth():
+    """V1: cagr_used = tg + (cagr_street - tg) * lambda, so with lambda < 1 and a street
+    CAGR above terminal growth the haircut base is BELOW the street base -- i.e.
+    gap >= gap_vs_street on every such card."""
+    entry = {"fy1_sales": 200_000.0, "fy2_sales": 240_000.0, "fy3_sales": 288_000.0,   # 20% street CAGR
+             "up": {"fy1_eps": 1}, "down": {"fy1_eps": 1}}                              # breadth 0
+    r = _supported(entry)
+    lam = r["lambda_street"]
+    check("lambda printed and in [0.5, 1.0]", 0.5 <= lam <= 1.0, lam)
+    check("lambda < 1 for a $200bn-sales name with neutral evidence", lam < 1.0, lam)
+    check("cagr_street is the raw consensus CAGR", abs(r["cagr_street"] - 0.20) < 1e-9, r)
+    expected_used = 0.03 + (0.20 - 0.03) * lam
+    check("cagr_used = tg + (cagr_street - tg) * lambda",
+         abs(r["cagr_used"] - expected_used) < 1e-12, (r["cagr_used"], expected_used))
+    check("base (haircut) < base_street", r["base"] < r["base_street"], (r["base"], r["base_street"]))
+    check("base_street equals the lambda=1 path",
+         abs(r["base_street"] - E.fade_growth_path(0.20, 0.03, r["durability_score"])["base"]) < 1e-12, r)
+
+
+def test_supported_growth_lambda_terms_on_the_card():
+    entry = {"fy1_sales": 1000.0, "fy2_sales": 1200.0, "fy3_sales": 1440.0,
+             "up": {"fy1_eps": 9}, "down": {"fy1_eps": 1}}
+    r = _supported(entry)
+    t = r["lambda_terms"]
+    check("breadth_ratio 0.8 -> +0.12 term", abs(t["breadth_term"] - 0.12) < 1e-12, t)
+    check("no size penalty at $1bn sales", t["size_term"] == 0.0, t)
+    check("cred defaulted (no store in this call) -> flagged",
+         "lambda_cred_default" in r["flags"], r["flags"])
+
+
+# ─────────────────── fix round 4: V2 supported.base cap ────────────────────
+
+def test_supported_growth_base_capped_at_040_street_uncapped():
+    entry = {"fy1_sales": 100.0, "fy2_sales": 300.0, "fy3_sales": 900.0,   # 200% street CAGR
+             "up": {"fy1_eps": 5}, "down": {"fy1_eps": 0}}
+    r = _supported(entry)
+    check("base capped at 0.40", abs(r["base"] - 0.40) < 1e-12, r["base"])
+    check("flagged supported_capped", "supported_capped" in r["flags"], r["flags"])
+    check("base_street NOT capped (it is the printed lambda=1 diagnostic)",
+         r["base_street"] > 0.40, r["base_street"])
+    check("downside derives from the CAPPED base", r["downside"] <= 0.40, r["downside"])
+
+
+def test_supported_growth_cap_does_not_bind_on_ordinary_names():
+    entry = {"fy1_sales": 1000.0, "fy2_sales": 1100.0, "fy3_sales": 1210.0}   # 10% CAGR
+    r = _supported(entry)
+    check("no cap flag", "supported_capped" not in r["flags"], r["flags"])
+    check("base well under the cap", r["base"] < 0.40, r["base"])
+
+
+# ─────────────────── fix round 4: V3 name-specific margin ends ─────────────
+
+def test_select_terminal_margin_consensus_then_default():
+    m, flags = E.select_terminal_margin({"fy3_fcf": 200.0, "fy3_sales": 1000.0}, 0.35)
+    check("fy3_fcf/fy3_sales when both > 0", abs(m - 0.20) < 1e-12, m)
+    check("flagged terminal_margin_consensus", flags == ["terminal_margin_consensus"], flags)
+    m2, flags2 = E.select_terminal_margin({"fy3_fcf": -50.0, "fy3_sales": 1000.0}, 0.35)
+    check("negative fy3 fcf -> sector default", m2 == 0.35, m2)
+    check("flagged terminal_margin_default", flags2 == ["terminal_margin_default"], flags2)
+    m3, flags3 = E.select_terminal_margin({}, 0.12)
+    check("missing -> sector default", m3 == 0.12 and flags3 == ["terminal_margin_default"], (m3, flags3))
+
+
+def test_select_start_margin_is_forward_then_ltm_then_floor():
+    used, raw, flags = E.select_start_margin({"fy1_fcf": 100.0, "fy1_sales": 1000.0},
+                                             {"fcf_margin": 39.68})
+    check("forward consensus wins over LTM", abs(used - 0.10) < 1e-12, used)
+    check("flagged start_margin_consensus", flags == ["start_margin_consensus"], flags)
+
+    used2, raw2, flags2 = E.select_start_margin({"fy1_fcf": -100.0, "fy1_sales": 1000.0},
+                                                {"fcf_margin": 20.0})
+    check("negative forward FCF -> LTM when positive", abs(used2 - 0.20) < 1e-12, used2)
+    check("flagged start_margin_ltm", flags2 == ["start_margin_ltm"], flags2)
+    check("raw keeps the negative forward margin", abs(raw2 + 0.10) < 1e-12, raw2)
+
+    used3, raw3, flags3 = E.select_start_margin({"fy1_fcf": -100.0, "fy1_sales": 1000.0},
+                                                {"fcf_margin": -34.89})
+    check("both negative -> floored at 0", used3 == 0.0, used3)
+    check("flagged fcf_margin_floored", flags3 == ["fcf_margin_floored"], flags3)
+
+    used4, raw4, flags4 = E.select_start_margin({}, {})
+    check("nothing at all -> floored at 0, raw None", used4 == 0.0 and raw4 is None, (used4, raw4))
+    check("flagged fcf_margin_floored", flags4 == ["fcf_margin_floored"], flags4)
+
+
+def test_build_card_uses_consensus_margin_ends_and_shows_raw_values():
+    entry = {"price": 100.0, "mcap": 2500.0,
+             "fy1_sales": 1000.0, "fy2_sales": 1200.0, "fy3_sales": 1440.0,
+             "fy1_eps": 4.0, "fy2_eps": 5.0, "fy3_eps": 6.0,
+             "fy1_fcf": 150.0, "fy2_fcf": 200.0, "fy3_fcf": 288.0}
+    with tempfile.TemporaryDirectory() as td:
+        card = E.build_card("XYZ", entry, DEFAULT_CFG, state_dir=Path(td), as_of="2026-09-17",
+                            stages={"pairs": {}, "gated": []}, ticker_themes_all={"XYZ": []},
+                            downside_theme_slugs=set())
+    inp = card["inputs"]
+    check("terminal_margin = fy3_fcf/fy3_sales", abs(inp["terminal_margin"] - 288.0 / 1440.0) < 1e-12, inp)
+    check("start margin = fy1_fcf/fy1_sales", abs(inp["fcf_margin_now"] - 0.15) < 1e-12, inp)
+    check("flags name both ends", "terminal_margin_consensus" in card["flags"]
+         and "start_margin_consensus" in card["flags"], card["flags"])
+    check("raw consensus margins shown in inputs",
+         abs(inp["fy1_fcf_margin_consensus"] - 0.15) < 1e-12
+         and abs(inp["fy3_fcf_margin_consensus"] - 0.20) < 1e-12, inp)
+    check("gap carries BOTH the street and the haircut reading",
+         card["gap"]["gap_vs_street_pp"] is not None and card["gap"]["gap_pp"] is not None
+         and card["gap"]["gap_vs_haircut_pp"] == card["gap"]["gap_pp"], card["gap"])
+    check("gap >= gap_vs_street (haircut lowers supported growth)",
+         card["gap"]["gap_pp"] >= card["gap"]["gap_vs_street_pp"], card["gap"])
+    check("lambda_street printed on layer2", card["layer2_supported"]["lambda_street"] is not None,
+         card["layer2_supported"])
+
+
+# ─────────────────── fix round 4: V4 floored margin vetoes extreme ─────────
+
+def test_valuation_extreme_vetoed_by_fcf_margin_floored():
+    cfg = DEFAULT_CFG
+    extreme, reason = E.is_valuation_extreme([20.0, 30.0], None, ["fcf_margin_floored"], cfg)
+    check("floored start margin vetoes the gap branch (V4)", extreme is False, extreme)
+    check("reason names the veto", reason == "vetoed: fcf_margin_floored", reason)
+    extreme2, reason2 = E.is_valuation_extreme([20.0, 30.0], None, ["terminal_margin_default"], cfg)
+    check("sector-default terminal margin vetoes too", extreme2 is False, extreme2)
+    extreme3, reason3 = E.is_valuation_extreme([20.0, 30.0], None,
+                                               ["start_margin_consensus", "terminal_margin_consensus"], cfg)
+    check("real consensus margin ends do NOT veto", extreme3 is True and reason3 is None, (extreme3, reason3))
 
 
 if __name__ == "__main__":

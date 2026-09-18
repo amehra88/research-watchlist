@@ -180,6 +180,28 @@ supported_growth:
   # ticker, and omit the axis entirely if it doesn't clear. A ticker with zero
   # qualifying axes gets the whole reads_term omitted ("insufficient history").
   reads_min_dated: 3
+  # V1 (RIS5 A5 fix round 4) -- the STREET HAIRCUT. supported_growth no longer extends
+  # the consensus CAGR as given: it shrinks it toward terminal_growth by
+  #   lambda = clip(0.75 + 0.25*(2*cred - 1) + 0.15*breadth_ratio
+  #                 - 0.20*clip(log10(fy1_sales_musd / 10000), 0, 1), 0.50, 1.00)
+  # cred = the guidance/consensus track record (0.5 when unknown), breadth_ratio =
+  # (up-down)/(up+down) on FY1 EPS revisions, and the size term reaches its full -0.20 at
+  # $100bn+ of FY1 sales. The unhaircut (lambda = 1) path is still printed on every card
+  # as `base_street`/`gap_vs_street_pp`. Weights are operator-adjustable; the bounds are
+  # binding (a haircut may never cut more than half the excess over terminal growth, and
+  # may never MARK UP the street).
+  street_haircut:
+    base_const: 0.75
+    cred_weight: 0.25
+    breadth_weight: 0.15
+    size_weight: 0.20
+    size_ref_musd: 10000.0     # $10bn of FY1 sales -- below this there is no size penalty
+    bounds: [0.50, 1.00]
+  # V2: a hard ceiling on supported_growth.base (NOT on base_street, which is the printed
+  # lambda=1 diagnostic). No company sustains a >40% 5-year revenue CAGR often enough for
+  # the evidence side to assert it; uncapped, a few very-early-revenue names (CBRS 153%,
+  # NBIS 118%) dominated the gap cross-section that every card's gap_z is measured against.
+  base_cap: 0.40
   # F5: downside is now RELATIVE (base * downside_multiplier), applied once
   # when >=1 qualifying assumption is challenged -- replaces the old flat
   # downside_haircut_pp (an absolute pp subtraction, which could push a small
