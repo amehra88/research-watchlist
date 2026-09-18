@@ -88,6 +88,32 @@ def test_score_rec_text_missing_conf_file_returns_none_not_raise():
                  "x", "stub", "notes/ZZZZ/20260101-conf-does-not-exist.md")
     assert M.score_rec_text(e) is None
 
+
+def test_run_ticker_malformed_source_id_does_not_abort_the_run():
+    """RIS5 Part A pre-merge fix 6: a source_id with no "/" makes score_reads.build_rows's
+    parse_note_id raise (ValueError: not enough values to unpack) -- run_ticker must catch
+    it, log, and keep going, not die for the whole ticker on one bad evidence item."""
+    from datetime import date
+
+    note_text = ("## 5. AI positioning signal\n- **Current score:** 4\n"
+                "- **Recommendation:** drift to 4+\n")
+    bad = Evidence("earnings_note", "bad-source-id-no-slash", "AAA", "2026-09-01", "t", note_text, "r")
+
+    tmp = Path(tempfile.mkdtemp())
+    orig = (M.tio.load, M.tio.save, M.collect_all, M._read_log, M._ask, M.LOG, M.CHANGES, M.WATERMARKS)
+    M.tio.load = lambda ticker: {"ticker": ticker, "assumptions": [], "scores": {}}
+    M.tio.save = lambda ticker, fm: None       # no real vault write in a test
+    M.collect_all = lambda ticker, since: [bad]
+    M._read_log = lambda: []
+    M._ask = lambda fm, sent, valid: []        # no live claude -p call in a test
+    M.LOG, M.CHANGES, M.WATERMARKS = tmp / "evidence_log.jsonl", tmp / "changes.jsonl", tmp / "watermarks.json"
+    try:
+        stats = M.run_ticker("AAA", since=date(2026, 9, 1), today=date(2026, 9, 17), dry_run=False)
+    finally:
+        (M.tio.load, M.tio.save, M.collect_all, M._read_log, M._ask, M.LOG, M.CHANGES, M.WATERMARKS) = orig
+    assert stats["ticker"] == "AAA" and stats["evidence"] == 1, stats
+
+
 if __name__ == "__main__":
     test_parse_verdicts_maps_by_index_and_validates(); test_lift_score_recs()
     test_earnings_break_becomes_strength3_row(); test_prompt_lists_every_assumption_and_item()
@@ -96,4 +122,5 @@ if __name__ == "__main__":
     test_score_rec_text_conference_reads_full_file_not_stripped_evidence_text()
     test_score_rec_text_none_for_non_file_backed_or_other_sources()
     test_score_rec_text_missing_conf_file_returns_none_not_raise()
+    test_run_ticker_malformed_source_id_does_not_abort_the_run()
     print("OK test_match_evidence")

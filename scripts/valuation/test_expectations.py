@@ -1247,6 +1247,11 @@ def test_build_card_long_duration_two_forward_years_spcx_like():
 # ─────────────────────────── build_expectations / bundle shape ──────────────
 
 def test_build_expectations_shape_and_universe_size():
+    # RIS5 Part A pre-merge fix 3: CCC.pvt is in the watchlist/themes universe (so it
+    # counts toward the raw union) but must never be iterated (no price/consensus row,
+    # no card) or counted in `universe_size` -- `universe_size` is the count of tickers
+    # build_card() actually ran over (non-pvt), and `pvt_excluded` makes the .pvt count
+    # explicit rather than folding it silently into `universe_size`.
     snapshot = {"as_of": "2026-09-17", "tickers": {
         "AAA": {"price": 10.0, "mcap": 1000.0, "fy1_sales": 100.0, "fy2_sales": 110.0,
                "fy3_sales": 121.0, "fy1_eps": 1.0},
@@ -1257,6 +1262,7 @@ def test_build_expectations_shape_and_universe_size():
         (td / "config").mkdir()
         (td / "config" / "watchlist.yaml").write_text(
             "tier_1_bctk:\n  - ticker: AAA\n    themes: [x, y]\n"
+            "  - ticker: ccc.pvt\n    themes: [x]\n"
             "tier_2_active_candidates:\n  - ticker: BBB\n    themes: [x, y]\n")
         (td / "notes").mkdir()
         state_dir = td / "state" / "valuation"
@@ -1274,9 +1280,16 @@ def test_build_expectations_shape_and_universe_size():
     check("as_of carried through", result["as_of"] == "2026-09-17")
     check("AAA got a card", "AAA" in result["cards"], result["cards"].keys())
     check("BBB skipped (no price/mcap)", any(s["ticker"] == "BBB" for s in result["skipped"]), result["skipped"])
+    check("ccc.pvt never gets a card or a skip entry",
+         "ccc.pvt" not in result["cards"] and not any(s["ticker"] == "ccc.pvt" for s in result["skipped"]),
+         (result["cards"].keys(), result["skipped"]))
+    check("universe_size counts only the non-pvt universe actually iterated (AAA+BBB=2)",
+         result["universe_size"] == 2, result["universe_size"])
+    check("pvt_excluded counts the one .pvt id folded out of universe_size",
+         result.get("pvt_excluded") == 1, result.get("pvt_excluded"))
     latest = E.expectations_latest(result)
-    check("expectations_latest.json shape has as_of/universe_size/skipped/tickers",
-         set(("as_of", "universe_size", "skipped", "tickers")) <= set(latest.keys()), latest.keys())
+    check("expectations_latest.json shape has as_of/universe_size/pvt_excluded/skipped/tickers",
+         set(("as_of", "universe_size", "pvt_excluded", "skipped", "tickers")) <= set(latest.keys()), latest.keys())
     check("expectations_latest tickers keyed by ticker with full card",
          latest["tickers"]["AAA"]["ticker"] == "AAA", latest["tickers"]["AAA"])
     check("priced_in attached (F7, second pass)", "priced_in" in result["cards"]["AAA"], result["cards"]["AAA"])

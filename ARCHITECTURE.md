@@ -131,7 +131,7 @@ Two git repos cooperate:
   it has **no cron of its own** — `process_notes()` is called directly from inside the
   02:30 `earnings_reviewer` hook after each new note, one bounded call per note, inside
   that job's own quota slot. `scripts/valuation/snapshot.py` (`valuation_snapshot`,
-  04:45 ET weekdays, mcp-lean, prices+market_value+consensus SALES/EPS/EBITDA/FCF FY1-3;
+  04:47 ET weekdays, mcp-lean, prices+market_value+consensus SALES/EPS/EBITDA/FCF FY1-3;
   `--weekly` adds FY4-5, Sunday, not yet live) and `scripts/valuation/fundamentals.py`
   (`valuation_fundamentals`, Sunday 08:30, net debt/margins/FCF at QTR+LTM) write
   `state/valuation/latest.json` (tracked) + dated raw jsonl (gitignored).
@@ -142,7 +142,7 @@ Two git repos cooperate:
   multiple ladder (PEG → EV/EBITDA → EV/FCF → EV/Sales, amendment v1.2's selection rule),
   and `long_duration` handling for pre-profit/thin-consensus names — writes
   `state/valuation/expectations_latest.json`, read by the portal's `data/valuation.json`.
-  `scripts/portal/etf_trades_archive.py` (`etf_trades_archive`, 08:00 daily) +
+  `scripts/portal/etf_trades_archive.py` (`etf_trades_archive`, 07:50 daily) +
   `scripts/thesis/etf_evidence.py` (`etf_evidence`, 08:15 daily) turn peer-ETF trim/exit
   clusters into `challenge` evidence on competitive-advantage assumptions.
   `config/theme_polarity.yaml` (hand-edited, validated by `scripts/thesis/

@@ -526,7 +526,7 @@ needs to know before touching them by hand.
 | `scripts/valuation/snapshot.py` | `state/valuation/prices_<date>.jsonl`, `consensus_<date>.jsonl` daily; `fundamentals_<date>.jsonl` via `fundamentals.py` weekly | daily (weekdays) + weekly (Sunday, FY4–5 merge) | **gitignored** (raw daily/dated files) | prices in the ticker's trading currency; consensus SALES/EPS/EBITDA/FCF in **FactSet MILLIONS** (see `docs/portal/mcp_schemas.md`) for FY1–FY3 daily, FY4–FY5 weekly with analyst counts |
 | `scripts/valuation/snapshot.py` (merge) | `state/valuation/latest.json` | same run | tracked | small, nested-by-period rollup of the above — the file A5/B1 actually read, not the raw dated jsonl |
 | `scripts/valuation/fundamentals.py` | `state/valuation/fundamentals_<date>.jsonl` | weekly (Sunday) | **gitignored** | net debt/total debt/cash (QTR), gross/operating margin + FCF + sales + derived FCF margin (LTM) — all FactSet MILLIONS except the margin percentages/fractions |
-| `scripts/valuation/expectations.py` | `state/valuation/expectations_<date>.jsonl` + `state/valuation/expectations_latest.json` | daily, after the snapshot | dated file **gitignored**, `_latest.json` tracked | one card per ticker: implied/supported growth, gap, multiple ladder (PEG / EV-EBITDA / EV-FCF / EV-Sales, each growth-adjusted), `terminal_share_of_ev`, flags — percentages as fractions (0.15 = 15%) except where a field name says `_pp` (percentage points) |
+| `scripts/valuation/expectations.py` | `state/valuation/expectations_<date>.jsonl` + `state/valuation/expectations_latest.json` | daily, after the snapshot | **both gitignored** (RIS5 Part A pre-merge fix 4: `_latest.json` is rewritten daily and is 1.17 MB — the portal build reads it straight off the droplet's disk, so it never needed to be in git; same "don't push a growing/rewritten blob every 15 min via auto_sync" trap as `etf_flows.jsonl`/`portal_build/` below) | one card per ticker: implied/supported growth, gap, multiple ladder (PEG / EV-EBITDA / EV-FCF / EV-Sales, each growth-adjusted), `terminal_share_of_ev`, flags — percentages as fractions (0.15 = 15%) except where a field name says `_pp` (percentage points); `universe_size`/`pvt_excluded` on the `_latest.json` rollup count the non-pvt universe actually iterated vs. the `.pvt` ids folded out of it |
 | `scripts/portal/etf_trades_archive.py` | `state/etf_trades/<date>.json` | daily, after the ws 07:30 scrape | **gitignored** | archived snapshot of the ws ETF-holdings-change report; feeds `etf_evidence.py`'s 14-day peer-trim clustering, not the portal bundle |
 | `scripts/thesis/etf_evidence.py` | appends to `state/thesis/evidence_log.jsonl` (existing file, not new) | daily, after the archive above | tracked (the log itself, unchanged path) | `challenge`/`confirm` rows on competitive-advantage assumptions, same shape as `insider_pull.py`'s rows |
 | `/root/is` (separate repo, `insider/conviction.py`) | `state/insiders/conviction_<date>.jsonl` | weekly (Sunday, same run as `insider_pull.py`) | lives in the **sibling `/root/is` repo**, not this one — not tracked/gitignored here at all | conviction scores for sells that cleared the conviction bar: `{ticker, date, direction, magnitude, factors}` |
@@ -610,14 +610,19 @@ real vault, not a worktree's copy — see their own module docstrings).
 
 See `docs/portal/cron.txt` for the full staged crontab (paste into
 `crontab -e` when ready — nothing in this section is installed yet beyond
-what's already live). Concurrency rule, restated: **never more than one
-`claude -p` job runs at a time on this box** (a 3.9 GB droplet — two
-concurrent subscription sessions have previously exhausted the quota and, in
-one incident, OOM'd). The valuation snapshot (04:45 ET weekdays) and every
-other RIS5 A3 line were placed to never overlap the 02:30 earnings reviewer,
-05:30 `etf_flows_fetch`, 06:45 news digest, 12:45 daily topics chain, or
-15:00 thesis match — see `cron.txt`'s own per-line comments for the specific
-adjacency evidence behind each slot (e.g. why 04:45 and not 05:45).
+what's already live). Concurrency rule, restated (reworded RIS5 Part A
+pre-merge fix 5): **no two heavy `claude -p` jobs run at once on this box**
+(a 3.9 GB droplet — two concurrent subscription sessions have previously
+exhausted the quota and, in one incident, OOM'd); **the 15-minute `v3_inbox`
+tick is light and tolerated** — it fires a single bounded `claude -p` call
+only when the inbox is non-empty, and is not treated as a second heavy job
+the way `etf_flows_fetch`/the news digest/the topics chain are. The
+valuation snapshot (04:47 ET weekdays, not 04:45 — clearing `v3_inbox`'s own
+`:45` tick outright) and every other RIS5 A3 line were placed to never
+overlap the 02:30 earnings reviewer, 05:30 `etf_flows_fetch`, 06:45 news
+digest, 12:45 daily topics chain, or 15:00 thesis match — see `cron.txt`'s
+own per-line comments for the specific adjacency evidence behind each slot
+(e.g. why 04:47 and not 04:45 or 05:45).
 Structured reads (A2) run inside the 02:30 reviewer's own process, right
 after each new note is written — there is no separate cron line for them,
 by design (one bounded `claude -p` call per new note, inside the slot that

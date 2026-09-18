@@ -1820,7 +1820,13 @@ def build_expectations(snapshot: dict, cfg: dict, *, state_dir: Path, as_of: str
     min_days = (cfg.get("history") or {}).get("min_days_for_z", 60)
     attach_priced_in(cards, state_dir, as_of, min_days)
 
-    return {"as_of": as_of, "universe_size": len(universe), "cards": cards, "skipped": skipped}
+    # RIS5 Part A pre-merge fix 3: `universe_size` must equal the universe actually
+    # iterated -- `non_pvt_universe` (build_card() is only ever called per `tk` in that
+    # loop above), not the raw union that still includes `.pvt` ids (which never get a
+    # card at all -- see the `non_pvt_universe` filter above). `pvt_excluded` makes the
+    # difference between the two counts explicit rather than silently dropping it.
+    return {"as_of": as_of, "universe_size": len(non_pvt_universe),
+           "pvt_excluded": len(universe) - len(non_pvt_universe), "cards": cards, "skipped": skipped}
 
 
 # ---------------------------------------------------------------------------
@@ -1856,6 +1862,7 @@ def write_jsonl(rows: list[dict], path: Path) -> None:
 def expectations_latest(result: dict) -> dict:
     """The tracked rollup shape (state/valuation/expectations_latest.json)."""
     return {"as_of": result["as_of"], "universe_size": result["universe_size"],
+           "pvt_excluded": result.get("pvt_excluded", 0),
            "skipped": result["skipped"], "tickers": result["cards"]}
 
 

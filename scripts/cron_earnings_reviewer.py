@@ -16,6 +16,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -304,17 +305,59 @@ def is_session_limit(marker: str) -> bool:
 
 _NOTE_PATH_RE = re.compile(r"path=(\S+)")
 
+# RIS5 Part A pre-merge fix 7: a total wall-clock budget for structure_new_note() across
+# ALL notes in one cron run, so a run with an unusually large backlog (e.g. a manual
+# multi-note catch-up landing on the same 02:30 invocation) cannot run long enough to
+# collide with the 04:47 ET valuation-snapshot slot (docs/portal/cron.txt). Once the
+# budget is exceeded, every remaining note in THIS run is skipped (logged once) --
+# already-structured notes are untouched and a later run (or a manual
+# `structure_reads.py --since <date>` catch-up) picks up what was skipped.
+STRUCTURE_READS_BUDGET_S = 1800
+_clock = time.monotonic          # tests substitute a fake, monotonically increasing clock
+_structure_reads_deadline: float | None = None
+_structure_reads_budget_exceeded = False
+
+
+def reset_structure_reads_budget() -> None:
+    """Start a fresh STRUCTURE_READS_BUDGET_S budget. Called once at the top of each
+    cron run (main()) so a previous run's clock never leaks into this one."""
+    global _structure_reads_deadline, _structure_reads_budget_exceeded
+    _structure_reads_deadline = None
+    _structure_reads_budget_exceeded = False
+
+
+def _structure_reads_budget_ok() -> bool:
+    """True while this run is still inside its structure_reads time budget. Starts the
+    clock on the first call of a run; once exceeded, stays False (and logs once) for
+    every subsequent call until reset_structure_reads_budget() runs again."""
+    global _structure_reads_deadline, _structure_reads_budget_exceeded
+    if _structure_reads_budget_exceeded:
+        return False
+    now = _clock()
+    if _structure_reads_deadline is None:
+        _structure_reads_deadline = now + STRUCTURE_READS_BUDGET_S
+        return True
+    if now > _structure_reads_deadline:
+        _structure_reads_budget_exceeded = True
+        log_write(f"  STRUCTURE_READS_BUDGET_EXCEEDED after {STRUCTURE_READS_BUDGET_S}s; "
+                  f"skipping structure_reads for remaining notes this run")
+        return False
+    return True
+
 
 def structure_new_note(marker: str) -> None:
     """RIS5 A2 hook: after a note is written, code its §5/§6/§7 reads into
     state/thesis/reads.jsonl (structure_reads.process_notes). Best-effort and MUST NEVER
     block or fail the reviewer run -- every exception (including a claude -p 429) is
     caught and logged here, never raised. No-op if the marker isn't 'new-note-written' or
-    carries no path= (e.g. a test stub, or the artifact-inspection fallback without one)."""
+    carries no path= (e.g. a test stub, or the artifact-inspection fallback without one),
+    or if this run's structure_reads time budget is already exceeded (fix 7 above)."""
     if not marker.startswith("STATUS: new-note-written"):
         return
     m = _NOTE_PATH_RE.search(marker)
     if not m:
+        return
+    if not _structure_reads_budget_ok():
         return
     note_path = m.group(1)
     try:
@@ -336,6 +379,7 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
     run_started_at = datetime.now(timezone.utc)
     log_section(f"CRON RUN {run_started_at.isoformat(timespec='seconds')}")
+    reset_structure_reads_budget()
 
     # Load watchlist
     try:

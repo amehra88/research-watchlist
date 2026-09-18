@@ -145,11 +145,18 @@ state/valuation/prices_*.jsonl
 state/valuation/consensus_*.jsonl
 state/valuation/fundamentals_*.jsonl
 
-# RIS5 A5 expectations-gap module (2026-09-17): same convention as the A3 snapshots above --
-# dated raw output is regenerable by re-running scripts/valuation/expectations.py, the
-# tracked rollup the portal/ideas engine reads is state/valuation/expectations_latest.json
-# (no rule below matches it).
+# RIS5 A5 expectations-gap module (2026-09-17): dated raw output is regenerable by
+# re-running scripts/valuation/expectations.py, same as the A3 snapshots above.
 state/valuation/expectations_*.jsonl
+
+# RIS5 Part A pre-merge fix 4 (2026-09-17): expectations_latest.json is REWRITTEN DAILY
+# and is 1.17 MB — the same "don't push a growing/rewritten blob every 15 min via
+# auto_sync" trap as etf_flows.jsonl/portal_build/ above, not the small "stays tracked"
+# rollup latest.json is (see the A3 comment above, which still applies to latest.json
+# only). The droplet's own copy on disk is what scripts/portal/build_portal.py's
+# data/valuation.json stage reads at build time — the portal build never needs this file
+# to be in git, only present on disk. `git rm --cached` in the same commit as this rule.
+state/valuation/expectations_latest.json
 
 # RIS5 A3 peer-ETF trade archive: one JSON snapshot per day, regenerable by re-running
 # scripts/portal/etf_trades_archive.py against /root/ws's report history (as long as it's

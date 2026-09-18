@@ -208,7 +208,16 @@ def run_ticker(ticker: str, since: date, today: date, dry_run: bool = False, wat
         # score_reads.jsonl is a real filesystem write: skip it on --dry-run like every other side effect below
         note_id = e.source_id[len("notes/"):] if e.source_id.startswith("notes/") else e.source_id
         rec_kwargs = {} if dry_run else {"note_id": note_id, "applied": fm.get("scores", {})}
-        for k, v in lift_score_recs(rec_text, **rec_kwargs).items():
+        # RIS5 Part A pre-merge fix 6: a malformed source_id (e.g. no "/", so
+        # score_reads.parse_note_id's ticker/filename split raises) must never abort the
+        # 15:00 production run for the WHOLE ticker over one bad evidence item -- log and
+        # move on to the next item instead.
+        try:
+            recs = lift_score_recs(rec_text, **rec_kwargs)
+        except Exception as exc:  # noqa: BLE001
+            print(f"WARN lift_score_recs failed for {e.source_id}: {type(exc).__name__}: {exc}", file=sys.stderr)
+            continue
+        for k, v in recs.items():
             cur = (fm.setdefault("proposed_scores", {}) or {}).get(k) or {}
             if fm.get("scores", {}).get(k) != v and cur.get("value") != v:
                 fm["proposed_scores"][k] = {"value": v, "since": e.date, "source": e.source_id}

@@ -169,6 +169,41 @@ def test_structure_new_note_invokes_process_notes_and_never_raises():
     print("  ✓ structure_new_note invokes process_notes once and swallows its exceptions")
 
 
+def test_structure_reads_budget_skips_remaining_notes_once_exceeded():
+    """RIS5 Part A pre-merge fix 7: a total wall-clock budget across notes in one run, so
+    the 02:30 job cannot run into the 04:47 valuation-snapshot slot. A fake clock that
+    jumps past STRUCTURE_READS_BUDGET_S on the second call must make every subsequent
+    structure_new_note() call in the SAME run a no-op (process_notes never invoked again),
+    logged once -- not re-checked/re-logged on every later note."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from thesis import structure_reads
+    calls = []
+    logged = []
+    orig_pn = structure_reads.process_notes
+    orig_clock = cer._clock
+    orig_log = cer.log_write
+    structure_reads.process_notes = lambda paths, **kw: (calls.append(paths) or {"written": 1, "dupes": 0, "dropped": 0})
+    cer.log_write = lambda line: logged.append(line)
+    # 1st call starts the clock at t=0 (deadline = 1800s later); 2nd call reports
+    # t=1801 -- past budget -- so it, and every later call this run, must be skipped.
+    ticks = iter([0.0, 1801.0])
+    cer._clock = lambda: next(ticks)
+    cer.reset_structure_reads_budget()
+    try:
+        cer.structure_new_note("STATUS: new-note-written ticker=AAPL path=notes/AAPL/a.md")
+        cer.structure_new_note("STATUS: new-note-written ticker=MSFT path=notes/MSFT/b.md")
+        cer.structure_new_note("STATUS: new-note-written ticker=META path=notes/META/c.md")
+        assert len(calls) == 1, calls  # only the first, in-budget call went through
+        assert cer._structure_reads_budget_exceeded is True
+        assert sum("STRUCTURE_READS_BUDGET_EXCEEDED" in l for l in logged) == 1, logged
+    finally:
+        structure_reads.process_notes = orig_pn
+        cer._clock = orig_clock
+        cer.log_write = orig_log
+        cer.reset_structure_reads_budget()
+    print("  ✓ structure_reads budget exceeded mid-run skips remaining notes, logged once")
+
+
 def test_session_limit_stops_the_batch():
     calls = []
     def fake(t, started):
@@ -201,6 +236,7 @@ if __name__ == "__main__":
         test_ticker_flag_bypasses_calendar_and_filters_watchlist()
         test_structure_new_note_noop_without_path()
         test_structure_new_note_invokes_process_notes_and_never_raises()
+        test_structure_reads_budget_skips_remaining_notes_once_exceeded()
         test_session_limit_stops_the_batch()
     finally:
         cer.run_claude = orig
