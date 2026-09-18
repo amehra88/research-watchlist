@@ -220,9 +220,9 @@ def test_fetch_prices_and_fetch_consensus_also_get_the_retry():
         ccalls.append(1)
         if len(ccalls) == 1:
             return [], "tool_result unusable (http_status=503): Server error '503'"
-        return [{"requestId": fids[0], "date": "2026-09-17", "relativePeriod": 1,
+        return [{"requestId": fids[0], "estimateDate": "2026-09-17", "relativePeriod": 1,
                 "fiscalEndDate": "2027-12-31", "mean": 1.0, "median": 1.0,
-                "count": 1, "up": 1, "down": 0}], None
+                "estimateCount": 1, "up": 1, "down": 0}], None
 
     crows, cerrs = S.fetch_consensus([("FOO", "FOO-US")], "FCF", cons_runner,
                                      retry_wait=0, sleep=lambda s: None)
@@ -284,9 +284,9 @@ def test_run_weekly_merges_into_existing_latest_json():
             state_dir / "latest.json")
 
         def runner(fids, metric):
-            return [{"requestId": fids[0], "date": "2026-09-20", "relativePeriod": 4,
+            return [{"requestId": fids[0], "estimateDate": "2026-09-20", "relativePeriod": 4,
                     "fiscalEndDate": "2030-12-31", "mean": 42.0, "median": 41.0,
-                    "count": 3, "up": 2, "down": 0}], None
+                    "estimateCount": 3, "up": 2, "down": 0}], None
 
         rc = S.run_weekly([("FOO", "FOO-US")], "2026-09-20", state_dir, runner)
         check("run_weekly returns 0", rc == 0)
@@ -310,6 +310,22 @@ def test_argument_drift_clean_and_dirty():
     check("dropped id detected", "ids" in S.argument_drift(drifted, expected))
     check("list-order-only is NOT drift",
          S.argument_drift({"ids": ["B-US", "A-US"], "data_type": "prices"}, expected) == [])
+
+
+def test_argument_drift_none_and_literal_null_string_are_equivalent():
+    """RIS5 A3 live run finding: the live FactSet_Fundamentals call placed audit as the
+    STRING "null", not JSON null/Python None, which false-positived as drift on the very
+    first live Fundamentals probe (expected {"audit": None}). None and "null"/"NULL" must
+    normalize to the same value; a genuinely different string (e.g. "AUDIT_TABLE" when
+    None was expected) must still be caught."""
+    expected = {"audit": None, "ids": ["NVDA-US"]}
+    check("None placed matches None expected", S.argument_drift({"audit": None, "ids": ["NVDA-US"]}, expected) == [])
+    check("literal string 'null' matches None expected (the real live shape)",
+         S.argument_drift({"audit": "null", "ids": ["NVDA-US"]}, expected) == [])
+    check("'NULL' case-insensitive also matches",
+         S.argument_drift({"audit": "NULL", "ids": ["NVDA-US"]}, expected) == [])
+    check("a genuinely different value is still drift",
+         "audit" in S.argument_drift({"audit": "AUDIT_TABLE", "ids": ["NVDA-US"]}, expected))
 
 
 # ─────────────────────────── normalize + quality ───────────────────────────
@@ -352,6 +368,18 @@ def test_normalize_price_and_market_value_join():
     check("joined row quality ok", rows[0]["quality"] == "ok", rows[0])
 
 
+def test_normalize_market_value_rows_uses_currentMarketValue_confirmed_live():
+    """RIS5 A3 live run finding: the real key is `currentMarketValue` (raw row observed:
+    {"fsymId": "SZG8SG-R", "requestId": "000660-KR", "currentMarketValue": 1240826747.5,
+    "currency": "KRW", "date": "2026-09-17"}) -- none of the pre-live guesses matched."""
+    raw = [{"fsymId": "SZG8SG-R", "requestId": "000660-KR",
+           "currentMarketValue": 1240826747.5, "currency": "KRW", "date": "2026-09-17"}]
+    out = S.normalize_market_value_rows(raw, {"000660-KR": "000660.KS"})
+    check("currentMarketValue matched first", out["000660.KS"]["mcap"] == 1240826747.5, out)
+    check("currentMarketValue is tried before the fallback guesses",
+         S._MCAP_KEYS[0] == "currentMarketValue", S._MCAP_KEYS)
+
+
 def test_build_price_rows_missing_mcap_fails_quality():
     fid_to_tk = {"BAR-US": "BAR"}
     rows = S.build_price_rows({"BAR": {"price": 10.0, "date": "2026-09-17", "volume": 1, "currency": "USD"}},
@@ -360,12 +388,34 @@ def test_build_price_rows_missing_mcap_fails_quality():
 
 
 def test_normalize_consensus_rows_null_mean_preserved():
-    raw = [{"requestId": "FOO-US", "date": "2026-09-17", "relativePeriod": 1,
-           "fiscalEndDate": "2027-12-31", "mean": None, "median": None, "count": 0,
+    raw = [{"requestId": "FOO-US", "estimateDate": "2026-09-17", "relativePeriod": 1,
+           "fiscalEndDate": "2027-12-31", "mean": None, "median": None, "estimateCount": 0,
            "up": 0, "down": 0}]
     rows = S.normalize_consensus_rows(raw, {"FOO-US": "FOO"}, "SALES")
     check("null mean stays None, not 0.0", rows[0]["mean"] is None, rows[0])
     check("count=0 -> quality fail", rows[0]["quality"] == "fail:count<1", rows[0])
+
+
+def test_normalize_consensus_rows_uses_estimateCount_and_estimateDate_not_count_and_date():
+    """RIS5 A3 live run finding: the raw response has NO top-level `count`/`date` keys --
+    those names were a pre-live guess that made every real row fail quality. The real
+    keys are `estimateCount`/`estimateDate`."""
+    raw = [{"requestId": "FOO-US", "estimateDate": "2026-09-20", "relativePeriod": 1,
+           "fiscalEndDate": "2027-12-31", "mean": 10.0, "median": 10.0,
+           "estimateCount": 5, "up": 2, "down": 1}]
+    rows = S.normalize_consensus_rows(raw, {"FOO-US": "FOO"}, "SALES")
+    check("estimateCount mapped to count", rows[0]["count"] == 5, rows[0])
+    check("estimateDate mapped to date", rows[0]["date"] == "2026-09-20", rows[0])
+    check("quality ok with a real count", rows[0]["quality"] == "ok", rows[0])
+    # a raw row with the OLD guessed keys (count/date) instead of the real ones must NOT
+    # be picked up -- proves the fix actually changed the lookup, not just added a fallback
+    stale = [{"requestId": "FOO-US", "date": "2026-09-20", "relativePeriod": 1,
+             "fiscalEndDate": "2027-12-31", "mean": 10.0, "median": 10.0,
+             "count": 5, "up": 2, "down": 1}]
+    stale_rows = S.normalize_consensus_rows(stale, {"FOO-US": "FOO"}, "SALES")
+    check("old 'count'/'date' keys are NOT read (would have silently 'worked' and hidden the bug)",
+         stale_rows[0]["count"] is None and stale_rows[0]["date"] is None
+         and stale_rows[0]["quality"] == "fail:count<1", stale_rows[0])
 
 
 # ─────────────────────────── fetch_* with fake runners ─────────────────────
@@ -396,12 +446,13 @@ def test_fetch_consensus_extends_across_metrics():
     pairs = [("FOO", "FOO-US")]
 
     def runner(fids, metric):
-        return [{"requestId": fids[0], "date": "2026-09-17", "relativePeriod": 1,
+        return [{"requestId": fids[0], "estimateDate": "2026-09-17", "relativePeriod": 1,
                 "fiscalEndDate": "2027-12-31", "mean": 100.0, "median": 99.0,
-                "count": 10, "up": 2, "down": 1}], None
+                "estimateCount": 10, "up": 2, "down": 1}], None
 
     rows, errs = S.fetch_consensus(pairs, "SALES", runner)
     check("consensus rows for the metric parsed", rows[0]["metric"] == "SALES" and rows[0]["mean"] == 100.0)
+    check("count correctly read from estimateCount", rows[0]["count"] == 10, rows[0])
     check("no errors", errs == [])
 
 
@@ -624,12 +675,15 @@ if __name__ == "__main__":
     test_run_weekly_refuses_without_an_existing_daily_latest_json()
     test_run_weekly_merges_into_existing_latest_json()
     test_argument_drift_clean_and_dirty()
+    test_argument_drift_none_and_literal_null_string_are_equivalent()
     test_check_price_quality()
     test_check_consensus_quality()
     test_check_surprise_identity()
     test_normalize_price_and_market_value_join()
+    test_normalize_market_value_rows_uses_currentMarketValue_confirmed_live()
     test_build_price_rows_missing_mcap_fails_quality()
     test_normalize_consensus_rows_null_mean_preserved()
+    test_normalize_consensus_rows_uses_estimateCount_and_estimateDate_not_count_and_date()
     test_fetch_prices_batches_and_reports_errors()
     test_fetch_consensus_extends_across_metrics()
     test_run_mcp_checked_raises_session_limit_before_returncode_check()

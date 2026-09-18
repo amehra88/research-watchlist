@@ -175,6 +175,14 @@ def id_chunks(pairs: list[tuple[str, str]], size: int) -> list[list[tuple[str, s
 def _arg_norm(v):
     if isinstance(v, (list, tuple)):
         return sorted(str(x) for x in v)
+    # Python None (an expected arg value, e.g. fundamentals.py's audit=None meaning
+    # "omit auditing") and the literal string "null" (how the live FactSet_Fundamentals
+    # call actually placed it, per RIS5 A3's live 3-id probe -- claude_p.tool_use_input's
+    # extracted args dict held {"audit": "null"}, not JSON null) must compare equal, or
+    # every real Fundamentals call would false-positive as argument drift on `audit`
+    # alone. Confirmed this is the ONLY None-valued expected arg anywhere in this module.
+    if v is None or (isinstance(v, str) and v.lower() == "null"):
+        return "null"
     return str(v)
 
 
@@ -426,10 +434,13 @@ def normalize_price_rows(raw: list[dict], fid_to_ticker: dict) -> dict[str, dict
     return out
 
 
-# Candidate key names for the market_value row's cap field -- the live schema does not
-# document one (fields/currency/calendar are all "fixed schema, NOT USED" for this
-# data_type). Tried in order; the first live run pins the real key (see module docstring).
-_MCAP_KEYS = ("marketValue", "mktVal", "market_value", "mcap", "value")
+# Candidate key names for the market_value row's cap field. CONFIRMED live 2026-09-17
+# (RIS5 A3 live run): the real key is `currentMarketValue` -- none of the pre-live guesses
+# matched (raw row: {"fsymId": "SZG8SG-R", "requestId": "000660-KR",
+# "currentMarketValue": 1240826747.5, "currency": "KRW", "date": "2026-09-17"}). The
+# guessed keys are kept as a defensive fallback (harmless if FactSet ever adds one of
+# them) but `currentMarketValue` is tried first. See docs/portal/mcp_schemas.md.
+_MCAP_KEYS = ("currentMarketValue", "marketValue", "mktVal", "market_value", "mcap", "value")
 
 
 def normalize_market_value_rows(raw: list[dict], fid_to_ticker: dict) -> dict[str, dict]:
@@ -467,17 +478,25 @@ def build_price_rows(price_by_tk: dict, mcap_by_tk: dict, fid_to_ticker: dict,
 
 def normalize_consensus_rows(raw: list[dict], fid_to_ticker: dict, metric: str) -> list[dict]:
     """Every relativePeriod row FactSet returned, quality-checked per row.
-    `count`/`up`/`down`/`mean`/`median` come straight off the response; a null MEAN
-    (no analysts yet for a far-out period) survives as None, never coerced to 0."""
+    `up`/`down`/`mean`/`median` come straight off the response; a null MEAN (no analysts
+    yet for a far-out period) survives as None, never coerced to 0.
+
+    CONFIRMED live 2026-09-17 (RIS5 A3 live run, fix 2 follow-up): the response's analyst
+    count field is `estimateCount`, NOT `count` -- a guess baked into the pre-live code
+    that made every single row in the first live run fail quality (`fail:count<1`, 2124/
+    2124 rows) even though `mean`/`median`/`up`/`down` were all populated with real,
+    plausible values. Likewise the per-row date is `estimateDate` (the date the consensus
+    snapshot was taken), not `date` -- the raw response has no top-level `date` key at
+    all. See docs/portal/mcp_schemas.md for the full confirmed raw-row shape."""
     out = []
     for r in raw:
         fid = r.get("requestId")
         tk = fid_to_ticker.get(fid)
         if not tk:
             continue
-        count = _num(r.get("count"))
+        count = _num(r.get("estimateCount"))
         out.append({
-            "ticker": tk, "fsym": fid, "date": r.get("date"), "metric": metric,
+            "ticker": tk, "fsym": fid, "date": r.get("estimateDate"), "metric": metric,
             "rel_period": r.get("relativePeriod"), "fiscal_end": r.get("fiscalEndDate"),
             "mean": _num(r.get("mean")), "median": _num(r.get("median")),
             "count": count, "up": _num(r.get("up")), "down": _num(r.get("down")),
@@ -660,16 +679,20 @@ def _fake_runners():
                  "currency": "USD"} for i, f in enumerate(fids)], None
 
     def market_value(fids):
-        return [{"requestId": f, "marketValue": 50_000.0 + i * 10}
+        # key matches the CONFIRMED live response shape (currentMarketValue).
+        return [{"requestId": f, "currentMarketValue": 50_000.0 + i * 10}
                for i, f in enumerate(fids)], None
 
     def consensus(fids, metric):
         rows = []
         for f in fids:
             for rp in (1, 2, 3):
-                rows.append({"requestId": f, "date": "2026-09-17", "relativePeriod": rp,
+                # keys match the CONFIRMED live response shape (estimateCount/estimateDate,
+                # not count/date -- see normalize_consensus_rows' docstring for why that
+                # distinction matters).
+                rows.append({"requestId": f, "estimateDate": "2026-09-17", "relativePeriod": rp,
                             "fiscalEndDate": f"202{6+rp}-12-31", "mean": 1000.0 * rp,
-                            "median": 990.0 * rp, "count": 10, "up": 3, "down": 1})
+                            "median": 990.0 * rp, "estimateCount": 10, "up": 3, "down": 1})
         return rows, None
     return prices, market_value, consensus
 

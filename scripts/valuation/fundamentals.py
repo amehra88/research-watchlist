@@ -49,10 +49,27 @@ FUNDAMENTALS_TOOL = "mcp__claude_ai_FactSet_AI-Ready_Data__FactSet_Fundamentals"
 
 STATE_DIR = REPO / "state" / "valuation"
 
-# Confirmed live against docs/portal/mcp_schemas.md (2026-09-17 probe, 3 ids: AAPL-US,
-# NVDA-US, MSFT-US). Empty until the probe has run -- discover_metrics()/main() refuse to
-# call FactSet_Fundamentals with a guessed code (the tool's own hard rule).
-FUNDAMENTALS_METRICS: dict[str, str] = {}
+# Confirmed live 2026-09-17 (RIS5 A3 live run): a combined FactSet_Metrics discovery call
+# (data_products=["fundamentals","estimates"], batched text queries) resolved these codes;
+# a 3-id FactSet_Fundamentals verification call (NVDA-US/AVGO-US/COHR-US) confirmed all six
+# return real, non-null values at QTR periodicity. See docs/portal/mcp_schemas.md for the
+# full discovery results and the raw verification-row shape.
+#
+# fcf_margin has NO dedicated FF_ code -- FactSet_Metrics' "free cash flow margin" query
+# top match was FF_FREE_CF (Free Cash Flow, a dollar amount, not a margin/ratio); no
+# FCF-margin-specific metric ranked in the top 10 for either "free cash flow margin" or
+# "free cash flow". It is DERIVED downstream (not pulled) as FF_FREE_CF / FF_SALES --
+# FF_SALES is not in this dict (it belongs to snapshot.py's own consensus SALES pull /
+# ingest_metrics.py's actuals, not a Fundamentals code fetched here); whatever consumes
+# fcf_margin must divide the raw FF_FREE_CF row by a SALES actual it sources itself.
+FUNDAMENTALS_METRICS: dict[str, str] = {
+    "net_debt": "FF_NET_DEBT",
+    "total_debt": "FF_DEBT",
+    "cash": "FF_CASH_GENERIC",
+    "gross_margin": "FF_GROSS_MGN",
+    "operating_margin": "FF_OPER_MGN",
+    "fcf": "FF_FREE_CF",   # fcf_margin = fcf / sales, derived downstream -- see note above
+}
 
 FUNDAMENTALS_PERIODICITY = "QTR"   # tool's own mandatory fallback ladder: QTR -> SEMI -> ANN
 FUNDAMENTALS_FALLBACK = ("QTR", "SEMI", "ANN")
