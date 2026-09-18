@@ -36,6 +36,7 @@ MODEL = "claude-sonnet-4-6"          # matches etfflows/newsdigest transport con
 PRICE_BATCH = 100
 MARKET_VALUE_BATCH = 25
 CONSENSUS_BATCH = 100                # consensus_rolling ids cap is 3000; 100 per the brief
+FUNDAMENTALS_BATCH = 250             # FactSet_Fundamentals' own documented max ids/call
 
 # ── Timeouts ───────────────────────────────────────────────────────────────
 PRICE_TIMEOUT = 180
@@ -71,7 +72,7 @@ WEEKLY_RELATIVE_FISCAL_START = 4
 WEEKLY_RELATIVE_FISCAL_END = 5
 
 __all__ = [
-    "MODEL", "PRICE_BATCH", "MARKET_VALUE_BATCH", "CONSENSUS_BATCH",
+    "MODEL", "PRICE_BATCH", "MARKET_VALUE_BATCH", "CONSENSUS_BATCH", "FUNDAMENTALS_BATCH",
     "PRICE_TIMEOUT", "MARKET_VALUE_TIMEOUT", "CONSENSUS_TIMEOUT",
     "FUNDAMENTALS_TIMEOUT", "METRICS_PROBE_TIMEOUT", "RETRY_WAIT_SECONDS",
     "CONSENSUS_METRICS", "RELATIVE_FISCAL_START", "RELATIVE_FISCAL_END", "PERIODICITY",

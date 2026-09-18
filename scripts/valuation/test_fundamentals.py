@@ -3,13 +3,45 @@
 """
 from __future__ import annotations
 
+import json
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "chunking"))
+import ingest_metrics  # noqa: E402  (worktree copy first, same trick as snapshot.py)
 import fundamentals as F  # noqa: E402
+import valuation.snapshot as vs  # noqa: E402  (fundamentals.py's build_universe/pid live here)
 
 FAILURES = []
+
+_WATCHLIST_YAML = """
+tier_1_bctk:
+  - ticker: FOO
+    themes: []
+tier_2_active_candidates:
+  - ticker: BAR
+    themes: []
+"""
+
+_IDENTITY_YAML = """
+FOO:
+  name: "Foo Corporation"
+  factset_id: "FOO-XX"
+BAR:
+  name: "Bar Inc"
+"""
+
+
+def _fixture_repo(td: Path) -> Path:
+    (td / "config").mkdir(parents=True, exist_ok=True)
+    (td / "config" / "watchlist.yaml").write_text(_WATCHLIST_YAML)
+    (td / "config" / "ticker_identity.yaml").write_text(_IDENTITY_YAML)
+    (td / "notes").mkdir(exist_ok=True)
+    return td
 
 
 def check(name, cond, detail=""):
@@ -202,6 +234,198 @@ def test_compute_fcf_margin_rows_catches_a_real_period_mismatch_with_real_field_
          margins[0]["quality"] == "fail:period_mismatch", margins[0])
 
 
+# ─────────────────────── fetch_fundamentals_group (RIS5 A3 fix 5) ──────────────────
+
+def test_fetch_fundamentals_group_batches_and_normalizes():
+    pairs = [(f"T{i}", f"T{i}-US") for i in range(3)]
+
+    def runner(fids, codes, periodicity):
+        return [{"requestId": f, "metric": "FF_NET_DEBT", "value": 10.0,
+                "fiscalEndDate": "2026-07-31", "reportDate": "2026-07-26",
+                "currency": "USD"} for f in fids], None
+
+    rows, errs = F.fetch_fundamentals_group(pairs, ["FF_NET_DEBT"], {"FF_NET_DEBT": "net_debt"},
+                                            "QTR", runner)
+    check("3 rows, one per ticker", len(rows) == 3, rows)
+    check("labeled net_debt", all(r["metric"] == "net_debt" for r in rows), rows)
+    check("no errors", errs == [])
+
+
+def test_fetch_fundamentals_group_retries_408_once_then_succeeds():
+    calls = []
+
+    def runner(fids, codes, periodicity):
+        calls.append(1)
+        if len(calls) == 1:
+            return [], "tool_result unusable (http_status=408): Client error '408 Request Timeout'"
+        return [{"requestId": fids[0], "metric": "FF_SALES", "value": 5.0,
+                "fiscalEndDate": "2026-07-31", "currency": "USD"}], None
+
+    sleeps = []
+    rows, errs = F.fetch_fundamentals_group([("FOO", "FOO-US")], ["FF_SALES"], {"FF_SALES": "sales"},
+                                            "LTM", runner, retry_wait=20, sleep=sleeps.append)
+    check("exactly one retry (2 calls total)", len(calls) == 2, calls)
+    check("slept once", sleeps == [20], sleeps)
+    check("succeeded on retry", len(rows) == 1 and rows[0]["value"] == 5.0, rows)
+    check("no error recorded", errs == [])
+
+
+def test_fetch_fundamentals_group_non_retryable_error_marks_batch_failed():
+    def runner(fids, codes, periodicity):
+        return [], "argument drift in ids: placed {...}"
+
+    rows, errs = F.fetch_fundamentals_group([("FOO", "FOO-US")], ["FF_SALES"], {"FF_SALES": "sales"},
+                                            "LTM", runner, retry_wait=0, sleep=lambda s: None)
+    check("batch marked failed, no retry for non-retryable error", len(errs) == 1, errs)
+    check("no rows", rows == [])
+
+
+def test_fetch_fundamentals_group_session_limit_propagates():
+    def runner(fids, codes, periodicity):
+        raise vs.SessionLimitError("429 hit")
+
+    threw = False
+    try:
+        F.fetch_fundamentals_group([("FOO", "FOO-US")], ["FF_SALES"], {"FF_SALES": "sales"},
+                                   "LTM", runner, retry_wait=0, sleep=lambda s: None)
+    except vs.SessionLimitError:
+        threw = True
+    check("SessionLimitError propagates uncaught", threw)
+
+
+# ─────────────────────── main() CLI orchestration (RIS5 A3 fix 5) ──────────────────
+
+def test_dry_run_prints_plan_and_never_calls_the_runner():
+    with tempfile.TemporaryDirectory() as tdname:
+        td = _fixture_repo(Path(tdname))
+        orig_repo = ingest_metrics.REPO
+        ingest_metrics.REPO = td
+        orig_pid_repo = vs.pid.REPO
+        vs.pid.REPO = td
+
+        def boom():
+            raise AssertionError("dry-run must never build a real runner")
+        orig_make_runner = F.make_fundamentals_runner
+        F.make_fundamentals_runner = boom
+        try:
+            rc = F.main(["--dry-run", "--date", "2026-09-17"])
+            check("dry-run returns 0", rc == 0, rc)
+        finally:
+            ingest_metrics.REPO = orig_repo
+            vs.pid.REPO = orig_pid_repo
+            F.make_fundamentals_runner = orig_make_runner
+
+
+def _fake_fundamentals_runner_factory():
+    """One row per (id, code) -- enough for normalize_fundamentals_rows +
+    compute_fcf_margin_rows to produce a real, non-trivial fundamentals file."""
+    def make_runner():
+        def run(fids, codes, periodicity):
+            rows = []
+            for fid in fids:
+                for code in codes:
+                    value = 200.0 if code == "FF_SALES" else 40.0
+                    rows.append({"requestId": fid, "metric": code, "value": value,
+                                "fiscalEndDate": "2026-07-31", "reportDate": "2026-07-26",
+                                "currency": "USD"})
+            return rows, None
+        return run
+    return make_runner
+
+
+def test_main_full_pull_writes_both_groups_plus_derived_margin_idempotently():
+    with tempfile.TemporaryDirectory() as tdname:
+        td = _fixture_repo(Path(tdname))
+        state_dir = Path(tdname) / "state" / "valuation"
+        orig_repo = ingest_metrics.REPO
+        ingest_metrics.REPO = td
+        orig_pid_repo = vs.pid.REPO
+        vs.pid.REPO = td
+        orig_make_runner = F.make_fundamentals_runner
+        F.make_fundamentals_runner = _fake_fundamentals_runner_factory()
+        try:
+            rc = F.main(["--state-dir", str(state_dir), "--date", "2026-09-17"])
+            check("main() returns 0", rc == 0, rc)
+            out_path = state_dir / "fundamentals_2026-09-17.jsonl"
+            check("output file written", out_path.exists())
+            rows = [json.loads(l) for l in out_path.read_text().splitlines()]
+            metrics_seen = {r["metric"] for r in rows}
+            check("balance-sheet metrics present",
+                 {"net_debt", "total_debt", "cash"} <= metrics_seen, metrics_seen)
+            check("flow metrics present",
+                 {"gross_margin", "operating_margin", "fcf", "sales"} <= metrics_seen, metrics_seen)
+            check("derived fcf_margin present", "fcf_margin" in metrics_seen, metrics_seen)
+            margin_rows = [r for r in rows if r["metric"] == "fcf_margin"]
+            check("fcf_margin = 40/200*100 = 20.0 for each ticker",
+                 all(abs(r["value"] - 20.0) < 1e-9 for r in margin_rows), margin_rows)
+            check("periodicities correct",
+                 all(r["periodicity"] == "QTR" for r in rows if r["metric"] in ("net_debt", "total_debt", "cash"))
+                 and all(r["periodicity"] == "LTM" for r in rows if r["metric"] in ("gross_margin", "fcf", "sales")))
+
+            first_text = out_path.read_text()
+            rc2 = F.main(["--state-dir", str(state_dir), "--date", "2026-09-17"])
+            second_text = out_path.read_text()
+            check("re-run returns 0", rc2 == 0)
+            check("idempotent re-run produces byte-identical output", first_text == second_text)
+        finally:
+            ingest_metrics.REPO = orig_repo
+            vs.pid.REPO = orig_pid_repo
+            F.make_fundamentals_runner = orig_make_runner
+
+
+def test_main_out_flag_overrides_state_dir_naming():
+    with tempfile.TemporaryDirectory() as tdname:
+        td = _fixture_repo(Path(tdname))
+        out_file = Path(tdname) / "custom" / "wherever.jsonl"
+        orig_repo = ingest_metrics.REPO
+        ingest_metrics.REPO = td
+        orig_pid_repo = vs.pid.REPO
+        vs.pid.REPO = td
+        orig_make_runner = F.make_fundamentals_runner
+        F.make_fundamentals_runner = _fake_fundamentals_runner_factory()
+        try:
+            rc = F.main(["--out", str(out_file), "--date", "2026-09-17"])
+            check("main() returns 0", rc == 0, rc)
+            check("--out path used verbatim, not state-dir/date naming", out_file.exists())
+        finally:
+            ingest_metrics.REPO = orig_repo
+            vs.pid.REPO = orig_pid_repo
+            F.make_fundamentals_runner = orig_make_runner
+
+
+def test_main_aborts_on_session_limit_writes_nothing():
+    with tempfile.TemporaryDirectory() as tdname:
+        td = _fixture_repo(Path(tdname))
+        state_dir = Path(tdname) / "state" / "valuation"
+        orig_repo = ingest_metrics.REPO
+        ingest_metrics.REPO = td
+        orig_pid_repo = vs.pid.REPO
+        vs.pid.REPO = td
+
+        def make_runner():
+            def run(fids, codes, periodicity):
+                raise vs.SessionLimitError("resets in 4h")
+            return run
+        orig_make_runner = F.make_fundamentals_runner
+        F.make_fundamentals_runner = make_runner
+        try:
+            rc = F.main(["--state-dir", str(state_dir), "--date", "2026-09-17"])
+            check("main() returns 1 on session limit", rc == 1, rc)
+            check("nothing written", not (state_dir / "fundamentals_2026-09-17.jsonl").exists())
+        finally:
+            ingest_metrics.REPO = orig_repo
+            vs.pid.REPO = orig_pid_repo
+            F.make_fundamentals_runner = orig_make_runner
+
+
+def test_module_is_importable_as_a_script():
+    """Sanity: the module runs standalone (python3 scripts/valuation/fundamentals.py
+    --help) without import errors, mirroring how the cron will actually invoke it."""
+    r = subprocess.run([sys.executable, str(Path(__file__).resolve().parents[0] / "fundamentals.py"),
+                       "--help"], capture_output=True, text=True, timeout=30)
+    check("fundamentals.py --help exits 0", r.returncode == 0, r.stderr[-300:])
+
+
 def test_main_refuses_without_confirmed_metrics():
     orig = dict(F.FUNDAMENTALS_METRICS)
     F.FUNDAMENTALS_METRICS.clear()
@@ -226,6 +450,15 @@ if __name__ == "__main__":
     test_compute_fcf_margin_rows_propagates_missing_quality_from_either_leg()
     test_normalize_fundamentals_rows_uses_fiscalEndDate_not_fiscalPeriodEnd()
     test_compute_fcf_margin_rows_catches_a_real_period_mismatch_with_real_field_names()
+    test_fetch_fundamentals_group_batches_and_normalizes()
+    test_fetch_fundamentals_group_retries_408_once_then_succeeds()
+    test_fetch_fundamentals_group_non_retryable_error_marks_batch_failed()
+    test_fetch_fundamentals_group_session_limit_propagates()
+    test_dry_run_prints_plan_and_never_calls_the_runner()
+    test_main_full_pull_writes_both_groups_plus_derived_margin_idempotently()
+    test_main_out_flag_overrides_state_dir_naming()
+    test_main_aborts_on_session_limit_writes_nothing()
+    test_module_is_importable_as_a_script()
     test_main_refuses_without_confirmed_metrics()
     if FAILURES:
         print(f"\n{len(FAILURES)} FAILURES: {FAILURES}")

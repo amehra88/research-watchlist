@@ -6,6 +6,24 @@ operating margin, FCF margin for the same valuation universe as snapshot.py. Wri
 state/valuation/fundamentals_<date>.jsonl (gitignored, dated raw file — same convention
 as prices_<date>.jsonl/consensus_<date>.jsonl).
 
+ORCHESTRATION (RIS5 A3 fix 5): `main()` runs the full weekly pull end to end -- universe
+via `valuation.snapshot.build_universe()` (same T1/T2/T3-minus-.pvt-and-unmapped universe
+as the daily snapshot), TWO `FactSet_Fundamentals` calls (`BALANCE_SHEET_METRICS` at QTR,
+`FLOW_METRICS` at LTM -- see the periodicity note below for why two, not one),
+`≤FUNDAMENTALS_BATCH` (250) ids per call with a 408/5xx retried once via the same
+`_retry_once`/argument-drift machinery `snapshot.py` uses, a session-limit/429 abort that
+writes nothing, `compute_fcf_margin_rows()` for the derived margin, then an idempotent
+`write_jsonl()`. Every live pull before fix 5 was run via a throwaway `/tmp` driver
+script that duplicated this logic ad hoc; this is that logic, committed and tested.
+
+CLI:
+    python3 scripts/valuation/fundamentals.py --dry-run          # print the planned
+                                                                  # calls, no claude -p,
+                                                                  # nothing written
+    python3 scripts/valuation/fundamentals.py                    # live weekly pull
+    python3 scripts/valuation/fundamentals.py --state-dir /tmp/x # override output dir
+    python3 scripts/valuation/fundamentals.py --out /tmp/f.jsonl # override output path
+
 PERIODICITY = LTM for FLOW_METRICS, still QTR for BALANCE_SHEET_METRICS (RIS5 A3 fix 4,
 coordinator review). A5's first live run showed derived FCF margins ~4x understated
 (NVDA 3.8%, AVGO 10%) and 20 names skipped as cash-negative: FF_FREE_CF was pulled at
@@ -52,8 +70,11 @@ net-debt/cash range) for this endpoint.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
+import time
+from datetime import date
 from pathlib import Path
 
 REPO = Path("/root/research-watchlist")
@@ -62,8 +83,14 @@ sys.path.insert(0, str(_SCRIPTS_DIR))
 sys.path.insert(0, str(_SCRIPTS_DIR / "lib"))
 import claude_p                                                      # noqa: E402
 from etfflows.factset_flows import _tool_result_blocks, resolve_payload, rows_of  # noqa: E402
-from valuation.snapshot import argument_drift, _run_and_parse         # noqa: E402
-from valuation import MODEL, FUNDAMENTALS_TIMEOUT, METRICS_PROBE_TIMEOUT  # noqa: E402
+from valuation.snapshot import (                                     # noqa: E402
+    argument_drift, _run_and_parse, _retry_once, id_chunks, build_universe,
+    write_jsonl, SessionLimitError,
+)
+from valuation import (                                              # noqa: E402
+    MODEL, FUNDAMENTALS_TIMEOUT, METRICS_PROBE_TIMEOUT, FUNDAMENTALS_BATCH,
+    RETRY_WAIT_SECONDS,
+)
 
 ToolUnavailableError = claude_p.ToolUnavailableError
 
@@ -278,13 +305,104 @@ def compute_fcf_margin_rows(rows: list[dict]) -> list[dict]:
     return out
 
 
+# ---------------------------------------------------------------------------
+# Orchestration (RIS5 A3 fix 5): the weekly full-universe pull, exactly as the ad-hoc
+# live drivers did it (fix 4's /tmp/a3_fundamentals_ltm.py + a3_fundamentals_balance.py)
+# but now a committed, tested CLI instead of a throwaway script.
+# ---------------------------------------------------------------------------
+def fetch_fundamentals_group(pairs: list[tuple[str, str]], codes: list[str],
+                             code_to_label: dict, periodicity: str, runner, log=print,
+                             retry_wait: int = RETRY_WAIT_SECONDS, sleep=time.sleep,
+                             batch: int = FUNDAMENTALS_BATCH) -> tuple[list[dict], list[dict]]:
+    """-> (normalized_rows, batch_errors). Same shape/conventions as snapshot.py's
+    fetch_prices/fetch_market_value/fetch_consensus: batches ids at `batch` (<=250, the
+    tool's own documented max), retries a 408/5xx ONCE per batch via `_retry_once`
+    (never a second retry), and lets SessionLimitError propagate uncaught -- the caller
+    (main()) aborts the whole run on it rather than logging-and-continuing."""
+    fid_to_ticker = {fid: tk for tk, fid in pairs}
+    out: list[dict] = []
+    errors: list[dict] = []
+    for chunk in id_chunks(pairs, batch):
+        fids = [fid for _, fid in chunk]
+        rows, err = _retry_once(lambda: runner(fids, codes, periodicity), fids,
+                                f"fundamentals[{periodicity}]", log, retry_wait, sleep)
+        if err:
+            log(f"FAIL fundamentals[{periodicity}] {fids[0]}..{fids[-1]}: {err}")
+            errors.append({"ids": fids, "periodicity": periodicity, "error": err})
+            continue
+        out.extend(normalize_fundamentals_rows(rows, fid_to_ticker, code_to_label, periodicity))
+        log(f"ok fundamentals[{periodicity}] {len(fids)}ids -> {len(rows)} rows")
+    return out, errors
+
+
+def _dry_run_plan(pairs: list[tuple[str, str]], log=print) -> None:
+    """Prints the calls that WOULD be made -- no claude -p spawned, nothing written."""
+    for group_name, metrics, periodicity in (
+        ("balance_sheet", BALANCE_SHEET_METRICS, BALANCE_SHEET_PERIODICITY),
+        ("flow", FLOW_METRICS, FLOW_PERIODICITY),
+    ):
+        codes = list(metrics.values())
+        chunks = id_chunks(pairs, FUNDAMENTALS_BATCH)
+        log(f"  [{group_name}] periodicity={periodicity} ids={len(pairs)} "
+           f"metrics={codes} batches={len(chunks)} (<= {FUNDAMENTALS_BATCH} ids/batch)")
+
+
 def main(argv=None) -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--dry-run", action="store_true",
+                    help="print the planned calls, spawn no claude -p, write nothing")
+    ap.add_argument("--state-dir", default=None, help="override state/valuation/ (tests/smoke)")
+    ap.add_argument("--out", default=None, help="exact output file path (overrides --state-dir/date naming)")
+    ap.add_argument("--date", default=None, help="override as_of date (YYYY-MM-DD)")
+    args = ap.parse_args(argv)
+
     if not FUNDAMENTALS_METRICS:
         print("FUNDAMENTALS_METRICS is empty -- run the FactSet_Metrics probe and hardcode "
              "the confirmed FF_ codes (see module docstring / docs/portal/mcp_schemas.md) "
              "before this CLI can pull live data.", file=sys.stderr)
         return 1
-    print("fundamentals.py: metrics confirmed:", FUNDAMENTALS_METRICS)
+
+    as_of = args.date or date.today().isoformat()
+    state_dir = Path(args.state_dir) if args.state_dir else STATE_DIR
+    out_path = Path(args.out) if args.out else state_dir / f"fundamentals_{as_of}.jsonl"
+
+    pairs, skipped = build_universe()
+    print(f"universe: {len(pairs)} mapped, {len(skipped)} skipped")
+    for s in skipped:
+        print(f"  skip {s['id']}: {s['reason']}")
+
+    if args.dry_run:
+        print("DRY RUN -- would call FactSet_Fundamentals as follows (no claude -p spawned):")
+        _dry_run_plan(pairs)
+        return 0
+
+    bs_codes = list(BALANCE_SHEET_METRICS.values())
+    bs_code_to_label = {v: k for k, v in BALANCE_SHEET_METRICS.items()}
+    flow_codes = list(FLOW_METRICS.values())
+    flow_code_to_label = {v: k for k, v in FLOW_METRICS.items()}
+    runner = make_fundamentals_runner()
+
+    try:
+        bs_rows, bs_errs = fetch_fundamentals_group(
+            pairs, bs_codes, bs_code_to_label, BALANCE_SHEET_PERIODICITY, runner)
+        flow_rows, flow_errs = fetch_fundamentals_group(
+            pairs, flow_codes, flow_code_to_label, FLOW_PERIODICITY, runner)
+    except SessionLimitError as e:
+        print(f"ABORTED (session limit 429): {e} -- remaining batches skipped, "
+             f"nothing written to state/valuation/", file=sys.stderr)
+        return 1
+
+    margin_rows = compute_fcf_margin_rows(bs_rows + flow_rows)
+    all_rows = bs_rows + flow_rows + margin_rows
+
+    ok = sum(1 for r in all_rows if r["quality"] == "ok")
+    print(f"fundamentals: {len(all_rows)} rows ({len(bs_rows)} balance-sheet + "
+         f"{len(flow_rows)} flow + {len(margin_rows)} derived fcf_margin), {ok} ok, "
+         f"{len(all_rows) - ok} quality-failed, "
+         f"{len(bs_errs) + len(flow_errs)} batch errors")
+
+    write_jsonl(all_rows, out_path)
+    print(f"written {out_path}")
     return 0
 
 

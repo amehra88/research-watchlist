@@ -33,18 +33,19 @@
 # RIS5 A3: weekly FactSet Fundamentals (net debt/total debt/cash at QTR;
 # gross/operating margin + FCF + sales + derived FCF margin at LTM, RIS5 A3 fix 4).
 # Sunday, after the Store B weekly refresh (08:00) so both FactSet-heavy jobs never
-# overlap. NOT ready to enable yet -- STILL a documented placeholder, but the reason
-# changed: FUNDAMENTALS_METRICS/BALANCE_SHEET_METRICS/FLOW_METRICS are all confirmed
-# live now (see docs/portal/mcp_schemas.md), but `fundamentals.py`'s own `main()` has
-# never implemented the actual pull -- it only validates the metrics dict is non-empty
-# and exits. Every live fundamentals pull to date (including fix 4's own LTM/QTR split)
-# has been run via an ad-hoc driver script, not this CLI. A correct run now needs TWO
+# overlap. `fundamentals.py`'s `main()` now fully orchestrates the pull (RIS5 A3
+# fix 5): builds the universe from identity, makes the TWO required
 # FactSet_Fundamentals calls (BALANCE_SHEET_METRICS at QTR, FLOW_METRICS at LTM -- a
 # single LTM call against the balance-sheet metrics returns 0% coverage, discovered
-# live during fix 4) plus compute_fcf_margin_rows() to derive fcf_margin and a merge of
-# both result sets before writing the dated file. Enabling this line as-is would run
-# weekly and do nothing useful. Building that orchestration into main() is future work,
-# out of fix 4's scope.
+# live during fix 4, hence the split), retries a 408/5xx once per batch, aborts
+# cleanly on a session-limit/429 without writing a partial file, derives fcf_margin
+# from the same row via compute_fcf_margin_rows(), and writes
+# state/valuation/fundamentals_<date>.jsonl idempotently. `--dry-run` (see
+# `python3 scripts/valuation/fundamentals.py --dry-run`) prints the planned calls
+# without spawning claude -p or writing anything, for a quick sanity check before
+# actually installing this line. NOT YET installed (still "paste into crontab -e
+# when ready", same as the rest of this file) -- code-complete and tested, an
+# operator decision away from going live, not blocked on any remaining gap.
 30 8 * * 0 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh valuation_fundamentals python3 scripts/valuation/fundamentals.py >> logs/valuation_fundamentals.log 2>&1
 
 # RIS5 A3: daily archive of the ws ETF-holdings-change report (peer-ETF trim/exit
