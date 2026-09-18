@@ -75,7 +75,7 @@
 # history) — state/etf_trades/<date>.json (gitignored). Independent of build_portal
 # (see etf_trades_archive.py's module docstring for why); run any time after ws's own
 # daily 07:30 scrape has produced today's report.
-0 8 * * * cd /root/research-watchlist && /root/bin/alert_on_failure.sh etf_trades_archive python3 scripts/portal/etf_trades_archive.py >> logs/etf_trades_archive.log 2>&1
+50 7 * * * cd /root/research-watchlist && /root/bin/alert_on_failure.sh etf_trades_archive python3 scripts/portal/etf_trades_archive.py >> logs/etf_trades_archive.log 2>&1
 
 # RIS5 A3: peer-ETF trim clusters -> challenge evidence on competitive-advantage
 # assumptions (reads the archive above; writes state/thesis/evidence_log.jsonl +
