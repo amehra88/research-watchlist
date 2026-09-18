@@ -483,6 +483,147 @@ anything failed (0 if clean).
   (`data/news/<ticker>.json` or similar) was flagged as a slice-3 candidate
   but wasn't built in slice 3 either — still open.
 
+## Data foundations for ideas (RIS5 Part A)
+
+RIS5 ("Ideas engine + expectations-based valuation",
+`docs/superpowers/specs/2026-09-17-RIS5-plan.md`, amendments v1.1/v1.2) builds
+a scored, directional Ideas engine (Part B) on top of a set of foundational
+data producers that did not exist before (Part A, this section). None of
+these feed the portal bundle directly yet except `theme_share.json`
+(`data/theme_share.json`, copied read-only by the `theme_share` build stage)
+and `valuation.json` (`data/valuation.json`, via `state_bundles.valuation_bundle()` —
+see "What the bundle contains" above); the rest are read by Part B (not yet
+built) and by `expectations.py` itself. This section is the reference for
+what each producer writes, how often, in what units, and what a session
+needs to know before touching them by hand.
+
+**Prerequisites — read before running any of A2/A3/A5 live, or before Part B starts:**
+- **PR #6** (`topics-observed-silence`, withholds 61 false stage-1/2s from
+  `state/topics/stages.json`) **must be merged before Part B (B1) runs live.**
+  A5's `expectations.py` already reads `stages.json` for the durability term
+  and treats `gated`/`stage4_not_assertable`/`unheard` as *unobserved, never
+  0* — but B1's street-attention factor leans on the same file more heavily
+  and inherits the pre-merge false-positive risk until PR #6 lands.
+- **FX for 15 ADR/foreign names is a follow-up, not done.** A3's snapshot
+  carries `price_currency`/`mcap_currency` and skips a ticker's `mcap` (with
+  reason `currency_mismatch` or `mcap_scale`) rather than silently mixing
+  units, but there is no FX conversion yet — those 15 tickers (SONY, TSM,
+  UMC, ASX, TCEHY and others) have `mcap: null` in `latest.json` until this
+  is built.
+- **`priced_in` values are provisional until ≥60 daily snapshots accrue.**
+  The z-scores behind the priced-in valuation component (gap z, PEG-vs-history,
+  PEG-vs-peers) need a real distribution to be meaningful; on day 1–2 of
+  snapshots they are effectively unconstrained. Cards flag thin history
+  (`insufficient history: ...`) rather than hiding the number, but treat
+  `priced_in` as a placeholder, not a signal, until that count is reached.
+
+### Producers
+
+| Producer | Writes | Cadence | Tracked? | Units / shape |
+|---|---|---|---|---|
+| `scripts/thesis/score_reads.py` | `state/thesis/score_reads.jsonl` | backfill once, then incremental (see cron below) | tracked | one row per parsed `Recommendation:` sentence: `{ticker, quarter, note_id, axis, verb, value, applied}` — `value` is the raw 1–5 score/target the verb refers to |
+| `scripts/thesis/structure_reads.py` | `state/thesis/reads.jsonl` | backfill once, then per-note inside the 02:30 reviewer hook (see below — **no separate cron**) | tracked | one row per `{note, axis}`: `{axis, score 1-5\|null, direction: up\|flat\|down, magnitude: 0-2, reason ≤160 chars, quote}` |
+| `scripts/valuation/snapshot.py` | `state/valuation/prices_<date>.jsonl`, `consensus_<date>.jsonl` daily; `fundamentals_<date>.jsonl` via `fundamentals.py` weekly | daily (weekdays) + weekly (Sunday, FY4–5 merge) | **gitignored** (raw daily/dated files) | prices in the ticker's trading currency; consensus SALES/EPS/EBITDA/FCF in **FactSet MILLIONS** (see `docs/portal/mcp_schemas.md`) for FY1–FY3 daily, FY4–FY5 weekly with analyst counts |
+| `scripts/valuation/snapshot.py` (merge) | `state/valuation/latest.json` | same run | tracked | small, nested-by-period rollup of the above — the file A5/B1 actually read, not the raw dated jsonl |
+| `scripts/valuation/fundamentals.py` | `state/valuation/fundamentals_<date>.jsonl` | weekly (Sunday) | **gitignored** | net debt/total debt/cash (QTR), gross/operating margin + FCF + sales + derived FCF margin (LTM) — all FactSet MILLIONS except the margin percentages/fractions |
+| `scripts/valuation/expectations.py` | `state/valuation/expectations_<date>.jsonl` + `state/valuation/expectations_latest.json` | daily, after the snapshot | dated file **gitignored**, `_latest.json` tracked | one card per ticker: implied/supported growth, gap, multiple ladder (PEG / EV-EBITDA / EV-FCF / EV-Sales, each growth-adjusted), `terminal_share_of_ev`, flags — percentages as fractions (0.15 = 15%) except where a field name says `_pp` (percentage points) |
+| `scripts/portal/etf_trades_archive.py` | `state/etf_trades/<date>.json` | daily, after the ws 07:30 scrape | **gitignored** | archived snapshot of the ws ETF-holdings-change report; feeds `etf_evidence.py`'s 14-day peer-trim clustering, not the portal bundle |
+| `scripts/thesis/etf_evidence.py` | appends to `state/thesis/evidence_log.jsonl` (existing file, not new) | daily, after the archive above | tracked (the log itself, unchanged path) | `challenge`/`confirm` rows on competitive-advantage assumptions, same shape as `insider_pull.py`'s rows |
+| `/root/is` (separate repo, `insider/conviction.py`) | `state/insiders/conviction_<date>.jsonl` | weekly (Sunday, same run as `insider_pull.py`) | lives in the **sibling `/root/is` repo**, not this one — not tracked/gitignored here at all | conviction scores for sells that cleared the conviction bar: `{ticker, date, direction, magnitude, factors}` |
+| `scripts/portal/theme_share.py` | `state/topics/theme_share.json` | Saturday, in the topics chain, after `topic_map.py` | tracked | `{theme: {quarter: {n, tickers: {ticker: {share, delta, rows}}}}}` — `share`/`delta` are fractions (rows/n), `delta` is `null` when there's no real prior-quarter baseline (see `theme_share.py`'s own docstring for the two null cases) |
+| `scripts/thesis/theme_polarity.py` / `config/theme_polarity.yaml` | (config, hand-edited; `theme_polarity.py` is the consumer/validator) | n/a — edited when a new theme is accepted | tracked | `{slug: -1\|0\|+1}` per watchlist theme, plus a `competition_slugs:` list — see the file's own header for the closed decision procedure |
+| `config/valuation.yaml` | (config) | n/a — edited to tune the model | tracked | discount rate, terminal growth, sensitivity deltas, bisection bounds, sector-family margin defaults, per-ticker overrides |
+| `docs/portal/mcp_schemas.md` | (docs) | updated when a new FactSet field/shape is observed | tracked | the actual field names/shapes A3 found live (e.g. `currentMarketValue` for market cap, `estimateCount`/`estimateDate`, the `FF_*` fundamentals codes) — **the FactSet MILLIONS convention lives here**: SALES/EBITDA/FCF/net-debt/cash figures are all in millions of the reporting currency; margins are already percentages |
+
+### Judgment items (for the operator, and for B1)
+
+Recorded during A5's live build (`task-5-report.md`), not resolved by code —
+these are readings a human (or Part B's scoring) needs to interpret, not bugs:
+
+- **NVDA/AVGO read "cheap" on the gap** (implied growth well below supported
+  growth) largely because **consensus growth LEVELS are already very high**
+  for both names — the gap is measuring a level effect, not necessarily
+  mispricing. Do not read a negative `gap` on these two as a straightforward
+  "buy the dip" signal without checking the underlying growth levels on the
+  card.
+- **Low-margin names dominate the positive `gap` tail.** A high implied
+  growth number on a low-margin name is partly a statement about the margin
+  path assumption (a thin/negative FCF margin start makes the reverse-DCF
+  solve for higher growth to hit the same EV), not purely a growth read.
+  There is no decomposition of "growth vs. margin" in the gap yet.
+- **TSLA and SPCX are `operator_handled`**, not scored by the engine
+  (amendment v1.2, "hard names"): both are marked `long_duration` and the
+  card shows only what is priced (implied growth, terminal share, available
+  multiples) — no supported-growth leg, no gap, no `valuation_extreme`. These
+  two are explicitly the operator's call, by design, not a gap to fill.
+
+### Running each producer by hand
+
+The `pg`-backed reads (Store B credibility in `expectations.py`, and any
+`claude -p` call) need the same environment sourcing the cron lines use —
+**without it, a pg-backed read silently falls back to a degraded/absent
+source rather than failing loud**, so always source the env first:
+
+```bash
+cd /root/research-watchlist
+set -a && . /root/podcasts/.env && set +a
+```
+
+Then, in the order a full manual refresh would use:
+
+```bash
+# A1 — score-proposal rows (idempotent; --rebuild only for a full regenerate)
+python3 scripts/thesis/score_reads.py --backfill
+
+# A2 — structured quarterly reads (claude -p; run only inside the quota window —
+# never between 02:00-08:30 ET or overlapping 12:45/15:00)
+python3 scripts/thesis/structure_reads.py --backfill --since 2026-09-01
+python3 scripts/thesis/structure_reads.py --backfill --ticker AMAT   # one ticker
+
+# A3 — daily valuation snapshot (mcp-lean claude -p; same quota-window rule)
+python3 scripts/valuation/snapshot.py               # prices + FY1-3 consensus
+python3 scripts/valuation/snapshot.py --weekly       # FY4-5 consensus (Sunday only)
+python3 scripts/valuation/fundamentals.py            # weekly fundamentals pull
+python3 scripts/valuation/fundamentals.py --dry-run  # prints planned calls, no claude -p, no writes
+
+# A3 — ETF archive + challenge evidence (no claude -p; etf_evidence.py needs the env above)
+python3 scripts/portal/etf_trades_archive.py
+python3 scripts/thesis/etf_evidence.py
+
+# A4 — theme share (pure Python, no env needed)
+python3 scripts/portal/theme_share.py
+
+# A5 — expectations-gap valuation (pure Python once A3's snapshot exists; no claude -p)
+python3 scripts/valuation/expectations.py
+python3 scripts/valuation/expectations.py --print-tickers NVDA,AVGO,COHR   # sanity-read specific cards
+```
+
+`snapshot.py`/`fundamentals.py`/`expectations.py` all derive `REPO` from
+`__file__` (not hardcoded), so every one of these reproduces the *current
+checkout's* own `state/`/`notes/`/`config/` when run from a worktree — the
+same fix this task applied to `scripts/portal/__init__.py` (see "Code fix"
+below); `structure_reads.py`/`score_reads.py` still read the hardcoded
+production vault path deliberately (they are meant to run against the one
+real vault, not a worktree's copy — see their own module docstrings).
+
+### Cron lines
+
+See `docs/portal/cron.txt` for the full staged crontab (paste into
+`crontab -e` when ready — nothing in this section is installed yet beyond
+what's already live). Concurrency rule, restated: **never more than one
+`claude -p` job runs at a time on this box** (a 3.9 GB droplet — two
+concurrent subscription sessions have previously exhausted the quota and, in
+one incident, OOM'd). The valuation snapshot (04:45 ET weekdays) and every
+other RIS5 A3 line were placed to never overlap the 02:30 earnings reviewer,
+05:30 `etf_flows_fetch`, 06:45 news digest, 12:45 daily topics chain, or
+15:00 thesis match — see `cron.txt`'s own per-line comments for the specific
+adjacency evidence behind each slot (e.g. why 04:45 and not 05:45).
+Structured reads (A2) run inside the 02:30 reviewer's own process, right
+after each new note is written — there is no separate cron line for them,
+by design (one bounded `claude -p` call per new note, inside the slot that
+job already owns), though `structure_reads.py --since <date>` is available
+for a manual incremental catch-up.
+
 ## Slice roadmap
 
 - **Slice 2** — read-only static bundle: builder package + frontend +

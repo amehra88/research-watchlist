@@ -3,9 +3,32 @@
 # 19:20 ET (not 18:50): logs/news_digest.log postmarket "run done" times for
 # the 7 days before this was written (09-09..09-15) ranged 18:36-19:15:43
 # (latest: Mon 09-14); 19:20 clears that with margin. See docs/portal/README.md.
+#
+# CONCURRENCY RULE (RIS5 A6, applies to every `claude -p`-calling line staged
+# in this file): never more than one `claude -p` job runs at a time on this
+# box (a 3.9 GB droplet; two concurrent subscription sessions have already
+# caused a quota exhaustion incident, 2026-08-13, and a separate OOM). Every
+# slot below was chosen to leave clear margin against the crons already live
+# in `crontab -l`: the 02:30 earnings reviewer, 05:30 `etf_flows_fetch`
+# (~15 calls), the 06:45/18:30 news digest, the 12:45 weekday topics chain,
+# and the 15:00/15:45 thesis match/alerts. See each line's own comment below
+# for the specific adjacency evidence behind its slot.
 
 20 7 * * * cd /root/research-watchlist && /root/bin/alert_on_failure.sh portal_build python3 scripts/portal/build_portal.py >> logs/portal_build.log 2>&1
 20 19 * * 1-5 cd /root/research-watchlist && /root/bin/alert_on_failure.sh portal_build python3 scripts/portal/build_portal.py >> logs/portal_build.log 2>&1
+
+# RIS5 A2: structured quarterly reads (state/thesis/reads.jsonl) get NO separate
+# cron line here, deliberately. `scripts/thesis/structure_reads.py`'s
+# `process_notes([note_path])` is called directly from inside the ALREADY-
+# INSTALLED 02:30 ET earnings reviewer hook (`scripts/cron_earnings_reviewer.py`)
+# right after that job writes each new note -- one bounded `claude -p` call per
+# new note, inside the quota slot that job already owns, wrapped in try/except so
+# a structure_reads failure never aborts the reviewer itself. For a manual
+# incremental catch-up outside that hook (e.g. after a backlog of notes landed
+# from a manual PDF upload), run by hand:
+#     python3 scripts/thesis/structure_reads.py --backfill --since 2026-09-01
+# (quota window rules still apply -- see docs/portal/README.md's "Running each
+# producer by hand").
 
 # RIS5 A3: daily FactSet valuation snapshot (prices/market_value/consensus
 # SALES+EPS+EBITDA+FCF, amendment v1.2).
@@ -58,3 +81,41 @@
 # assumptions (reads the archive above; writes state/thesis/evidence_log.jsonl +
 # _thesis.md pressure, same pipeline as insider_pull.py). After the archive above.
 15 8 * * * cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh etf_evidence python3 scripts/thesis/etf_evidence.py >> logs/etf_evidence.log 2>&1
+
+# RIS5 A5: expectations-gap valuation (implied vs. supported growth, gap, multiple
+# ladder). Makes NO claude -p / FactSet calls itself (pure Python over the
+# snapshot's own output), so it does not compete for the concurrency rule's
+# "one claude -p job at a time" budget -- but its durability term reads Store B
+# credibility via pg, so it still needs the .env sourcing below. 05:20 ET
+# weekdays: 35 minutes after the 04:45 snapshot starts, inside the "~45 minutes
+# of margin before etf_flows_fetch starts" the task-3-report's fix-round-1 review
+# measured for that job's own worst-case call count (see the snapshot's comment
+# above), and still 10 minutes clear of etf_flows_fetch's 05:30 start -- fine
+# because this job never touches claude -p/FactSet, only reads a file + pg. If
+# state/valuation/latest.json is not yet fresh for today when this runs (snapshot
+# still mid-flight or failed), expectations.py reads whatever latest.json exists
+# on disk rather than failing -- see that module's own docstring for the
+# staleness-tolerance contract. Reads state/valuation/latest.json (written above),
+# config/valuation.yaml, config/theme_polarity.yaml, state/topics/stages.json,
+# state/thesis/reads.jsonl. Writes state/valuation/expectations_<date>.jsonl
+# (gitignored) + the tracked state/valuation/expectations_latest.json
+# build_portal.py's data/valuation.json stage reads. NOT YET installed, same as
+# the rest of this file.
+20 5 * * 1-5 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh valuation_expectations python3 scripts/valuation/expectations.py >> logs/valuation_expectations.log 2>&1
+
+# RIS5 A4 carry-forward: theme share-of-voice (per-ticker share of each theme's
+# exchanges/evidence per calendar quarter, plus the QoQ delta) — see
+# scripts/portal/theme_share.py's own docstring. Pure Python, no claude -p, no env
+# sourcing needed. Reads state/topics/topic_map.jsonl; writes the tracked
+# state/topics/theme_share.json that build_portal.py's read-only `theme_share`
+# stage copies into data/theme_share.json.
+#
+# This is NOT a new standalone job -- it is ONE NEW LINE to add into the ALREADY-
+# INSTALLED Saturday topics chain (see `crontab -l`): after `topic_map` (11:00 ET,
+# `0 11 * * 6 ... topic_map.py --run --suggest-names --email`) and before
+# `diffusion` (12:00 ET, `0 12 * * 6 ... diffusion.py --run --email`) -- topic_map
+# is theme_share's own input (state/topics/topic_map.jsonl), so it must run after;
+# 30 minutes of margin before diffusion, matching the spacing already used between
+# the other Saturday-chain steps. Insert this single line into the live crontab
+# alongside the existing Saturday block; nothing else in that block changes.
+30 11 * * 6 cd /root/research-watchlist && /root/bin/alert_on_failure.sh theme_share python3 scripts/portal/theme_share.py >> logs/theme_share.log 2>&1

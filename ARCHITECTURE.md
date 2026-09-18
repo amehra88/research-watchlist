@@ -122,6 +122,37 @@ Two git repos cooperate:
   Design: `docs/superpowers/specs/2026-09-09-thesis-loop-design.md`.
 - **`daily_digest` / `nport_*` / `watchlist_derive`** — adjacent pipelines (daily report email, NPORT
   weekly marks, BCTK-holdings derive) feeding/around the system.
+- **RIS5 Part A foundations (2026-09-17, code-complete, mostly staged not installed —
+  `docs/portal/cron.txt`)** — the data layer under the (separately planned) Part B ideas
+  engine. `scripts/thesis/score_reads.py` (`--backfill`/incremental, no cron — called
+  ad hoc/backfill only) parses the explicit `Recommendation:` sentence per note section
+  into `state/thesis/score_reads.jsonl`. `scripts/thesis/structure_reads.py`
+  (`claude -p` Sonnet, lean) codes the full section prose into `state/thesis/reads.jsonl`;
+  it has **no cron of its own** — `process_notes()` is called directly from inside the
+  02:30 `earnings_reviewer` hook after each new note, one bounded call per note, inside
+  that job's own quota slot. `scripts/valuation/snapshot.py` (`valuation_snapshot`,
+  04:45 ET weekdays, mcp-lean, prices+market_value+consensus SALES/EPS/EBITDA/FCF FY1-3;
+  `--weekly` adds FY4-5, Sunday, not yet live) and `scripts/valuation/fundamentals.py`
+  (`valuation_fundamentals`, Sunday 08:30, net debt/margins/FCF at QTR+LTM) write
+  `state/valuation/latest.json` (tracked) + dated raw jsonl (gitignored).
+  `scripts/valuation/expectations.py` (`valuation_expectations`, 05:20 ET weekdays, pure
+  Python + a Store B pg read, no claude -p/FactSet) is the expectations-gap valuation
+  module itself: reverse-DCF-lite implied growth (Layer 1) vs. consensus-CAGR-plus-
+  durability supported growth (Layer 2) vs. the gap (Layer 3), a growth-adjusted forward
+  multiple ladder (PEG → EV/EBITDA → EV/FCF → EV/Sales, amendment v1.2's selection rule),
+  and `long_duration` handling for pre-profit/thin-consensus names — writes
+  `state/valuation/expectations_latest.json`, read by the portal's `data/valuation.json`.
+  `scripts/portal/etf_trades_archive.py` (`etf_trades_archive`, 08:00 daily) +
+  `scripts/thesis/etf_evidence.py` (`etf_evidence`, 08:15 daily) turn peer-ETF trim/exit
+  clusters into `challenge` evidence on competitive-advantage assumptions.
+  `config/theme_polarity.yaml` (hand-edited, validated by `scripts/thesis/
+  theme_polarity.py`) signs every watchlist theme +1/0/-1 so insider/peer-ETF clusters can
+  route to the right side of a thesis. `scripts/portal/theme_share.py` (`theme_share`, one
+  new line in the already-installed Saturday topics chain, after `topic_map` at 11:00,
+  before `diffusion` at 12:00) computes per-ticker share-of-voice per theme per calendar
+  quarter, `state/topics/theme_share.json`, copied read-only into the portal bundle.
+  Full table + hand-run commands: `docs/portal/README.md`'s "Data foundations for ideas"
+  section. Spec: `docs/superpowers/specs/2026-09-17-RIS5-plan.md`.
 
 ### News digest (Phase C)
 Dual-source over **49 tickers** (T1 + scored T2 + selected T3): **Google News RSS** (breadth) +
@@ -273,6 +304,36 @@ sentiment-only HIGH, MEDIUM volume), to revisit after ~1 week of live output.**
 
 ## 9. Recent milestones (most recent first)
 
+- **2026-09-17** — **RIS5 Part A foundations built** (code-complete, mostly not yet live —
+  see `docs/portal/cron.txt`): the data producers the Part B ideas engine needs but the
+  system never had. `scripts/thesis/score_reads.py` (score-proposal matcher: `hold at` /
+  `drift to` / `revise to` / `propose (initial score)` idioms → dated per-axis rows,
+  `state/thesis/score_reads.jsonl`, 396 rows / 89 notes backfilled). `scripts/thesis/
+  structure_reads.py` (`claude -p` lean, codes §5/§6/§7 prose into `{score, direction,
+  magnitude, reason, quote}` rows, `state/thesis/reads.jsonl`, 480 rows backfilled,
+  90% agreement on a 20-note sample; runs incrementally from inside the `earnings_reviewer`
+  hook, no separate cron). `scripts/valuation/{snapshot,fundamentals,expectations}.py` (new
+  package: daily FactSet prices/market-value/consensus snapshot → `state/valuation/
+  latest.json`; weekly Fundamentals pull (net debt, margins, FCF, LTM) → `fundamentals_
+  <date>.jsonl`; `expectations.py` = the expectations-gap valuation module itself — reverse-
+  DCF-lite implied growth vs. consensus-derived supported growth vs. the gap, plus a
+  growth-adjusted multiple ladder (PEG / EV-EBITDA / EV-FCF / EV-Sales) and `long_duration`
+  handling for pre-profit/thin-consensus names (TSLA/SPCX = `operator_handled`) — 161 cards
+  built live). `scripts/thesis/etf_evidence.py` + `scripts/portal/etf_trades_archive.py`
+  (peer-ETF trim/exit clusters → `challenge` evidence on competitive-advantage assumptions).
+  `config/theme_polarity.yaml` + `scripts/thesis/theme_polarity.py` (signs every watchlist
+  theme +1/0/-1 for the bear-side path) and `scripts/portal/theme_share.py` (per-ticker
+  share-of-voice per theme per quarter, `state/topics/theme_share.json`, wired read-only into
+  the portal's `data/theme_share.json`). None of this scores or ranks anything yet — Part B
+  (`scripts/ideas/`, its own plan file) is the consumer. Full producer/cadence/units table,
+  judgment items (NVDA/AVGO read cheap on high consensus growth *levels*; low-margin names
+  dominate the positive gap tail; TSLA/SPCX are `operator_handled`), and hand-run commands in
+  `docs/portal/README.md`'s "Data foundations for ideas" section. **Prerequisite before Part
+  B (B1) runs live: PR #6 (`topics-observed-silence`) must merge** — B1's street-attention
+  factor leans on `state/topics/stages.json` more heavily than A5 does. Also open: FX for 15
+  ADR/foreign tickers (`mcap: null` until built); `priced_in` is provisional until ≥60 daily
+  snapshots accrue. Spec: `docs/superpowers/specs/2026-09-17-RIS5-plan.md` (amendments v1.1,
+  v1.2); ledger: `.superpowers/sdd/2026-09-17-ris5-part-a/progress.md`.
 - **2026-09-16** — **RIS4 portal slice 3 built** (evidence enrichment + Ask):
   `scripts/portal/evidence.py` (new) indexes `state/thesis/evidence_log.jsonl` by
   (ticker, assumption_id) and attaches `thesis.evidence` to every ticker bundle; the

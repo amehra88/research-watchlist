@@ -43,6 +43,16 @@ BASE_PATHS = sb.Paths(
     cron_log=FIXTURES / "cron_runs_fixture.txt",
     etf_lookthrough=FIXTURES / "does_not_exist_lookthrough.json",
     etf_flows=FIXTURES / "does_not_exist_flows.jsonl",
+    # RIS5 A6: pin this explicitly, same convention as etf_lookthrough/etf_flows
+    # above. Before A6, Paths.repo defaulted to the hardcoded main-checkout REPO,
+    # which never had a live state/valuation/ -- so valuation_state's own
+    # REPO-derived default was accidentally fixture-safe. A6 made REPO track
+    # __file__ (so build_portal.py --dry-run reads THIS checkout's real
+    # state/valuation/expectations_latest.json, e.g. the 161-ticker A5 live run
+    # sitting right here in this worktree) -- which would otherwise make
+    # test_valuation_bundle_degrades_when_absent() below read real data instead
+    # of testing the missing-file path.
+    valuation_state=FIXTURES / "does_not_exist_valuation",
 )
 
 

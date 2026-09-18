@@ -1,7 +1,17 @@
 """Portal package: builds mobile-web JSON bundles from the research vault.
 
-Every module in this package reads live data from REPO, never from a worktree
-checkout — the operator's vault only exists on the droplet at this path.
+Every module in this package reads live data from REPO. In production REPO
+always resolves to /root/research-watchlist (the only checkout with a
+populated vault); in a worktree it resolves to that worktree, so a builder
+run from `.claude/worktrees/<name>` reads whatever `state/`/`notes/` that
+worktree actually has on disk instead of silently degrading to empty/zero
+counts (RIS5 A6, A5 carry-forward C2's sibling fix: `expectations.py` derived
+REPO from `__file__` in A5 fix round 1; this hardcoded main-checkout path was
+the one `state_bundles.valuation_bundle()` still read through
+`Paths().valuation_state`, which is why `build_portal.py --dry-run` reported
+`valuation_tickers: 0` from this worktree even after A5's live run had
+written a 161-ticker `state/valuation/expectations_latest.json` right here —
+see task-5-report.md's "3. build_portal.py --dry-run" section).
 
 Module map (RIS4 slice 2, extended in slice 3):
   - vault.py         (Task 1) — notes/ discovery, note loading, wikilink
@@ -49,4 +59,10 @@ Module map (RIS4 slice 2, extended in slice 3):
 """
 from pathlib import Path
 
-REPO = Path("/root/research-watchlist")
+REPO = Path(__file__).resolve().parents[2]   # RIS5 A6, C2 sibling fix: derive from __file__
+                                             # (parents[2]: scripts/portal/__init__.py ->
+                                             # scripts/portal -> scripts -> repo root), same
+                                             # depth/pattern as scripts/valuation/expectations.py's
+                                             # REPO (A5 fix round 1) -- so this package reads
+                                             # whichever checkout it actually lives in, in
+                                             # production and in a worktree alike.
