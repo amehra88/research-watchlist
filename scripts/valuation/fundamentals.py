@@ -6,6 +6,25 @@ operating margin, FCF margin for the same valuation universe as snapshot.py. Wri
 state/valuation/fundamentals_<date>.jsonl (gitignored, dated raw file — same convention
 as prices_<date>.jsonl/consensus_<date>.jsonl).
 
+PERIODICITY = LTM for FLOW_METRICS, still QTR for BALANCE_SHEET_METRICS (RIS5 A3 fix 4,
+coordinator review). A5's first live run showed derived FCF margins ~4x understated
+(NVDA 3.8%, AVGO 10%) and 20 names skipped as cash-negative: FF_FREE_CF was pulled at
+QTR (one quarter's cash flow) while the SALES it was being divided against elsewhere
+was an ANNUAL consensus figure -- a quarter-over-year mismatch, not a real margin.
+Fixed by (a) pulling gross_margin/operating_margin/fcf/sales at `LTM` periodicity
+(confirmed a valid enum value on this tool's own schema: ANN/ANN_R/QTR/QTR_R/SEMI/
+SEMI_R/LTM/LTM_R/LTMSG/LTM_SEMI/LTM_SEMI_R/YTD -- trailing-twelve-months, dimensionally
+an annual figure) so FF_FREE_CF is itself already a 12-month number, and (b) pulling
+`FF_SALES` in the SAME call/row set so `fcf_margin` is derived as FF_FREE_CF / FF_SALES
+from ONE period's data, never mixing a quarterly numerator against an annual (or any
+other period's) denominator again -- see `compute_fcf_margin_rows()`, which matches the
+two by (ticker, fiscal_end), not just by ticker, so a period mismatch is caught rather
+than silently computed. net_debt/total_debt/cash STAY at QTR: they are balance-sheet
+snapshots, not flows, and a live full-universe LTM attempt against them returned 0/178
+ok for all three (discovered running this very fix, not guessed) -- see
+BALANCE_SHEET_METRICS/FLOW_METRICS below. A full pull is therefore TWO
+FactSet_Fundamentals calls (one per periodicity group), not one.
+
 MANDATORY TWO-STEP WORKFLOW (the FactSet_Fundamentals tool's own contract, not a choice
 made here): FactSet_Metrics must be called FIRST to discover the exact FF_* metric codes;
 Fundamentals must NEVER be called with a guessed/abbreviated code. `discover_metrics()`
@@ -20,12 +39,16 @@ same "no two tool calls in one session" reasoning as snapshot.py's module docstr
 (argument-drift guard blindness + partial-result risk).
 
 Row schema: {ticker, fsym, date, metric, value, periodicity, fiscal_end, currency, quality}.
-`metric` is the short label (net_debt/cash/gross_margin/operating_margin/fcf_margin), not
-the raw FF_ code (kept in FUNDAMENTALS_METRICS for the prompt only). No amendment-v1.1
-range check is specified for fundamentals in the task brief (only price>0/mcap>0/count>=1
-are named, all specific to snapshot.py's own rows) — quality is "ok" unless the value is
-missing/non-numeric ("fail:missing"), which is the minimum honest bar until the operator
-specifies real thresholds (e.g. a plausible net-debt/cash range) for this endpoint.
+`metric` is the short label (net_debt/total_debt/cash/gross_margin/operating_margin/fcf/
+sales/fcf_margin), not the raw FF_ code (kept in FUNDAMENTALS_METRICS for the prompt
+only) -- `fcf_margin` is the one DERIVED label (compute_fcf_margin_rows, fix 4), never a
+raw FactSet metric. No amendment-v1.1 range check is specified for fundamentals in the
+task brief (only price>0/mcap>0/count>=1 are named, all specific to snapshot.py's own
+rows) — quality is "ok" unless the value is missing/non-numeric ("fail:missing"), or,
+for the derived `fcf_margin` row only, "fail:period_mismatch" (fcf/sales fiscal_end
+disagree) or "fail:sales<=0" (can't divide by a non-positive/missing sales figure) --
+the minimum honest bar until the operator specifies real thresholds (e.g. a plausible
+net-debt/cash range) for this endpoint.
 """
 from __future__ import annotations
 
@@ -58,20 +81,52 @@ STATE_DIR = REPO / "state" / "valuation"
 # fcf_margin has NO dedicated FF_ code -- FactSet_Metrics' "free cash flow margin" query
 # top match was FF_FREE_CF (Free Cash Flow, a dollar amount, not a margin/ratio); no
 # FCF-margin-specific metric ranked in the top 10 for either "free cash flow margin" or
-# "free cash flow". It is DERIVED downstream (not pulled) as FF_FREE_CF / FF_SALES --
-# FF_SALES is not in this dict (it belongs to snapshot.py's own consensus SALES pull /
-# ingest_metrics.py's actuals, not a Fundamentals code fetched here); whatever consumes
-# fcf_margin must divide the raw FF_FREE_CF row by a SALES actual it sources itself.
-FUNDAMENTALS_METRICS: dict[str, str] = {
+# "free cash flow". It is DERIVED (fix 4: now IN this module, via compute_fcf_margin_rows,
+# not downstream) as FF_FREE_CF / FF_SALES -- FF_SALES IS now in this dict (fix 4;
+# previously assumed to come from snapshot.py's consensus pull / ingest_metrics.py's
+# actuals, which is exactly the cross-source period mismatch that caused the ~4x
+# understated margins) so both halves of the ratio come from the SAME
+# FactSet_Fundamentals call, at the SAME periodicity, for the SAME fiscal period.
+#
+# TWO GROUPS, TWO PERIODICITIES (fix 4 round 2 -- discovered live, not guessed): net_debt/
+# total_debt/cash are BALANCE-SHEET items -- a point-in-time snapshot, not something that
+# accumulates "trailing twelve months" of. The live full-universe LTM pull that motivated
+# this split returned 0/178 ok for all three balance-sheet metrics (every row came back
+# with no value) while gross_margin/operating_margin/fcf/sales -- all income-statement/
+# cash-flow FLOW metrics, which DO have a meaningful trailing-12-month figure -- were
+# ~95%+ ok. Balance-sheet metrics stay on QTR (their original, working periodicity,
+# unchanged by fix 4); only the flow metrics move to LTM. This means a full pull now
+# takes TWO FactSet_Fundamentals calls (one per periodicity), not one -- a tool constraint
+# (periodicity is one value per call, applying to every metric requested), not a choice.
+BALANCE_SHEET_METRICS: dict[str, str] = {
     "net_debt": "FF_NET_DEBT",
     "total_debt": "FF_DEBT",
     "cash": "FF_CASH_GENERIC",
+}
+FLOW_METRICS: dict[str, str] = {
     "gross_margin": "FF_GROSS_MGN",
     "operating_margin": "FF_OPER_MGN",
-    "fcf": "FF_FREE_CF",   # fcf_margin = fcf / sales, derived downstream -- see note above
+    "fcf": "FF_FREE_CF",
+    "sales": "FF_SALES",   # fix 4: pulled alongside fcf so fcf_margin divides same-period data
 }
+# Combined view -- kept for main()'s "are metrics confirmed at all" guard and any caller
+# that just wants the full label->code map without caring which periodicity group a
+# label belongs to.
+FUNDAMENTALS_METRICS: dict[str, str] = {**BALANCE_SHEET_METRICS, **FLOW_METRICS}
 
-FUNDAMENTALS_PERIODICITY = "QTR"   # tool's own mandatory fallback ladder: QTR -> SEMI -> ANN
+BALANCE_SHEET_PERIODICITY = "QTR"   # unchanged by fix 4 -- point-in-time snapshot, correct as-is
+# LTM (trailing twelve months), not QTR, for FLOW_METRICS only (RIS5 A3 fix 4 -- see
+# module docstring for the understated-margin incident this fixes). Confirmed a valid
+# enum value on this session's own FactSet_Fundamentals tool schema fetch (not guessed):
+# ANN, ANN_R, QTR, QTR_R, SEMI, SEMI_R, LTM, LTM_R, LTMSG, LTM_SEMI, LTM_SEMI_R, YTD. The
+# tool's own "QTR -> SEMI -> ANN" fallback ladder only applies when periodicity is
+# UNSPECIFIED ("User does NOT specify a periodicity... you MUST execute this fallback
+# sequence") -- this module always specifies a periodicity explicitly, so that ladder is
+# never in play; FUNDAMENTALS_FALLBACK below is not an LTM fallback, just the ANN-ladder
+# order retained for reference in case a name ever has no LTM coverage and a future
+# session wants to add one.
+FLOW_PERIODICITY = "LTM"
+FUNDAMENTALS_PERIODICITY = FLOW_PERIODICITY   # back-compat default (see make_fundamentals_runner)
 FUNDAMENTALS_FALLBACK = ("QTR", "SEMI", "ANN")
 
 
@@ -142,7 +197,20 @@ def make_fundamentals_runner(repo_root=REPO, timeout=FUNDAMENTALS_TIMEOUT):
 def normalize_fundamentals_rows(raw: list[dict], fid_to_ticker: dict, code_to_label: dict,
                                 periodicity: str) -> list[dict]:
     """One row per (ticker, metric) -- FactSet_Fundamentals rows are typically keyed by
-    requestId + metric code (`metric`/`metricCode`, defensive over both spellings) + value."""
+    requestId + metric code (`metric`/`metricCode`, defensive over both spellings) + value.
+
+    `fiscal_end` FIX (RIS5 A3 fix 4, found while testing the period-match logic in
+    compute_fcf_margin_rows): the real raw-row field is `fiscalEndDate` (confirmed live,
+    this task's own earlier 3-id probe: {"metric": "FF_NET_DEBT", "periodicity": "QTR",
+    "fiscalPeriod": 2, "fiscalYear": 2026, "fiscalPeriodLength": 91, "fiscalEndDate":
+    "2026-07-31", "reportDate": "2026-07-26", "epsReportDate": "2026-08-26", ...}) --
+    `fiscalPeriodEnd` (the guessed key this function used to read) does not exist on any
+    real row, so `fiscal_end` was silently `None` on every fundamentals row ever written,
+    including the live full-universe pulls before this fix. This went unnoticed until
+    fix 4's compute_fcf_margin_rows started actually COMPARING fiscal_end between two
+    rows -- None == None trivially "matched" without verifying anything. `date` is now
+    `reportDate` (when the figure was reported) with `fiscalEndDate` as a fallback,
+    matching the same reportDate/fiscalEndDate distinction the raw payload itself makes."""
     out = []
     for r in raw:
         fid = r.get("requestId")
@@ -153,13 +221,60 @@ def normalize_fundamentals_rows(raw: list[dict], fid_to_ticker: dict, code_to_la
         label = code_to_label.get(code, code)
         value = r.get("value")
         value = value if isinstance(value, (int, float)) else None
+        fiscal_end = r.get("fiscalEndDate") or r.get("fiscalPeriodEnd") or r.get("date")
         out.append({
-            "ticker": tk, "fsym": fid, "date": r.get("date") or r.get("fiscalPeriodEnd"),
+            "ticker": tk, "fsym": fid, "date": r.get("reportDate") or fiscal_end,
             "metric": label, "value": value, "periodicity": periodicity,
-            "fiscal_end": r.get("fiscalPeriodEnd") or r.get("date"),
+            "fiscal_end": fiscal_end,
             "currency": r.get("currency"),
             "quality": "ok" if value is not None else "fail:missing",
         })
+    return out
+
+
+def compute_fcf_margin_rows(rows: list[dict]) -> list[dict]:
+    """RIS5 A3 fix 4: derives one `fcf_margin` row per ticker from that SAME ticker's
+    `fcf` and `sales` rows (both already normalized by normalize_fundamentals_rows,
+    both pulled in the same FactSet_Fundamentals call at the same periodicity) --
+    NEVER from a different source's SALES figure, which is exactly the QTR-fcf-vs-ANN-
+    sales mismatch that understated margins ~4x. Matched by (ticker, fiscal_end): a
+    ticker whose `fcf` and `sales` rows disagree on `fiscal_end` (should not happen from
+    a single call, but defensively checked rather than assumed) gets
+    `fail:period_mismatch` instead of a silently-wrong ratio. Returns ONLY the derived
+    `fcf_margin` rows -- callers append these to the rows list passed in, they are not
+    replacing anything.
+
+    Value convention matches `gross_margin`/`operating_margin` (already FactSet
+    percentages, e.g. NVDA gross_margin ~74.98): `fcf_margin` is `fcf / sales * 100`,
+    a percentage, not a 0-1 fraction."""
+    by_ticker: dict[str, dict[str, dict]] = {}
+    for r in rows:
+        if r["metric"] in ("fcf", "sales"):
+            by_ticker.setdefault(r["ticker"], {})[r["metric"]] = r
+
+    out = []
+    for tk, legs in sorted(by_ticker.items()):
+        fcf_row, sales_row = legs.get("fcf"), legs.get("sales")
+        if fcf_row is None or sales_row is None:
+            continue   # one leg never came back for this ticker -- nothing to derive
+        base = {"ticker": tk, "fsym": fcf_row.get("fsym"), "metric": "fcf_margin",
+               "periodicity": fcf_row.get("periodicity"), "currency": fcf_row.get("currency")}
+        if fcf_row["quality"] != "ok" or sales_row["quality"] != "ok":
+            out.append({**base, "date": fcf_row.get("date"), "value": None,
+                       "fiscal_end": fcf_row.get("fiscal_end"), "quality": "fail:missing"})
+            continue
+        if fcf_row.get("fiscal_end") != sales_row.get("fiscal_end"):
+            out.append({**base, "date": fcf_row.get("date"), "value": None,
+                       "fiscal_end": fcf_row.get("fiscal_end"), "quality": "fail:period_mismatch"})
+            continue
+        sales_value = sales_row["value"]
+        if not isinstance(sales_value, (int, float)) or sales_value <= 0:
+            out.append({**base, "date": fcf_row.get("date"), "value": None,
+                       "fiscal_end": fcf_row.get("fiscal_end"), "quality": "fail:sales<=0"})
+            continue
+        margin = (fcf_row["value"] / sales_value) * 100.0
+        out.append({**base, "date": fcf_row.get("date"), "value": margin,
+                   "fiscal_end": fcf_row.get("fiscal_end"), "quality": "ok"})
     return out
 
 

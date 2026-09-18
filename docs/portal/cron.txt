@@ -30,12 +30,21 @@
 # FY4-FY5 pull today.
 0 9 * * 0 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh valuation_weekly_consensus python3 scripts/valuation/snapshot.py --weekly >> logs/valuation_weekly_consensus.log 2>&1
 
-# RIS5 A3: weekly FactSet Fundamentals (net debt/cash, gross/operating/FCF margin).
+# RIS5 A3: weekly FactSet Fundamentals (net debt/total debt/cash at QTR;
+# gross/operating margin + FCF + sales + derived FCF margin at LTM, RIS5 A3 fix 4).
 # Sunday, after the Store B weekly refresh (08:00) so both FactSet-heavy jobs never
-# overlap. NOT ready to enable yet: scripts/valuation/fundamentals.py's
-# FUNDAMENTALS_METRICS dict is populated only after the FactSet_Metrics discovery probe
-# confirms real FF_ codes (see docs/portal/mcp_schemas.md) — main() refuses to run with
-# it empty, so this line is a documented placeholder, not a live schedule.
+# overlap. NOT ready to enable yet -- STILL a documented placeholder, but the reason
+# changed: FUNDAMENTALS_METRICS/BALANCE_SHEET_METRICS/FLOW_METRICS are all confirmed
+# live now (see docs/portal/mcp_schemas.md), but `fundamentals.py`'s own `main()` has
+# never implemented the actual pull -- it only validates the metrics dict is non-empty
+# and exits. Every live fundamentals pull to date (including fix 4's own LTM/QTR split)
+# has been run via an ad-hoc driver script, not this CLI. A correct run now needs TWO
+# FactSet_Fundamentals calls (BALANCE_SHEET_METRICS at QTR, FLOW_METRICS at LTM -- a
+# single LTM call against the balance-sheet metrics returns 0% coverage, discovered
+# live during fix 4) plus compute_fcf_margin_rows() to derive fcf_margin and a merge of
+# both result sets before writing the dated file. Enabling this line as-is would run
+# weekly and do nothing useful. Building that orchestration into main() is future work,
+# out of fix 4's scope.
 30 8 * * 0 cd /root/research-watchlist && set -a && . /root/podcasts/.env && set +a && /root/bin/alert_on_failure.sh valuation_fundamentals python3 scripts/valuation/fundamentals.py >> logs/valuation_fundamentals.log 2>&1
 
 # RIS5 A3: daily archive of the ws ETF-holdings-change report (peer-ETF trim/exit

@@ -152,36 +152,63 @@ inferred). See `scripts/valuation/fundamentals.py`'s `discover_metrics_prompt`.
 Mandatory workflow: FactSet_Metrics MUST be called first; codes must come verbatim from
 its response. `audit` is a REQUIRED parameter (pass `null` explicitly for no audit data —
 `scripts/valuation/fundamentals.py` always does this; there is no ingest use for the audit
-trail). Periodicity fallback ladder if unspecified: QTR -> SEMI -> ANN. Max 250 ids, max
+trail). Periodicity fallback ladder if unspecified: QTR -> SEMI -> ANN (only applies when
+periodicity is NOT given -- this module always specifies one explicitly). Max 250 ids, max
 1600 metrics per call (confirmed from the tool's own schema) — the full 178-ticker
-universe at 6 metrics fits in ONE call, well under both caps.
+universe at 7 metrics fits in ONE call per periodicity group, well under both caps.
 
-**CONFIRMED live 2026-09-17** (RIS5 A3 live run: one combined `FactSet_Metrics` discovery
-call, then a 3-id verification call for NVDA-US/AVGO-US/COHR-US, then the full 178-ticker
-pull, periodicity `QTR`):
+**RESOLVED (RIS5 A3 fix 4, coordinator review):** the original QTR-only pull produced
+FCF margins understated ~4x (NVDA 3.8% vs a real ~40%) because `FF_FREE_CF` (one
+quarter's cash flow) was being divided against an ANNUAL sales figure sourced from a
+DIFFERENT pull (`snapshot.py`'s consensus SALES) — a period mismatch, not a real margin.
+Fixed two ways:
+1. **`FF_SALES` is now pulled in the SAME `FactSet_Fundamentals` call as `FF_FREE_CF`**
+   (`scripts/valuation/fundamentals.py`'s `FLOW_METRICS`), so `fcf_margin =
+   FF_FREE_CF / FF_SALES` always comes from one period, one call —
+   `compute_fcf_margin_rows()` additionally verifies the two rows share the same
+   `fiscal_end` before dividing, failing `fail:period_mismatch` rather than silently
+   computing a wrong ratio if they ever don't.
+2. **Periodicity is `LTM` for flow metrics, still `QTR` for balance-sheet metrics.**
+   `LTM` (trailing twelve months) is a valid enum value on this tool's own schema
+   (`ANN, ANN_R, QTR, QTR_R, SEMI, SEMI_R, LTM, LTM_R, LTMSG, LTM_SEMI, LTM_SEMI_R, YTD`)
+   and gives `FF_FREE_CF`/`FF_SALES` a genuinely annualized (12-month) figure without
+   waiting for the next full fiscal year-end. **But a full-universe LTM attempt against
+   `FF_NET_DEBT`/`FF_DEBT`/`FF_CASH_GENERIC` returned 0/178 ok for all three** —
+   balance-sheet items are point-in-time snapshots with no "trailing twelve months"
+   concept, discovered live while building this fix, not guessed. So a full pull is now
+   **TWO calls**, one per periodicity group (`BALANCE_SHEET_METRICS` at `QTR`,
+   `FLOW_METRICS` at `LTM`) — a tool constraint (periodicity is one value per call,
+   applying to every requested metric), not a stylistic choice.
 
-| label | FF_ code | live probe values (NVDA / AVGO / COHR) |
-|---|---|---|
-| `net_debt` | `FF_NET_DEBT` | -60509 / 35444 / 1532.82 |
-| `total_debt` | `FF_DEBT` | 38860 / 59419 / 3554.994 |
-| `cash` | `FF_CASH_GENERIC` | 99369 / 23975 / 2022.174 |
-| `gross_margin` | `FF_GROSS_MGN` | 74.98 / 67.46 / 38.49 (already a percentage) |
-| `operating_margin` | `FF_OPER_MGN` | 66.24 / 54.31 / 15.74 (already a percentage) |
-| `fcf` | `FF_FREE_CF` | 15353 / 10562 / -486.225 |
+**CONFIRMED live 2026-09-17** (RIS5 A3, both the original QTR-only round and fix 4's
+LTM/QTR split; NVDA-US/AVGO-US/COHR-US 3-id probe, then two full 178-ticker pulls):
 
-Internal consistency check on the probe: NVDA `total_debt - cash` = 38860 - 99369 =
+| label | FF_ code | periodicity | live values (NVDA / AVGO / COHR) |
+|---|---|---|---|
+| `net_debt` | `FF_NET_DEBT` | QTR | -60509 / 35444 / 1532.82 |
+| `total_debt` | `FF_DEBT` | QTR | 38860 / 59419 / 3554.994 |
+| `cash` | `FF_CASH_GENERIC` | QTR | 99369 / 23975 / 2022.174 |
+| `gross_margin` | `FF_GROSS_MGN` | LTM | 74.98 / 67.46 / 38.38 (already a percentage) |
+| `operating_margin` | `FF_OPER_MGN` | LTM | 66.24 / 54.31 / 13.79 (already a percentage) |
+| `fcf` | `FF_FREE_CF` | LTM | 120230 / 27325 / -1034.833 |
+| `sales` | `FF_SALES` | LTM | 302969 / 89104 / 7118.148 |
+| `fcf_margin` (derived) | `FF_FREE_CF / FF_SALES * 100` | LTM | **39.68% / 30.67% / -14.54%** |
+
+Internal consistency check on the QTR probe: NVDA `total_debt - cash` = 38860 - 99369 =
 -60509 = NVDA's own `net_debt` row exactly, confirming both the field mapping and the
 sign convention (net_debt negative = net cash position). `FactSet_Metrics` reports
 `"factor": "1000000"` on the debt/cash metrics (values are already in the stated currency
 units — i.e. $millions for a company reporting in USD — not literal dollars); margins
-carry no `factor` (already percentages, no rescaling needed).
+carry no `factor` (already percentages, no rescaling needed). COHR's LTM FCF margin is
+genuinely negative (-14.54%, on FCF=-$1,035M / sales=$7,118M) — plausible given COHR's
+recent heavy restructuring/capex following the II-VI/Coherent merger; not a bug, but
+flagged since it diverges from a coordinator sanity-check ballpark of positive 5-15%.
 
 **No dedicated FCF-margin FF_ code exists.** Neither "free cash flow margin" nor "free
 cash flow" surfaced an FF_ metric distinct from `FF_FREE_CF` (Free Cash Flow, a dollar
 figure) in the top 10 `FactSet_Metrics` results — no `FF_FCF_MARGIN`-shaped candidate.
-`fcf_margin` must be DERIVED downstream as `FF_FREE_CF / SALES`, where SALES is a
-fundamentals actual sourced separately (e.g. `ingest_metrics.py`'s existing SALES pull),
-not fetched by this module.
+`fcf_margin` is DERIVED (fix 4: inside this module now, `compute_fcf_margin_rows()`, not
+downstream) as `FF_FREE_CF / FF_SALES` — both pulled together, never sourced separately.
 
 Raw row shape (one row per (id, metric) at the requested periodicity):
 ```
@@ -190,8 +217,33 @@ Raw row shape (one row per (id, metric) at the requested periodicity):
  "fiscalEndDate": "YYYY-MM-DD", "reportDate": "YYYY-MM-DD", "epsReportDate": "YYYY-MM-DD",
  "updateType": "Final", "currency": "USD", "value": <float>}
 ```
-Full-universe pull (178 ids, 6 metrics, one call): 1068 raw rows, 1050 quality-ok
-(176/178 tickers with >=1 ok metric — 2 tickers had no coverage on this pull).
+**Code bug found + fixed (fix 4):** `normalize_fundamentals_rows()` read `date`/
+`fiscalPeriodEnd` — NEITHER key exists on any real row (this doc already showed the
+correct `fiscalEndDate`/`reportDate` shape above, but the code never matched it) — so
+`fiscal_end` was silently `None` on every fundamentals row ever written, including both
+full-universe pulls before this fix. Harmless in isolation (nothing compared `fiscal_end`
+values before fix 4), but it would have defeated `compute_fcf_margin_rows()`'s
+same-period check (`None == None` trivially "matches" without verifying anything). Fixed
+to read `fiscalEndDate` (fiscal_end) / `reportDate` (date), with the old guessed keys
+kept as a defensive fallback. **The two dated pulls already on disk from before this
+code fix still show `fiscal_end: None`** for every row — not re-fetched (no live call
+budget spent on this since period alignment is structurally guaranteed within fix 4's
+design: fcf and sales always come from the SAME call/periodicity/universe now, so a
+`None == None` false-match couldn't actually smuggle in a cross-period ratio even before
+this code fix landed); a future pull will populate `fiscal_end` correctly and get a real
+verification, not just a structural guarantee.
+
+Full-universe pulls (178 ids each; two calls, one per periodicity group):
+- QTR (`BALANCE_SHEET_METRICS`, 3 metrics): 534 raw rows, 528 quality-ok (176/178
+  tickers per metric).
+- LTM (`FLOW_METRICS`, 4 metrics + derived `fcf_margin`): 1246 raw + 178 derived rows;
+  843/1424 quality-ok combined (gross_margin 171/178, operating_margin 172/178, fcf
+  164/178, sales 172/178, fcf_margin 164/178 — the fcf_margin count exactly tracks fcf's,
+  since a ticker needs both legs present and matching to derive one).
+- 32 tickers had FCF <= 0 on an LTM basis (down from the QTR-based run's cash-negative
+  count the coordinator flagged as inflated by the period mismatch — not independently
+  re-verified against that exact prior count, but the LTM figure is the one to trust
+  going forward).
 
 **Argument-drift gotcha (fixed):** the live call placed `audit` as the literal STRING
 `"null"` in the tool_use input the model actually submitted, not JSON `null`/Python
@@ -202,8 +254,9 @@ Full-universe pull (178 ids, 6 metrics, one call): 1068 raw rows, 1050 quality-o
 value. This is the only None-valued expected arg anywhere in `scripts/valuation/`.
 
 ---
-_Last updated: 2026-09-17, RIS5 A3 (live run relaunch). Every section above (GlobalPrices
+_Last updated: 2026-09-17, RIS5 A3 fix round 4. Every section above (GlobalPrices
 `prices`/`market_value`, EstimatesConsensus `consensus_rolling`, FactSet_Metrics discovery,
-FactSet_Fundamentals) is now confirmed against real tool_result payloads from this task's
-live runs — nothing left open. See task-3-report.md's "Live run (relaunch)" section for
-the full run-by-run counts and cost._
+FactSet_Fundamentals) is confirmed against real tool_result payloads from this task's
+live runs. Fix 4 closed the FCF-margin period-mismatch bug (LTM/QTR periodicity split +
+FF_SALES in the same call) and a `fiscal_end` field-name bug found while testing it. See
+task-3-report.md's "Fix round 4" section for the full run-by-run counts and cost._
