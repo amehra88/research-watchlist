@@ -9,10 +9,12 @@ tickers:
 - DASH
 - DDOG
 - DOCN
+- GEV
 - MDB
 - META
 - MSFT
 - NXPI
+- WMT
 - ZS
 affects:
 - AMZN
@@ -22,7 +24,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2025-12-02'
 lag_days: null
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -64,16 +66,16 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[META/_thesis|META]] 2026-04-29 — Ross Sandler (Barclays Capital, Inc.), Q1 2026 Earnings Call: “Yeah. Mark, just sort of related to that last answer, but there's a lot of new consumer applications kind of cropping up everything from like an OpenClaw to something a little bit more consumer-friendly that you would build for your mom, like you said, with like Poke (00:43:41) or Dreamer, which you recently acquired. So, how are these new ideas, I guess, changing your view around the direction that core Meta AI or Dreamer or kind of your overall Agentic strategy needs to go? And then the second part of it would be, do you think the lab will stay in this consumer lane? Or do you think you …”
 - [[MSFT/_thesis|MSFT]] 2026-06-02 — Kirk Materne (Evercore Group LLC), Evercore TMT Conference: “And maybe just to maybe step back or take a step back, just in terms of where we are with most enterprises in terms of the agentic road map, meaning, I think we've all seen that certain use cases and developers, customer service, obviously there's been some pretty straightforward and good wins for AI in those areas. But where's your average customer right now? Are they trying to figure out identity management for agents? Are they doing it in sort of a departmental level approach? Just kind of level set because I think we all have a view of where agentic can go, but I think where it is today …”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 1 banks, 6 of 50 earnings-call / 34 conference companies covered, 9 exchanges — [[CRWD/_thesis|CRWD]], [[DDOG/_thesis|DDOG]], [[DOCN/_thesis|DOCN]], [[MDB/_thesis|MDB]], [[NXPI/_thesis|NXPI]], [[ZS/_thesis|ZS]].
-**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 20 companies.
-**Gap (§6.2):** 0 disclosing / 6 asked.
+**Asked:** 1 banks, 8 of 51 earnings-call / 37 conference companies covered, 11 exchanges — [[CRWD/_thesis|CRWD]], [[DDOG/_thesis|DDOG]], [[DOCN/_thesis|DOCN]], [[GEV/_thesis|GEV]], [[MDB/_thesis|MDB]], [[NXPI/_thesis|NXPI]], [[WMT/_thesis|WMT]], [[ZS/_thesis|ZS]].
+**Disclosed (MD&A):** 0 of 71 filers; corprep speech at 20 companies.
+**Gap (§6.2):** 0 disclosing / 8 asked.
 **Banks:** JPMorgan Securities LLC.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[ZS/_thesis|ZS]] 2026-09-09 — Gabriela Borges (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “Your point on patching doesn't solve the problem, I would love to use it as an opportunity to ask you about frontier models. And Adam, this one's probably for you. What do you think the role is of a frontier model in security? Where do you think the swim lanes ultimately converge versus stay separate?”
 - [[DOCN/_thesis|DOCN]] 2026-09-08 — Gabriela Borges (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “Maybe just to explain, that's a really interesting concept. What is the difference between token flow and agent flow? What does each flow look like?”
-- [[CRWD/_thesis|CRWD]] 2026-09-02 — Brian Essex (JPMorgan Securities LLC), Fal.Con Customer Conference: “But George, I'd love to the question on why I think Anthropic, Claude why you can't Claude Code your way to CrowdStrike. I think was great to hear Anthropic's answer. So operationally, I think we've all been reiterating why you can't do that, but I would love to, from a technical perspective, if you could just put a bow on that, and describe for maybe generalists that are listening, if you take a model at a harness to get an agent, how your engineering of your own proprietary agent protects your IP, your data, your processes, your context from access by some of the foundation models and …”
+- [[WMT/_thesis|WMT]] 2026-09-15 — Kate McShane (Goldman Sachs & Co. LLC), Goldman Sachs Global Retailing Conference: “Great. You mentioned Sparky. So let's go to agentic commerce next...”
 

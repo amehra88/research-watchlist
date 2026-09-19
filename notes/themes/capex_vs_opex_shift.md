@@ -44,6 +44,7 @@ tickers:
 - RBRK
 - ROKU
 - SHOP
+- SITM
 - SNOW
 - SNPS
 - STX
@@ -53,7 +54,7 @@ affects: []
 first_evidence_date: '2025-12-10'
 first_question_date: '2025-12-02'
 lag_days: -8
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -106,13 +107,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[HPQ/_thesis|HPQ]] 10-Q filed 2026-05-28: “We are also exposed to fluctuations in foreign currency exchange rates. We have a large global presence, with more than 65% of our net revenue from outside the United States. As a result, our financial results can be impacted by fluctuations in foreign currency exchange rates. For a further discussion of trends, uncertainties and other factors that could impact our operating results, see the section entitled “Risk Factors” in Item 1A of Part I in our Annual Report on Form 10-K for the fiscal year ended October 31, 2025.”
 - [[RBRK/_thesis|RBRK]] 10-Q filed 2026-06-05: “deployment timelines, in some cases delaying customer purchases and in other cases resulting in customers pulling software purchases forward to lock in hardware prices. In response, we may in the future provide certain commercial accommodations, which could reduce our margins or adversely affect our revenue and operating results if such practices become widespread or prolonged. Due to our subscription-focused business model, any impact of the current macroeconomic environment and supply chain constraints on our business may not be fully reflected in our results of operations until future …”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 7 banks, 5 of 50 earnings-call / 34 conference companies covered, 11 exchanges — [[GLW/_thesis|GLW]], [[GWRE/_thesis|GWRE]], [[HPE/_thesis|HPE]], [[PANW/_thesis|PANW]], [[ZS/_thesis|ZS]].
-**Disclosed (MD&A):** 21 of 69 filers — [[AMBA/_thesis|AMBA]], [[AVGO/_thesis|AVGO]], [[CIEN/_thesis|CIEN]], [[CRDO/_thesis|CRDO]], [[CRWD/_thesis|CRWD]], [[CSCO/_thesis|CSCO]], [[GLW/_thesis|GLW]], [[HPE/_thesis|HPE]], [[HPQ/_thesis|HPQ]], [[LRCX/_thesis|LRCX]], [[MDB/_thesis|MDB]], [[NET/_thesis|NET]], [[NOW/_thesis|NOW]], [[NVDA/_thesis|NVDA]], [[PANW/_thesis|PANW]], [[PLTR/_thesis|PLTR]], [[PWR/_thesis|PWR]], [[RBRK/_thesis|RBRK]], [[SNOW/_thesis|SNOW]], [[STX/_thesis|STX]], [[ZS/_thesis|ZS]]; corprep speech at 25 companies.
-**Gap (§6.2):** 21 disclosing / 5 asked.
+**Asked:** 7 banks, 6 of 51 earnings-call / 37 conference companies covered, 12 exchanges — [[GLW/_thesis|GLW]], [[GWRE/_thesis|GWRE]], [[HPE/_thesis|HPE]], [[MDB/_thesis|MDB]], [[PANW/_thesis|PANW]], [[ZS/_thesis|ZS]].
+**Disclosed (MD&A):** 22 of 71 filers — [[AMBA/_thesis|AMBA]], [[AVGO/_thesis|AVGO]], [[CIEN/_thesis|CIEN]], [[CRDO/_thesis|CRDO]], [[CRWD/_thesis|CRWD]], [[CSCO/_thesis|CSCO]], [[GLW/_thesis|GLW]], [[GWRE/_thesis|GWRE]], [[HPE/_thesis|HPE]], [[HPQ/_thesis|HPQ]], [[LRCX/_thesis|LRCX]], [[MDB/_thesis|MDB]], [[NET/_thesis|NET]], [[NOW/_thesis|NOW]], [[NVDA/_thesis|NVDA]], [[PANW/_thesis|PANW]], [[PLTR/_thesis|PLTR]], [[PWR/_thesis|PWR]], [[RBRK/_thesis|RBRK]], [[SNOW/_thesis|SNOW]], [[STX/_thesis|STX]], [[ZS/_thesis|ZS]]; corprep speech at 28 companies.
+**Gap (§6.2):** 22 disclosing / 6 asked.
 **Banks:** Bank of America Merrill Lynch, JPMorgan Securities LLC, Morgan Stanley & Co. LLC, Oppenheimer & Co., Inc., Piper Sandler & Co., Robert W. Baird & Co., Inc., Wells Fargo Securities LLC.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[GWRE/_thesis|GWRE]] 2026-09-03 — Alexei Mihaylovich Gogolev (JPMorgan Securities LLC), Q4 2026 Earnings Call: “Hello, everyone. Thank you for letting me ask a question. And first of all, I wanted to ask about the ARR dynamics. So FX adjusted ARR came in at the top end of your guide. Can you break down the key drivers of 4Q in net new ARR performance and talk about what was the most different versus your internal expectations entering the quarter, things like new deals versus backlog conversion and true-ups? And then maybe if there are any sizable deals that closed in August that you were positively surprised with?”
@@ -120,6 +121,6 @@ _Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, S
 - [[HPE/_thesis|HPE]] 2026-09-02 — Erik W. Woodring (Morgan Stanley & Co. LLC), Q3 2026 Earnings Call: “Super thanks so much, guys, for taking my questions and congrats on the nice quarter here. Marie, in your prepared remarks on you mentioned gross margins and you mentioned a normalization in traditional server margins, I think, looking forward. Can you maybe just elaborate a bit on what that means? Like why would you see a normalization in server margins if demand is as strong as you're referencing and your unit trajectory should seemingly improve as you get better supply? Like is this have you benefited from low-cost inventory now that's starting to uptick in your bill of materials? I'm just …”
 
 **MD&A (added this quarter, lower-confidence mapping):**
+- [[GWRE/_thesis|GWRE]] 10-K filed 2026-09-11: “We have experienced seasonal variations in our license revenue and, to a lesser extent, in our subscription revenue as a result of increased customer orders in our fourth fiscal quarter, which is the quarter ending July 31. We generally see significantly increased orders in our fourth fiscal quarter due to efforts by our sales team to achieve annual incentives. As a result, a significantly higher percentage of our annual license revenue and cash receipts have historically been recognized in our fourth fiscal quarter. Because we recognize revenue upfront for term licenses compared to over time …”
 - [[SNOW/_thesis|SNOW]] 10-Q filed 2026-09-04: “Our business and financial condition have been, and may continue to be, impacted by adverse macro- or microeconomic conditions, including inflation, high interest rates, fluctuations or volatility in capital markets, energy markets, or foreign currency exchange rates, sector-specific capital expenditure concentration, tariffs and trade wars, and geopolitical and military conflicts. These conditions have caused, and may continue to cause, customers to rationalize budgets, prioritize cash flow management, including through shortened contract duration, and optimize consumption, including by …”
-- [[AVGO/_thesis|AVGO]] 10-Q filed 2026-09-10: “We included upfront license revenue of $3,465 million and $7,184 million within products revenue for the fiscal quarter and three fiscal quarters ended August 2, 2026, respectively. We included the related costs, which were immaterial, in cost of products sold. To conform to the current period presentation, we reclassified $1,916 million and $5,691 million of upfront license revenue from subscriptions and services revenue to products revenue for the fiscal quarter and three fiscal quarters ended August 3, 2025, respectively. We also reclassified the related costs for the upfront license …”
 

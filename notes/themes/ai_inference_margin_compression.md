@@ -2,7 +2,7 @@
 doc_type: theme_state
 theme: ai_inference_margin_compression
 status: approved
-stage: 4
+stage: 3
 tickers:
 - AMD
 - ANET
@@ -23,7 +23,7 @@ affects: []
 first_evidence_date: null
 first_question_date: '2025-12-03'
 lag_days: null
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -63,13 +63,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[CBRS/_thesis|CBRS]] 2026-06-23 — Quinn Bolton (Needham & Co. LLC), Q1 2026 Earnings Call: “Thank you. Andrew, Bob, congratulations on your first call as a public company. Andrew, I wanted to follow up on the inference TAM question. Just obviously you guys are addressing the fast inference portion of the market, which you think can allows you to address the entire market. But your tokens may be more expensive. And so, just wondering if you could address the higher token cost for fast inference. How much of the market do you think is willing to pay a premium for fast inference? And then, I've got a follow up on the road map.”
 - [[LITE/_thesis|LITE]] 2026-06-09 — Vijay Raghavan Rakesh (Mizuho Securities USA LLC), Mizuho Global Technology Conference: “Got it. So, basically, connecting all the data centers, so they look like one big monolithic GPU.”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 6 banks, 10 of 50 earnings-call / 34 conference companies covered, 18 exchanges — [[AMD/_thesis|AMD]], [[AVGO/_thesis|AVGO]], [[BIDU/_thesis|BIDU]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[DDOG/_thesis|DDOG]], [[DOCN/_thesis|DOCN]], [[GOOG/_thesis|GOOG]], [[META/_thesis|META]], [[NVDA/_thesis|NVDA]].
-**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 12 companies.
+**Asked:** 6 banks, 10 of 51 earnings-call / 37 conference companies covered, 18 exchanges — [[AMD/_thesis|AMD]], [[AVGO/_thesis|AVGO]], [[BIDU/_thesis|BIDU]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[DDOG/_thesis|DDOG]], [[DOCN/_thesis|DOCN]], [[GOOG/_thesis|GOOG]], [[META/_thesis|META]], [[NVDA/_thesis|NVDA]].
+**Disclosed (MD&A):** 0 of 71 filers; corprep speech at 12 companies.
 **Gap (§6.2):** 0 disclosing / 10 asked.
 **Banks:** Barclays Capital, Inc., Cantor Fitzgerald & Co., JPMorgan Securities (China) Co. Ltd., Jefferies LLC, Morgan Stanley & Co. LLC, Needham & Co. LLC.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[CBRS/_thesis|CBRS]] 2026-08-12 — Quinn Bolton (Needham & Co. LLC), Q2 2026 Earnings Call: “Does that remove the need for some of this disaggregated compute or heterogeneous inferencing that you're talking about? Or does that just make the entire throughput of the heterogeneous solutions just that much faster...”

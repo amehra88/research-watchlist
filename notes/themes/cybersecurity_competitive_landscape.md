@@ -21,7 +21,7 @@ affects:
 first_evidence_date: '2026-02-17'
 first_question_date: '2025-12-02'
 lag_days: -77
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -71,13 +71,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[PANW/_thesis|PANW]] 10-Q filed 2026-06-03: “Our subscription and support revenue grew to $2.4 billion, or 80.2% of total revenue, for the third quarter of fiscal 2026, representing year-over-year growth of 31%. Our subscriptions provide our end-customers with near real-time access to the latest intrusion prevention, web security, modern malware prevention, data loss prevention, cloud security access broker and AI security capabilities across the network, endpoints, and the cloud. Our subscriptions also include security operations, which enable customers to leverage the AI-powered Cortex platform for advanced capabilities such as …”
 - [[CSCO/_thesis|CSCO]] 10-Q filed 2026-05-19: “The Security product category consists of our Network Security, Identity and Access Management, SASE and Threat Intelligence, Detection, and Response offerings. Revenue in our Security product category was flat, primarily driven by declines in our prior generation products and Splunk offerings. We continued to see a change in how our customers consumed Splunk offerings, shifting from fewer on-premise deals to more cloud subscriptions. These declines were offset by growth in new and refreshed products.”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 12 banks, 9 of 50 earnings-call / 34 conference companies covered, 41 exchanges — [[CRWD/_thesis|CRWD]], [[CSCO/_thesis|CSCO]], [[DDOG/_thesis|DDOG]], [[GWRE/_thesis|GWRE]], [[IOT/_thesis|IOT]], [[MDB/_thesis|MDB]], [[NOW/_thesis|NOW]], [[PANW/_thesis|PANW]], [[ZS/_thesis|ZS]].
-**Disclosed (MD&A):** 3 of 69 filers — [[CRWD/_thesis|CRWD]], [[PANW/_thesis|PANW]], [[RBRK/_thesis|RBRK]]; corprep speech at 10 companies.
+**Asked:** 12 banks, 9 of 51 earnings-call / 37 conference companies covered, 42 exchanges — [[CRWD/_thesis|CRWD]], [[CSCO/_thesis|CSCO]], [[DDOG/_thesis|DDOG]], [[GWRE/_thesis|GWRE]], [[IOT/_thesis|IOT]], [[MDB/_thesis|MDB]], [[NOW/_thesis|NOW]], [[PANW/_thesis|PANW]], [[ZS/_thesis|ZS]].
+**Disclosed (MD&A):** 3 of 71 filers — [[CRWD/_thesis|CRWD]], [[PANW/_thesis|PANW]], [[RBRK/_thesis|RBRK]]; corprep speech at 10 companies.
 **Gap (§6.2):** 3 disclosing / 9 asked.
 **Banks:** BTIG LLC, Citigroup Global Markets, Inc., Deutsche Bank Securities, Inc., JPMorgan Securities LLC, Morgan Stanley & Co. LLC, Oppenheimer & Co., Inc., Piper Sandler & Co., RBC Capital Markets LLC, Robert W. Baird & Co., Inc., Scotiabank, UBS Securities LLC, Wells Fargo Securities LLC.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[PANW/_thesis|PANW]] 2026-09-01 — Rob D. Owens (Piper Sandler & Co.), Q4 2026 Earnings Call: “Great. Thank you, Hamza. And thank you, guys, for taking my question. Nikesh, your prepared remarks spoke to a lot of the tailwinds that you guys are seeing across cyber right now. And I think that was evidenced in your bookings strength and you mentioned the second straight quarter of acceleration, but this has been uneven throughout the environment, and obviously scaled players and players with breadth of coverage really has mattered here. So, to that end, as you look at the new fiscal year, how are you thinking about M&A, how are you thinking about something else that could be …”

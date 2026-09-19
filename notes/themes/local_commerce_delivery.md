@@ -2,7 +2,7 @@
 doc_type: theme_state
 theme: local_commerce_delivery
 status: approved
-stage: 4
+stage: 3
 tickers:
 - AMZN
 - BABA
@@ -14,7 +14,7 @@ affects:
 first_evidence_date: '2026-03-13'
 first_question_date: '2026-02-18'
 lag_days: -23
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -58,13 +58,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[DASH/_thesis|DASH]] 10-Q filed 2026-05-06: “Adjusted EBITDA is a measure that we use to assess our operating performance and the operating leverage in our business. We define Adjusted EBITDA as net income (loss) attributable to DoorDash, Inc. common stockholders, adjusted to include net income (loss) attributable to redeemable non-controlling interests and exclude (i) certain legal, tax, and regulatory settlements, reserves, and expenses, (ii) loss on disposal of property and equipment, (iii) transaction-related costs (primarily consists of acquisition, integration, and investment related costs), (iv) impairment expenses, (v) …”
 - [[WMT/_thesis|WMT]] 10-Q filed 2026-05-29: “Our total revenues increased $12.1 billion or 7.3% for the three months ended April 30, 2026 when compared to the same period in the previous fiscal year. The increase was primarily due to strong positive comparable sales in our U.S. segments and international markets driven by growth in transactions. eCommerce net sales grew $8.5 billion or 26% primarily driven by store and club-fulfilled delivery. Net sales growth also reflected strong sales in grocery and general merchandise across our segments. Net sales for the three months ended April 30, 2026 were positively affected by $2.3 billion in …”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 11 banks, 3 of 50 earnings-call / 34 conference companies covered, 12 exchanges — [[AMZN/_thesis|AMZN]], [[BABA/_thesis|BABA]], [[DASH/_thesis|DASH]].
-**Disclosed (MD&A):** 2 of 69 filers — [[DASH/_thesis|DASH]], [[WMT/_thesis|WMT]]; corprep speech at 5 companies.
-**Gap (§6.2):** 2 disclosing / 3 asked.
+**Asked:** 11 banks, 4 of 51 earnings-call / 37 conference companies covered, 15 exchanges — [[AMZN/_thesis|AMZN]], [[BABA/_thesis|BABA]], [[DASH/_thesis|DASH]], [[WMT/_thesis|WMT]].
+**Disclosed (MD&A):** 2 of 71 filers — [[DASH/_thesis|DASH]], [[WMT/_thesis|WMT]]; corprep speech at 5 companies.
+**Gap (§6.2):** 2 disclosing / 4 asked.
 **Banks:** Barclays Capital, Inc., Citigroup Global Markets, Inc., Evercore ISI, Goldman Sachs & Co. LLC, JPMorgan Securities LLC, MoffettNathanson LLC, Oppenheimer & Co., Inc., Rothschild & Co Redburn, The Hongkong & Shanghai Banking Corp. Ltd. (Singapore), Truist Securities, Inc., Wolfe Research LLC.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[DASH/_thesis|DASH]] 2026-08-05 — Shweta Khajuria (Wolfe Research LLC), Q2 2026 Earnings Call: “Thank you for taking my questions. Let me try two, please. First is on the DashMart Fulfillment Services. Since your launch and since working with a handful of partners I understand, what have you learned so far that you could potentially quantify or some sort of tangible learnings that you could share, whether it is on the magnitude of customer experience improvements or something else? And then, what metrics do you look at to be able to make that decision to scale DashMart Fulfillment Services? And then, the second question is just overall EBITDA growth. Where now we are in the back half of …”

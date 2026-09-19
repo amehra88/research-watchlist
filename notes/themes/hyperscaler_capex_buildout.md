@@ -32,7 +32,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2025-11-11'
 lag_days: null
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -74,13 +74,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[CBRS/_thesis|CBRS]] 2026-06-23 — Atif Malik (Citigroup Global Markets, Inc.), Q1 2026 Earnings Call: “Thank you for taking my questions, and congratulations on the debut. Andrew, on the OpenAI and AWS partnerships, what is the decision tree for them to take the future commitments in cloud or as hardware and data centers?”
 - [[LITE/_thesis|LITE]] 2026-06-03 — Vivek Arya (BofA Securities, Inc.), Bank of America Global Technology Conference: “Got it. If let's say theoretically, cloud CapEx slowed for whatever reason in the next two years...”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 6 banks, 8 of 50 earnings-call / 34 conference companies covered, 23 exchanges — [[AMAT/_thesis|AMAT]], [[AMD/_thesis|AMD]], [[AMZN/_thesis|AMZN]], [[AVGO/_thesis|AVGO]], [[CRWV/_thesis|CRWV]], [[HPE/_thesis|HPE]], [[NBIS/_thesis|NBIS]], [[STX/_thesis|STX]].
-**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 18 companies.
+**Asked:** 6 banks, 8 of 51 earnings-call / 37 conference companies covered, 23 exchanges — [[AMAT/_thesis|AMAT]], [[AMD/_thesis|AMD]], [[AMZN/_thesis|AMZN]], [[AVGO/_thesis|AVGO]], [[CRWV/_thesis|CRWV]], [[HPE/_thesis|HPE]], [[NBIS/_thesis|NBIS]], [[STX/_thesis|STX]].
+**Disclosed (MD&A):** 0 of 71 filers; corprep speech at 19 companies.
 **Gap (§6.2):** 0 disclosing / 8 asked.
 **Banks:** Analyst, Citigroup, Barclays Capital, Inc., BofA Securities, Inc., Evercore ISI, Morgan Stanley & Co. LLC, TD Cowen.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[STX/_thesis|STX]] 2026-09-09 — Asiya Merchant (Citigroup Global Markets Canada, Inc.), Citi Global TMT Conference: “No, AI. Just infrastructure spending on the clouds. Like when you think about how much more pricing flexibility is there as you continue to as spending continue.”

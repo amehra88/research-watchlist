@@ -33,7 +33,7 @@ affects:
 first_evidence_date: '2025-12-18'
 first_question_date: '2025-11-13'
 lag_days: -35
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -87,13 +87,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[MU/_thesis|MU]] 10-Q filed 2026-06-25: “• Sales of NAND products increased 99%, primarily due to a mid-80% range increase in average selling prices and a mid-single-digit percentage range increase in bit shipments.”
 - [[MU/_thesis|MU]] 10-Q filed 2026-06-25: “• Sales of NAND products increased 183%, primarily due to an approximate 130% increase in average selling prices and a low-20% range increase in bit shipments.”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 25 banks, 14 of 50 earnings-call / 34 conference companies covered, 60 exchanges — [[000660.KS/_thesis|000660.KS]], [[005930.KS/_thesis|005930.KS]], [[AAPL/_thesis|AAPL]], [[AMAT/_thesis|AMAT]], [[AMBA/_thesis|AMBA]], [[ANET/_thesis|ANET]], [[ARM/_thesis|ARM]], [[ASML/_thesis|ASML]], [[ENTG/_thesis|ENTG]], [[HPQ/_thesis|HPQ]], [[INDI/_thesis|INDI]], [[LRCX/_thesis|LRCX]], [[NVMI/_thesis|NVMI]], [[STX/_thesis|STX]].
-**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 15 companies.
+**Asked:** 25 banks, 14 of 51 earnings-call / 37 conference companies covered, 70 exchanges — [[000660.KS/_thesis|000660.KS]], [[005930.KS/_thesis|005930.KS]], [[AAPL/_thesis|AAPL]], [[AMAT/_thesis|AMAT]], [[AMBA/_thesis|AMBA]], [[ANET/_thesis|ANET]], [[ARM/_thesis|ARM]], [[ASML/_thesis|ASML]], [[ENTG/_thesis|ENTG]], [[HPQ/_thesis|HPQ]], [[INDI/_thesis|INDI]], [[LRCX/_thesis|LRCX]], [[NVMI/_thesis|NVMI]], [[STX/_thesis|STX]].
+**Disclosed (MD&A):** 0 of 71 filers; corprep speech at 15 companies.
 **Gap (§6.2):** 0 disclosing / 14 asked.
 **Banks:** B. Riley Securities, Inc., BofA Securities, Inc., CJS Securities, Inc., Cantor Fitzgerald & Co., Citigroup Global Markets, Inc., DS Investment & Securities Co., Ltd., Daishin Securities Co., Ltd., Daiwa Securities Capital Markets Korea Co., Ltd., Evercore ISI, Goldman Sachs & Co. LLC, Hana Securities Co., Ltd., JPMorgan Securities Far East Ltd. (South Korea), Jefferies LLC, Joh. Berenberg, Gossler & Co. KG (United Kingdom), KB Securities Co., Ltd., Korea Investment & Securities Co., Ltd., Meritz Securities Co., Ltd., Mizuho Securities USA LLC, Morgan Stanley & Co. LLC, ODDO BHF SCA, Susquehanna Financial Group LLLP, The HongKong & Shanghai Banking Corp. Ltd. (South Korea), Wells Fargo Securities LLC, William Blair & Co. LLC, Wolfe Research LLC.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[LRCX/_thesis|LRCX]] 2026-09-09 — Atif Malik (Citigroup Global Markets, Inc.), Citi Global TMT Conference: “All right. And, Ram, going back to you, NAND you do a lot of work in thinking around the drivers of the NAND market, KV cache, how is this market changing. And you, guys, have laid out this $40 billion NAND upgrade opportunity historically through calendar 2027. Can you help us understand what's changing in the NAND market from a demand perspective if you have an updated number or how you looking at the NAND opportunity?”

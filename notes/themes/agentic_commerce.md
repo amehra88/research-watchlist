@@ -2,12 +2,13 @@
 doc_type: theme_state
 theme: agentic_commerce
 status: approved
-stage: 4
+stage: 3
 tickers:
 - AMZN
 - BABA
 - DASH
 - GOOG
+- WMT
 affects:
 - AMZN
 - GOOG
@@ -15,7 +16,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2026-02-05'
 lag_days: null
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2026-Q1
@@ -44,16 +45,16 @@ _Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, S
 - [[GOOG/_thesis|GOOG]] 2026-05-14 — Michael Brian Nathanson (MoffettNathanson LLC), MoffettNathanson Media Internet and Communications Conference: “What's great about having you here is that there's been a ton of discussion at this conference about AI and the dream of AI. You're actually using AI and you've been using it for a while. So, you talk a bit about how you're using AI across your creator market, your ad market, your consumer market, and where you are on that journey in terms of things that how would you measure where you are today and what are the things you're dreaming of in the next couple of years?”
 - [[DASH/_thesis|DASH]] 2026-05-06 — Justin Post (BofA Securities, Inc.), Q1 2026 Earnings Call: “Great. Thank you. I just want to follow up on advertising. How do you think about integrating that with agentic capabilities on your own platform? And is there any way you could generate ad revenues on agentic platforms, on other platforms? Thank you.”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 3 banks, 3 of 50 earnings-call / 34 conference companies covered, 4 exchanges — [[AMZN/_thesis|AMZN]], [[BABA/_thesis|BABA]], [[DASH/_thesis|DASH]].
-**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 5 companies.
-**Gap (§6.2):** 0 disclosing / 3 asked.
+**Asked:** 3 banks, 4 of 51 earnings-call / 37 conference companies covered, 9 exchanges — [[AMZN/_thesis|AMZN]], [[BABA/_thesis|BABA]], [[DASH/_thesis|DASH]], [[WMT/_thesis|WMT]].
+**Disclosed (MD&A):** 0 of 71 filers; corprep speech at 5 companies.
+**Gap (§6.2):** 0 disclosing / 4 asked.
 **Banks:** BofA Securities, Inc., Goldman Sachs & Co. LLC, The Hongkong & Shanghai Banking Corp. Ltd. (Singapore).
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
+- [[WMT/_thesis|WMT]] 2026-09-15 — Kate McShane (Goldman Sachs & Co. LLC), Goldman Sachs Global Retailing Conference: “...if that's okay. Obviously, Walmart's been investing in agentic commerce, including in its AI shopping assistant, which is called Sparky, and through partnering with companies such as OpenAI and Google. Can you maybe map out the customer journey using these agents today? And how is Walmart positioning itself to capture more market share in agentic commerce?”
 - [[AMZN/_thesis|AMZN]] 2026-07-30 — Eric J. Sheridan (Goldman Sachs & Co. LLC), Q2 2026 Earnings Call: “Thanks so much for taking the question. Maybe pivoting to the commerce business. When you're talking about scaling some of your initiatives around fast commerce and a wider array of supply of groceries and everyday essentials, can you talk a little bit about the signal you're getting from consumers in terms of either adoption rates of those services or what it's doing to overall spend trends, and whether there's any countries or geographies where you're seeing different outcomes as you launch and scale some of those services? Thanks so much.”
 - [[DASH/_thesis|DASH]] 2026-08-05 — Justin Post (BofA Securities, Inc.), Q2 2026 Earnings Call: “Hi. Thanks for taking my question. Just wondering if you can give us any agentic traffic update, if you're seeing any traffic from there. And then, given your huge merchant scale, are there ways where you could really capitalize on that traffic as they roll out booking capabilities and maybe even lower your marketing costs? Thank you.”
-- [[BABA/_thesis|BABA]] 2026-08-20 — Charlene Liu (The Hongkong & Shanghai Banking Corp. Ltd. (Singapore)), Q1 2027 Earnings Call: “I'm from HSBC, but thank you very much for this opportunity. Thank you for taking my question. First, can we get an update on the latest developments in quick commerce? And under the reclassification of multiple business lines, which are regrouped under the Alibaba E-commerce Group, can you talk about the future strategic focuses of these lines of business?”
 

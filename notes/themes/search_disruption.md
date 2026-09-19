@@ -15,7 +15,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2026-01-29'
 lag_days: null
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2026-Q1
@@ -48,13 +48,13 @@ _Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, S
 - [[GOOG/_thesis|GOOG]] 2026-05-14 — Michael Brian Nathanson (MoffettNathanson LLC), MoffettNathanson Media Internet and Communications Conference: “Right. So, over the past 12 months, YouTube has decelerated and Search has accelerated. Talk a bit about the factors that may be causing kind of the change in the growth rate from where it was 12 months ago?”
 - [[GOOG/_thesis|GOOG]] 2026-05-14 — Michael Brian Nathanson (MoffettNathanson LLC), MoffettNathanson Media Internet and Communications Conference: “Do you think there's a risk longer term that consumption consumers will start adopting more AI-created content over traditional recorded music? And you see you probably see the data from YouTube Music side of it.”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 2 banks, 3 of 50 earnings-call / 34 conference companies covered, 5 exchanges — [[BIDU/_thesis|BIDU]], [[GOOG/_thesis|GOOG]], [[RDDT/_thesis|RDDT]].
-**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 3 companies.
+**Asked:** 2 banks, 3 of 51 earnings-call / 37 conference companies covered, 5 exchanges — [[BIDU/_thesis|BIDU]], [[GOOG/_thesis|GOOG]], [[RDDT/_thesis|RDDT]].
+**Disclosed (MD&A):** 0 of 71 filers; corprep speech at 3 companies.
 **Gap (§6.2):** 0 disclosing / 3 asked.
 **Banks:** Citigroup Global Markets, Inc., Jefferies Hong Kong Ltd..
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[RDDT/_thesis|RDDT]] 2026-09-08 — Eric J. Sheridan (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “Okay. To broaden it out, like, how do you think about that role of Reddit content, not just in the four walls of Google, but in the four walls of sort of a wider ecosystem of as people continue to query various platforms and your content being unique, ends up being a source of traffic for a lot of other platforms?”

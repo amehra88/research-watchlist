@@ -16,7 +16,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2026-03-18'
 lag_days: null
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2026-Q1
@@ -39,13 +39,13 @@ _Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, S
 **Analyst questions (verbatim):**
 - [[GEV/_thesis|GEV]] 2026-05-27 — Sunaina Pai Ocalan (Bernstein), Bernstein Strategic Decisions Conference: “And if I can just follow up on that, maybe between amongst AI, robotics, and automation, how are you thinking of these three impacting sort of the near term as well as the longer term?”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 3 banks, 4 of 50 earnings-call / 34 conference companies covered, 4 exchanges — [[AMBA/_thesis|AMBA]], [[BIDU/_thesis|BIDU]], [[NBIS/_thesis|NBIS]], [[NXPI/_thesis|NXPI]].
-**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 9 companies.
+**Asked:** 3 banks, 4 of 51 earnings-call / 37 conference companies covered, 4 exchanges — [[AMBA/_thesis|AMBA]], [[BIDU/_thesis|BIDU]], [[NBIS/_thesis|NBIS]], [[NXPI/_thesis|NXPI]].
+**Disclosed (MD&A):** 0 of 71 filers; corprep speech at 9 companies.
 **Gap (§6.2):** 0 disclosing / 4 asked.
 **Banks:** Analyst, Citigroup, Macquarie Capital Ltd., Northland Securities, Inc..
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[NXPI/_thesis|NXPI]] 2026-09-09 — James Edward Schneider (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “Great. Then maybe switching gears for just a second to touch on Physical AI and humanoid robots...”

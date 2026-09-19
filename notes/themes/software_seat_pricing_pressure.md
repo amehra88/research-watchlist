@@ -49,6 +49,7 @@ tickers:
 - RBRK
 - RDDT
 - ROKU
+- SITM
 - SNOW
 - SNPS
 - STX
@@ -58,7 +59,7 @@ affects: []
 first_evidence_date: '2025-12-10'
 first_question_date: '2025-12-02'
 lag_days: -8
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -110,13 +111,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[IOT/_thesis|IOT]] 10-Q filed 2026-06-09: “Unfavorable conditions in the economy, both in the United States and abroad, may negatively affect the growth of our business and our results of operations. For example, our business and results of operations, as well as those of our customers, could be affected by global macroeconomic trends and events such as inflationary pressure, fluctuations in foreign currency exchange rates, interest rate increases and declines in consumer confidence, widespread disruptions of supply chains and freight and shipping channels, increased prices for many goods and services (including fluctuating hardware …”
 - [[NET/_thesis|NET]] 10-Q filed 2026-05-08: “We are closely monitoring macroeconomic developments and global events, such as the tariffs described above, conflicts and geopolitical tension around the world, and other geopolitical events such as elections and other governmental changes, and, in each case, how they may adversely impact our and our customers’ businesses. Weak economic conditions or uncertainty regarding the stability of financial markets related to stock market volatility, inflation, recession, threats of tariffs and other impediments to cross-border trade, trade agreements or governmental fiscal, monetary and tax …”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 5 banks, 5 of 50 earnings-call / 34 conference companies covered, 8 exchanges — [[DDOG/_thesis|DDOG]], [[GWRE/_thesis|GWRE]], [[MDB/_thesis|MDB]], [[PANW/_thesis|PANW]], [[ZS/_thesis|ZS]].
-**Disclosed (MD&A):** 27 of 69 filers — [[AMBA/_thesis|AMBA]], [[AVGO/_thesis|AVGO]], [[BE/_thesis|BE]], [[CRDO/_thesis|CRDO]], [[CRWD/_thesis|CRWD]], [[CSCO/_thesis|CSCO]], [[ENTG/_thesis|ENTG]], [[GH/_thesis|GH]], [[HPE/_thesis|HPE]], [[HPQ/_thesis|HPQ]], [[INDI/_thesis|INDI]], [[IOT/_thesis|IOT]], [[LITE/_thesis|LITE]], [[LRCX/_thesis|LRCX]], [[MDB/_thesis|MDB]], [[MRVL/_thesis|MRVL]], [[NET/_thesis|NET]], [[NOW/_thesis|NOW]], [[PANW/_thesis|PANW]], [[PLTR/_thesis|PLTR]], [[PWR/_thesis|PWR]], [[RBRK/_thesis|RBRK]], [[RDDT/_thesis|RDDT]], [[SNOW/_thesis|SNOW]], [[STX/_thesis|STX]], [[TTWO/_thesis|TTWO]], [[ZS/_thesis|ZS]]; corprep speech at 12 companies.
-**Gap (§6.2):** 27 disclosing / 5 asked.
+**Asked:** 5 banks, 5 of 51 earnings-call / 37 conference companies covered, 8 exchanges — [[DDOG/_thesis|DDOG]], [[GWRE/_thesis|GWRE]], [[MDB/_thesis|MDB]], [[PANW/_thesis|PANW]], [[ZS/_thesis|ZS]].
+**Disclosed (MD&A):** 28 of 71 filers — [[AMBA/_thesis|AMBA]], [[AVGO/_thesis|AVGO]], [[BE/_thesis|BE]], [[CRDO/_thesis|CRDO]], [[CRWD/_thesis|CRWD]], [[CSCO/_thesis|CSCO]], [[ENTG/_thesis|ENTG]], [[GH/_thesis|GH]], [[GWRE/_thesis|GWRE]], [[HPE/_thesis|HPE]], [[HPQ/_thesis|HPQ]], [[INDI/_thesis|INDI]], [[IOT/_thesis|IOT]], [[LITE/_thesis|LITE]], [[LRCX/_thesis|LRCX]], [[MDB/_thesis|MDB]], [[MRVL/_thesis|MRVL]], [[NET/_thesis|NET]], [[NOW/_thesis|NOW]], [[PANW/_thesis|PANW]], [[PLTR/_thesis|PLTR]], [[PWR/_thesis|PWR]], [[RBRK/_thesis|RBRK]], [[RDDT/_thesis|RDDT]], [[SNOW/_thesis|SNOW]], [[STX/_thesis|STX]], [[TTWO/_thesis|TTWO]], [[ZS/_thesis|ZS]]; corprep speech at 13 companies.
+**Gap (§6.2):** 28 disclosing / 5 asked.
 **Banks:** Barclays Capital, Inc., JPMorgan Securities LLC, Oppenheimer & Co., Inc., Piper Sandler & Co., Wells Fargo Securities LLC.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[ZS/_thesis|ZS]] 2026-09-03 — Ittai Kidron (Oppenheimer & Co., Inc.), Q4 2026 Earnings Call: “Thanks. Solid finish for the year, guys. Kevin, I want to dig into your outlook for fiscal 2027, specifically on the ARR front. I would love if you can give us a little bit more insights into the puts and takes that you've taken into account into that ARR guide. Clearly, you've had very good momentum here with net new ARR. If my math is right, that declines to 4% at the midpoint for your guide for fiscal 2027. So, we'd love to kind of get a little bit more kind of color as to what's included with respect to the go-to-market, the new products, and any other components that you think it's …”
@@ -124,6 +125,6 @@ _Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, S
 - [[DDOG/_thesis|DDOG]] 2026-09-08 — Fatima Boolani (Citigroup Global Markets, Inc.), Citi Global TMT Conference: “On the cybersecurity side, because you put my antennas up on that, just talking about the product portfolio and strategy here. It's about a quarter of the base penetrated with security SKUs, it's $100 million ARR franchise. So, you've made a ton of progress, but I think there's still a lot of opportunity. And I think, by your own admission, there is still work to do there, right? So, relative to your initial expectations, how is this unfolding? What has gone well and where do you see opportunities and scope for improvement?”
 
 **MD&A (added this quarter, lower-confidence mapping):**
+- [[GWRE/_thesis|GWRE]] 10-K filed 2026-09-11: “We have experienced seasonal variations in our license revenue and, to a lesser extent, in our subscription revenue as a result of increased customer orders in our fourth fiscal quarter, which is the quarter ending July 31. We generally see significantly increased orders in our fourth fiscal quarter due to efforts by our sales team to achieve annual incentives. As a result, a significantly higher percentage of our annual license revenue and cash receipts have historically been recognized in our fourth fiscal quarter. Because we recognize revenue upfront for term licenses compared to over time …”
 - [[DOCN/_thesis|DOCN]] 10-Q filed 2026-08-04: “Unfavorable conditions in the economy, both in the United States and abroad, could cause a decrease in business investments in information technology and negatively affect the growth of our business and our results of operations. These conditions include: changes in gross domestic product growth; inflationary pressures and high interest rates; supply chain disruptions; financial and credit market fluctuations, volatility in the capital markets, and liquidity concerns at, or failures of, banks and other financial institutions; trade tension and the imposition, enforceability, or threatened …”
-- [[RBRK/_thesis|RBRK]] 10-Q filed 2026-09-01: “Our overall performance depends in part on worldwide economic and geopolitical conditions and their impact on customer behavior. Macroeconomic conditions, including inflation, fluctuations in interest rates, foreign currency fluctuations, tariffs or other trade restrictions, geopolitical issues, changes in government policy or spending, and other changes in economic conditions, may adversely affect the buying patterns of our customers and prospective customers. For example, in light of current macroeconomic conditions, such as higher cost-consciousness around information technology budgets, …”
 

@@ -2,7 +2,7 @@
 doc_type: theme_state
 theme: inference_compute_economics
 status: approved
-stage: 4
+stage: 3
 tickers:
 - AMBA
 - AMD
@@ -36,7 +36,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2025-12-02'
 lag_days: null
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -78,13 +78,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[LITE/_thesis|LITE]] 2026-06-09 — Vijay Raghavan Rakesh (Mizuho Securities USA LLC), Mizuho Global Technology Conference: “Got it. So, basically, connecting all the data centers, so they look like one big monolithic GPU.”
 - [[CBRS/_thesis|CBRS]] 2026-06-23 — Quinn Bolton (Needham & Co. LLC), Q1 2026 Earnings Call: “Thank you. Andrew, Bob, congratulations on your first call as a public company. Andrew, I wanted to follow up on the inference TAM question. Just obviously you guys are addressing the fast inference portion of the market, which you think can allows you to address the entire market. But your tokens may be more expensive. And so, just wondering if you could address the higher token cost for fast inference. How much of the market do you think is willing to pay a premium for fast inference? And then, I've got a follow up on the road map.”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 7 banks, 14 of 50 earnings-call / 34 conference companies covered, 33 exchanges — [[AMBA/_thesis|AMBA]], [[AMD/_thesis|AMD]], [[ANET/_thesis|ANET]], [[AVGO/_thesis|AVGO]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[DDOG/_thesis|DDOG]], [[DOCN/_thesis|DOCN]], [[GOOG/_thesis|GOOG]], [[LRCX/_thesis|LRCX]], [[MDB/_thesis|MDB]], [[META/_thesis|META]], [[NBIS/_thesis|NBIS]], [[NVDA/_thesis|NVDA]].
-**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 21 companies.
+**Asked:** 7 banks, 14 of 51 earnings-call / 37 conference companies covered, 33 exchanges — [[AMBA/_thesis|AMBA]], [[AMD/_thesis|AMD]], [[ANET/_thesis|ANET]], [[AVGO/_thesis|AVGO]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[DDOG/_thesis|DDOG]], [[DOCN/_thesis|DOCN]], [[GOOG/_thesis|GOOG]], [[LRCX/_thesis|LRCX]], [[MDB/_thesis|MDB]], [[META/_thesis|META]], [[NBIS/_thesis|NBIS]], [[NVDA/_thesis|NVDA]].
+**Disclosed (MD&A):** 0 of 71 filers; corprep speech at 21 companies.
 **Gap (§6.2):** 0 disclosing / 14 asked.
 **Banks:** Analyst, Citigroup, Barclays Capital, Inc., Cantor Fitzgerald & Co., Jefferies LLC, Morgan Stanley & Co. LLC, Needham & Co. LLC, Rosenblatt Securities, Inc..
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[CRWV/_thesis|CRWV]] 2026-09-08 — Gabriela Borges (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “The next question I have for you is taking some of those performance decisions that have been made for training GPUs, and then extending that advantage to something like post-training and something like inference. Talk to us about why those decisions that optimize for training also give you a performance advantage for post-training or for inference?”

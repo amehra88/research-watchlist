@@ -20,7 +20,7 @@ affects: []
 first_evidence_date: '2026-01-29'
 first_question_date: '2026-01-29'
 lag_days: 0
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2026-Q1
@@ -55,18 +55,18 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[TTWO/_thesis|TTWO]] 10-K filed 2026-05-22: “The following tables set forth, for the periods indicated, our Consolidated Statements of Operations, net revenue by platform, net revenue by distribution channel, and net revenue by content type:”
 - [[NVDA/_thesis|NVDA]] 10-Q filed 2026-05-20: “(1) In the first quarter of fiscal year 2027, we changed our presentation of revenue by market platform and the comparable periods have been recast.”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 4 banks, 3 of 50 earnings-call / 34 conference companies covered, 5 exchanges — [[AAPL/_thesis|AAPL]], [[AMZN/_thesis|AMZN]], [[DASH/_thesis|DASH]].
-**Disclosed (MD&A):** 6 of 69 filers — [[AMZN/_thesis|AMZN]], [[META/_thesis|META]], [[RDDT/_thesis|RDDT]], [[ROKU/_thesis|ROKU]], [[SHOP/_thesis|SHOP]], [[TTWO/_thesis|TTWO]]; corprep speech at 8 companies.
-**Gap (§6.2):** 6 disclosing / 3 asked.
+**Asked:** 4 banks, 4 of 51 earnings-call / 37 conference companies covered, 6 exchanges — [[AAPL/_thesis|AAPL]], [[AMZN/_thesis|AMZN]], [[DASH/_thesis|DASH]], [[WMT/_thesis|WMT]].
+**Disclosed (MD&A):** 6 of 71 filers — [[AMZN/_thesis|AMZN]], [[META/_thesis|META]], [[RDDT/_thesis|RDDT]], [[ROKU/_thesis|ROKU]], [[SHOP/_thesis|SHOP]], [[TTWO/_thesis|TTWO]]; corprep speech at 9 companies.
+**Gap (§6.2):** 6 disclosing / 4 asked.
 **Banks:** Goldman Sachs & Co. LLC, JPMorgan Securities LLC, Morgan Stanley & Co. LLC, Truist Securities, Inc..
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
+- [[WMT/_thesis|WMT]] 2026-09-15 — Kate McShane (Goldman Sachs & Co. LLC), Goldman Sachs Global Retailing Conference: “Great. And then, speaking of P&L, US eCommerce business turned profitable early last year with a key driver being all of these alternative revenue streams. Can you provide an update on the profitability profile of the eCommerce business today?”
 - [[AAPL/_thesis|AAPL]] 2026-07-30 — Erik W. Woodring (Morgan Stanley & Co. LLC), Q3 2026 Earnings Call: “Yeah, yeah. No, that does help. Thank you, Tim. And then just maybe a quick follow-up, I guess, Tim or Kevan, just 12% Services growth was just a bit below your guidance. I imagine FX maybe played a role there. I think the fiscal 4Q guidance assumes another deceleration. I think the math would imply below 10% year-over-year as reported. So can you maybe just help us understand the kind of function factors underlying that deceleration? And if that's App Store, which I think some third-party data sources would suggest, is that a function of AI maybe reprioritizing time away from parts of the …”
 - [[DASH/_thesis|DASH]] 2026-08-05 — Doug Anmuth (JPMorgan Securities LLC), Q2 2026 Earnings Call: “Great. Thanks for taking the question. I know you don't manage for take rate, but I just wanted to get a little bit more color just on net revenue margin and the pickup that you saw kind of in 2Q. Just trying to understand some of the drivers there in terms of how much might have been Deliveroo contribution versus advertising and fee changes, and how you think about that going forward. Thanks.”
-- [[AMZN/_thesis|AMZN]] 2026-07-30 — Eric J. Sheridan (Goldman Sachs & Co. LLC), Q2 2026 Earnings Call: “Thanks so much for taking the question. Maybe pivoting to the commerce business. When you're talking about scaling some of your initiatives around fast commerce and a wider array of supply of groceries and everyday essentials, can you talk a little bit about the signal you're getting from consumers in terms of either adoption rates of those services or what it's doing to overall spend trends, and whether there's any countries or geographies where you're seeing different outcomes as you launch and scale some of those services? Thanks so much.”
 
 **MD&A (added this quarter, lower-confidence mapping):**
 - [[ROKU/_thesis|ROKU]] 10-Q filed 2026-08-06: “Advertising revenue increased by $133.8 million, or 25%, during the three months ended June 30, 2026 as compared to the three months ended June 30, 2025, primarily due to an increase in video ad impressions delivered. Video impressions increased by 40%, driven by higher user engagement and growth in streaming hours on our platform. This increase was partially offset by a decrease in the average price per impression of 12%, which was driven by changes in product and country mix.”

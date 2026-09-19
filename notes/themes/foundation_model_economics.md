@@ -2,7 +2,7 @@
 doc_type: theme_state
 theme: foundation_model_economics
 status: approved
-stage: 4
+stage: 3
 tickers:
 - ANET
 - META
@@ -13,7 +13,7 @@ affects: []
 first_evidence_date: null
 first_question_date: '2025-12-02'
 lag_days: null
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -49,13 +49,13 @@ _Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, S
 **Analyst questions (verbatim):**
 - [[MSFT/_thesis|MSFT]] 2026-06-02 — Kirk Materne (Evercore Group LLC), Evercore TMT Conference: “Okay. One of the questions obviously comes up a lot is sort of your relationship with the broader sort of model ecosystem. And I think Satya has been very open about kind of your views on this, but maybe just you could sort of reiterate kind of where you guys are how are you trying to position yourself with the other frontier models, and then what you guys are doing internally in terms of first-party models as well.”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 2 banks, 3 of 50 earnings-call / 34 conference companies covered, 3 exchanges — [[META/_thesis|META]], [[NBIS/_thesis|NBIS]], [[NOW/_thesis|NOW]].
-**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 4 companies.
+**Asked:** 2 banks, 3 of 51 earnings-call / 37 conference companies covered, 3 exchanges — [[META/_thesis|META]], [[NBIS/_thesis|NBIS]], [[NOW/_thesis|NOW]].
+**Disclosed (MD&A):** 0 of 71 filers; corprep speech at 5 companies.
 **Gap (§6.2):** 0 disclosing / 3 asked.
 **Banks:** Analyst, Citigroup, Bernstein Institutional Services LLC.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[META/_thesis|META]] 2026-07-29 — Mark Shmulik (Bernstein Institutional Services LLC), Q2 2026 Earnings Call: “Yes. Thanks for taking the question. Mark, everyone's got a story of kind of someone coming back from Silicon Valley, deep writing code, building agents with AI, and then they head home and they kind of tell their parents they're using AI wrong, it's just kind of like a glorified search tool. Consumer behavior is always pretty difficult to predict. But kind of reading your op-ed on AI for Everyone, how do you think about whether consumer adoption can close this AI utility gap? Like, are we on the cusp of something kind of breaking through or do we just need to be a bit more patient? Thanks.”

@@ -25,7 +25,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2025-12-02'
 lag_days: null
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -65,13 +65,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[META/_thesis|META]] 2026-04-29 — Ross Sandler (Barclays Capital, Inc.), Q1 2026 Earnings Call: “Yeah. Mark, just sort of related to that last answer, but there's a lot of new consumer applications kind of cropping up everything from like an OpenClaw to something a little bit more consumer-friendly that you would build for your mom, like you said, with like Poke (00:43:41) or Dreamer, which you recently acquired. So, how are these new ideas, I guess, changing your view around the direction that core Meta AI or Dreamer or kind of your overall Agentic strategy needs to go? And then the second part of it would be, do you think the lab will stay in this consumer lane? Or do you think you …”
 - [[DOCN/_thesis|DOCN]] 2026-05-19 — Kevin Curtin (JPMorgan), JP Morgan Global Technology, Media, and Communications Conference: “Yeah. You actually anticipated my next question. Agentic workloads, as you guys see them, consume 15 times the tokens and use 4 times the CPU power. So if we're talking about building sustainable businesses, the unit economics of compute really matter. So at your Deploy Day, we saw a lot of really innovative features and full platform elements that you guys rolled out, like the model router, for example, that enable really preferential unit economics for your customers. Can you talk about the adoption of features like that and how much traction you're seeing with these AI natives?”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 2 banks, 10 of 50 earnings-call / 34 conference companies covered, 11 exchanges — [[AMD/_thesis|AMD]], [[AVGO/_thesis|AVGO]], [[CRWD/_thesis|CRWD]], [[DDOG/_thesis|DDOG]], [[DOCN/_thesis|DOCN]], [[MDB/_thesis|MDB]], [[META/_thesis|META]], [[NOW/_thesis|NOW]], [[NXPI/_thesis|NXPI]], [[ZS/_thesis|ZS]].
-**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 20 companies.
+**Asked:** 2 banks, 10 of 51 earnings-call / 37 conference companies covered, 11 exchanges — [[AMD/_thesis|AMD]], [[AVGO/_thesis|AVGO]], [[CRWD/_thesis|CRWD]], [[DDOG/_thesis|DDOG]], [[DOCN/_thesis|DOCN]], [[MDB/_thesis|MDB]], [[META/_thesis|META]], [[NOW/_thesis|NOW]], [[NXPI/_thesis|NXPI]], [[ZS/_thesis|ZS]].
+**Disclosed (MD&A):** 0 of 71 filers; corprep speech at 20 companies.
 **Gap (§6.2):** 0 disclosing / 10 asked.
 **Banks:** Barclays Capital, Inc., JPMorgan Securities LLC.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[AMD/_thesis|AMD]] 2026-09-11 — James Edward Schneider (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “Yeah. And then, with respect to your customers, from their perspective, how do you think this plays out in terms of model evolution over three to five years in terms of the landscape? I mean, do you think frontier models still going to kind of be leading the charge here? Do we see small language models kind of like do a lot more kind of task-specific things? Or do you think open-weight open source models are going to have a larger role to play?”

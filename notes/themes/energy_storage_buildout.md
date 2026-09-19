@@ -27,7 +27,7 @@ affects:
 first_evidence_date: '2026-02-09'
 first_question_date: '2025-12-01'
 lag_days: -70
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -77,18 +77,18 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[BE/_thesis|BE]] 10-Q filed 2026-04-29: “Bloom Energy is a global leader in onsite power generation, delivering a foundational platform purpose-built for the digital era and the global energy transition. We manufacture a versatile fuel cell energy platform, supporting the commercial availability of two primary products: the Bloom Energy Server® fuel cell system for generating electricity and the Bloom Electrolyzer™ for producing hydrogen. Our primary product, the Bloom Energy Server is a proprietary high-temperature solid-oxide fuel cell technology that converts fuels—including natural gas, biogas, and hydrogen—into electricity at …”
 - [[SEI/_thesis|SEI]] 10-Q filed 2026-05-01: “On March 13, 2026, we acquired all contractual rights to receive 30 NovaLT16 gas turbine generator units (the “NovaLT16 Turbine Acquisition”) from Baker Hughes Energy Services LLC under an existing turbine supply contract. The units are scheduled to be delivered between September 2026 and September 2029, providing approximately 500 MW of incremental power generation capacity between early 2027 and 2029. See Note 17. “Commitments and Contingencies” in the notes to our condensed consolidated financial statements.”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 15 banks, 9 of 50 earnings-call / 34 conference companies covered, 30 exchanges — [[BE/_thesis|BE]], [[CIEN/_thesis|CIEN]], [[CRWV/_thesis|CRWV]], [[DOCN/_thesis|DOCN]], [[FRVO/_thesis|FRVO]], [[GDS/_thesis|GDS]], [[GEV/_thesis|GEV]], [[GLW/_thesis|GLW]], [[NBIS/_thesis|NBIS]].
-**Disclosed (MD&A):** 4 of 69 filers — [[BE/_thesis|BE]], [[PWR/_thesis|PWR]], [[SEI/_thesis|SEI]], [[TSLA/_thesis|TSLA]]; corprep speech at 10 companies.
+**Asked:** 15 banks, 9 of 51 earnings-call / 37 conference companies covered, 35 exchanges — [[BE/_thesis|BE]], [[CIEN/_thesis|CIEN]], [[CRWV/_thesis|CRWV]], [[DOCN/_thesis|DOCN]], [[FRVO/_thesis|FRVO]], [[GDS/_thesis|GDS]], [[GEV/_thesis|GEV]], [[GLW/_thesis|GLW]], [[NBIS/_thesis|NBIS]].
+**Disclosed (MD&A):** 4 of 71 filers — [[BE/_thesis|BE]], [[PWR/_thesis|PWR]], [[SEI/_thesis|SEI]], [[TSLA/_thesis|TSLA]]; corprep speech at 11 companies.
 **Gap (§6.2):** 4 disclosing / 9 asked.
 **Banks:** Analyst, Citigroup, Barclays Capital, Inc., Bernstein Institutional Services LLC, BofA Securities, Inc., Cantor Fitzgerald & Co., Citigroup Global Markets, Inc., Deutsche Bank Securities, Inc., Jefferies Hong Kong Ltd., Jefferies LLC, KeyBanc Capital Markets, Inc., Morgan Stanley & Co. LLC, Piper Sandler & Co., RBC Capital Markets LLC, Robert W. Baird & Co., Inc., Wolfe Research LLC.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[FRVO/_thesis|FRVO]] 2026-08-12 — Sunaina Ocalan (Bernstein Institutional Services LLC), Q2 2026 Earnings Call: “Okay. That's great. Thanks. And just one more follow-up. On slide 5, this is your current view of like the 50% data center and hyperscalers, 15% large C&I, et cetera, right? So do you have an internal view that you're working with in terms of like how big the behind-the-meter can be? And is that changing over time? Is this essentially, is that 50% essentially just addressing a constrained grid right now? Any color on what you're expecting that to be over the next few years?”
+- [[GEV/_thesis|GEV]] 2026-09-16 — David Arcaro (Morgan Stanley & Co. LLC), Morgan Stanley Laguna Conference: “Wanted to maybe double-click on that a little bit. Could you quantify maybe for us well, you gave us some quantification of the gas services opportunity, and I'm thinking about into the 2030s, describe how this kind of inflects? How does this change the overall kind of Power business complexion for GEV?”
 - [[DOCN/_thesis|DOCN]] 2026-08-04 — Jackson Ader (KeyBanc Capital Markets, Inc.), Q2 2026 Earnings Call: “Great. Thank you. Morning, guys. I was just curious about the what exactly is baked into the out-year outlooks. If I think about all the activity that you guys signed or contracted in the second quarter and the impact either here on 2026 or 2027, like if I just think about forward guidance, is it right to think that, okay, we're at 155 megawatts, the majority online by the end of 2027, and any incremental activity that happens in the next few months, like, that is all incremental to the expectations for 2027? Or do you guys have certainly line of sight into a bunch of activity that are coming …”
-- [[BE/_thesis|BE]] 2026-07-28 — Sunaina Ocalan (Bernstein Institutional Services LLC), Q2 2026 Earnings Call: “Hi, team. Thank you for taking my question. Maybe if I can ask about the competitive landscape and just follow-up on the comments that were made on the call as well as somebody asked question ahead of mine. It makes sense. I think what you're saying make sense which is onsite power Bloom solution, not having NOx and SOx, not using water is a superior solution. That makes quite a sense and it's clear. How are you thinking about the market share over the next maybe 12 to 24 to 36 months on some of the other fuel cell models that are targeting essentially the same data center space? So, I'm …”
 
 **MD&A (added this quarter, lower-confidence mapping):**
 - [[SEI/_thesis|SEI]] 10-Q filed 2026-08-06: “Demand for Solaris Power Solutions is predominantly influenced by accelerating needs for power in the U.S., juxtaposed against constrained electrical grid infrastructure. This is due to a number of factors including, but not limited to, aging transmission and distribution networks, extreme weather, and long lead times for various electric infrastructure equipment. Solaris’ power offerings are configurable and can be scaled to match power demand on a “behind-the-meter” or “distributed” basis in a shorter timeline than many grid-based alternatives, and can stay on site longer term to provide …”

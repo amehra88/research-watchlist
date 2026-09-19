@@ -29,7 +29,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2025-11-11'
 lag_days: null
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -71,13 +71,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[LITE/_thesis|LITE]] 2026-06-09 — Vijay Raghavan Rakesh (Mizuho Securities USA LLC), Mizuho Global Technology Conference: “Got it. So, basically, connecting all the data centers, so they look like one big monolithic GPU.”
 - [[AMD/_thesis|AMD]] 2026-05-05 — Aaron Rakers (Wells Fargo Securities LLC), Q1 2026 Earnings Call: “Yeah. Thanks for taking the question and congrats on the results. I want to stick on the topic of CPU to GPU and as we think about the chart that you had outlined at the Analyst Day, there was obviously broken out between traditional CPUs and then the AI bucket on top of that. Obviously, I think the new forecast has a lot to do with the AI CPU expansion. I'm just curious. When you're doing a CPU in an AI workload, is there structurally a different level of ASP tied to that kind of CPU optimized for AI relative to a general purpose server CPU? Any kind of color or help on that would be useful.”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 7 banks, 6 of 50 earnings-call / 34 conference companies covered, 12 exchanges — [[AMBA/_thesis|AMBA]], [[AMD/_thesis|AMD]], [[ARM/_thesis|ARM]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[NBIS/_thesis|NBIS]].
-**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 13 companies.
+**Asked:** 7 banks, 6 of 51 earnings-call / 37 conference companies covered, 12 exchanges — [[AMBA/_thesis|AMBA]], [[AMD/_thesis|AMD]], [[ARM/_thesis|ARM]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[NBIS/_thesis|NBIS]].
+**Disclosed (MD&A):** 0 of 71 filers; corprep speech at 13 companies.
 **Gap (§6.2):** 0 disclosing / 6 asked.
 **Banks:** Analyst, Citigroup, Barclays Capital, Inc., Citigroup Global Markets, Inc., Morgan Stanley & Co. LLC, Needham & Co. LLC, ROTH Capital Partners LLC, TD Cowen.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[AMD/_thesis|AMD]] 2026-09-11 — James Edward Schneider (Goldman Sachs & Co. LLC), Goldman Sachs Communacopia + Technology Conference: “Excellent. One thing that's striking me is, over the past couple years, we've kind of changed the parlance of how we talk about this market. We're not talking about server counts or counting accelerators. We're talking about counting gigawatts of capacity, and every single presentation at this conference has done that. So, maybe as you think about these multi-gigawatt AI deployments, how should investors be thinking about CPU content per gigawatt?”

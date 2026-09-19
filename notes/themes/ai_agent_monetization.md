@@ -21,7 +21,7 @@ affects:
 first_evidence_date: null
 first_question_date: '2025-12-02'
 lag_days: null
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -60,13 +60,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[DASH/_thesis|DASH]] 2026-05-06 — Justin Post (BofA Securities, Inc.), Q1 2026 Earnings Call: “Great. Thank you. I just want to follow up on advertising. How do you think about integrating that with agentic capabilities on your own platform? And is there any way you could generate ad revenues on agentic platforms, on other platforms? Thank you.”
 - [[GOOG/_thesis|GOOG]] 2026-05-14 — Michael Brian Nathanson (MoffettNathanson LLC), MoffettNathanson Media Internet and Communications Conference: “Okay. I have to ask you about platform health and AI slop, right? So as the technology develops, how do you prevent AI slop from really infesting the platform and hurting both the user experience and the creator's ability to connect and build community?”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 2 banks, 3 of 50 earnings-call / 34 conference companies covered, 3 exchanges — [[MDB/_thesis|MDB]], [[META/_thesis|META]], [[NBIS/_thesis|NBIS]].
-**Disclosed (MD&A):** 0 of 69 filers; corprep speech at 7 companies.
+**Asked:** 2 banks, 3 of 51 earnings-call / 37 conference companies covered, 3 exchanges — [[MDB/_thesis|MDB]], [[META/_thesis|META]], [[NBIS/_thesis|NBIS]].
+**Disclosed (MD&A):** 0 of 71 filers; corprep speech at 8 companies.
 **Gap (§6.2):** 0 disclosing / 3 asked.
 **Banks:** Analyst, Citigroup, Bernstein Institutional Services LLC.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[META/_thesis|META]] 2026-07-29 — Mark Shmulik (Bernstein Institutional Services LLC), Q2 2026 Earnings Call: “Yes. Thanks for taking the question. Mark, everyone's got a story of kind of someone coming back from Silicon Valley, deep writing code, building agents with AI, and then they head home and they kind of tell their parents they're using AI wrong, it's just kind of like a glorified search tool. Consumer behavior is always pretty difficult to predict. But kind of reading your op-ed on AI for Everyone, how do you think about whether consumer adoption can close this AI utility gap? Like, are we on the cusp of something kind of breaking through or do we just need to be a bit more patient? Thanks.”

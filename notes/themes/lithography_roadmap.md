@@ -2,7 +2,7 @@
 doc_type: theme_state
 theme: lithography_roadmap
 status: approved
-stage: 4
+stage: 3
 tickers:
 - AAOI
 - AMAT
@@ -28,7 +28,7 @@ affects:
 first_evidence_date: '2025-12-12'
 first_question_date: '2025-11-13'
 lag_days: -29
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -82,13 +82,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[AMAT/_thesis|AMAT]] 10-Q filed 2026-05-21: “Our results are driven primarily by customer spending on capital equipment and services to support key technology transitions or changes in production volume in response to worldwide demand for semiconductors.”
 - [[PLAB/_thesis|PLAB]] 10-Q filed 2026-06-11: “required to manufacture even more complex products, including photomasks with advanced optical proximity correction, insertion of curvilinear patterning and EUV photomasks. Additionally, demand for photomasks has been, and could in the future”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 26 banks, 9 of 50 earnings-call / 34 conference companies covered, 62 exchanges — [[AMAT/_thesis|AMAT]], [[ASML/_thesis|ASML]], [[ENTG/_thesis|ENTG]], [[GLW/_thesis|GLW]], [[INTC/_thesis|INTC]], [[LRCX/_thesis|LRCX]], [[MTRN/_thesis|MTRN]], [[NVMI/_thesis|NVMI]], [[TSM/_thesis|TSM]].
-**Disclosed (MD&A):** 2 of 69 filers — [[LRCX/_thesis|LRCX]], [[PLAB/_thesis|PLAB]]; corprep speech at 14 companies.
+**Asked:** 26 banks, 9 of 51 earnings-call / 37 conference companies covered, 62 exchanges — [[AMAT/_thesis|AMAT]], [[ASML/_thesis|ASML]], [[ENTG/_thesis|ENTG]], [[GLW/_thesis|GLW]], [[INTC/_thesis|INTC]], [[LRCX/_thesis|LRCX]], [[MTRN/_thesis|MTRN]], [[NVMI/_thesis|NVMI]], [[TSM/_thesis|TSM]].
+**Disclosed (MD&A):** 2 of 71 filers — [[LRCX/_thesis|LRCX]], [[PLAB/_thesis|PLAB]]; corprep speech at 14 companies.
 **Gap (§6.2):** 2 disclosing / 9 asked.
 **Banks:** Bank of America, Cantor Fitzgerald & Co., Citigroup Global Markets Canada, Inc., Citigroup Global Markets, Inc., Deutsche Bank AG (UK), Deutsche Bank Securities, Inc., Goldman Sachs & Co. LLC, Goldman Sachs (Asia) LLC (Taiwan), JPMorgan Securities LLC, Jefferies LLC, Joh. Berenberg, Gossler & Co. KG (United Kingdom), Melius Research LLC, Morgan Stanley & Co. International Plc, Morgan Stanley Taiwan Ltd., Needham & Co. LLC, ODDO BHF SCA, RBC Capital Markets LLC, Seaport Research Partners, Susquehanna Financial Group LLLP, Susquehanna International Group, TD Cowen, UBS AG (London Branch), UBS Securities LLC, UBS Securities Pte Ltd. (Taiwan), Wells Fargo Securities LLC, Wolfe Research LLC.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[ASML/_thesis|ASML]] 2026-07-15 — Chris Caso (Wolfe Research LLC), Q2 2026 Earnings Call: “Thank you. As a follow-up, I have a question on pricing and a clarification from some of your prior comments. And I think you were very clear about the mix effect of Low NA EUV on the higher-throughput tools where you get higher proportionally higher ASPs. Is there also any potential for higher ASPs on a like-for-like basis? And the reason why I ask is because you are taking steps to add capacity, you're rolling up your sleeves as you say. Would that potentially result in higher like-for-like ASPs as you increase your cost to do what the customers are asking?”

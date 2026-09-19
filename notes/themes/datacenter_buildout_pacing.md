@@ -27,7 +27,7 @@ affects: []
 first_evidence_date: '2026-02-09'
 first_question_date: '2025-11-11'
 lag_days: -90
-updated: '2026-09-12'
+updated: '2026-09-19'
 written_by: scripts/topics/theme_notes.py
 ---
 ## CY2025-Q4
@@ -77,13 +77,13 @@ _Not covered this quarter: ADI, AWS, BABA, BIDU, DE, DPC, GH, HSAI, INIO, NTES, 
 - [[SEI/_thesis|SEI]] 10-Q filed 2026-05-01: “On February 12, 2026, we entered into a Master Equipment Rental Agreement (the “Hatchbo Agreement”) with Hatchbo, LLC (“Hatchbo”) to provide over 500 megawatts (“MW”) of power generation equipment to support Hatchbo’s power demand for artificial intelligence computing needs at its data center. Hatchbo is an affiliate of an investment grade, global technology company and industry leader in the evolving artificial intelligence space. The Hatchbo Agreement has an initial term of 10 years, with an option to extend an additional 5 years, beginning in the first quarter of 2027.”
 - [[SEI/_thesis|SEI]] 10-Q filed 2026-05-01: “On April 24, 2026, we entered into an agreement with a new customer to provide over 600 MW of power capacity, including balance of plant equipment beyond emissions control, to support the customer’s power demand for artificial intelligence computing needs at its data center. The new customer is an affiliate of an investment grade, global technology company in the evolving artificial intelligence space. For additional information on the agreement, refer to Note 19.“Subsequent Events” in the notes to our consolidated financial statements.”
 
-## CY2026-Q3 — in progress (as of 2026-09-12)
+## CY2026-Q3 — in progress (as of 2026-09-19)
 
-**Asked:** 14 banks, 10 of 50 earnings-call / 34 conference companies covered, 24 exchanges — [[AMZN/_thesis|AMZN]], [[AVGO/_thesis|AVGO]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[DOCN/_thesis|DOCN]], [[FN/_thesis|FN]], [[FRVO/_thesis|FRVO]], [[GDS/_thesis|GDS]], [[GEV/_thesis|GEV]], [[NBIS/_thesis|NBIS]].
-**Disclosed (MD&A):** 1 of 69 filers — [[SEI/_thesis|SEI]]; corprep speech at 17 companies.
+**Asked:** 14 banks, 10 of 51 earnings-call / 37 conference companies covered, 25 exchanges — [[AMZN/_thesis|AMZN]], [[AVGO/_thesis|AVGO]], [[CBRS/_thesis|CBRS]], [[CRWV/_thesis|CRWV]], [[DOCN/_thesis|DOCN]], [[FN/_thesis|FN]], [[FRVO/_thesis|FRVO]], [[GDS/_thesis|GDS]], [[GEV/_thesis|GEV]], [[NBIS/_thesis|NBIS]].
+**Disclosed (MD&A):** 1 of 71 filers — [[SEI/_thesis|SEI]]; corprep speech at 18 companies.
 **Gap (§6.2):** 1 disclosing / 10 asked.
 **Banks:** Analyst, Citigroup, Bernstein Institutional Services LLC, BofA Securities, Inc., Cantor Fitzgerald & Co., Citigroup Global Markets, Inc., Deutsche Bank Securities, Inc., Evercore ISI, Goldman Sachs (Singapore) Pte., KeyBanc Capital Markets, Inc., Mizuho Securities USA LLC, Morgan Stanley Asia Ltd., Robert W. Baird & Co., Inc., TD Cowen, Wolfe Research LLC.
-_Not covered this quarter: AWS, DE, DPC, GH, HSAI, INIO, NTES, PLAB, RDNT, SE, SEI, TSEM …._
+_Not covered this quarter: AWS, DE, DPC, HSAI, INIO, NTES, PLAB, SE, SEI, TSEM, TTWO, A000660 …._
 
 **Analyst questions (verbatim):**
 - [[FRVO/_thesis|FRVO]] 2026-08-12 — Benjamin Joseph Kallo (Robert W. Baird & Co., Inc.), Q2 2026 Earnings Call: “Okay, great. Just going to behind-the-meter. Could you talk to us kind of the mechanics? And you mentioned that there's a discussion about higher costs. So how would we expect like a data center development to the timeline to occur with your timeline of build out? So like, would a data center start construction before you're completed with the power plant or after? And then would you provide the auxiliary equipment needed or even additional generation or stationary storage as part of that deal? Just maybe describe a little bit more how we should expect that to evolve.”
