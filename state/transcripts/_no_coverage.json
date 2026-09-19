@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-09-18T16:46:08+00:00",
+ "generated_at": "2026-09-19T13:04:30+00:00",
  "window": {
-  "start": "2026-09-15",
-  "end": "2026-09-18"
+  "start": "2026-09-11",
+  "end": "2026-09-19"
  },
  "no_factset_id": [
   {
@@ -209,12 +209,10 @@
   "AWS",
   "DE",
   "DPC",
-  "GH",
   "HSAI",
   "INIO",
   "NTES",
   "PLAB",
-  "RDNT",
   "SE",
   "SEI",
   "TSEM",
