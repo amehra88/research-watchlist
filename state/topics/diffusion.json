@@ -1,5 +1,5 @@
 {
- "as_of": "2026-09-18",
+ "as_of": "2026-09-19",
  "quarters": [
   "CY2025-Q4",
   "CY2026-Q1",
@@ -26,7 +26,7 @@
   },
   "CY2026-Q3": {
    "earnings_call": 51,
-   "conference": 34,
+   "conference": 37,
    "mdna_filers": 71
   }
  },
@@ -35,12 +35,10 @@
    "AWS",
    "DE",
    "DPC",
-   "GH",
    "HSAI",
    "INIO",
    "NTES",
    "PLAB",
-   "RDNT",
    "SE",
    "SEI",
    "TSEM",
@@ -141,14 +139,15 @@
     "JPMorgan Securities LLC",
     "Truist Securities, Inc."
    ],
-   "n_host_excluded": 3,
-   "n_companies": 3,
+   "n_host_excluded": 5,
+   "n_companies": 4,
    "companies": [
     "DASH",
     "GOOG",
-    "RDDT"
+    "RDDT",
+    "WMT"
    ],
-   "n_exchanges": 6,
+   "n_exchanges": 8,
    "n_disclosing": 5,
    "disclosing": [
     "GOOG",
@@ -490,17 +489,19 @@
    "banks": [
     "JPMorgan Securities LLC"
    ],
-   "n_host_excluded": 8,
-   "n_companies": 6,
+   "n_host_excluded": 10,
+   "n_companies": 8,
    "companies": [
     "CRWD",
     "DDOG",
     "DOCN",
+    "GEV",
     "MDB",
     "NXPI",
+    "WMT",
     "ZS"
    ],
-   "n_exchanges": 9,
+   "n_exchanges": 11,
    "n_disclosing": 0,
    "disclosing": [],
    "n_corprep_companies": 20,
@@ -555,14 +556,15 @@
     "Goldman Sachs & Co. LLC",
     "The Hongkong & Shanghai Banking Corp. Ltd. (Singapore)"
    ],
-   "n_host_excluded": 0,
-   "n_companies": 3,
+   "n_host_excluded": 5,
+   "n_companies": 4,
    "companies": [
     "AMZN",
     "BABA",
-    "DASH"
+    "DASH",
+    "WMT"
    ],
-   "n_exchanges": 4,
+   "n_exchanges": 9,
    "n_disclosing": 0,
    "disclosing": [],
    "n_corprep_companies": 5,
@@ -644,7 +646,7 @@
    "n_exchanges": 3,
    "n_disclosing": 0,
    "disclosing": [],
-   "n_corprep_companies": 7,
+   "n_corprep_companies": 8,
    "first_seen_quarter": "CY2025-Q4"
   },
   {
@@ -1059,7 +1061,7 @@
     "Morgan Stanley & Co. LLC",
     "Wells Fargo Securities LLC"
    ],
-   "n_host_excluded": 5,
+   "n_host_excluded": 6,
    "n_companies": 5,
    "companies": [
     "AXON",
@@ -1068,7 +1070,7 @@
     "NOW",
     "SNOW"
    ],
-   "n_exchanges": 10,
+   "n_exchanges": 11,
    "n_disclosing": 0,
    "disclosing": [],
    "n_corprep_companies": 12,
@@ -1273,12 +1275,13 @@
    "cal_quarter": "CY2026-Q3",
    "n_banks": 0,
    "banks": [],
-   "n_host_excluded": 1,
-   "n_companies": 1,
+   "n_host_excluded": 2,
+   "n_companies": 2,
    "companies": [
+    "WMT",
     "ZS"
    ],
-   "n_exchanges": 1,
+   "n_exchanges": 2,
    "n_disclosing": 0,
    "disclosing": [],
    "n_corprep_companies": 7,
@@ -1648,16 +1651,17 @@
     "Robert W. Baird & Co., Inc.",
     "Wells Fargo Securities LLC"
    ],
-   "n_host_excluded": 3,
-   "n_companies": 5,
+   "n_host_excluded": 4,
+   "n_companies": 6,
    "companies": [
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
-   "n_exchanges": 11,
+   "n_exchanges": 12,
    "n_disclosing": 22,
    "disclosing": [
     "AMBA",
@@ -2266,7 +2270,7 @@
     "William Blair & Co. LLC",
     "Wolfe Research LLC"
    ],
-   "n_host_excluded": 12,
+   "n_host_excluded": 17,
    "n_companies": 13,
    "companies": [
     "AMZN",
@@ -2283,7 +2287,7 @@
     "MPWR",
     "NBIS"
    ],
-   "n_exchanges": 48,
+   "n_exchanges": 53,
    "n_disclosing": 3,
    "disclosing": [
     "BE",
@@ -2419,7 +2423,7 @@
     "TD Cowen",
     "Wolfe Research LLC"
    ],
-   "n_host_excluded": 6,
+   "n_host_excluded": 7,
    "n_companies": 10,
    "companies": [
     "AMZN",
@@ -2433,7 +2437,7 @@
     "GEV",
     "NBIS"
    ],
-   "n_exchanges": 24,
+   "n_exchanges": 25,
    "n_disclosing": 1,
    "disclosing": [
     "SEI"
@@ -2634,7 +2638,7 @@
     "Robert W. Baird & Co., Inc.",
     "Wolfe Research LLC"
    ],
-   "n_host_excluded": 6,
+   "n_host_excluded": 11,
    "n_companies": 9,
    "companies": [
     "BE",
@@ -2647,7 +2651,7 @@
     "GLW",
     "NBIS"
    ],
-   "n_exchanges": 30,
+   "n_exchanges": 35,
    "n_disclosing": 4,
    "disclosing": [
     "BE",
@@ -2768,7 +2772,7 @@
     "UBS Securities LLC",
     "Wells Fargo Securities LLC"
    ],
-   "n_host_excluded": 12,
+   "n_host_excluded": 13,
    "n_companies": 13,
    "companies": [
     "ANET",
@@ -2785,7 +2789,7 @@
     "SNOW",
     "ZS"
    ],
-   "n_exchanges": 32,
+   "n_exchanges": 33,
    "n_disclosing": 0,
    "disclosing": [],
    "n_corprep_companies": 15,
@@ -2908,7 +2912,7 @@
    "n_exchanges": 3,
    "n_disclosing": 0,
    "disclosing": [],
-   "n_corprep_companies": 4,
+   "n_corprep_companies": 5,
    "first_seen_quarter": "CY2025-Q4"
   },
   {
@@ -3058,7 +3062,7 @@
    "n_exchanges": 6,
    "n_disclosing": 0,
    "disclosing": [],
-   "n_corprep_companies": 10,
+   "n_corprep_companies": 11,
    "first_seen_quarter": "CY2025-Q4"
   },
   {
@@ -3991,14 +3995,15 @@
     "Truist Securities, Inc.",
     "Wolfe Research LLC"
    ],
-   "n_host_excluded": 0,
-   "n_companies": 3,
+   "n_host_excluded": 3,
+   "n_companies": 4,
    "companies": [
     "AMZN",
     "BABA",
-    "DASH"
+    "DASH",
+    "WMT"
    ],
-   "n_exchanges": 12,
+   "n_exchanges": 15,
    "n_disclosing": 2,
    "disclosing": [
     "DASH",
@@ -4740,13 +4745,13 @@
     "Morgan Stanley & Co. LLC",
     "Wolfe Research LLC"
    ],
-   "n_host_excluded": 0,
+   "n_host_excluded": 3,
    "n_companies": 2,
    "companies": [
     "FRVO",
     "GEV"
    ],
-   "n_exchanges": 2,
+   "n_exchanges": 5,
    "n_disclosing": 0,
    "disclosing": [],
    "n_corprep_companies": 2,
@@ -5000,14 +5005,15 @@
     "Morgan Stanley & Co. LLC",
     "Truist Securities, Inc."
    ],
-   "n_host_excluded": 0,
-   "n_companies": 3,
+   "n_host_excluded": 1,
+   "n_companies": 4,
    "companies": [
     "AAPL",
     "AMZN",
-    "DASH"
+    "DASH",
+    "WMT"
    ],
-   "n_exchanges": 5,
+   "n_exchanges": 6,
    "n_disclosing": 6,
    "disclosing": [
     "AMZN",
@@ -5017,7 +5023,7 @@
     "SHOP",
     "TTWO"
    ],
-   "n_corprep_companies": 8,
+   "n_corprep_companies": 9,
    "first_seen_quarter": "CY2026-Q1"
   },
   {
@@ -5999,7 +6005,7 @@
    "n_exchanges": 2,
    "n_disclosing": 0,
    "disclosing": [],
-   "n_corprep_companies": 12,
+   "n_corprep_companies": 13,
    "first_seen_quarter": "CY2025-Q4"
   }
  ],
@@ -6020,9 +6026,9 @@
    "n_banks": 11,
    "prev_banks": 4,
    "delta_banks": 7,
-   "n_companies": 3,
+   "n_companies": 4,
    "prev_companies": 1,
-   "delta_companies": 2,
+   "delta_companies": 3,
    "n_disclosing": 2,
    "prev_disclosing": 3
   },
@@ -6082,6 +6088,28 @@
    "prev_disclosing": 0
   },
   {
+   "theme": "platform_take_rate",
+   "n_banks": 4,
+   "prev_banks": 1,
+   "delta_banks": 3,
+   "n_companies": 4,
+   "prev_companies": 1,
+   "delta_companies": 3,
+   "n_disclosing": 6,
+   "prev_disclosing": 10
+  },
+  {
+   "theme": "capex_vs_opex_shift",
+   "n_banks": 7,
+   "prev_banks": 4,
+   "delta_banks": 3,
+   "n_companies": 6,
+   "prev_companies": 4,
+   "delta_companies": 2,
+   "n_disclosing": 22,
+   "prev_disclosing": 33
+  },
+  {
    "theme": "china_ai_infrastructure_demand",
    "n_banks": 3,
    "prev_banks": 0,
@@ -6091,28 +6119,6 @@
    "delta_companies": 2,
    "n_disclosing": 0,
    "prev_disclosing": 0
-  },
-  {
-   "theme": "platform_take_rate",
-   "n_banks": 4,
-   "prev_banks": 1,
-   "delta_banks": 3,
-   "n_companies": 3,
-   "prev_companies": 1,
-   "delta_companies": 2,
-   "n_disclosing": 6,
-   "prev_disclosing": 10
-  },
-  {
-   "theme": "capex_vs_opex_shift",
-   "n_banks": 7,
-   "prev_banks": 4,
-   "delta_banks": 3,
-   "n_companies": 5,
-   "prev_companies": 4,
-   "delta_companies": 1,
-   "n_disclosing": 22,
-   "prev_disclosing": 33
   },
   {
    "theme": "data_center_deployment_constraints",
@@ -6170,6 +6176,17 @@
    "prev_disclosing": 0
   },
   {
+   "theme": "agentic_commerce",
+   "n_banks": 3,
+   "prev_banks": 2,
+   "delta_banks": 1,
+   "n_companies": 4,
+   "prev_companies": 2,
+   "delta_companies": 2,
+   "n_disclosing": 0,
+   "prev_disclosing": 0
+  },
+  {
    "theme": "ai_inference_margin_compression",
    "n_banks": 6,
    "prev_banks": 5,
@@ -6203,24 +6220,13 @@
    "prev_disclosing": 0
   },
   {
-   "theme": "agentic_commerce",
-   "n_banks": 3,
-   "prev_banks": 2,
-   "delta_banks": 1,
-   "n_companies": 3,
-   "prev_companies": 2,
-   "delta_companies": 1,
-   "n_disclosing": 0,
-   "prev_disclosing": 0
-  },
-  {
    "theme": "ad_market_strength",
    "n_banks": 3,
    "prev_banks": 2,
    "delta_banks": 1,
-   "n_companies": 3,
+   "n_companies": 4,
    "prev_companies": 3,
-   "delta_companies": 0,
+   "delta_companies": 1,
    "n_disclosing": 5,
    "prev_disclosing": 9
   },
@@ -6330,6 +6336,17 @@
    "delta_banks": 0,
    "n_companies": 5,
    "prev_companies": 5,
+   "delta_companies": 0,
+   "n_disclosing": 0,
+   "prev_disclosing": 0
+  },
+  {
+   "theme": "ai_regulation",
+   "n_banks": 0,
+   "prev_banks": 0,
+   "delta_banks": 0,
+   "n_companies": 2,
+   "prev_companies": 2,
    "delta_companies": 0,
    "n_disclosing": 0,
    "prev_disclosing": 0
@@ -6445,17 +6462,6 @@
    "prev_disclosing": 1
   },
   {
-   "theme": "ai_regulation",
-   "n_banks": 0,
-   "prev_banks": 0,
-   "delta_banks": 0,
-   "n_companies": 1,
-   "prev_companies": 2,
-   "delta_companies": -1,
-   "n_disclosing": 0,
-   "prev_disclosing": 0
-  },
-  {
    "theme": "nuclear_energy_buildout",
    "n_banks": 2,
    "prev_banks": 2,
@@ -6482,9 +6488,9 @@
    "n_banks": 1,
    "prev_banks": 2,
    "delta_banks": -1,
-   "n_companies": 6,
+   "n_companies": 8,
    "prev_companies": 4,
-   "delta_companies": 2,
+   "delta_companies": 4,
    "n_disclosing": 0,
    "prev_disclosing": 0
   },
@@ -6678,9 +6684,9 @@
  ],
  "stage_counts": {
   "1": 13,
-  "2": 157,
-  "3": 248,
-  "4": 216
+  "2": 153,
+  "3": 253,
+  "4": 219
  },
  "stage4_not_assertable": [
   "advanced_materials_ai_infra",
@@ -6706,76 +6712,76 @@
   "surveillance_security_tech"
  ],
  "stage4_denominator": {
-  "handset_competition": 3,
-  "ai_agent_monetization": 11,
-  "frontier_model_competition": 8,
-  "observability_competitive_landscape": 5,
-  "fed_policy_tech": 0,
-  "foundation_model_economics": 5,
-  "humanoid_robotics_competition": 7,
-  "ai_infrastructure_capex": 30,
-  "ad_market_strength": 7,
-  "nuclear_energy_buildout": 3,
-  "silicon_architecture_competition": 14,
-  "data_center_deployment_constraints": 26,
-  "ai_generated_content": 2,
-  "defense_drones": 1,
-  "agentic_commerce": 4,
-  "model_efficiency_evolution": 15,
-  "lithography_roadmap": 14,
-  "vertical_ai_applications": 7,
+  "local_commerce_delivery": 4,
   "ai_infrastructure_software": 13,
-  "model_commoditization": 1,
-  "surveillance_security_tech": 1,
-  "chip_design_competition": 5,
-  "networking_competitive_landscape": 15,
-  "semiconductor_cycle": 24,
-  "ai_re_architected_incumbent": 14,
-  "networking_margin_trajectory": 19,
   "inference_compute_economics": 22,
-  "china_consumer_demand": 4,
-  "agent_framework_landscape": 13,
-  "ai_inference_margin_compression": 15,
-  "hbm_competitive_landscape": 10,
-  "nand_demand_cycle": 19,
-  "capex_vs_opex_shift": 35,
-  "energy_storage_buildout": 15,
-  "hyperscaler_capex_buildout": 21,
-  "china_export_controls": 12,
-  "advanced_materials_ai_infra": 15,
-  "software_seat_pricing_pressure": 39,
-  "foundry_capacity": 13,
-  "hyperscaler_revenue_concentration": 24,
-  "aerospace_defense_aftermarket": 6,
-  "ai_compute_topology": 19,
-  "ai_regulation": 5,
-  "antitrust_action": 2,
-  "china_ai_infrastructure_demand": 3,
-  "pc_demand": 6,
-  "search_disruption": 5,
-  "sovereign_ai_deployments": 4,
-  "space_supply_chain": 2,
-  "datacenter_buildout_pacing": 18,
-  "solar_supply_chain": 21,
-  "local_commerce_delivery": 3,
   "automotive_semiconductor_demand": 20,
+  "datacenter_buildout_pacing": 18,
+  "ai_re_architected_incumbent": 16,
   "autonomous_vehicle_competition": 4,
-  "platform_take_rate": 8,
+  "networking_competitive_landscape": 15,
+  "agent_framework_landscape": 15,
+  "foundry_capacity": 14,
+  "ai_native_vertical": 11,
+  "hyperscaler_capex_buildout": 21,
+  "solar_supply_chain": 21,
+  "advanced_materials_ai_infra": 15,
+  "observability_competitive_landscape": 5,
+  "china_ai_infrastructure_demand": 3,
+  "hbm_competitive_landscape": 10,
+  "china_export_controls": 12,
+  "vertical_ai_applications": 7,
+  "data_center_deployment_constraints": 26,
+  "model_efficiency_evolution": 15,
+  "ai_infrastructure_capex": 30,
+  "surveillance_security_tech": 1,
+  "humanoid_robotics_competition": 7,
+  "ai_agent_monetization": 11,
+  "platform_take_rate": 9,
+  "software_seat_pricing_pressure": 40,
+  "aerospace_defense_aftermarket": 6,
+  "ai_inference_margin_compression": 15,
+  "nuclear_energy_buildout": 3,
+  "frontier_model_competition": 8,
+  "antitrust_action": 2,
+  "hyperscaler_revenue_concentration": 24,
+  "energy_storage_buildout": 15,
+  "fed_policy_tech": 0,
+  "silicon_architecture_competition": 14,
+  "thermal_management_cooling": 15,
+  "ad_market_strength": 8,
   "cybersecurity_competitive_landscape": 9,
-  "enterprise_ai_adoption": 18,
-  "ai_native_vertical": 9,
-  "thermal_management_cooling": 15
+  "search_disruption": 5,
+  "handset_competition": 3,
+  "ai_compute_topology": 19,
+  "foundation_model_economics": 5,
+  "semiconductor_cycle": 24,
+  "lithography_roadmap": 14,
+  "ai_generated_content": 2,
+  "ai_regulation": 6,
+  "enterprise_ai_adoption": 19,
+  "pc_demand": 6,
+  "chip_design_competition": 5,
+  "networking_margin_trajectory": 19,
+  "space_supply_chain": 2,
+  "defense_drones": 1,
+  "china_consumer_demand": 4,
+  "capex_vs_opex_shift": 36,
+  "model_commoditization": 1,
+  "sovereign_ai_deployments": 4,
+  "agentic_commerce": 5,
+  "nand_demand_cycle": 19
  },
  "lag_summary": {
-  "n": 54,
+  "n": 58,
   "min": -184,
-  "p25": -77,
-  "median": -4.0,
-  "p75": 174,
+  "p25": -63,
+  "median": -1.0,
+  "p75": 176,
   "max": 272,
   "n_negative": 32,
   "n_zero": 1,
-  "share_evidence_led": 38.9
+  "share_evidence_led": 43.1
  },
  "lag_identified": {
   "summary": {
@@ -6789,14 +6795,14 @@
    "n_zero": 0,
    "share_evidence_led": 0.0
   },
-  "dropped_pos": 21,
+  "dropped_pos": 25,
   "dropped_neg": 27,
   "dropped_same_event": 5,
   "buffer_days": 30,
   "same_event_days": 3,
   "n_tickers_mdna_starts_late": 21,
-  "n_tickers_single_call": 20,
-  "n_tickers_with_calls": 63
+  "n_tickers_single_call": 23,
+  "n_tickers_with_calls": 66
  },
  "stage1": [
   {
@@ -6809,7 +6815,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 280
+   "open_lag_days": 281
   },
   {
    "theme": "silicon_architecture_competition",
@@ -6821,7 +6827,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 227
+   "open_lag_days": 228
   },
   {
    "theme": "antitrust_action",
@@ -6833,7 +6839,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 225
+   "open_lag_days": 226
   },
   {
    "theme": "antitrust_action",
@@ -6845,7 +6851,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 225
+   "open_lag_days": 226
   },
   {
    "theme": "fed_policy_tech",
@@ -6857,7 +6863,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 220
+   "open_lag_days": 221
   },
   {
    "theme": "foundry_capacity",
@@ -6869,7 +6875,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 218
+   "open_lag_days": 219
   },
   {
    "theme": "foundry_capacity",
@@ -6881,7 +6887,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 211
+   "open_lag_days": 212
   },
   {
    "theme": "foundry_capacity",
@@ -6893,7 +6899,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 205
+   "open_lag_days": 206
   },
   {
    "theme": "antitrust_action",
@@ -6905,7 +6911,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 141
+   "open_lag_days": 142
   },
   {
    "theme": "space_supply_chain",
@@ -6917,7 +6923,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 134
+   "open_lag_days": 135
   },
   {
    "theme": "foundry_capacity",
@@ -6929,7 +6935,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 130
+   "open_lag_days": 131
   },
   {
    "theme": "foundry_capacity",
@@ -6941,7 +6947,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 32
+   "open_lag_days": 33
   },
   {
    "theme": "foundry_capacity",
@@ -6953,7 +6959,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 31
+   "open_lag_days": 32
   }
  ],
  "stage2": [
@@ -7001,7 +7007,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 205
+   "open_lag_days": 206
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -7017,6 +7023,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -7025,7 +7032,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 282
+   "open_lag_days": 283
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -7046,7 +7053,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 282
+   "open_lag_days": 283
   },
   {
    "theme": "solar_supply_chain",
@@ -7066,7 +7073,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 282
+   "open_lag_days": 283
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -7082,6 +7089,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -7090,7 +7098,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 280
+   "open_lag_days": 281
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -7111,7 +7119,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 280
+   "open_lag_days": 281
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -7132,7 +7140,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 280
+   "open_lag_days": 281
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -7154,7 +7162,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 274
+   "open_lag_days": 275
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -7170,6 +7178,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -7178,7 +7187,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 274
+   "open_lag_days": 275
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -7194,6 +7203,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -7202,7 +7212,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 274
+   "open_lag_days": 275
   },
   {
    "theme": "china_export_controls",
@@ -7220,7 +7230,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 274
+   "open_lag_days": 275
   },
   {
    "theme": "nand_demand_cycle",
@@ -7253,7 +7263,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 274
+   "open_lag_days": 275
   },
   {
    "theme": "pc_demand",
@@ -7270,7 +7280,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 274
+   "open_lag_days": 275
   },
   {
    "theme": "semiconductor_cycle",
@@ -7306,7 +7316,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 274
+   "open_lag_days": 275
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -7327,7 +7337,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 274
+   "open_lag_days": 275
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -7348,7 +7358,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 274
+   "open_lag_days": 275
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -7369,7 +7379,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 274
+   "open_lag_days": 275
   },
   {
    "theme": "solar_supply_chain",
@@ -7389,7 +7399,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 274
+   "open_lag_days": 275
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -7405,6 +7415,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -7413,7 +7424,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 270
+   "open_lag_days": 271
   },
   {
    "theme": "china_export_controls",
@@ -7431,7 +7442,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 270
+   "open_lag_days": 271
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -7452,7 +7463,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 270
+   "open_lag_days": 271
   },
   {
    "theme": "solar_supply_chain",
@@ -7472,7 +7483,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 270
+   "open_lag_days": 271
   },
   {
    "theme": "pc_demand",
@@ -7489,7 +7500,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 238
+   "open_lag_days": 239
   },
   {
    "theme": "solar_supply_chain",
@@ -7509,7 +7520,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 238
+   "open_lag_days": 239
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -7530,7 +7541,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 233
+   "open_lag_days": 234
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -7546,6 +7557,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -7554,7 +7566,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 232
+   "open_lag_days": 233
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -7570,6 +7582,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -7578,7 +7591,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 232
+   "open_lag_days": 233
   },
   {
    "theme": "platform_take_rate",
@@ -7588,14 +7601,15 @@
    "other_asked": [
     "AAPL",
     "AMZN",
-    "DASH"
+    "DASH",
+    "WMT"
    ],
    "first_evidence_date": "2026-01-29",
    "first_filing_date": "2026-01-29",
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 232
+   "open_lag_days": 233
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -7616,7 +7630,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 232
+   "open_lag_days": 233
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -7637,7 +7651,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 232
+   "open_lag_days": 233
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -7659,7 +7673,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 227
+   "open_lag_days": 228
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -7675,6 +7689,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -7683,7 +7698,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 227
+   "open_lag_days": 228
   },
   {
    "theme": "china_consumer_demand",
@@ -7700,7 +7715,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 227
+   "open_lag_days": 228
   },
   {
    "theme": "platform_take_rate",
@@ -7710,14 +7725,15 @@
    "other_asked": [
     "AAPL",
     "AMZN",
-    "DASH"
+    "DASH",
+    "WMT"
    ],
    "first_evidence_date": "2026-02-03",
    "first_filing_date": "2026-02-03",
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 227
+   "open_lag_days": 228
   },
   {
    "theme": "aerospace_defense_aftermarket",
@@ -7736,7 +7752,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 226
+   "open_lag_days": 227
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -7758,7 +7774,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 226
+   "open_lag_days": 227
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -7774,6 +7790,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -7782,7 +7799,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 226
+   "open_lag_days": 227
   },
   {
    "theme": "platform_take_rate",
@@ -7792,14 +7809,15 @@
    "other_asked": [
     "AAPL",
     "AMZN",
-    "DASH"
+    "DASH",
+    "WMT"
    ],
    "first_evidence_date": "2026-02-04",
    "first_filing_date": "2026-02-04",
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 226
+   "open_lag_days": 227
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -7820,7 +7838,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 226
+   "open_lag_days": 227
   },
   {
    "theme": "ad_market_strength",
@@ -7832,14 +7850,15 @@
     "DASH",
     "GOOG",
     "META",
-    "RDDT"
+    "RDDT",
+    "WMT"
    ],
    "first_evidence_date": "2026-02-05",
    "first_filing_date": "2026-02-05",
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 225
+   "open_lag_days": 226
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -7860,7 +7879,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 225
+   "open_lag_days": 226
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -7881,7 +7900,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 225
+   "open_lag_days": 226
   },
   {
    "theme": "ad_market_strength",
@@ -7893,14 +7912,15 @@
     "DASH",
     "GOOG",
     "META",
-    "RDDT"
+    "RDDT",
+    "WMT"
    ],
    "first_evidence_date": "2026-02-06",
    "first_filing_date": "2026-02-06",
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 224
+   "open_lag_days": 225
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -7922,7 +7942,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 224
+   "open_lag_days": 225
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -7938,6 +7958,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -7946,7 +7967,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 224
+   "open_lag_days": 225
   },
   {
    "theme": "platform_take_rate",
@@ -7956,14 +7977,15 @@
    "other_asked": [
     "AAPL",
     "AMZN",
-    "DASH"
+    "DASH",
+    "WMT"
    ],
    "first_evidence_date": "2026-02-06",
    "first_filing_date": "2026-02-06",
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 224
+   "open_lag_days": 225
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -7984,7 +8006,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 224
+   "open_lag_days": 225
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -8000,6 +8022,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -8008,7 +8031,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 221
+   "open_lag_days": 222
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8029,7 +8052,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 221
+   "open_lag_days": 222
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -8045,6 +8068,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -8053,7 +8077,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 219
+   "open_lag_days": 220
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -8069,6 +8093,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -8077,7 +8102,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 219
+   "open_lag_days": 220
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8098,7 +8123,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 219
+   "open_lag_days": 220
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8119,7 +8144,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 219
+   "open_lag_days": 220
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -8141,7 +8166,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 218
+   "open_lag_days": 219
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8162,7 +8187,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 218
+   "open_lag_days": 219
   },
   {
    "theme": "ad_market_strength",
@@ -8174,14 +8199,15 @@
     "DASH",
     "GOOG",
     "META",
-    "RDDT"
+    "RDDT",
+    "WMT"
    ],
    "first_evidence_date": "2026-02-13",
    "first_filing_date": "2026-02-13",
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 217
+   "open_lag_days": 218
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -8197,6 +8223,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -8205,7 +8232,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 217
+   "open_lag_days": 218
   },
   {
    "theme": "platform_take_rate",
@@ -8215,14 +8242,15 @@
    "other_asked": [
     "AAPL",
     "AMZN",
-    "DASH"
+    "DASH",
+    "WMT"
    ],
    "first_evidence_date": "2026-02-13",
    "first_filing_date": "2026-02-13",
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 217
+   "open_lag_days": 218
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8243,7 +8271,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 217
+   "open_lag_days": 218
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -8259,6 +8287,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -8267,7 +8296,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 213
+   "open_lag_days": 214
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -8283,6 +8312,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -8291,7 +8321,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 213
+   "open_lag_days": 214
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8312,7 +8342,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 213
+   "open_lag_days": 214
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8333,7 +8363,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 213
+   "open_lag_days": 214
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8354,7 +8384,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 213
+   "open_lag_days": 214
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -8376,7 +8406,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 212
+   "open_lag_days": 213
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -8392,6 +8422,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -8400,7 +8431,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 212
+   "open_lag_days": 213
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -8416,6 +8447,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -8424,7 +8456,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 212
+   "open_lag_days": 213
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -8446,7 +8478,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 211
+   "open_lag_days": 212
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -8462,6 +8494,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -8470,7 +8503,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 211
+   "open_lag_days": 212
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8491,7 +8524,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 211
+   "open_lag_days": 212
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8512,7 +8545,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 211
+   "open_lag_days": 212
   },
   {
    "theme": "solar_supply_chain",
@@ -8532,7 +8565,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 211
+   "open_lag_days": 212
   },
   {
    "theme": "solar_supply_chain",
@@ -8552,7 +8585,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 211
+   "open_lag_days": 212
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -8568,6 +8601,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -8576,7 +8610,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 206
+   "open_lag_days": 207
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8597,7 +8631,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 206
+   "open_lag_days": 207
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8618,7 +8652,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 205
+   "open_lag_days": 206
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8639,7 +8673,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 205
+   "open_lag_days": 206
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8660,7 +8694,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 204
+   "open_lag_days": 205
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -8682,7 +8716,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 203
+   "open_lag_days": 204
   },
   {
    "theme": "china_export_controls",
@@ -8700,7 +8734,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 203
+   "open_lag_days": 204
   },
   {
    "theme": "data_center_deployment_constraints",
@@ -8736,7 +8770,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 203
+   "open_lag_days": 204
   },
   {
    "theme": "datacenter_buildout_pacing",
@@ -8768,7 +8802,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 203
+   "open_lag_days": 204
   },
   {
    "theme": "energy_storage_buildout",
@@ -8797,7 +8831,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 203
+   "open_lag_days": 204
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8818,7 +8852,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 203
+   "open_lag_days": 204
   },
   {
    "theme": "solar_supply_chain",
@@ -8838,7 +8872,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 203
+   "open_lag_days": 204
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -8854,6 +8888,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -8862,7 +8897,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 199
+   "open_lag_days": 200
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -8883,7 +8918,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 199
+   "open_lag_days": 200
   },
   {
    "theme": "solar_supply_chain",
@@ -8903,7 +8938,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 199
+   "open_lag_days": 200
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -8925,31 +8960,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 191
-  },
-  {
-   "theme": "capex_vs_opex_shift",
-   "ticker": "MDB",
-   "stage": 2,
-   "adjacent_asked": [],
-   "other_asked": [
-    "AAPL",
-    "ANET",
-    "CIEN",
-    "CRWD",
-    "FPS",
-    "GLW",
-    "GWRE",
-    "HPE",
-    "PANW",
-    "ZS"
-   ],
-   "first_evidence_date": "2026-03-11",
-   "first_filing_date": "2026-03-11",
-   "evidence_sources": [
-    "mdna"
-   ],
-   "open_lag_days": 191
+   "open_lag_days": 192
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -8965,6 +8976,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -8973,7 +8985,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 191
+   "open_lag_days": 192
   },
   {
    "theme": "lithography_roadmap",
@@ -9001,7 +9013,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 191
+   "open_lag_days": 192
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -9022,24 +9034,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 191
-  },
-  {
-   "theme": "local_commerce_delivery",
-   "ticker": "WMT",
-   "stage": 2,
-   "adjacent_asked": [],
-   "other_asked": [
-    "AMZN",
-    "BABA",
-    "DASH"
-   ],
-   "first_evidence_date": "2026-03-13",
-   "first_filing_date": "2026-03-13",
-   "evidence_sources": [
-    "mdna"
-   ],
-   "open_lag_days": 189
+   "open_lag_days": 192
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -9055,6 +9050,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -9063,7 +9059,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 186
+   "open_lag_days": 187
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -9079,6 +9075,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -9087,7 +9084,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 183
+   "open_lag_days": 184
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -9108,7 +9105,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 183
+   "open_lag_days": 184
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -9124,6 +9121,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -9132,7 +9130,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 182
+   "open_lag_days": 183
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -9153,7 +9151,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 182
+   "open_lag_days": 183
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -9174,7 +9172,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 179
+   "open_lag_days": 180
   },
   {
    "theme": "autonomous_vehicle_competition",
@@ -9191,7 +9189,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 148
+   "open_lag_days": 149
   },
   {
    "theme": "solar_supply_chain",
@@ -9211,7 +9209,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 148
+   "open_lag_days": 149
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -9227,6 +9225,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -9235,7 +9234,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 142
+   "open_lag_days": 143
   },
   {
    "theme": "aerospace_defense_aftermarket",
@@ -9254,7 +9253,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 141
+   "open_lag_days": 142
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -9276,7 +9275,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 141
+   "open_lag_days": 142
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -9297,7 +9296,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 141
+   "open_lag_days": 142
   },
   {
    "theme": "aerospace_defense_aftermarket",
@@ -9316,7 +9315,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 140
+   "open_lag_days": 141
   },
   {
    "theme": "solar_supply_chain",
@@ -9336,7 +9335,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 140
+   "open_lag_days": 141
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -9352,6 +9351,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -9360,7 +9360,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 137
+   "open_lag_days": 138
   },
   {
    "theme": "ad_market_strength",
@@ -9372,14 +9372,15 @@
     "DASH",
     "GOOG",
     "META",
-    "RDDT"
+    "RDDT",
+    "WMT"
    ],
    "first_evidence_date": "2026-05-05",
    "first_filing_date": "2026-05-05",
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 136
+   "open_lag_days": 137
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -9395,6 +9396,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -9403,7 +9405,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 136
+   "open_lag_days": 137
   },
   {
    "theme": "local_commerce_delivery",
@@ -9413,14 +9415,15 @@
    "other_asked": [
     "AMZN",
     "BABA",
-    "DASH"
+    "DASH",
+    "WMT"
    ],
    "first_evidence_date": "2026-05-05",
    "first_filing_date": "2026-05-05",
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 136
+   "open_lag_days": 137
   },
   {
    "theme": "platform_take_rate",
@@ -9430,14 +9433,15 @@
    "other_asked": [
     "AAPL",
     "AMZN",
-    "DASH"
+    "DASH",
+    "WMT"
    ],
    "first_evidence_date": "2026-05-05",
    "first_filing_date": "2026-05-05",
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 136
+   "open_lag_days": 137
   },
   {
    "theme": "solar_supply_chain",
@@ -9457,7 +9461,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 136
+   "open_lag_days": 137
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -9479,7 +9483,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 135
+   "open_lag_days": 136
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -9495,6 +9499,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -9503,7 +9508,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 135
+   "open_lag_days": 136
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -9519,6 +9524,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -9527,7 +9533,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 135
+   "open_lag_days": 136
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -9548,7 +9554,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 135
+   "open_lag_days": 136
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -9569,7 +9575,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 135
+   "open_lag_days": 136
   },
   {
    "theme": "aerospace_defense_aftermarket",
@@ -9588,7 +9594,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 134
+   "open_lag_days": 135
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -9604,6 +9610,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -9612,7 +9619,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 134
+   "open_lag_days": 135
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -9628,6 +9635,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -9636,7 +9644,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 134
+   "open_lag_days": 135
   },
   {
    "theme": "china_export_controls",
@@ -9654,7 +9662,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 134
+   "open_lag_days": 135
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -9675,7 +9683,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 134
+   "open_lag_days": 135
   },
   {
    "theme": "solar_supply_chain",
@@ -9695,7 +9703,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 134
+   "open_lag_days": 135
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -9711,6 +9719,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -9719,7 +9728,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 133
+   "open_lag_days": 134
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -9740,7 +9749,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 133
+   "open_lag_days": 134
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -9761,7 +9770,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 130
+   "open_lag_days": 131
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -9783,7 +9792,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 127
+   "open_lag_days": 128
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -9804,7 +9813,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 127
+   "open_lag_days": 128
   },
   {
    "theme": "pc_demand",
@@ -9821,7 +9830,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 121
+   "open_lag_days": 122
   },
   {
    "theme": "platform_take_rate",
@@ -9831,14 +9840,15 @@
    "other_asked": [
     "AAPL",
     "AMZN",
-    "DASH"
+    "DASH",
+    "WMT"
    ],
    "first_evidence_date": "2026-05-26",
    "first_filing_date": "2026-05-26",
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 115
+   "open_lag_days": 116
   },
   {
    "theme": "solar_supply_chain",
@@ -9858,43 +9868,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 113
-  },
-  {
-   "theme": "ad_market_strength",
-   "ticker": "WMT",
-   "stage": 2,
-   "adjacent_asked": [],
-   "other_asked": [
-    "AAPL",
-    "DASH",
-    "GOOG",
-    "META",
-    "RDDT"
-   ],
-   "first_evidence_date": "2026-05-29",
-   "first_filing_date": "2026-05-29",
-   "evidence_sources": [
-    "mdna"
-   ],
-   "open_lag_days": 112
-  },
-  {
-   "theme": "platform_take_rate",
-   "ticker": "WMT",
-   "stage": 2,
-   "adjacent_asked": [],
-   "other_asked": [
-    "AAPL",
-    "AMZN",
-    "DASH"
-   ],
-   "first_evidence_date": "2026-05-29",
-   "first_filing_date": "2026-05-29",
-   "evidence_sources": [
-    "mdna"
-   ],
-   "open_lag_days": 112
+   "open_lag_days": 114
   },
   {
    "theme": "platform_take_rate",
@@ -9904,14 +9878,15 @@
    "other_asked": [
     "AAPL",
     "AMZN",
-    "DASH"
+    "DASH",
+    "WMT"
    ],
    "first_evidence_date": "2026-06-04",
    "first_filing_date": "2026-06-04",
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 106
+   "open_lag_days": 107
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -9933,7 +9908,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 99
+   "open_lag_days": 100
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -9955,7 +9930,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 95
+   "open_lag_days": 96
   },
   {
    "theme": "energy_storage_buildout",
@@ -9984,7 +9959,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 57
+   "open_lag_days": 58
   },
   {
    "theme": "energy_storage_buildout",
@@ -10013,7 +9988,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 50
+   "open_lag_days": 51
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -10034,7 +10009,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 45
+   "open_lag_days": 46
   },
   {
    "theme": "solar_supply_chain",
@@ -10054,7 +10029,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 45
+   "open_lag_days": 46
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -10076,7 +10051,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 43
+   "open_lag_days": 44
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -10097,7 +10072,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 42
+   "open_lag_days": 43
   },
   {
    "theme": "solar_supply_chain",
@@ -10117,7 +10092,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 42
+   "open_lag_days": 43
   },
   {
    "theme": "solar_supply_chain",
@@ -10137,7 +10112,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 35
+   "open_lag_days": 36
   },
   {
    "theme": "software_seat_pricing_pressure",
@@ -10158,7 +10133,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 32
+   "open_lag_days": 33
   },
   {
    "theme": "solar_supply_chain",
@@ -10178,7 +10153,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 32
+   "open_lag_days": 33
   },
   {
    "theme": "automotive_semiconductor_demand",
@@ -10200,7 +10175,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 23
+   "open_lag_days": 24
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -10216,6 +10191,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -10224,7 +10200,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 23
+   "open_lag_days": 24
   },
   {
    "theme": "cybersecurity_competitive_landscape",
@@ -10247,7 +10223,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 17
+   "open_lag_days": 18
   },
   {
    "theme": "solar_supply_chain",
@@ -10267,7 +10243,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 16
+   "open_lag_days": 17
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -10283,6 +10259,7 @@
     "GLW",
     "GWRE",
     "HPE",
+    "MDB",
     "PANW",
     "ZS"
    ],
@@ -10291,7 +10268,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 14
+   "open_lag_days": 15
   },
   {
    "theme": "china_export_controls",
@@ -10309,7 +10286,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 14
+   "open_lag_days": 15
   },
   {
    "theme": "hyperscaler_revenue_concentration",
@@ -10342,7 +10319,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 14
+   "open_lag_days": 15
   },
   {
    "theme": "solar_supply_chain",
@@ -10362,7 +10339,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 14
+   "open_lag_days": 15
   },
   {
    "theme": "solar_supply_chain",
@@ -10382,7 +10359,7 @@
    "evidence_sources": [
     "mdna"
    ],
-   "open_lag_days": 8
+   "open_lag_days": 9
   }
  ],
  "newly_said": [
@@ -11551,6 +11528,18 @@
    ]
   },
   {
+   "ticker": "GEV",
+   "theme": "agent_framework_landscape",
+   "cal_quarter": "CY2026-Q3",
+   "source": "exchange",
+   "register": "evidence",
+   "n_rows": 1,
+   "baseline_quarters": [
+    "CY2026-Q1",
+    "CY2026-Q2"
+   ]
+  },
+  {
    "ticker": "GLW",
    "theme": "enterprise_ai_adoption",
    "cal_quarter": "CY2026-Q3",
@@ -12108,14 +12097,16 @@
   {
    "theme": "ad_market_strength",
    "ticker": "WMT",
-   "stage": 2,
+   "stage": 4,
    "first_evidence_date": "2026-05-29",
    "first_filing_date": "2026-05-29",
-   "first_question_date": null,
-   "lag_days": null,
+   "first_question_date": "2026-09-15",
+   "lag_days": 109,
    "n_evidence": 2,
-   "n_question": 0,
-   "banks": []
+   "n_question": 2,
+   "banks": [
+    "Goldman Sachs & Co. LLC"
+   ]
   },
   {
    "theme": "advanced_materials_ai_infra",
@@ -12593,6 +12584,20 @@
   },
   {
    "theme": "agent_framework_landscape",
+   "ticker": "GEV",
+   "stage": 4,
+   "first_evidence_date": null,
+   "first_filing_date": null,
+   "first_question_date": "2026-09-16",
+   "lag_days": null,
+   "n_evidence": 0,
+   "n_question": 1,
+   "banks": [
+    "Morgan Stanley & Co. LLC"
+   ]
+  },
+  {
+   "theme": "agent_framework_landscape",
    "ticker": "MDB",
    "stage": 4,
    "first_evidence_date": null,
@@ -12641,6 +12646,20 @@
    "first_evidence_date": null,
    "first_filing_date": null,
    "first_question_date": "2026-09-09",
+   "lag_days": null,
+   "n_evidence": 0,
+   "n_question": 1,
+   "banks": [
+    "Goldman Sachs & Co. LLC"
+   ]
+  },
+  {
+   "theme": "agent_framework_landscape",
+   "ticker": "WMT",
+   "stage": 4,
+   "first_evidence_date": null,
+   "first_filing_date": null,
+   "first_question_date": "2026-09-15",
    "lag_days": null,
    "n_evidence": 0,
    "n_question": 1,
@@ -12720,6 +12739,21 @@
    "n_question": 2,
    "banks": [
     "MoffettNathanson LLC"
+   ]
+  },
+  {
+   "theme": "agentic_commerce",
+   "ticker": "WMT",
+   "stage": 3,
+   "first_evidence_date": null,
+   "first_filing_date": null,
+   "first_question_date": "2026-09-15",
+   "lag_days": null,
+   "n_evidence": 0,
+   "n_question": 5,
+   "banks": [
+    "Goldman Sachs & Co. LLC",
+    "Piper Sandler & Co."
    ]
   },
   {
@@ -13480,10 +13514,11 @@
    "first_question_date": "2026-09-02",
    "lag_days": null,
    "n_evidence": 0,
-   "n_question": 4,
+   "n_question": 5,
    "banks": [
     "Citigroup Global Markets, Inc.",
     "JPMorgan Securities LLC",
+    "Piper Sandler & Co.",
     "Wells Fargo Securities LLC"
    ]
   },
@@ -13656,6 +13691,20 @@
    "n_question": 1,
    "banks": [
     "Barclays Capital, Inc."
+   ]
+  },
+  {
+   "theme": "ai_regulation",
+   "ticker": "WMT",
+   "stage": 3,
+   "first_evidence_date": null,
+   "first_filing_date": null,
+   "first_question_date": "2026-09-15",
+   "lag_days": null,
+   "n_evidence": 0,
+   "n_question": 1,
+   "banks": [
+    "Goldman Sachs & Co. LLC"
    ]
   },
   {
@@ -14418,14 +14467,16 @@
   {
    "theme": "capex_vs_opex_shift",
    "ticker": "MDB",
-   "stage": 2,
+   "stage": 3,
    "first_evidence_date": "2026-03-11",
    "first_filing_date": "2026-03-11",
-   "first_question_date": null,
-   "lag_days": null,
+   "first_question_date": "2026-09-15",
+   "lag_days": 188,
    "n_evidence": 15,
-   "n_question": 0,
-   "banks": []
+   "n_question": 1,
+   "banks": [
+    "Piper Sandler & Co."
+   ]
   },
   {
    "theme": "capex_vs_opex_shift",
@@ -15365,7 +15416,7 @@
    "first_question_date": "2025-12-09",
    "lag_days": null,
    "n_evidence": 0,
-   "n_question": 21,
+   "n_question": 26,
    "banks": [
     "Bernstein",
     "BofA Securities, Inc.",
@@ -15711,13 +15762,14 @@
    "first_question_date": "2025-12-09",
    "lag_days": null,
    "n_evidence": 0,
-   "n_question": 10,
+   "n_question": 11,
    "banks": [
     "Bernstein",
     "BofA Securities, Inc.",
     "Citigroup Global Markets, Inc.",
     "Deutsche Bank Securities, Inc.",
     "JPMorgan Securities LLC",
+    "Morgan Stanley & Co. LLC",
     "TD Cowen",
     "Wolfe Research LLC"
    ]
@@ -15985,7 +16037,7 @@
    "first_question_date": "2025-12-09",
    "lag_days": null,
    "n_evidence": 0,
-   "n_question": 35,
+   "n_question": 40,
    "banks": [
     "Barclays Capital, Inc.",
     "Bernstein",
@@ -16320,10 +16372,11 @@
    "first_question_date": "2026-09-02",
    "lag_days": null,
    "n_evidence": 0,
-   "n_question": 4,
+   "n_question": 5,
    "banks": [
     "Citigroup Global Markets, Inc.",
     "JPMorgan Securities LLC",
+    "Piper Sandler & Co.",
     "Wells Fargo Securities LLC"
    ]
   },
@@ -18233,14 +18286,16 @@
   {
    "theme": "local_commerce_delivery",
    "ticker": "WMT",
-   "stage": 2,
+   "stage": 3,
    "first_evidence_date": "2026-03-13",
    "first_filing_date": "2026-03-13",
-   "first_question_date": null,
-   "lag_days": null,
+   "first_question_date": "2026-09-15",
+   "lag_days": 186,
    "n_evidence": 16,
-   "n_question": 0,
-   "banks": []
+   "n_question": 3,
+   "banks": [
+    "Goldman Sachs & Co. LLC"
+   ]
   },
   {
    "theme": "model_commoditization",
@@ -19407,7 +19462,7 @@
    "first_question_date": "2026-01-28",
    "lag_days": null,
    "n_evidence": 0,
-   "n_question": 9,
+   "n_question": 12,
    "banks": [
     "Bernstein",
     "BofA Securities, Inc.",
@@ -19689,14 +19744,16 @@
   {
    "theme": "platform_take_rate",
    "ticker": "WMT",
-   "stage": 2,
+   "stage": 3,
    "first_evidence_date": "2026-05-29",
    "first_filing_date": "2026-05-29",
-   "first_question_date": null,
-   "lag_days": null,
+   "first_question_date": "2026-09-15",
+   "lag_days": 109,
    "n_evidence": 2,
-   "n_question": 0,
-   "banks": []
+   "n_question": 1,
+   "banks": [
+    "Goldman Sachs & Co. LLC"
+   ]
   },
   {
    "theme": "platform_take_rate",
@@ -21469,8 +21526,8 @@
   "challenging_rate (spec \u00a75) is not computed: exchange rows carry no challenging flag and 99% of analyst turns are sentiment=Neutral.",
   "P3 foreign evidence is not built: stages and lags use US MD&A evidence only; Chinese filers appear only in the exclusions list. Corprep transcript speech is reported as a count (n_corprep_companies) but does not set a stage: at its 0.30 threshold it mis-paired 3 of 5 spot-checked stage-2 rows.",
   "MD&A counts need >= 2 mapped blocks per filer-quarter and are lower-confidence than transcript counts (mdna precision ~0.4 at its threshold).",
-  "The Tier-0 lag runs from MD&A filing dates only (corprep answers share the question's date). Both windows are truncated \u2014 questions 2025-11-11..2026-09-11, filings 2025-12-10..2026-09-11 \u2014 but the binding problem is PER-TICKER, not global: 21 tickers have MD&A coverage starting >30d after their call coverage, and those names produce the negative tail. A pair is only counted once the register that produced its SECOND event had been observed for 30d beforehand; today 27 negative and 21 positive pairs fail that test. The guard runs in BOTH directions on purpose: applying it to negative lags alone moved the same corpus from 34.2% to 86.2% evidence-led (measured 2026-09-15), which is not a correction but the discarding of every observation that disagreed.",
-  "Call-side backfill is the binding gap and it is fixable: 20 of 63 tickers with any call coverage have their FIRST observed call in the last 45 days, i.e. one call and no question history at all. Nothing about those names can be identified in either direction, and they account for most of the dropped positive pairs. More transcript history moves this number; more statistics does not.",
+  "The Tier-0 lag runs from MD&A filing dates only (corprep answers share the question's date). Both windows are truncated \u2014 questions 2025-11-11..2026-09-16, filings 2025-12-10..2026-09-11 \u2014 but the binding problem is PER-TICKER, not global: 21 tickers have MD&A coverage starting >30d after their call coverage, and those names produce the negative tail. A pair is only counted once the register that produced its SECOND event had been observed for 30d beforehand; today 27 negative and 25 positive pairs fail that test. The guard runs in BOTH directions on purpose: applying it to negative lags alone moved the same corpus from 34.2% to 86.2% evidence-led (measured 2026-09-15), which is not a correction but the discarding of every observation that disagreed.",
+  "Call-side backfill is the binding gap and it is fixable: 23 of 66 tickers with any call coverage have their FIRST observed call in the last 45 days, i.e. one call and no question history at all. Nothing about those names can be identified in either direction, and they account for most of the dropped positive pairs. More transcript history moves this number; more statistics does not.",
   "Pairs whose filing and question fall within 3d are excluded as one reporting event rather than a disclosure and a response: the call-to-filing offset for the same quarter ran median +1d (p25 0, p75 2) when measured 2026-09-15. Tier 0 therefore measures leads and lags longer than one reporting cycle; a genuinely simultaneous disclosure is out of scope by construction, not absent from the data.",
   "No trend lines by design: three or four observations per theme support a comparison, not a slope."
  ]
