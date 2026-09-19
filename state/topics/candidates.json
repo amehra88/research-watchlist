@@ -567,7 +567,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "back_half_step_up",
+  "suggested_why": "Analysts probing the credibility and mechanism of management's sequential margin and revenue improvement guidance through H2, with Q4 expected to significantly outpace earlier quarters."
  },
  {
   "id": "cand:3328815-t_qna_49_0",
@@ -577,8 +578,8 @@
    "demand high",
    "purchase commitments",
    "doubled",
-   "component",
    "supply",
+   "component",
    "levels",
    "chain"
   ],
@@ -719,7 +720,7 @@
    "additions",
    "point",
    "year-on-year",
-   "don"
+   "response"
   ],
   "register": "mixed",
   "n_exchanges": 7,
@@ -1311,6 +1312,60 @@
   "suggested_why": "Pipelines are building strongly but conversions are back-half weighted, indicating sales cycles are extending as enterprise deal sizes and product complexity increase."
  },
  {
+  "id": "cand:3450442-t_qna_61_0",
+  "label": "inflation",
+  "ngrams": [
+   "inflation"
+  ],
+  "register": "question",
+  "n_exchanges": 3,
+  "n_companies": 3,
+  "n_banks": 3,
+  "tickers": [
+   "FPS",
+   "MPWR",
+   "WMT"
+  ],
+  "firms": [
+   "Goldman Sachs & Co. LLC",
+   "Loop Capital Markets LLC",
+   "Wolfe Research LLC"
+  ],
+  "first_seen": "2026-04-30",
+  "members": [
+   "3450442-t_qna_61_0",
+   "3463943-t_qna_16_0",
+   "3537165-t_qna_6_0"
+  ],
+  "examples": [
+   {
+    "id": "3450442-t_qna_61_0",
+    "ticker": "MPWR",
+    "date": "2026-04-30",
+    "firm": "Loop Capital Markets LLC",
+    "text": "I know it's been running lean as it's still lean relative to where you would normally place your distribution inventory. Then as well, maybe if you can talk about the sort of inflationary-related pricing trends that you have to pass along?"
+   },
+   {
+    "id": "3463943-t_qna_16_0",
+    "ticker": "FPS",
+    "date": "2026-05-14",
+    "firm": "Wolfe Research LLC",
+    "text": "Obviously, a lot of inflation out there. Just wondering how price cost is tracking and then perhaps talk about tariffs and how the change in the tariff regime has been impacting you guys. And I'm actually curious how maybe just remind us what kind of backlog protection you have a"
+   },
+   {
+    "id": "3537165-t_qna_6_0",
+    "ticker": "WMT",
+    "date": "2026-09-15",
+    "firm": "Goldman Sachs & Co. LLC",
+    "text": "And can you maybe talk about how you manage this with inflation? Maybe can you discuss the level of inflation currently in your business and what your expectations are for the remainder of the year?"
+   }
+  ],
+  "status": "pending",
+  "name": null,
+  "suggested_name": "inflation_pricing_power",
+  "suggested_why": "Pricing discipline and tariff pass-through as core margin-defense levers in inflationary environments."
+ },
+ {
   "id": "cand:3513821-t_qna_56_0",
   "label": "growth",
   "ngrams": [
@@ -1371,11 +1426,12 @@
   "ngrams": [
    "almost time",
    "privilege",
-   "wrap"
+   "wrap",
+   "couple"
   ],
   "register": "mixed",
-  "n_exchanges": 10,
-  "n_companies": 9,
+  "n_exchanges": 11,
+  "n_companies": 10,
   "n_banks": 2,
   "tickers": [
    "AMAT",
@@ -1386,7 +1442,8 @@
    "HPQ",
    "LRCX",
    "NXPI",
-   "UPST"
+   "UPST",
+   "WMT"
   ],
   "firms": [
    "Citigroup Global Markets, Inc.",
@@ -1403,6 +1460,7 @@
    "3533560-t_qna_36_0",
    "3534204-t_qna_72_0",
    "3534909-t_qna_42_0",
+   "3537165-t_qna_46_0",
    "3542655-t_qna_22_0"
   ],
   "examples": [
@@ -1862,7 +1920,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "revenue_ramp_timing",
+  "suggested_why": "Analysts questioning when incremental revenue opportunities will materialize and probing for specific magnitude guidance."
  },
  {
   "id": "cand:3463943-t_qna_23_0",
@@ -2240,8 +2299,8 @@
    "great",
    "big",
    "love",
-   "never",
-   "potentially"
+   "potentially",
+   "never"
   ],
   "register": "evidence_only",
   "n_exchanges": 6,
@@ -2416,8 +2475,8 @@
    "working capital",
    "expectations",
    "ahead",
-   "great",
    "full",
+   "great",
    "sure",
    "team"
   ],
@@ -2686,7 +2745,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "outsourcing_economics",
+  "suggested_why": "Management actively evaluating cost-benefit trade-offs between in-house capacity expansion and outsourced operations, particularly for manufacturing."
  },
  {
   "id": "cand:3359603-t_3359603-t_qna_9_0",
@@ -3141,7 +3201,8 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "ai_margin_leverage",
+  "suggested_why": "AI investment combined with operational scale drives gross margin expansion through efficiency gains and improved supplier terms."
  },
  {
   "id": "cand:3404809-t_qna_55_0",
@@ -3303,6 +3364,7 @@
   ],
   "status": "pending",
   "name": null,
-  "suggested_name": null
+  "suggested_name": "safe_harbor_language",
+  "suggested_why": "Routine regulatory disclaimer required on all earnings calls; boilerplate risk/cautionary statement rather than a substantive business or financial theme."
  }
 ]

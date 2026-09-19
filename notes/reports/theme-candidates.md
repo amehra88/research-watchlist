@@ -1,20 +1,21 @@
-## Theme candidates — 2026-09-18
+## Theme candidates — 2026-09-19
 
 Anchors: 62 themes; threshold 0.3 (by source: {'default': 0.3, 'exchange': 0.3, 'mdna': 0.4}) (held-out P 0.302 / R 0.38 on 1725 labelled chunks).
-Coverage: question register: 1579/3890 mapped (41%); evidence register: 6606/14864 mapped (44%); by source: exchange source: 6531/13344 mapped (49%), mdna source: 1654/5410 mapped (31%); 6300 rows skipped (operator/untyped speakers, acknowledgements, housekeeping).
+Coverage: question register: 1597/4030 mapped (40%); evidence register: 6638/15034 mapped (44%); by source: exchange source: 6581/13654 mapped (48%), mdna source: 1654/5410 mapped (31%); 6405 rows skipped (operator/untyped speakers, acknowledgements, housekeeping).
 A unit maps when its cosine to a theme centroid clears the threshold; the rest are clustered and only clusters with >= 3 companies and >= 2 banks are listed. The system never edits `config/watchlist.yaml` — accept with `topic_map.py --accept <id> --name <slug>`, reject with `--reject <id>`.
 
-### Pending candidates (7 of 54; 7 evidence-only listed below)
+### Pending candidates (8 of 55; 7 evidence-only listed below)
 
 | id | suggested | n_banks | n_companies | n_exch | first_seen | tickers | phrases |
 |---|---|---|---|---|---|---|---|
 | `cand:3355431-t_3355431-t_qna_28_0` | china_margin_disconnect | 5 | 5 | 6 | 2025-12-02 | ADI, AMAT, ANET, ASML, LRCX | gross margin; strong gross; margins; flowing; china |
-| `cand:3426815-t_qna_4_0` |  | 4 | 4 | 5 | 2026-03-16 | AAOI, FPS, GLW, INDI | margins; half expect; sequential; fourth; step-up |
+| `cand:3426815-t_qna_4_0` | back_half_step_up | 4 | 4 | 5 | 2026-03-16 | AAOI, FPS, GLW, INDI | margins; half expect; sequential; fourth; step-up |
 | `cand:3413799-t_3413799-t_qna_52_0` | leverage_target_optimization | 3 | 3 | 4 | 2026-03-03 | COHR, GEV, STX | balance sheet; allocation opportunities chances; chances optimize balance; getting leverage target; leverage target level |
 | `cand:3375096-t_qna_94_0` | consensus_gap | 3 | 3 | 3 | 2026-01-13 | CIEN, GEV, LRCX | investors |
 | `cand:3405694-t_qna_62_0` | sales_cycle_lengthening | 3 | 3 | 3 | 2026-03-05 | AXON, GWRE, HNGE | pipeline; longer; half; driving; sales |
+| `cand:3450442-t_qna_61_0` | inflation_pricing_power | 3 | 3 | 3 | 2026-04-30 | FPS, MPWR, WMT | inflation |
 | `cand:3513821-t_qna_56_0` | 2027_growth_inflection | 3 | 3 | 3 | 2026-08-13 | AMAT, AMBA, IRTC | growth; revenue |
-| `cand:3381359-t_qna_119_0` |  | 2 | 3 | 4 | 2026-02-05 | AAOI, CIEN, MPWR | revenue |
+| `cand:3381359-t_qna_119_0` | revenue_ramp_timing | 2 | 3 | 4 | 2026-02-05 | AAOI, CIEN, MPWR | revenue |
 
 #### `cand:3355431-t_3355431-t_qna_28_0` — china_margin_disconnect
 _Analysts probing whether margin strength reflects operational leverage or stems from geographic mix shift reducing China exposure._
@@ -23,7 +24,8 @@ Banks: Cantor Fitzgerald & Co., JPMorgan Securities LLC, Truist Securities, Inc.
 - **ASML 2026-01-28** (Wolfe Research LLC): My follow-up question is with regard to gross margins, and you spoke about that a bit. But perhaps you could clarify what are the headwinds and tailwinds with respect to gross margin for this year. I presume that China is one factor. But what are the factors that cause you to be 
 - **AMAT 2026-05-14** (Cantor Fitzgerald & Co.): As a quick follow-up, just on the gross margin side, great guide with, I'm assuming, depressed China. How should we think about gross margins beyond the July quarter, particularly as it appears as silicon will continue to grow sequentially well into 2027 and beyond?
 
-#### `cand:3426815-t_qna_4_0` — margins
+#### `cand:3426815-t_qna_4_0` — back_half_step_up
+_Analysts probing the credibility and mechanism of management's sequential margin and revenue improvement guidance through H2, with Q4 expected to significantly outpace earlier quarters._
 Banks: Barclays Capital, Inc., Craig-Hallum Capital Group LLC, JPMorgan Securities LLC, Rosenblatt Securities
 - **FPS 2026-03-16** (Barclays Capital, Inc.): Maybe just a question around the sort of sequential movement within the second half. So, you've mentioned several times margins should be up sequentially, then also fourth quarter. Just trying to understand how back end-loaded that 25% margin guide is for the back half. You did 2
 - **FPS 2026-03-16** (Forgent Power Solutions, Inc.): Good to talk to you. First and foremost, we don't give the quarterly guidance, but I will give you some additional color around this. When we think about the sequential improvement in the quarters in the back half, we've had incremental volumes that will continue in the back half
@@ -50,6 +52,13 @@ Banks: Raymond James & Associates, Inc., WR Securities LLC, William Blair & Co. 
 - **HNGE 2026-08-04** (Raymond James & Associates, Inc.): So I wanted to clarify on the selling season, it seems like this is the second year in a row where there's been really strong pipeline build, but the conversion is going to be back half weighted. Is that the new normal that we should expect? And do you think there's anything that
 - **AXON 2026-08-05** (WR Securities LLC): In the past, you've talked about longer sales cycles for AI and OSP bundles. With the bigger price tags on those. Are those cycles shortening now that the products have been in the market for longer periods of time, customers might be more familiar, more used to AI or are you kin
 
+#### `cand:3450442-t_qna_61_0` — inflation_pricing_power
+_Pricing discipline and tariff pass-through as core margin-defense levers in inflationary environments._
+Banks: Goldman Sachs & Co. LLC, Loop Capital Markets LLC, Wolfe Research LLC
+- **MPWR 2026-04-30** (Loop Capital Markets LLC): I know it's been running lean as it's still lean relative to where you would normally place your distribution inventory. Then as well, maybe if you can talk about the sort of inflationary-related pricing trends that you have to pass along?
+- **FPS 2026-05-14** (Wolfe Research LLC): Obviously, a lot of inflation out there. Just wondering how price cost is tracking and then perhaps talk about tariffs and how the change in the tariff regime has been impacting you guys. And I'm actually curious how maybe just remind us what kind of backlog protection you have a
+- **WMT 2026-09-15** (Goldman Sachs & Co. LLC): And can you maybe talk about how you manage this with inflation? Maybe can you discuss the level of inflation currently in your business and what your expectations are for the remainder of the year?
+
 #### `cand:3513821-t_qna_56_0` — 2027_growth_inflection
 _Analysts questioning whether 2027 revenue accelerates versus 2026's implied baseline, with Street modeling at 17% as a key variable._
 Banks: Citigroup Global Markets, Inc., Goldman Sachs & Co. LLC, Wells Fargo Securities LLC
@@ -57,7 +66,8 @@ Banks: Citigroup Global Markets, Inc., Goldman Sachs & Co. LLC, Wells Fargo Secu
 - **AMBA 2026-09-09** (Citigroup Global Markets, Inc.): You've guided to a 10% to 15% revenue growth for fiscal 2027. How do you think about the growth drivers we've discussed today? What's going to drive upside, downside or the range of outcomes?
 - **IRTC 2026-09-09** (Wells Fargo Securities LLC): So we're in September. Investors are starting to think about 2027. Your full year 2026 guidance implies about 15% growth in Q4. Is that the right jumping-off point for 2027? I mean, Street is modeling 17% right now. Any framing you could put around that?
 
-#### `cand:3381359-t_qna_119_0` — revenue
+#### `cand:3381359-t_qna_119_0` — revenue_ramp_timing
+_Analysts questioning when incremental revenue opportunities will materialize and probing for specific magnitude guidance._
 Banks: Northland Securities, Inc., William Blair & Co. LLC
 - **MPWR 2026-02-05** (William Blair & Co. LLC): So, do you think that starts to drive revenue in 2026 then? Is that fair to say?
 - **AAOI 2026-02-26** (Northland Securities, Inc.): And then I guess last question for me. You talked about the potential for $1 billion in revenue in calendar 2026, I think, or in total.
@@ -69,11 +79,11 @@ Banks: Northland Securities, Inc., William Blair & Co. LLC
 |---|---|---|---|---|---|---|
 | `cand:3502919-t_qna_12_0` | call_moderation | 3 | 9 | 2026-08-05 | AMAT, DASH, HPE | operator please |
 | `cand:3376863-t_qna_3_0` |  | 3 | 7 | 2026-01-28 | 005930.KS, CIEN, CRWD | move please |
-| `cand:3384540-t_3384540-t_qna_42_1` |  | 3 | 5 | 2026-02-04 | AAOI, AMAT, COHR | always approach something; approach something provides; asked outsourcing use; beneficial products cost; benefit customers care |
+| `cand:3384540-t_3384540-t_qna_42_1` | outsourcing_economics | 3 | 5 | 2026-02-04 | AAOI, AMAT, COHR | always approach something; approach something provides; asked outsourcing use; beneficial products cost; benefit customers care |
 | `cand:3379000-t_md_5_0` | call_access_discipline | 3 | 4 | 2026-01-28 | ADI, AMAT, GEV | operator please; analysts ask people; ask everyone queue; ask people possible; consider fellow analysts |
 | `cand:3385303-t_qna_21_0` | ai_supply_tightness | 3 | 4 | 2026-02-19 | AMD, ANET, INDI | tightness; well-positioned; supply; feel; base |
-| `cand:3383478-t_qna_37_0` |  | 3 | 3 | 2026-02-10 | DDOG, HNGE, SNOW | cost structure; gross margin; job; investing; using |
-| `cand:3452205-t_md_1_1` |  | 3 | 3 | 2026-05-07 | AAOI, FRVO, STX | involve known unknown; known unknown risks; unknown risks uncertainties; current expectations assumptions; forward-looking statements |
+| `cand:3383478-t_qna_37_0` | ai_margin_leverage | 3 | 3 | 2026-02-10 | DDOG, HNGE, SNOW | cost structure; gross margin; job; investing; using |
+| `cand:3452205-t_md_1_1` | safe_harbor_language | 3 | 3 | 2026-05-07 | AAOI, FRVO, STX | involve known unknown; known unknown risks; unknown risks uncertainties; current expectations assumptions; forward-looking statements |
 
 ### Decided
 - `cand:3362309-t_qna_18_0` accepted as `capacity_supply_tightness`
